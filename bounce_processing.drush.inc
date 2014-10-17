@@ -12,8 +12,12 @@ function bounce_processing_drush_command() {
 
   $items['bounce-process'] = array(
     'description' => 'Process a mail message. A raw message must be provided on STDIN by piping.',
+    'arguments' => array(
+      'file...' => 'Zero or more file names to parse as messages.',
+    ),
     'examples' => array(
       'drush bounce-process < 1.eml' => 'Process the message contained by the file 1.eml',
+      'drush bounce-process 1.eml 2.eml 3.eml' => 'Process each of the messages contained by the three files',
     ),
     'drupal dependencies' => array('bounce_processing'),
   );
@@ -25,12 +29,17 @@ function bounce_processing_drush_command() {
  * Drush command implementation for processing a mail message.
  */
 function drush_bounce_processing_bounce_process() {
-  if (!$raw = _bounce_processing_get_piped_input()) {
-    echo "Error: No message provided\n";
-    return;
-  }
   \Drupal::service('composer_manager.manager')->registerAutolaoder();
-  \Drupal::service('bounce.processor')->process($raw);
+  if ($raw = _bounce_processing_get_piped_input()) {
+    \Drupal::service('bounce.processor')->process($raw);
+  }
+  else {
+    $raws = array();
+    foreach (func_get_args() as $filename) {
+      $raws[] = file_get_contents(__DIR__ . '/' . $filename);
+    }
+    \Drupal::service('bounce.processor')->processMultiple($raws);
+  }
 }
 
 
