@@ -1,0 +1,8 @@
+name: Bounce processing
+type: module
+description: >
+  Mail bounce message handler. Fetches and processes incoming mail messages,
+  identifies bounce messages and mutes further sending to invalid addresses.
+package: Mail
+version: 8.x-1.x
+core: 8.x
