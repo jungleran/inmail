@@ -12,6 +12,13 @@ namespace Drupal\bounce_processing;
 class Message {
 
   /**
+   * The raw message string.
+   *
+   * @var string
+   */
+  protected $raw;
+
+  /**
    * The mail message headers.
    *
    * @var string[]
@@ -67,6 +74,16 @@ class Message {
   }
 
   /**
+   * Returns the raw message string.
+   *
+   * @return string
+   *   The raw message string.
+   */
+  public function getRaw() {
+    return $this->raw;
+  }
+
+  /**
    * Parses a raw message into a typed Message.
    *
    * @param string $raw
@@ -77,6 +94,7 @@ class Message {
    */
   public static function parse($raw) {
     $message = new Message();
+    $message->raw = $raw;
     list($headers, $message->body) = explode("\n\n", $raw, 2);
     $message->headers = explode("\n", $headers);
     return $message;

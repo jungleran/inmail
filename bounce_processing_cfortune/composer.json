@@ -1,0 +1,11 @@
+{
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/Rambomst/PHP-Bounce-Handler"
+    }
+  ],
+  "require": {
+    "cfortune/php-bounce-handler": "dev-master"
+  }
+}

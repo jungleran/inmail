@@ -1,0 +1,9 @@
+name: Message classifier: Cfortune
+type: module
+description: Message Classifier wrapper for Cfortune's PHPBounceHandler class.
+package: Mail
+core: 8.x
+
+dependencies:
+  - bounce_processing
+  - composer_manager
