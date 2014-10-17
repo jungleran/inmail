@@ -1,0 +1,8 @@
+services:
+  bounce.processor:
+    class: Drupal\bounce_processing\MessageProcessor
+    arguments: ['@bounce.classifier', '@bounce.handler']
+  bounce.handler:
+    class: Drupal\bounce_processing\DummyMessageHandler
+  bounce.classifier:
+    class: Drupal\bounce_processing\DummyMessageClassifier
