@@ -11,12 +11,12 @@ function bounce_processing_drush_command() {
   $items = array();
 
   $items['bounce-process'] = array(
-    'description' => 'Process a mail message. A raw message must be provided on STDIN by piping.',
+    'description' => 'Process a mail message provided through STDIN, or one or more mail messages by filename.',
     'arguments' => array(
-      'file...' => 'Zero or more file names to parse as messages.',
+      'file [file2 ...]' => 'One or more file names to parse as messages. If no filenames are given, a message is read from STDIN.',
     ),
     'examples' => array(
-      'drush bounce-process < 1.eml' => 'Process the message contained by the file 1.eml',
+      'cat 1.eml | drush bounce-process' => 'Process a message through STDIN',
       'drush bounce-process 1.eml 2.eml 3.eml' => 'Process each of the messages contained by the three files',
     ),
     'drupal dependencies' => array('bounce_processing'),
@@ -30,23 +30,25 @@ function bounce_processing_drush_command() {
  */
 function drush_bounce_processing_bounce_process() {
   \Drupal::service('composer_manager.manager')->registerAutolaoder();
-  if ($raw = _bounce_processing_get_piped_input()) {
-    \Drupal::service('bounce.processor')->process($raw);
-  }
-  else {
+
+  $args = func_get_args();
+
+  if (count($args) > 0) {
     $raws = array();
-    foreach (func_get_args() as $filename) {
+    foreach ($args as $filename) {
       $raws[] = file_get_contents(__DIR__ . '/' . $filename);
     }
     \Drupal::service('bounce.processor')->processMultiple($raws);
+  }
+  else {
+    $raw = _bounce_processing_get_piped_input();
+    \Drupal::service('bounce.processor')->process($raw);
   }
 }
 
 
 /**
  * Check for piped input.
- *
- * Stolen from http://deglos.com/blog/2011/09/19/unix-pipes-in-php
  *
  * @return string
  *   Data piped to Drush.
@@ -55,7 +57,6 @@ function _bounce_processing_get_piped_input() {
   static $data = NULL;
   if (is_null($data)) {
     $data = '';
-    stream_set_blocking(STDIN, FALSE);
     while ($input = fread(STDIN, 1024)) {
       $data .= $input;
     }
