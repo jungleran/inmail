@@ -1,0 +1,14 @@
+{
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/instaclick/PHPMailer-BMH"
+    }
+  ],
+  "require": {
+    "instaclick/bounce-mail-handler": "dev-master"
+  },
+  "provide": {
+    "ext-imap": "*"
+  }
+}

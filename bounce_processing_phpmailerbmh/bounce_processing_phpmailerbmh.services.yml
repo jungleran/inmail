@@ -1,0 +1,3 @@
+services:
+  bounce.classifier:
+    class: Drupal\bounce_processing_phpmailerbmh\PHPMailerBMHMessageClassifier
