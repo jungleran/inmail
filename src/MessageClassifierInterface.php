@@ -17,7 +17,7 @@ interface MessageClassifierInterface {
    * @param Message $message
    *   An incoming message.
    *
-   * @return string
+   * @return \Drupal\bounce_processing\MessageTypeInterface
    *   An RFC 3463 mail system status code identified by the classification. If
    *   the classification fails, it should return "2.0.0" which is the generic
    *   success code.

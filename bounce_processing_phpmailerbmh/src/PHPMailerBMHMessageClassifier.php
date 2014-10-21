@@ -6,6 +6,7 @@
 
 namespace Drupal\bounce_processing_phpmailerbmh;
 
+use Drupal\bounce_processing\DSNType;
 use Drupal\bounce_processing\Message;
 use Drupal\bounce_processing\MessageClassifierInterface;
 
@@ -27,10 +28,11 @@ class PHPMailerBMHMessageClassifier implements MessageClassifierInterface {
   public function classify(Message $message) {
     require_once $this->getLibraryPath() . '/lib/BounceMailHandler/phpmailer-bmh_rules.php';
     $result = bmhBodyRules($message->getBody(), NULL);
+    $status = '2.0.0';
     if (isset($this->rulecatStatusMap[$result['rule_cat']])) {
-      return $this->rulecatStatusMap[$result['rule_cat']];
+      $status = $this->rulecatStatusMap[$result['rule_cat']];
     }
-    return '2.0.0';
+    return DSNType::parse($status);
   }
 
   protected function getLibraryPath() {
