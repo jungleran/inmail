@@ -95,6 +95,7 @@ class Message {
   public static function parse($raw) {
     $message = new Message();
     $message->raw = $raw;
+    $raw = str_replace("\r\n", "\n", $raw);
     list($headers, $message->body) = explode("\n\n", $raw, 2);
     $message->headers = explode("\n", $headers);
     return $message;

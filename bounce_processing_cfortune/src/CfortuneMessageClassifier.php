@@ -21,7 +21,7 @@ class CfortuneMessageClassifier implements MessageClassifierInterface {
   public function classify(Message $message) {
     $handler = new BounceHandler();
     $handler->parse_email($message->getRaw());
-    return $handler->action == 'failed' ? static::TYPE_BOUNCE : static::TYPE_REGULAR;
+    return $handler->status ?: '2.0.0';
   }
 
 }

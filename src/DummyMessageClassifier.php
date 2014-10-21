@@ -15,9 +15,14 @@ class DummyMessageClassifier implements MessageClassifierInterface {
    * {@inheritdoc}
    */
   public function classify(Message $message) {
-    if (strpos($message->getBody(), 'bounce') !== FALSE) {
-      return static::TYPE_BOUNCE;
+    // If the message is a DSN.
+    if (strpos($message->getHeader('Content-Type'), 'report-type=delivery-status') !== FALSE) {
+      // Find a RFC 3463-like code anywhwere in the body.
+      if (preg_match('/\s(\d+.\d+.\d+)(\s|$)/', $message->getBody(), $matches)) {
+        return $matches[1];
+      }
     }
-    return static::TYPE_REGULAR;
+    // Otherwise return generic success code.
+    return '2.0.0';
   }
 }

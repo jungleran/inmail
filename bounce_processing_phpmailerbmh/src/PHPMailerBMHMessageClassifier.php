@@ -14,13 +14,23 @@ use Drupal\bounce_processing\MessageClassifierInterface;
  */
 class PHPMailerBMHMessageClassifier implements MessageClassifierInterface {
 
+  protected $rulecatStatusMap = array(
+    'unknown' => '5.1.1',
+    'full' => '5.2.2',
+    'unrecognized' => '2.0.0',
+    // @todo Cover all rule_cats...
+  );
+
   /**
    * {@inheritdoc}
    */
   public function classify(Message $message) {
     require_once $this->getLibraryPath() . '/lib/BounceMailHandler/phpmailer-bmh_rules.php';
     $result = bmhBodyRules($message->getBody(), NULL);
-    return $result['remove'] ? static::TYPE_BOUNCE : static::TYPE_REGULAR;
+    if (isset($this->rulecatStatusMap[$result['rule_cat']])) {
+      return $this->rulecatStatusMap[$result['rule_cat']];
+    }
+    return '2.0.0';
   }
 
   protected function getLibraryPath() {
