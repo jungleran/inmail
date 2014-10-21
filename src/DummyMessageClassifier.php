@@ -23,6 +23,6 @@ class DummyMessageClassifier implements MessageClassifierInterface {
       }
     }
     // Otherwise return generic success code.
-    return new DSNType(2, 0, 0);
+    return NULL;
   }
 }

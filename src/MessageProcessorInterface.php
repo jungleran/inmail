@@ -15,7 +15,7 @@ interface MessageProcessorInterface {
    * Classifies an incoming message and executes callbacks as appropriate.
    *
    * In the iconical case, the message indicates a failed delivery of an earlier
-   * outgoing message to a receiver, and the callback sets the receiver's send
+   * outgoing message to a receiver, and a callback sets the receiver's send
    * state to mute.
    *
    * @param string $raw

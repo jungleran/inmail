@@ -28,11 +28,11 @@ class PHPMailerBMHMessageClassifier implements MessageClassifierInterface {
   public function classify(Message $message) {
     require_once $this->getLibraryPath() . '/lib/BounceMailHandler/phpmailer-bmh_rules.php';
     $result = bmhBodyRules($message->getBody(), NULL);
-    $status = '2.0.0';
     if (isset($this->rulecatStatusMap[$result['rule_cat']])) {
       $status = $this->rulecatStatusMap[$result['rule_cat']];
+      return DSNType::parse($status);
     }
-    return DSNType::parse($status);
+    return NULL;
   }
 
   protected function getLibraryPath() {

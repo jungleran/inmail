@@ -17,7 +17,8 @@ interface MessageHandlerInterface {
    * @param \Drupal\bounce_processing\Message $message
    *   The incoming mail message.
    * @param \Drupal\bounce_processing\MessageTypeInterface $type
-   *   The message type as determined by a classifier.
+   *   The message type as determined by a classifier. Will be NULL if no
+   *   classifier returned anything.
    */
   public function invoke(Message $message, MessageTypeInterface $type);
 

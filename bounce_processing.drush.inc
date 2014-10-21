@@ -61,10 +61,25 @@ function drush_bounce_processing_bounce_services() {
     \Drupal::service('composer_manager.manager')->registerAutolaoder();
   }
 
-  $classifier = get_class(\Drupal::service('bounce.classifier'));
-  $handler = get_class(\Drupal::service('bounce.handler'));
-  echo "Classifier: $classifier\n";
-  echo "Handler: $handler\n";
+  $processor = \Drupal::service('bounce.processor');
+
+  if ($classifiers = $processor->getClassifiers()) {
+    foreach ($classifiers as $class) {
+      echo "Classifier: $class\n";
+    }
+  }
+  else {
+    echo "No classifiers registered.\n";
+  }
+
+  if ($handlers = $processor->getHandlers()) {
+    foreach ($handlers as $class) {
+      echo "Handler: $class\n";
+    }
+  }
+  else {
+    echo "No handlers registered.\n";
+  }
 }
 
 

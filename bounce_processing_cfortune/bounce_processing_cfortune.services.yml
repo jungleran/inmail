@@ -1,3 +1,5 @@
 services:
-  bounce.classifier:
+  bounce.classifier.cfortune:
     class: Drupal\bounce_processing_cfortune\CfortuneMessageClassifier
+    tags:
+      - { name: bounce.classifier }

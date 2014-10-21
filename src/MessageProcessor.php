@@ -12,45 +12,75 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Mail message processor using services to classify and handle messages.
  */
-class MessageProcessor implements MessageProcessorInterface, ContainerInjectionInterface {
+class MessageProcessor implements MessageProcessorInterface {
 
   /**
-   * The message classifier to use.
+   * A list of message classifiers to use.
    *
-   * @var \Drupal\bounce_processing\MessageClassifierInterface
+   * @var \Drupal\bounce_processing\MessageClassifierInterface[]
    */
-  protected $classifier;
+  protected $classifiers = array();
 
   /**
-   * The handler to invoke for a classified message.
+   * A list of handlers to invoke for a classified message.
    *
-   * @var \Drupal\bounce_processing\MessageHandlerInterface
+   * @var \Drupal\bounce_processing\MessageHandlerInterface[]
    */
-  protected $handler;
+  protected $handlers = array();
 
   /**
-   * Constructs a new MessageProcesor.
+   * Adds a classifier object to the list of classifiers.
+   *
+   * @param MessageClassifierInterface $classifier
+   *   A message classifier.
    */
-  public function __construct(MessageClassifierInterface $classifier, MessageHandlerInterface $handler) {
-    // @todo Maybe make classifier and handler tagged services.
-    $this->classifier = $classifier;
-    $this->handler = $handler;
+  public function addClassifier(MessageClassifierInterface $classifier) {
+    $this->classifiers[] = $classifier;
   }
 
   /**
-   * {@inheritdoc}
+   * Adds a handler object to the list of handlers.
+   *
+   * @param MessageHandlerInterface $handler
+   *   A message handler.
    */
-  public static function create(ContainerInterface $container) {
-    return new static($container->get('bounce.classifier'), $container->get('bounce.handler'));
+  public function addHandler(MessageHandlerInterface $handler) {
+    $this->handlers[] = $handler;
+  }
+
+  // @todo Are these really useful outside testing with drush bounce-services?
+  public function getClassifiers() {
+    return array_map(function($obj) {
+      return get_class($obj);
+    }, $this->classifiers);
+  }
+
+  public function getHandlers() {
+    return array_map(function($obj) {
+      return get_class($obj);
+    }, $this->handlers);
   }
 
   /**
    * {@inheritdoc}
    */
   public function process($raw) {
+    // Parse message.
     $message = Message::parse($raw);
-    $type = $this->classifier->classify($message);
-    $this->handler->invoke($message, $type);
+
+    // Classify message.
+    $type = NULL;
+    foreach ($this->classifiers as $classifier) {
+      $type = $classifier->classify($message);
+      if (isset($type)) {
+        break;
+      }
+    }
+
+    // Handle message.
+    foreach ($this->handlers as $handler) {
+      $handler->invoke($message, $type);
+    }
   }
 
   /**

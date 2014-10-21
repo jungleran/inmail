@@ -15,7 +15,12 @@ class DummyMessageHandler implements MessageHandlerInterface {
    * {@inheritdoc}
    */
   public function invoke(Message $message, MessageTypeInterface $type) {
-    echo "Classified as " . $type->getLabel() . "\n";
+    if (isset($type)) {
+      echo "Classified as " . $type->getLabel() . "\n";
+    }
+    else {
+      echo "Unclassified.";
+    }
   }
 
 }
