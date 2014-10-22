@@ -1,10 +1,12 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\MessageHandlerInterface.
+ * Contains \Drupal\bounce_processing\MessageHandler\MessageHandlerInterface.
  */
 
-namespace Drupal\bounce_processing;
+namespace Drupal\bounce_processing\MessageHandler;
+use Drupal\bounce_processing\Message;
+use Drupal\bounce_processing\MessageTypeInterface;
 
 /**
  * Provides callbacks to execute for a classified message.

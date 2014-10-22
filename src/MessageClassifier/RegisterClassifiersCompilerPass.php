@@ -1,11 +1,12 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\RegisterClassifiersCompilerPass.
+ * Contains \Drupal\bounce_processing\MessageClassifier\RegisterClassifiersCompilerPass.
  */
 
-namespace Drupal\bounce_processing;
+namespace Drupal\bounce_processing\MessageClassifier;
 
+use Drupal\bounce_processing\RegisterServicesCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**

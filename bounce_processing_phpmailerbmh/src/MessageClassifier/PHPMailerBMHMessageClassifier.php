@@ -1,14 +1,14 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing_phpmailerbmh\PHPMailerBMHMessageClassifier.
+ * Contains \Drupal\bounce_processing_phpmailerbmh\MessageClassifier\PHPMailerBMHMessageClassifier.
  */
 
-namespace Drupal\bounce_processing_phpmailerbmh;
+namespace Drupal\bounce_processing_phpmailerbmh\MessageClassifier;
 
 use Drupal\bounce_processing\DSNType;
 use Drupal\bounce_processing\Message;
-use Drupal\bounce_processing\MessageClassifierInterface;
+use Drupal\bounce_processing\MessageClassifier\MessageClassifierInterface;
 
 /**
  * Message Classifier wrapper for cfortune's BounceHandler class.

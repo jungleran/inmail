@@ -1,10 +1,12 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\SimpleDSNClassifier.
+ * Contains \Drupal\bounce_processing\MessageClassifier\SimpleDSNClassifier.
  */
 
-namespace Drupal\bounce_processing;
+namespace Drupal\bounce_processing\MessageClassifier;
+use Drupal\bounce_processing\DSNType;
+use Drupal\bounce_processing\Message;
 
 /**
  * Extremely simple MessageClassifierInterface instance.

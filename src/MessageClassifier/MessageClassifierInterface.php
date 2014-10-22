@@ -1,10 +1,11 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\MessageClassifierInterface.
+ * Contains \Drupal\bounce_processing\MessageClassifier\MessageClassifierInterface.
  */
 
-namespace Drupal\bounce_processing;
+namespace Drupal\bounce_processing\MessageClassifier;
+use Drupal\bounce_processing\Message;
 
 /**
  * Provides methods to determine the type of a message.
@@ -14,7 +15,7 @@ interface MessageClassifierInterface {
   /**
    * Analyzes a message and returns its type.
    *
-   * @param Message $message
+   * @param \Drupal\bounce_processing\Message $message
    *   An incoming message.
    *
    * @return \Drupal\bounce_processing\MessageTypeInterface

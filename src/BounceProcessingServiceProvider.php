@@ -6,6 +6,8 @@
 
 namespace Drupal\bounce_processing;
 
+use Drupal\bounce_processing\MessageClassifier\RegisterClassifiersCompilerPass;
+use Drupal\bounce_processing\MessageHandler\RegisterHandlersCompilerPass;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceProviderInterface;
 

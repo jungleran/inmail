@@ -1,5 +1,5 @@
 services:
   bounce.classifier.phpmailerbmh:
-    class: Drupal\bounce_processing_phpmailerbmh\PHPMailerBMHMessageClassifier
+    class: Drupal\bounce_processing_phpmailerbmh\MessageClassifier\PHPMailerBMHMessageClassifier
     tags:
       - { name: bounce.classifier, priority: 30 }

@@ -6,8 +6,8 @@
 
 namespace Drupal\bounce_processing;
 
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\bounce_processing\MessageClassifier\MessageClassifierInterface;
+use Drupal\bounce_processing\MessageHandler\MessageHandlerInterface;
 
 /**
  * Mail message processor using services to classify and handle messages.
@@ -17,21 +17,21 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * A list of message classifiers to use.
    *
-   * @var \Drupal\bounce_processing\MessageClassifierInterface[]
+   * @var \Drupal\bounce_processing\MessageClassifier\MessageClassifierInterface[]
    */
   protected $classifiers = array();
 
   /**
    * A list of handlers to invoke for a classified message.
    *
-   * @var \Drupal\bounce_processing\MessageHandlerInterface[]
+   * @var \Drupal\bounce_processing\MessageHandler\MessageHandlerInterface[]
    */
   protected $handlers = array();
 
   /**
    * Adds a classifier object to the list of classifiers.
    *
-   * @param MessageClassifierInterface $classifier
+   * @param \Drupal\bounce_processing\MessageClassifier\MessageClassifierInterface $classifier
    *   A message classifier.
    */
   public function addClassifier(MessageClassifierInterface $classifier) {
@@ -41,7 +41,7 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * Adds a handler object to the list of handlers.
    *
-   * @param MessageHandlerInterface $handler
+   * @param \Drupal\bounce_processing\MessageHandler\MessageHandlerInterface $handler
    *   A message handler.
    */
   public function addHandler(MessageHandlerInterface $handler) {
