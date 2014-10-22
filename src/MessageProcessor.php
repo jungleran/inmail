@@ -6,36 +6,36 @@
 
 namespace Drupal\bounce_processing;
 
-use Drupal\bounce_processing\MessageClassifier\MessageClassifierInterface;
+use Drupal\bounce_processing\MessageAnalyzer\MessageAnalyzerInterface;
 use Drupal\bounce_processing\MessageHandler\MessageHandlerInterface;
 
 /**
- * Mail message processor using services to classify and handle messages.
+ * Mail message processor using services to analyze and handle messages.
  */
 class MessageProcessor implements MessageProcessorInterface {
 
   /**
-   * A list of message classifiers to use.
+   * A list of message analyzers to use.
    *
-   * @var \Drupal\bounce_processing\MessageClassifier\MessageClassifierInterface[]
+   * @var \Drupal\bounce_processing\MessageAnalyzer\MessageAnalyzerInterface[]
    */
-  protected $classifiers = array();
+  protected $analyzers = array();
 
   /**
-   * A list of handlers to invoke for a classified message.
+   * A list of handlers to invoke for an analyzed message.
    *
    * @var \Drupal\bounce_processing\MessageHandler\MessageHandlerInterface[]
    */
   protected $handlers = array();
 
   /**
-   * Adds a classifier object to the list of classifiers.
+   * Adds an analyzer object to the list of analyzer.
    *
-   * @param \Drupal\bounce_processing\MessageClassifier\MessageClassifierInterface $classifier
-   *   A message classifier.
+   * @param \Drupal\bounce_processing\MessageAnalyzer\MessageAnalyzerInterface $analyzer
+   *   A message analyzer.
    */
-  public function addClassifier(MessageClassifierInterface $classifier) {
-    $this->classifiers[] = $classifier;
+  public function addAnalyzer(MessageAnalyzerInterface $analyzer) {
+    $this->analyzers[] = $analyzer;
   }
 
   /**
@@ -49,10 +49,10 @@ class MessageProcessor implements MessageProcessorInterface {
   }
 
   // @todo Are these really useful outside testing with drush bounce-services?
-  public function getClassifiers() {
+  public function getAnalyzers() {
     return array_map(function($obj) {
       return get_class($obj);
-    }, $this->classifiers);
+    }, $this->analyzers);
   }
 
   public function getHandlers() {
@@ -68,18 +68,18 @@ class MessageProcessor implements MessageProcessorInterface {
     // Parse message.
     $message = Message::parse($raw);
 
-    // Classify message.
-    $type = NULL;
-    foreach ($this->classifiers as $classifier) {
-      $type = $classifier->classify($message);
-      if (isset($type)) {
+    // Analyze message.
+    $result = NULL;
+    foreach ($this->analyzers as $analyzer) {
+      $result = $analyzer->analyze($message);
+      if (isset($result)) {
         break;
       }
     }
 
     // Handle message.
     foreach ($this->handlers as $handler) {
-      $handler->invoke($message, $type);
+      $handler->invoke($message, $result);
     }
   }
 

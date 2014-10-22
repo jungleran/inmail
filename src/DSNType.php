@@ -15,7 +15,7 @@ namespace Drupal\bounce_processing;
  * @see https://tools.ietf.org/html/rfc3463
  * @see http://tools.ietf.org/html/rfc3464
  */
-class DSNType implements MessageTypeInterface {
+class DSNType implements ResultInterface {
 
   /**
    * First part of status code.

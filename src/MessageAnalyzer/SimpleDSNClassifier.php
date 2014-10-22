@@ -1,17 +1,17 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\MessageClassifier\SimpleDSNClassifier.
+ * Contains \Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier.
  */
 
-namespace Drupal\bounce_processing\MessageClassifier;
+namespace Drupal\bounce_processing\MessageAnalyzer;
 use Drupal\bounce_processing\DSNType;
 use Drupal\bounce_processing\Message;
 
 /**
- * Extremely simple MessageClassifierInterface instance.
+ * Extremely simple BounceClassifier instance.
  */
-class SimpleDSNClassifier implements MessageClassifierInterface {
+class SimpleDSNClassifier extends BounceClassifier {
 
   /**
    * {@inheritdoc}

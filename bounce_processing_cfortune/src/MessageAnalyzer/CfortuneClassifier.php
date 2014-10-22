@@ -1,20 +1,20 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing_cfortune\MessageClassifier\CfortuneMessageClassifier.
+ * Contains \Drupal\bounce_processing_cfortune\MessageAnalyzer\CfortuneClassifier.
  */
 
-namespace Drupal\bounce_processing_cfortune\MessageClassifier;
+namespace Drupal\bounce_processing_cfortune\MessageAnalyzer;
 
 use cfortune\PHPBounceHandler\BounceHandler;
 use Drupal\bounce_processing\DSNType;
 use Drupal\bounce_processing\Message;
-use Drupal\bounce_processing\MessageClassifier\MessageClassifierInterface;
+use Drupal\bounce_processing\MessageAnalyzer\BounceClassifier;
 
 /**
  * Message Classifier wrapper for cfortune's BounceHandler class.
  */
-class CfortuneMessageClassifier implements MessageClassifierInterface {
+class CfortuneClassifier extends BounceClassifier {
 
   /**
    * {@inheritdoc}

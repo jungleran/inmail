@@ -23,7 +23,7 @@ function bounce_processing_drush_command() {
   );
 
   $items['bounce-services'] = array(
-    'description' => 'Tell which service classes are being used for classification and handling.',
+    'description' => 'Tell which service classes are being used for analysis and handling.',
     'drupal dependencies' => array('bounce_processing'),
   );
 
@@ -54,7 +54,7 @@ function drush_bounce_processing_bounce_process() {
 }
 
 /**
- * Output the class names of current classification and handling services.
+ * Output the class names of current analysis and handling services.
  */
 function drush_bounce_processing_bounce_services() {
   if (\Drupal::moduleHandler()->moduleExists('composer_manager')) {
@@ -63,13 +63,13 @@ function drush_bounce_processing_bounce_services() {
 
   $processor = \Drupal::service('bounce.processor');
 
-  if ($classifiers = $processor->getClassifiers()) {
-    foreach ($classifiers as $class) {
-      echo "Classifier: $class\n";
+  if ($analyzers = $processor->getAnalyzers()) {
+    foreach ($analyzers as $class) {
+      echo "Analyzer: $class\n";
     }
   }
   else {
-    echo "No classifiers registered.\n";
+    echo "No analyzers registered.\n";
   }
 
   if ($handlers = $processor->getHandlers()) {

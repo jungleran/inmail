@@ -1,19 +1,19 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing_phpmailerbmh\MessageClassifier\PHPMailerBMHMessageClassifier.
+ * Contains \Drupal\bounce_processing_phpmailerbmh\MessageAnalyzer\PHPMailerBMHClassifier.
  */
 
-namespace Drupal\bounce_processing_phpmailerbmh\MessageClassifier;
+namespace Drupal\bounce_processing_phpmailerbmh\MessageAnalyzer;
 
 use Drupal\bounce_processing\DSNType;
 use Drupal\bounce_processing\Message;
-use Drupal\bounce_processing\MessageClassifier\MessageClassifierInterface;
+use Drupal\bounce_processing\MessageAnalyzer\BounceClassifier;
 
 /**
  * Message Classifier wrapper for cfortune's BounceHandler class.
  */
-class PHPMailerBMHMessageClassifier implements MessageClassifierInterface {
+class PHPMailerBMHClassifier extends BounceClassifier {
 
   protected $rulecatStatusMap = array(
     'unknown' => '5.1.1',

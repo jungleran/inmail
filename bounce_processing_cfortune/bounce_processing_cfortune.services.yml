@@ -1,5 +1,5 @@
 services:
-  bounce.classifier.cfortune:
-    class: Drupal\bounce_processing_cfortune\MessageClassifier\CfortuneMessageClassifier
+  bounce.analyzer.cfortune:
+    class: Drupal\bounce_processing_cfortune\MessageAnalyzer\CfortuneClassifier
     tags:
-      - { name: bounce.classifier, priority: 40 }
+      - { name: bounce.analyzer, priority: 40 }
