@@ -22,7 +22,12 @@ class CfortuneMessageClassifier implements MessageClassifierInterface {
   public function classify(Message $message) {
     $handler = new BounceHandler();
     $handler->parse_email($message->getRaw());
-    return $handler->status ? DSNType::parse($handler->status) : NULL;
+    if ($handler->status) {
+      $type = DSNType::parse($handler->status);
+      $type->setRecipient($handler->recipient);
+      return $type;
+    }
+    return NULL;
   }
 
 }

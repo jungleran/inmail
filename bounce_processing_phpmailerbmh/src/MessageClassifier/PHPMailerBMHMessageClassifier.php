@@ -30,7 +30,9 @@ class PHPMailerBMHMessageClassifier implements MessageClassifierInterface {
     $result = bmhBodyRules($message->getBody(), NULL);
     if (isset($this->rulecatStatusMap[$result['rule_cat']])) {
       $status = $this->rulecatStatusMap[$result['rule_cat']];
-      return DSNType::parse($status);
+      $type = DSNType::parse($status);
+      $type->setRecipient($result['email']);
+      return $type;
     }
     return NULL;
   }

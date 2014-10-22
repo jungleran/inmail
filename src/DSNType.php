@@ -39,6 +39,13 @@ class DSNType implements MessageTypeInterface {
   protected $detail;
 
   /**
+   * The intended recipient address of the message that bounced.
+   *
+   * @var string
+   */
+  protected $recipient;
+
+  /**
    * Labels for the class part, as specified by the RFC.
    *
    * @var array
@@ -128,6 +135,30 @@ class DSNType implements MessageTypeInterface {
 
   public function getDetailLabel() {
     return $this->detailMap[$this->subject][$this->detail];
+  }
+
+  public function isSuccess() {
+    return $this->class == 2;
+  }
+
+  public function isTransientFailure() {
+    return $this->class == 4;
+  }
+
+  public function isPermanentFailure() {
+    return $this->class == 5;
+  }
+
+  public function isFailure() {
+    return !$this->isSuccess();
+  }
+
+  public function setRecipient($address) {
+    $this->recipient = trim($address) ?: NULL;
+  }
+
+  public function getRecipient() {
+    return $this->recipient;
   }
 
   /**

@@ -5,8 +5,10 @@
  */
 
 namespace Drupal\bounce_processing\MessageHandler;
+use Drupal\bounce_processing\DSNType;
 use Drupal\bounce_processing\Message;
 use Drupal\bounce_processing\MessageTypeInterface;
+use Drupal\Component\Utility\String;
 
 /**
  * Handles classified messages by logging the type.
@@ -17,11 +19,14 @@ class EchoMessageHandler implements MessageHandlerInterface {
    * {@inheritdoc}
    */
   public function invoke(Message $message, MessageTypeInterface $type) {
-    if (isset($type)) {
-      echo "Classified as " . $type->getLabel() . "\n";
+    if ($type instanceof DSNType) {
+      echo String::format("Bounce from @recipient classified as @label\n", array(
+        '@recipient' => $type->getRecipient() ?: '(unknown)',
+        '@label' => $type->getLabel(),
+      ));
     }
     else {
-      echo "Unclassified.";
+      echo "Unclassified.\n";
     }
   }
 
