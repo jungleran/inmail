@@ -2,10 +2,10 @@ services:
   bounce.processor:
     class: Drupal\bounce_processing\MessageProcessor
   bounce.classifier.dummy:
-    class: Drupal\bounce_processing\DummyMessageClassifier
+    class: Drupal\bounce_processing\SimpleDSNClassifier
     tags:
       - { name: bounce.classifier }
   bounce.handler.dummy:
-    class: Drupal\bounce_processing\DummyMessageHandler
+    class: Drupal\bounce_processing\EchoMessageHandler
     tags:
       - { name: bounce.handler }

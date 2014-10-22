@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\DummyMessageClassifier.
+ * Contains \Drupal\bounce_processing\SimpleDSNClassifier.
  */
 
 namespace Drupal\bounce_processing;
@@ -9,7 +9,7 @@ namespace Drupal\bounce_processing;
 /**
  * Extremely simple MessageClassifierInterface instance.
  */
-class DummyMessageClassifier implements MessageClassifierInterface {
+class SimpleDSNClassifier implements MessageClassifierInterface {
 
   /**
    * {@inheritdoc}

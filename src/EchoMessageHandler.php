@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\DummyMessageHandler.
+ * Contains \Drupal\bounce_processing\EchoMessageHandler.
  */
 
 namespace Drupal\bounce_processing;
@@ -9,7 +9,7 @@ namespace Drupal\bounce_processing;
 /**
  * Handles classified messages by logging the type.
  */
-class DummyMessageHandler implements MessageHandlerInterface {
+class EchoMessageHandler implements MessageHandlerInterface {
 
   /**
    * {@inheritdoc}
