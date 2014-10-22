@@ -4,7 +4,7 @@ services:
   bounce.classifier.dummy:
     class: Drupal\bounce_processing\SimpleDSNClassifier
     tags:
-      - { name: bounce.classifier }
+      - { name: bounce.classifier, priority: 20 }
   bounce.handler.dummy:
     class: Drupal\bounce_processing\EchoMessageHandler
     tags:

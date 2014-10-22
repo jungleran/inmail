@@ -2,4 +2,4 @@ services:
   bounce.classifier.cfortune:
     class: Drupal\bounce_processing_cfortune\CfortuneMessageClassifier
     tags:
-      - { name: bounce.classifier }
+      - { name: bounce.classifier, priority: 40 }
