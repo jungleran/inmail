@@ -48,14 +48,22 @@ class MailmuteMessageHandler implements MessageHandlerInterface {
       return;
     }
     if ($address = $result->getRecipient()) {
-      if ($result->isFailure()) {
-        // @todo Introduce 'hard' send state plugin.
-        $new_state = 'onhold';
-        $this->sendstateManager->setState($address, $new_state);
-        $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', [
+      if ($this->sendstateManager->isManaged($address)) {
+        if ($result->isFailure()) {
+          $new_state = 'bounce_invalid_address';
+          $this->sendstateManager->setState($address, $new_state);
+          $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', [
+            '%code' => $result->getCode(),
+            '%address' => $address,
+            '%new_state' => $new_state,
+          ]);
+        }
+        // @todo Handle transient bounces (mailbox full, connection error).
+      }
+      else {
+        $this->loggerChannel->info('Bounce with status %code received but recipient %address is not managed here.', [
           '%code' => $result->getCode(),
           '%address' => $address,
-          '%new_state' => $new_state,
         ]);
       }
     }
