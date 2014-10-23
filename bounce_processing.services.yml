@@ -9,3 +9,6 @@ services:
     class: Drupal\bounce_processing\MessageHandler\EchoMessageHandler
     tags:
       - { name: bounce.handler }
+  logger.channel.bounce_processing:
+    parent: logger.channel_base
+    arguments: ['bounce_processing']

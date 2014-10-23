@@ -1,5 +1,6 @@
 services:
   bounce.handler.mailmute:
     class: Drupal\bounce_processing_mailmute\MessageHandler\MailmuteMessageHandler
+    arguments: ['@plugin.manager.sendstate', '@logger.channel.bounce_processing']
     tags:
       - { name: bounce.handler }
