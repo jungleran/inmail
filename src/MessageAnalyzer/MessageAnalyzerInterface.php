@@ -19,7 +19,7 @@ interface MessageAnalyzerInterface {
    * @param Message $message
    *   A mail message to be analyzed.
    *
-   * @return \Drupal\bounce_processing\ResultInterface
+   * @return \Drupal\bounce_processing\AnalyzerResultInterface
    *   The result of the analysis.
    */
   public function analyze(Message $message);

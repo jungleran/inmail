@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\ResultInterface.
+ * Contains \Drupal\bounce_processing\AnalyzerResultInterface.
  */
 
 namespace Drupal\bounce_processing;
@@ -9,7 +9,7 @@ namespace Drupal\bounce_processing;
 /**
  * A container of message analysis results.
  */
-interface ResultInterface {
+interface AnalyzerResultInterface {
 
   /**
    * Returns a human-readable short description of the result.

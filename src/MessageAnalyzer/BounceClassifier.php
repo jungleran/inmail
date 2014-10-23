@@ -5,6 +5,7 @@
  */
 
 namespace Drupal\bounce_processing\MessageAnalyzer;
+
 use Drupal\bounce_processing\Message;
 
 /**
@@ -18,9 +19,9 @@ abstract class BounceClassifier implements MessageAnalyzerInterface {
    * @param \Drupal\bounce_processing\Message $message
    *   An incoming message.
    *
-   * @return \Drupal\bounce_processing\DSNType
-   *   An RFC 3463 mail system status code identified by the classification. If
-   *   the classification fails, NULL is returned.
+   * @return \Drupal\bounce_processing\DSNStatusResult
+   *   An RFC 3463 mail system status identified by the classification. If the
+   *   classification fails, NULL is returned.
    *
    * @see http://tools.ietf.org/html/rfc1891
    * @see http://tools.ietf.org/html/rfc3463
@@ -33,4 +34,5 @@ abstract class BounceClassifier implements MessageAnalyzerInterface {
   public function analyze(Message $message) {
     return $this->classify($message);
   }
+
 }

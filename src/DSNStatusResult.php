@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\DSNType.
+ * Contains \Drupal\bounce_processing\DSNStatusResult.
  */
 
 namespace Drupal\bounce_processing;
@@ -15,7 +15,7 @@ namespace Drupal\bounce_processing;
  * @see https://tools.ietf.org/html/rfc3463
  * @see http://tools.ietf.org/html/rfc3464
  */
-class DSNType implements ResultInterface {
+class DSNStatusResult implements AnalyzerResultInterface {
 
   /**
    * First part of status code.
@@ -78,7 +78,7 @@ class DSNType implements ResultInterface {
   );
 
   /**
-   * Constructs a DSNType object.
+   * Constructs a DSNStatusResult object.
    *
    * @param int|string $class
    *   The first number in the status code.
@@ -112,7 +112,7 @@ class DSNType implements ResultInterface {
    *   Three-number status code.
    *
    * @return static
-   *   A new DSNType object for the given code.
+   *   A new DSNStatusResult object for the given code.
    *
    * @throws \InvalidArgumentException
    *   If the given code is not in accordance with the RFC.
