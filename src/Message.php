@@ -33,6 +33,13 @@ class Message {
   protected $body;
 
   /**
+   * The enumerated parts in case of a multipart message.
+   *
+   * @var string[]
+   */
+  protected $parts;
+
+  /**
    * Returns the headers of the mail message.
    *
    * @return string[]
@@ -62,15 +69,46 @@ class Message {
   }
 
   /**
-   * Returns the body of the mail message.
+   * Returns whether this message is a multipart message.
    *
-   * @todo What is multipart?
+   * Multipart messages combine multiple parts, each of its own MIME type.
+   *
+   * @return bool
+   *   TRUE if this is a multipart message, FALSE otherwise.
+   */
+  public function isMultipart() {
+    return (bool) preg_match('@^multipart/@i', $this->getHeader('Content-Type'));
+  }
+
+  /**
+   * Returns whether this is a Delivery Status Notification (DSN) message.
+   *
+   * @return bool
+   *   TRUE if this is a DSN message, FALSE otherwise.
+   */
+  public function isDSN() {
+    return (bool) preg_match('@^multipart/report\s*;@i', $this->getHeader('Content-Type'));
+  }
+
+  /**
+   * Returns the body of the mail message.
    *
    * @return string
    *   The message body.
    */
   public function getBody() {
     return $this->body;
+  }
+
+  /**
+   * Returns the parts of multipart message.
+   *
+   * @return string[]|null
+   *   If this is a multipart message, a list of parts is returned, each
+   *   containing a body and contingent headers. Otherwise NULL is returned.
+   */
+  public function getParts() {
+    return $this->parts;
   }
 
   /**
@@ -102,11 +140,18 @@ class Message {
     // A blank line separates headers from the body.
     list($headers, $message->body) = explode("\n\n", $raw, 2);
 
-    // Headers may be folded across multiple lines, with each consecutive line
-    // beginning with whitespace. To avoid splitting multiline headers, convert
-    // header-delimiting \n to \r and split by that.
-    $headers = preg_replace('/\n([^\s])/', "\r\\1", $headers);
-    $message->headers = explode("\r", $headers);
+    // Join so-called folded (multi-line) headers.
+    $headers = preg_replace('/\n([\s])/', '\1', $headers);
+    $message->headers = explode("\n", $headers);
+
+    // Identify and split a multipart message.
+    if ($message->isMultipart()) {
+      $boundarychar = '0-9a-zA-Z\'()+_,\-./:=?';
+      if (preg_match("@boundary=\"([$boundarychar ]+[$boundarychar])\"@", $message->getHeader('Content-Type'), $matches)) {
+        $boundary = $matches[1];
+        $message->parts = explode("\n--$boundary\n", $message->getBody());
+      }
+    }
 
     return $message;
   }

@@ -50,7 +50,7 @@ class DSNStatusResult implements AnalyzerResultInterface {
    *
    * @var array
    */
-  private $classMap = array(
+  private static $classMap = array(
     '2' => 'Success',
     '4' => 'Persistent Transient Failure',
     '5' => 'Permanent Failure',
@@ -61,7 +61,7 @@ class DSNStatusResult implements AnalyzerResultInterface {
    *
    * @var array
    */
-  private $detailMap = array(
+  private static $detailMap = array(
     '0' => array(
       '0' => 'Other undefined status',
     ),
@@ -149,7 +149,7 @@ class DSNStatusResult implements AnalyzerResultInterface {
     if (!in_array($subject, range(0, 7))) {
       throw new \InvalidArgumentException("Invalid 'subject' part: $subject");
     }
-    if (!isset($this->detailMap[$subject][$detail])) {
+    if (!isset(static::$detailMap[$subject][$detail])) {
       throw new \InvalidArgumentException("Invalid 'detail' part: $subject.$detail");
     }
     $this->class = intval($class);
@@ -182,11 +182,11 @@ class DSNStatusResult implements AnalyzerResultInterface {
   }
 
   public function getClassLabel() {
-    return $this->classMap[$this->class];
+    return static::$classMap[$this->class];
   }
 
   public function getDetailLabel() {
-    return $this->detailMap[$this->subject][$this->detail];
+    return static::$detailMap[$this->subject][$this->detail];
   }
 
   public function isSuccess() {
