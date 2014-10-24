@@ -4,6 +4,8 @@
  * Drush commands for the Bounce Processing module.
  */
 
+use Drupal\bounce_processing\MessageHandler\EchoMessageHandler;
+
 /**
  * Implements hook_drush_commands().
  */
@@ -34,9 +36,7 @@ function bounce_processing_drush_command() {
  * Drush command implementation for processing a mail message.
  */
 function drush_bounce_processing_bounce_process() {
-  if (\Drupal::moduleHandler()->moduleExists('composer_manager')) {
-    \Drupal::service('composer_manager.manager')->registerAutolaoder();
-  }
+  bounce_processing_drush_setup();
 
   $args = func_get_args();
 
@@ -57,9 +57,7 @@ function drush_bounce_processing_bounce_process() {
  * Output the class names of current analysis and handling services.
  */
 function drush_bounce_processing_bounce_services() {
-  if (\Drupal::moduleHandler()->moduleExists('composer_manager')) {
-    \Drupal::service('composer_manager.manager')->registerAutolaoder();
-  }
+  bounce_processing_drush_setup();
 
   $processor = \Drupal::service('bounce.processor');
 
@@ -80,6 +78,18 @@ function drush_bounce_processing_bounce_services() {
   else {
     echo "No handlers registered.\n";
   }
+}
+
+/**
+ * Perform some preparation for interaction with the processing mechanism.
+ */
+function bounce_processing_drush_setup() {
+  if (\Drupal::moduleHandler()->moduleExists('composer_manager')) {
+    \Drupal::service('composer_manager.manager')->registerAutolaoder();
+  }
+
+  // Add the echo message handler.
+  \Drupal::service('bounce.processor')->addHandler(new EchoMessageHandler());
 }
 
 

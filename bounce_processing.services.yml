@@ -1,14 +1,10 @@
 services:
   bounce.processor:
     class: Drupal\bounce_processing\MessageProcessor
-  bounce.analyzer.dummy:
+  bounce.analyzer.simple_dsn_classifier:
     class: Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier
     tags:
       - { name: bounce.analyzer, priority: 20 }
-  bounce.handler.dummy:
-    class: Drupal\bounce_processing\MessageHandler\EchoMessageHandler
-    tags:
-      - { name: bounce.handler }
   logger.channel.bounce_processing:
     parent: logger.channel_base
     arguments: ['bounce_processing']
