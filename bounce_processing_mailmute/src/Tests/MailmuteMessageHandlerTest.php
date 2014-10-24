@@ -91,6 +91,7 @@ class MailmuteMessageHandlerTest extends KernelTestBase {
    *   The name of the file.
    *
    * @return string
+   *   The contents of the file.
    */
   public function getMessageFileContents($filename) {
     $path = drupal_get_path('module', 'bounce_processing') . '/tests/modules/bounce_processing_test/eml/' . $filename;
