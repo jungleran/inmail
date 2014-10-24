@@ -43,13 +43,13 @@ class MailmuteMessageHandler implements MessageHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, AnalyzerResultInterface $result) {
+  public function invoke(Message $message, AnalyzerResultInterface $result = NULL) {
     if (!($result instanceof DSNStatusResult)) {
       return;
     }
     if ($address = $result->getRecipient()) {
       if ($this->sendstateManager->isManaged($address)) {
-        if ($result->isFailure()) {
+        if ($result->isPermanentFailure()) {
           $new_state = 'bounce_invalid_address';
           $this->sendstateManager->setState($address, $new_state);
           $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', [

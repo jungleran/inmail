@@ -53,9 +53,9 @@ class Message {
    */
   public function getHeader($header_name) {
     foreach ($this->headers as $header) {
-      $parts = explode(': ', $header, 2);
-      if ($parts[0] == $header_name) {
-        return $parts[1];
+      $parts = explode(':', $header, 2);
+      if (strcasecmp($parts[0], $header_name) == 0) {
+        return trim($parts[1]);
       }
     }
     return NULL;
@@ -95,9 +95,19 @@ class Message {
   public static function parse($raw) {
     $message = new Message();
     $message->raw = $raw;
+
+    // Normalize to using only \n for newlines.
     $raw = str_replace("\r\n", "\n", $raw);
+
+    // A blank line separates headers from the body.
     list($headers, $message->body) = explode("\n\n", $raw, 2);
-    $message->headers = explode("\n", $headers);
+
+    // Headers may be folded across multiple lines, with each consecutive line
+    // beginning with whitespace. To avoid splitting multiline headers, convert
+    // header-delimiting \n to \r and split by that.
+    $headers = preg_replace('/\n([^\s])/', "\r\\1", $headers);
+    $message->headers = explode("\r", $headers);
+
     return $message;
   }
 

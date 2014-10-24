@@ -19,7 +19,7 @@ class EchoMessageHandler implements MessageHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, AnalyzerResultInterface $result) {
+  public function invoke(Message $message, AnalyzerResultInterface $result = NULL) {
     if ($result instanceof DSNStatusResult) {
       echo String::format("Bounce from @recipient classified as @label\n", array(
         '@recipient' => $result->getRecipient() ?: '(unknown)',
