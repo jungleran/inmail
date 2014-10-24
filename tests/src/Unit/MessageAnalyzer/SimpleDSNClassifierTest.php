@@ -4,7 +4,7 @@
  * Contains \Drupal\Tests\bounce_processing\Unit\MessageAnalyzer\SimpleDSNClassifierTest.
  */
 
-namespace Drupal\Tests\boune_processing\Unit\MessageAnalyzer;
+namespace Drupal\Tests\bounce_processing\Unit\MessageAnalyzer;
 
 use Drupal\bounce_processing\Message;
 use Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier;
@@ -28,6 +28,7 @@ class SimpleDSNClassifierTest extends UnitTestCase {
       'normal.eml' => NULL,
       'full.eml' => '5.2.2',
       'nouser.eml' => '5.1.1',
+      'accessdenied.eml' => '5.7.1',
       // @todo Some more test messages needed.
     );
 

@@ -64,6 +64,8 @@ class MailmuteMessageHandlerTest extends KernelTestBase {
       'full.eml' => 'send',
       // "No such user" bounce should trigger mute.
       'nouser.eml' => 'bounce_invalid_address',
+      // "Access denied" bounce should trigger mute.
+      'accessdenied.eml' => 'bounce_invalid_address',
     );
 
     foreach ($cases as $filename => $expected) {
@@ -71,6 +73,8 @@ class MailmuteMessageHandlerTest extends KernelTestBase {
       $raw = $this->getMessageFileContents($filename);
 
       // Let magic happen.
+      // @todo This whole test doesn't make any sense unless SimpleDSNClassifier
+      // starts trying to find a recipient address.
       $processor->process($raw);
 
       // Reload user.

@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\Tests\boune_processing\Unit\DSNStatusResultTest.
+ * Contains \Drupal\Tests\bounce_processing\Unit\DSNStatusResultTest.
  */
 
-namespace Drupal\Tests\boune_processing\Unit;
+namespace Drupal\Tests\bounce_processing\Unit;
 
 use Drupal\bounce_processing\DSNStatusResult;
 use Drupal\Tests\UnitTestCase;
