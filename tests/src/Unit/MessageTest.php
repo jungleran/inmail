@@ -50,4 +50,27 @@ EOF;
     $this->assertNull($message->getParts());
   }
 
+  /**
+   * Test address parsing.
+   *
+   * @covers ::parseAddress
+   *
+   * @dataProvider provideAddresses
+   */
+  public function testParseAddress($field, $expected) {
+    $this->assertEquals($expected, Message::parseAddress($field));
+  }
+
+  /**
+   * Provide email address fields to test parseAddress with.
+   */
+  public static function provideAddresses() {
+    return [
+      [' admin@example.com ', ['admin@example.com']],
+      ['a@b.c, d.e@f.g.h', ['a@b.c', 'd.e@f.g.h']],
+      ['Admin <admin@example.com>', ['admin@example.com']],
+      ['Admin <admin@example.com>, User <user.name@users.example.com>', ['admin@example.com', 'user.name@users.example.com']],
+    ];
+  }
+
 }

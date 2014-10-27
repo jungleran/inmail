@@ -100,10 +100,14 @@ class PHPMailerBMHClassifier extends BounceClassifier {
 namespace {
   // This function is used in bmhDSNRules. To avoid having to depend on the IMAP
   // extension just for this, this defines an alternative address parser.
+  use Drupal\bounce_processing\Message;
+
   if (!function_exists('imap_rfc822_parse_adrlist')) {
     function imap_rfc822_parse_adrlist($address, $default_host) {
-      // @todo Do something useful.
-      return [(object) ['mailbox' => 'todo', 'host', 'example.com']];
+      return array_map(function($address) {
+        list($mailbox, $host) = explode('@', $address);
+        return (object) ['mailbox' => $mailbox, 'host' => $host];
+      }, Message::parseAddress($address));
     }
   }
 }
