@@ -1,5 +1,5 @@
 Return-Path: <MAILER-DAEMON>
-Delivered-To: arild@masked1.se
+Delivered-To: bounces+user=example.org@example.com
 Received: from mx-v.one.com (mx-v.one.com [195.47.247.147])
 	by mail160.local (Postfix) with ESMTP id 799FE3001FF63B
 	for <arild@masked1.se>; Wed, 19 Feb 2014 09:05:17 +0000 (UTC)
@@ -13,7 +13,7 @@ Received: by kyle.greenpeace.org (Postfix)
 Date: Wed, 19 Feb 2014 10:05:16 +0100 (CET)
 From: mailer-daemon-kyle+sgreenpe@smtp-gw.greenpeace.org (Mail Delivery System)
 Subject: Undelivered Mail Returned to Sender
-To: arild@masked1.se
+To: bounces+user=example.org@example.com
 MIME-Version: 1.0
 Content-Type: multipart/report; report-type=delivery-status;
 	boundary="290C41C0414.1392800716/kyle.greenpeace.org"
@@ -37,7 +37,7 @@ delete your own text from the attached returned message.
 
 			The Postfix program
 
-<contatti.legnano@masked2.it>: host mx1.masked2.it[62.94.82.91] said:
+<user@example.org>: host mx1.example.org[62.94.82.91] said:
     554 5.7.1 <kyle.greenpeace.org[194.0.197.22]>: Client host rejected: Access
     denied (in reply to RCPT TO command)
 
@@ -50,10 +50,10 @@ X-Postfix-Queue-ID: 290C41C0414
 X-Postfix-Sender: rfc822; arild@masked1.se
 Arrival-Date: Wed, 19 Feb 2014 10:05:16 +0100 (CET)
 
-Final-Recipient: rfc822; contatti.legnano@masked2.it
+Final-Recipient: rfc822; user@example.org
 Action: failed
 Status: 5.0.0
-Diagnostic-Code: X-Postfix; host mx1.masked2.it[62.94.82.91] said: 554
+Diagnostic-Code: X-Postfix; host mx1.example.org[62.94.82.91] said: 554
     5.7.1 <kyle.greenpeace.org[194.0.197.22]>: Client host rejected: Access
     denied (in reply to RCPT TO command)
 
@@ -63,12 +63,12 @@ Content-Type: message/rfc822
 
 Received: from p3-web-04 (unknown [10.255.250.64])
 	by kyle.greenpeace.org (Postfix) with ESMTP id 290C41C0414
-	for <contatti.legnano@masked2.it>; Wed, 19 Feb 2014 10:05:16 +0100 (CET)
+	for <user@example.org>; Wed, 19 Feb 2014 10:05:16 +0100 (CET)
 MIME-Version: 1.0
 From: "Arild Matsson"
  <arild@masked1.se>
 To: "Dolce & Gabbana"
- <contatti.legnano@masked2.it>
+ <user@example.org>
 Date: 19 Feb 2014 10:05:15 +0100
 Subject: We want a toxic-free future
 Content-Type: multipart/alternative;

@@ -48,6 +48,7 @@ class MailmuteMessageHandlerTest extends KernelTestBase {
     $this->installSchema('user', ['users_data']);
     $this->installEntitySchema('user');
     $this->installConfig(['mailmute', 'system']);
+    \Drupal::config('system.settings')->set('site.mail', 'bounces@example.com');
   }
 
   /**
@@ -111,8 +112,8 @@ class MailmuteMessageHandlerTest extends KernelTestBase {
       $this->user->delete();
     }
     $this->user = User::create(array(
-      'name' => 'bounce_processing_test',
-      'mail' => 'bounce_processing_test@example.com',
+      'name' => 'user',
+      'mail' => 'user@example.org',
     ));
     $this->user->save();
   }
