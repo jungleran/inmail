@@ -29,7 +29,7 @@ class SimpleDSNClassifierTest extends UnitTestCase {
       'normal.eml' => NULL,
       'full.eml' => '4.2.2',
       'nouser.eml' => '5.1.1',
-      'accessdenied.eml' => '5.7.1',
+      'accessdenied.eml' => '5.0.0',
       // @todo Some more test messages needed.
     );
 
