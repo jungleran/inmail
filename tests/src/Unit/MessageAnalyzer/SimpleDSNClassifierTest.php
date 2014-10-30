@@ -6,6 +6,7 @@
 
 namespace Drupal\Tests\bounce_processing\Unit\MessageAnalyzer;
 
+use Drupal\bounce_processing\AnalyzerResult;
 use Drupal\bounce_processing\Message;
 use Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier;
 use Drupal\Tests\UnitTestCase;
@@ -26,7 +27,7 @@ class SimpleDSNClassifierTest extends UnitTestCase {
   public function testClassify() {
     $cases = array(
       'normal.eml' => NULL,
-      'full.eml' => '5.2.2',
+      'full.eml' => '4.2.2',
       'nouser.eml' => '5.1.1',
       'accessdenied.eml' => '5.7.1',
       // @todo Some more test messages needed.
@@ -36,14 +37,17 @@ class SimpleDSNClassifierTest extends UnitTestCase {
       $message = $this->getMessage($filename);
 
       $classifier = new SimpleDSNClassifier();
-      $result = $classifier->classify($message);
+      $result = new AnalyzerResult();
+      $classifier->classify($message, $result);
 
       if (isset($expected)) {
-        $this->assertEquals($expected, $result->getCode());
+        $this->assertEquals($expected, $result->getBounceStatusCode()->getCode());
       }
       else {
-        $this->assertNull($result);
+        $this->assertNull($result->getBounceStatusCode());
       }
+
+      // @todo Test recipient
     }
   }
 

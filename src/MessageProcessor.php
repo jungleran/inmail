@@ -69,12 +69,9 @@ class MessageProcessor implements MessageProcessorInterface {
     $message = Message::parse($raw);
 
     // Analyze message.
-    $result = NULL;
+    $result = new AnalyzerResult();
     foreach ($this->analyzers as $analyzer) {
-      $result = $analyzer->analyze($message);
-      if (isset($result)) {
-        break;
-      }
+      $analyzer->analyze($message, $result);
     }
 
     // Handle message.

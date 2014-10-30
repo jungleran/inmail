@@ -43,32 +43,36 @@ class MailmuteMessageHandler implements MessageHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, AnalyzerResultInterface $result = NULL) {
-    if (!($result instanceof DSNStatusResult)) {
+  public function invoke(Message $message, AnalyzerResultInterface $result) {
+    // Only handle bounces.
+    if (empty($result) || !$status_code = $result->getBounceStatusCode()) {
       return;
     }
-    if ($address = $result->getRecipient()) {
-      if ($this->sendstateManager->isManaged($address)) {
-        if ($result->isPermanentFailure()) {
-          $new_state = 'bounce_invalid_address';
-          $this->sendstateManager->setState($address, $new_state);
-          $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', [
-            '%code' => $result->getCode(),
-            '%address' => $address,
-            '%new_state' => $new_state,
-          ]);
-        }
-        // @todo Handle transient bounces (mailbox full, connection error).
-      }
-      else {
-        $this->loggerChannel->info('Bounce with status %code received but recipient %address is not managed here.', [
-          '%code' => $result->getCode(),
-          '%address' => $address,
-        ]);
-      }
+    // Only handle bounces with an identifiable recipient.
+    if (!$address = $result->getBounceRecipient()) {
+      // @todo Log the message body or place it in a moderation queue.
+      $this->loggerChannel->info('Bounce with status %code received but no recipient identified.', ['%code' => $status_code]);
+      return;
+    }
+    // Only handle bounces with an identifiable recipient that we care about.
+    if (!$this->sendstateManager->isManaged($address)) {
+      $this->loggerChannel->info('Bounce with status %code received but recipient %address is not managed here.', [
+        '%code' => $status_code,
+        '%address' => $address,
+      ]);
+      return;
+    }
+    if ($status_code->isPermanentFailure()) {
+      $new_state = 'bounce_invalid_address';
+      $this->sendstateManager->setState($address, $new_state);
+      $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', [
+        '%code' => $status_code->getCode(),
+        '%address' => $address,
+        '%new_state' => $new_state,
+      ]);
     }
     else {
-      $this->loggerChannel->info('Bounce with status %code received but no recipient identified.', ['%code' => $result->getCode()]);
+      // @todo Handle transient bounces (mailbox full, connection error).
     }
   }
 

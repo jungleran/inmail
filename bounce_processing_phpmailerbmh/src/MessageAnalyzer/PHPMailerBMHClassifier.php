@@ -6,6 +6,7 @@
 
 namespace Drupal\bounce_processing_phpmailerbmh\MessageAnalyzer {
 
+use Drupal\bounce_processing\AnalyzerResultInterface;
 use Drupal\bounce_processing\DSNStatusResult;
 use Drupal\bounce_processing\Message;
 use Drupal\bounce_processing\MessageAnalyzer\BounceClassifier;
@@ -51,17 +52,17 @@ class PHPMailerBMHClassifier extends BounceClassifier {
   /**
    * {@inheritdoc}
    */
-  public function classify(Message $message) {
+  public function classify(Message $message, AnalyzerResultInterface $result) {
     // The analysis part of the library is in the bmhDSNRules and bmhBodyRules
     // functions.
     require_once $this->getLibraryPath() . '/lib/BounceMailHandler/phpmailer-bmh_rules.php';
     if ($message->isDSN()) {
       // The bmhDSNRules function takes the two report parts (human-readable and
       // computer-readable) as arguments.
-      $result = bmhDSNRules($message->getParts()[1], $message->getParts()[2]);
+      $bmh_result = bmhDSNRules($message->getParts()[1], $message->getParts()[2]);
     }
     else {
-      $result = bmhBodyRules($message->getBody(), NULL, TRUE);
+      $bmh_result = bmhBodyRules($message->getBody(), NULL, TRUE);
     }
     // The analysis returns an associative array designed for the library to
     // handle. It contains the following keys, of which rule_cat is the most
@@ -71,15 +72,13 @@ class PHPMailerBMHClassifier extends BounceClassifier {
     //   - rule_cat: a string identifier for the reason for the bounce.
     //   - rule_no: references a single match condition in the code.
     //   - email: the recipient causing the bounce, if identifiable.
-    if (isset(static::$rulecatStatusMap[$result['rule_cat']])) {
-      $code = static::$rulecatStatusMap[$result['rule_cat']];
+    if (isset(static::$rulecatStatusMap[$bmh_result['rule_cat']])) {
+      $code = static::$rulecatStatusMap[$bmh_result['rule_cat']];
       if ($code) {
-        $status = DSNStatusResult::parse($code);
-        $status->setRecipient($result['email']);
-        return $status;
+        $result->setBounceStatusCode(DSNStatusResult::parse($code));
+        $result->setBounceRecipient($bmh_result['email']);
       }
     }
-    return NULL;
   }
 
   /**

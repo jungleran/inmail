@@ -2,4 +2,4 @@ services:
   bounce.analyzer.phpmailerbmh:
     class: Drupal\bounce_processing_phpmailerbmh\MessageAnalyzer\PHPMailerBMHClassifier
     tags:
-      - { name: bounce.analyzer, priority: 30 }
+      - { name: bounce.analyzer, priority: 10 }

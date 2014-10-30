@@ -23,6 +23,6 @@ interface MessageHandlerInterface {
    *   The analysis result returned by an analyzer. Will be NULL if no analyzer
    *   could provide a result.
    */
-  public function invoke(Message $message, AnalyzerResultInterface $result = NULL);
+  public function invoke(Message $message, AnalyzerResultInterface $result);
 
 }

@@ -6,6 +6,7 @@
 
 namespace Drupal\bounce_processing\MessageAnalyzer;
 
+use Drupal\bounce_processing\AnalyzerResultInterface;
 use Drupal\bounce_processing\Message;
 
 /**
@@ -16,12 +17,11 @@ interface MessageAnalyzerInterface {
   /**
    * Analyze the given message.
    *
-   * @param Message $message
+   * @param \Drupal\bounce_processing\Message $message
    *   A mail message to be analyzed.
-   *
-   * @return \Drupal\bounce_processing\AnalyzerResultInterface
-   *   The result of the analysis.
+   * @param \Drupal\bounce_processing\AnalyzerResultInterface $result
+   *   The result object where results should be reported.
    */
-  public function analyze(Message $message);
+  public function analyze(Message $message, AnalyzerResultInterface $result);
 
 }

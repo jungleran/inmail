@@ -14,8 +14,10 @@ namespace Drupal\bounce_processing;
  *
  * @see https://tools.ietf.org/html/rfc3463
  * @see http://tools.ietf.org/html/rfc3464
+ *
+ * @todo Rename to DSNStatus.
  */
-class DSNStatusResult implements AnalyzerResultInterface {
+class DSNStatusResult {
 
   /**
    * First part of status code.
@@ -213,9 +215,6 @@ class DSNStatusResult implements AnalyzerResultInterface {
     return $this->recipient;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function getLabel() {
     return $this->getClassLabel() . ': ' . $this->getDetailLabel();
   }

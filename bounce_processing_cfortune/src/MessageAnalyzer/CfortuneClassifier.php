@@ -7,6 +7,7 @@
 namespace Drupal\bounce_processing_cfortune\MessageAnalyzer;
 
 use cfortune\PHPBounceHandler\BounceHandler;
+use Drupal\bounce_processing\AnalyzerResultInterface;
 use Drupal\bounce_processing\DSNStatusResult;
 use Drupal\bounce_processing\Message;
 use Drupal\bounce_processing\MessageAnalyzer\BounceClassifier;
@@ -19,15 +20,13 @@ class CfortuneClassifier extends BounceClassifier {
   /**
    * {@inheritdoc}
    */
-  public function classify(Message $message) {
+  public function classify(Message $message, AnalyzerResultInterface $result) {
     $handler = new BounceHandler();
     $handler->parse_email($message->getRaw());
     if ($handler->status) {
-      $status = DSNStatusResult::parse($handler->status);
-      $status->setRecipient($handler->recipient);
-      return $status;
+      $result->setBounceStatusCode(DSNStatusResult::parse($handler->status));
+      $result->setBounceRecipient(trim($handler->recipient));
     }
-    return NULL;
   }
 
 }
