@@ -1,0 +1,7 @@
+bounce_processing.settings:
+  path: admin/config/system/bounce
+  defaults:
+    _form: '\Drupal\bounce_processing\Form\BounceProcessingSettingsForm'
+    _title: 'Bounce processing'
+  requirements:
+    _permission: 'administer bounce processing'

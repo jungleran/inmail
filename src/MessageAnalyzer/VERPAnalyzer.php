@@ -28,7 +28,8 @@ class VERPAnalyzer implements MessageAnalyzerInterface {
     }
 
     // Split the site address to facilitate matching.
-    $return_path = explode('@', \Drupal::config('system.site')->get('mail'));
+    $return_path = \Drupal::config('bounce_processing.settings')->get('return_path') ?: \Drupal::config('system.site')->get('mail');
+    $return_path = explode('@', $return_path);
 
     // Match the modified Return-Path (returnpath+alice=example.com@website.com)
     // and put the parts of the recipient address (alice, example.com) in

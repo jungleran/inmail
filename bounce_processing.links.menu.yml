@@ -1,0 +1,5 @@
+bounce_processing.settings:
+  title: 'Bounce Processing'
+  description: 'Configure processing of incoming email.'
+  route_name: bounce_processing.settings
+  parent: system.admin_config_system

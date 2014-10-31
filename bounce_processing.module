@@ -8,6 +8,12 @@
  * Implements hook_mail_alter().
  */
 function bounce_processing_mail_alter(&$message) {
+  // Set to custom Return-Path if configured.
+  if ($return_path = \Drupal::config('bounce_processing.settings')->get('return_path')) {
+    $message['headers']['Return-Path'] = $return_path;
+  }
+
+  // Manipulate the Return-Path.
   if (\Drupal::config('bounce_processing.settings')->get('verp')) {
     bounce_processing_mail_alter_VERP($message);
   }
@@ -25,13 +31,7 @@ function bounce_processing_mail_alter(&$message) {
  */
 function bounce_processing_mail_alter_VERP(&$message) {
   // Identify current Return-Path value.
-  // @todo Make Return-Path base address configurable.
-  $site_mail = \Drupal::config('system.site')->get('mail');
   $return_path = $message['headers']['Return-Path'];
-  if ($site_mail != $return_path) {
-    // Return-Path has been altered already, let's bail.
-    return;
-  }
 
   // Include recipient address in Return-Path value.
   // @todo Handle multiple recipients and "Foo <a@b.c>" format.
