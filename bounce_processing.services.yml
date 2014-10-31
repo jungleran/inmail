@@ -1,6 +1,10 @@
 services:
   bounce.processor:
     class: Drupal\bounce_processing\MessageProcessor
+  bounce.processor:
+    class: Drupal\bounce_processing\MessageAnalyzer\VERPAnalyzer
+    tags:
+      - { name: bounce.analyzer, priority: 55 }
   bounce.analyzer.simple_dsn_classifier:
     class: Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier
     tags:

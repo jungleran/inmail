@@ -8,16 +8,24 @@
  * Implements hook_mail_alter().
  */
 function bounce_processing_mail_alter(&$message) {
-  // This hook modifies the Return-Path value to include the recipient's
-  // address. The technique is called Variable Envelope Return Path (VERP) and
-  // enables easy identification of the intended recipient for incoming bounce
-  // messages. That identification happens in MessageAnalyzer classes, e.g.
-  // SimpleDSNClassifier.
-  // @todo Make Return-Path base address configurable.
-  // @todo Maybe also make VERP optional.
+  if (\Drupal::config('bounce_processing.settings')->get('verp')) {
+    bounce_processing_mail_alter_VERP($message);
+  }
+}
 
+/**
+ * Modifies the Return-Path value to include the recipient's address.
+ *
+ * The technique is called Variable Envelope Return Path (VERP) and enables easy
+ * identification of the intended recipient for incoming bounce messages. That
+ * identification happens in VERPAnalyzer.
+ *
+ * @see \Drupal\bounce_processing\MessageAnalyzer\VERPAnalyzer
+ */
+function bounce_processing_mail_alter_VERP(&$message) {
   // Identify current Return-Path value.
-  $site_mail = \Drupal::config('system.settings')->get('site.mail');
+  // @todo Make Return-Path base address configurable.
+  $site_mail = \Drupal::config('system.site')->get('mail');
   $return_path = $message['headers']['Return-Path'];
   if ($site_mail != $return_path) {
     // Return-Path has been altered already, let's bail.
