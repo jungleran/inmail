@@ -89,7 +89,7 @@ function bounce_processing_drush_setup() {
   }
 
   // Add the echo message handler.
-  \Drupal::service('bounce.processor')->addHandler(new EchoMessageHandler());
+  \Drupal::service('bounce.processor')->addHandler(new EchoMessageHandler(), 'bounce.handler.echo');
 }
 
 

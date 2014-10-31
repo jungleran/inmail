@@ -1,6 +1,9 @@
 services:
   bounce.processor:
     class: Drupal\bounce_processing\MessageProcessor
+    tags:
+      - { name: service_collector, tag: bounce.analyzer, call: addAnalyzer }
+      - { name: service_collector, tag: bounce.handler, call: addHandler }
   bounce.analyzer.verp:
     class: Drupal\bounce_processing\MessageAnalyzer\VERPAnalyzer
     tags:

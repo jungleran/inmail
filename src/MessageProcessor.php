@@ -33,9 +33,21 @@ class MessageProcessor implements MessageProcessorInterface {
    *
    * @param \Drupal\bounce_processing\MessageAnalyzer\MessageAnalyzerInterface $analyzer
    *   A message analyzer.
+   * @param string $id
+   *   The service id of the analyzer.
    */
-  public function addAnalyzer(MessageAnalyzerInterface $analyzer) {
-    $this->analyzers[] = $analyzer;
+  public function addAnalyzer(MessageAnalyzerInterface $analyzer, $id) {
+    $this->analyzers[$id] = $analyzer;
+  }
+
+  /**
+   * Removes an analyzer object from the list of analyzers.
+   *
+   * @param string $id
+   *   The service id of the analyzer.
+   */
+  public function removeAnalyzer($id) {
+    unset($this->analyzers[$id]);
   }
 
   /**
@@ -43,9 +55,21 @@ class MessageProcessor implements MessageProcessorInterface {
    *
    * @param \Drupal\bounce_processing\MessageHandler\MessageHandlerInterface $handler
    *   A message handler.
+   * @param string $id
+   *   The service id of the handler.
    */
-  public function addHandler(MessageHandlerInterface $handler) {
-    $this->handlers[] = $handler;
+  public function addHandler(MessageHandlerInterface $handler, $id) {
+    $this->handlers[$id] = $handler;
+  }
+
+  /**
+   * Removes a handler object from the list of handlers.
+   *
+   * @param string $id
+   *   The service id of the handler.
+   */
+  public function removeHandler($id) {
+    unset($this->handlers[$id]);
   }
 
   // @todo Are these really useful outside testing with drush bounce-services?

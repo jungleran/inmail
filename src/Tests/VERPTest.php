@@ -49,8 +49,8 @@ class VERPTest extends KernelTestBase {
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
     $result_keeper = new ResultKeeperHandler();
     $processor = \Drupal::service('bounce.processor');
-    $processor->addHandler($result_keeper);
-    // @todo Currently flawed because SimpleDSNClassifier is active as well.
+    $processor->removeAnalyzer('bounce.analyzer.simple_dsn_classifier');
+    $processor->addHandler($result_keeper, 'bounce.handler.keeper');
     $processor->process($raw);
 
     $parsed_recipient = $result_keeper->result->getBounceRecipient();
