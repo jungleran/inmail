@@ -12,7 +12,7 @@ use Drupal\Tests\UnitTestCase;
 /**
  * Unit tests the DSN status result class.
  *
- * @coversClass \Drupal\bounce_processing\DSNStatusResult
+ * @coversDefaultClass \Drupal\bounce_processing\DSNStatusResult
  * @group bounce_processing
  */
 class DSNStatusResultTest extends UnitTestCase {

@@ -9,15 +9,15 @@ namespace Drupal\Tests\bounce_processing\Unit\MessageAnalyzer;
 use Drupal\bounce_processing\AnalyzerResult;
 use Drupal\bounce_processing\Message;
 use Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier;
-use Drupal\Tests\UnitTestCase;
+use Drupal\Tests\bounce_processing\Unit\BounceProcessingUnitTestBase;
 
 /**
  * Unit tests the simple DSN classifier.
  *
- * @coversClass \Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier
+ * @coversDefaultClass \Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier
  * @group bounce_processing
  */
-class SimpleDSNClassifierTest extends UnitTestCase {
+class SimpleDSNClassifierTest extends BounceProcessingUnitTestBase {
 
   /**
    * Tests the classify method.
@@ -26,7 +26,7 @@ class SimpleDSNClassifierTest extends UnitTestCase {
    * @dataProvider provideExpectedResults
    */
   public function testClassify($filename, $expected_code, $expected_recipient) {
-    $message = $this->getMessage($filename);
+    $message = Message::parse($this->getRaw($filename));
 
     // Run the classifier.
     $classifier = new SimpleDSNClassifier();
@@ -60,20 +60,6 @@ class SimpleDSNClassifierTest extends UnitTestCase {
       ['normal.eml', NULL, NULL],
       ['nouser.eml', '5.1.1', 'user@example.org'],
     ];
-  }
-
-  /**
-   * Returns a message object for the given file.
-   *
-   * @param string $filename
-   *   The name of the file.
-   *
-   * @return \Drupal\bounce_processing\Message
-   *   A message object representing the message in the file.
-   */
-  public function getMessage($filename) {
-    $path = __DIR__ . '/../../../modules/bounce_processing_test/eml/' . $filename;
-    return Message::parse(file_get_contents($path));
   }
 
 }
