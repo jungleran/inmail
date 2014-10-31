@@ -18,7 +18,7 @@ class RegisterHandlersCompilerPass extends RegisterServicesCompilerPass {
    * {@inheritdoc}
    */
   public function process(ContainerBuilder $container) {
-    $this->addMethodCallWithTaggedServices($container, 'bounce.processor', 'bounce.handler', 'addHandler');
+    static::addMethodCallWithTaggedServices($container, 'bounce.processor', 'bounce.handler', 'addHandler');
   }
 
 }

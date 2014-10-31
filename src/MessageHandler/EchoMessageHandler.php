@@ -6,13 +6,14 @@
 
 namespace Drupal\bounce_processing\MessageHandler;
 
-use Drupal\bounce_processing\DSNStatusResult;
-use Drupal\bounce_processing\Message;
 use Drupal\bounce_processing\AnalyzerResultInterface;
+use Drupal\bounce_processing\Message;
 use Drupal\Component\Utility\String;
 
 /**
- * Handles classified messages by logging the type.
+ * Handles classified bounce messages by echoing the status code.
+ *
+ * This might only make sense in a console environment like drush.
  */
 class EchoMessageHandler implements MessageHandlerInterface {
 
@@ -27,7 +28,7 @@ class EchoMessageHandler implements MessageHandlerInterface {
       ));
     }
     else {
-      echo "Unclassified.\n";
+      echo "Not a bounce.\n";
     }
   }
 

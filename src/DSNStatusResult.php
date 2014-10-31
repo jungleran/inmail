@@ -10,7 +10,10 @@ namespace Drupal\bounce_processing;
  * A message type corresponding to the RFC 3463 specification.
  *
  * RFC 3463 "Enhanced Mail System Status Codes" defines numerical codes for
- * Delivery Status Notifications (DSN).
+ * Delivery Status Notifications (DSN). In short, the code has three parts or
+ * sub-codes: class, subject and detail. The class provides a broad
+ * classification of the status, which is further specified by the subject and
+ * the detail.
  *
  * @see https://tools.ietf.org/html/rfc3463
  * @see http://tools.ietf.org/html/rfc3464
@@ -20,21 +23,21 @@ namespace Drupal\bounce_processing;
 class DSNStatusResult {
 
   /**
-   * First part of status code.
+   * Class sub-code (first part of status code).
    *
    * @var int
    */
   protected $class;
 
   /**
-   * Second part of status code.
+   * Subject sub-code (second part of status code).
    *
    * @var int
    */
   protected $subject;
 
   /**
-   * Third part of status code.
+   * Detail sub-code (third part of status code).
    *
    * @var int
    */
@@ -48,7 +51,7 @@ class DSNStatusResult {
   protected $recipient;
 
   /**
-   * Labels for the class part, as specified by the RFC.
+   * Labels for the class sub-code, as specified by the RFC.
    *
    * @var array
    */
@@ -59,7 +62,7 @@ class DSNStatusResult {
   );
 
   /**
-   * Labels for the subject and detail parts, as specified by the RFC.
+   * Labels for the detail sub-codes, as specified by the RFC.
    *
    * @var array
    */
@@ -135,14 +138,14 @@ class DSNStatusResult {
    * Constructs a DSNStatusResult object.
    *
    * @param int|string $class
-   *   The first number in the status code.
+   *   The class sub-code (first number in the status code).
    * @param int|string $subject
-   *   The second number in the status code.
+   *   The subject sub-code (second number in the status code).
    * @param int|string $detail
-   *   The third number in the status code.
+   *   The detail sub-code (third number in the status code).
    *
    * @throws \InvalidArgumentException
-   *   If the given code parts are not in accordance with the RFC.
+   *   If the given sub-codes are not in accordance with the RFC.
    */
   public function __construct($class, $subject, $detail) {
     if (!in_array($class, [2, 4, 5])) {
@@ -179,42 +182,105 @@ class DSNStatusResult {
     // Unreachable point. Above statement either returns or throws.
   }
 
+  /**
+   * Returns the status code as a string.
+   *
+   * @return string
+   *   The status code.
+   */
   public function getCode() {
     return "$this->class.$this->subject.$this->detail";
   }
 
+  /**
+   * Returns the label for the class sub-code.
+   *
+   * The label corresponds to the first line of the description of the class in
+   * the RFC.
+   *
+   * @return string
+   *   The class label.
+   */
   public function getClassLabel() {
     return static::$classMap[$this->class];
   }
 
+  /**
+   * Returns the label for the subject/detail sub-codes.
+   *
+   * The label corresponds to the first line of the description of the detail in
+   * the RFC.
+   *
+   * @return string
+   *   The detail label.
+   */
   public function getDetailLabel() {
     return static::$detailMap[$this->subject][$this->detail];
   }
 
+  /**
+   * Tells whether the class sub-code is 2 (Success).
+   *
+   * If the status is not a Success, it is known as a bounce.
+   *
+   * @return bool
+   *   TRUE if the sub-code is 2, otherwise FALSE.
+   */
   public function isSuccess() {
     return $this->class == 2;
   }
 
+  /**
+   * Tells whether the class sub-code is 4 (Persistent Transient Failure).
+   *
+   * This is also known as a soft bounce.
+   *
+   * @return bool
+   *   TRUE if the sub-code is 4, otherwise FALSE.
+   */
   public function isTransientFailure() {
     return $this->class == 4;
   }
 
+  /**
+   * Tells whether the class sub-code is 5 (Permanent Failure).
+   *
+   * This is also known as a hard bounce.
+   *
+   * @return bool
+   *   TRUE if the sub-code is 5, otherwise FALSE.
+   */
   public function isPermanentFailure() {
     return $this->class == 5;
   }
 
-  public function isFailure() {
-    return !$this->isSuccess();
-  }
-
+  /**
+   * Specify the target recipient of the mail that bounced.
+   *
+   * @param string $address
+   *   The address of the identified target recipient.
+   */
   public function setRecipient($address) {
     $this->recipient = trim($address) ?: NULL;
   }
 
+  /**
+   * Returns the target recipient of the mail that bounced, if identified.
+   *
+   * @return string
+   *   The address of the identified target recipient.
+   */
   public function getRecipient() {
     return $this->recipient;
   }
 
+  /**
+   * Returns a human-readable description of the status code.
+   *
+   * @return string
+   *   A description of the status code. It corresponds to definitions in the
+   *   RFC, and is thus in English and untranslatable.
+   */
   public function getLabel() {
     return $this->getClassLabel() . ': ' . $this->getDetailLabel();
   }

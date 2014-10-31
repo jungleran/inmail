@@ -22,14 +22,22 @@ class VERPAnalyzer implements MessageAnalyzerInterface {
    * {@inheritdoc}
    */
   public function analyze(Message $message, AnalyzerResultInterface $result) {
-    if (\Drupal::config('bounce_processing.settings')->get('verp')) {
-      $return_path = explode('@', \Drupal::config('system.settings')->get('site.mail'));
-      // Match the modified Return-Path and put the parts of the recipient
-      // address in $matches.
-      // @todo $return_path could probably break the regex here?
-      if (preg_match(':^' . $return_path[0] . '\+(.*)=(.*)@' . $return_path[1] . '$:', $message->getHeader('To'), $matches)) {
-        $result->setBounceRecipient($matches[1] . '@' . $matches[2]);
-      }
+    // Cancel if VERP is disabled.
+    if (!\Drupal::config('bounce_processing.settings')->get('verp')) {
+      return;
+    }
+
+    // Split the site address to facilitate matching.
+    $return_path = explode('@', \Drupal::config('system.site')->get('mail'));
+
+    // Match the modified Return-Path (returnpath+alice=example.com@website.com)
+    // and put the parts of the recipient address (alice, example.com) in
+    // $matches.
+    // @todo $return_path might break the regex? Consider alternative parsing.
+    if (preg_match(':^' . $return_path[0] . '\+(.*)=(.*)@' . $return_path[1] . '$:', $message->getHeader('To'), $matches)) {
+      // Report the recipient address (alice@example.com).
+      $result->setBounceRecipient($matches[1] . '@' . $matches[2]);
     }
   }
+
 }

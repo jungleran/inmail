@@ -1,4 +1,4 @@
-name: Bounce processing
+name: Bounce Processing
 type: module
 description: >
   Mail bounce message handler. Fetches and processes incoming mail messages,

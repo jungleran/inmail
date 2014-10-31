@@ -4,7 +4,7 @@
  * Contains \Drupal\bounce_processing_phpmailerbmh\MessageAnalyzer\PHPMailerBMHClassifier.
  */
 
-namespace Drupal\bounce_processing_phpmailerbmh\MessageAnalyzer {
+namespace Drupal\bounce_processing_phpmailerbmh\MessageAnalyzer;
 
 use Drupal\bounce_processing\AnalyzerResultInterface;
 use Drupal\bounce_processing\DSNStatusResult;
@@ -92,21 +92,4 @@ class PHPMailerBMHClassifier extends BounceClassifier {
     return DRUPAL_ROOT . '/' . $composer_manager_vendor_path . '/' . 'instaclick/bounce-mail-handler';
   }
 
-}
-
-}
-
-namespace {
-  // This function is used in bmhDSNRules. To avoid having to depend on the IMAP
-  // extension just for this, this defines an alternative address parser.
-  use Drupal\bounce_processing\Message;
-
-  if (!function_exists('imap_rfc822_parse_adrlist')) {
-    function imap_rfc822_parse_adrlist($address, $default_host) {
-      return array_map(function($address) {
-        list($mailbox, $host) = explode('@', $address);
-        return (object) ['mailbox' => $mailbox, 'host' => $host];
-      }, Message::parseAddress($address));
-    }
-  }
 }

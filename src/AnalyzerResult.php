@@ -27,6 +27,7 @@ class AnalyzerResult implements AnalyzerResultInterface {
    * {@inheritdoc}
    */
   public function setBounceStatusCode(DSNStatusResult $code) {
+    // @todo If currently set to X.0.0, allow overriding subject/detail.
     $this->set('bounce_status_code', $code);
   }
 

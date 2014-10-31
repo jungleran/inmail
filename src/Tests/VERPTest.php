@@ -50,6 +50,7 @@ class VERPTest extends KernelTestBase {
     $result_keeper = new ResultKeeperHandler();
     $processor = \Drupal::service('bounce.processor');
     $processor->addHandler($result_keeper);
+    // @todo Currently flawed because SimpleDSNClassifier is active as well.
     $processor->process($raw);
 
     $parsed_recipient = $result_keeper->result->getBounceRecipient();

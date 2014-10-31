@@ -6,8 +6,8 @@
 
 namespace Drupal\bounce_processing\MessageHandler;
 
-use Drupal\bounce_processing\Message;
 use Drupal\bounce_processing\AnalyzerResultInterface;
+use Drupal\bounce_processing\Message;
 
 /**
  * Provides callbacks to execute for an analyzed message.

@@ -1,4 +1,4 @@
-Bounce processing
+Bounce Processing
 =================
 
 Mail bounce message handler module for [Drupal](http://drupal.org/) 8.

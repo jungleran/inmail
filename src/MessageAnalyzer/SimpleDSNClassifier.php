@@ -14,7 +14,7 @@ use Drupal\bounce_processing\Message;
  * Extremely simple BounceClassifier instance.
  */
 class SimpleDSNClassifier extends BounceClassifier {
-  // The parsing in this method follows the standards defined in RFC 3464, "An
+  // The parsing in this class follows the standards defined in RFC 3464, "An
   // Extensible Message Format for Delivery Status Notifications".
 
   /**
@@ -25,7 +25,7 @@ class SimpleDSNClassifier extends BounceClassifier {
     // Content-Type: multipart/report; report-type=delivery-status;
     //   boundary="boundary_2634_73ab76f8"
     if (strpos($message->getHeader('Content-Type'), 'report-type=delivery-status') === FALSE) {
-      // Don't care if it does not look like a DSN.
+      // Ignore the message if it does not look like a DSN.
       return;
     }
 

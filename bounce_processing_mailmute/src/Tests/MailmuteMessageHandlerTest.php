@@ -48,7 +48,6 @@ class MailmuteMessageHandlerTest extends KernelTestBase {
     $this->installSchema('user', ['users_data']);
     $this->installEntitySchema('user');
     $this->installConfig(['mailmute', 'system']);
-    \Drupal::config('system.settings')->set('site.mail', 'bounces@example.com');
   }
 
   /**
@@ -74,18 +73,13 @@ class MailmuteMessageHandlerTest extends KernelTestBase {
       $raw = $this->getMessageFileContents($filename);
 
       // Let magic happen.
-      // @todo This whole test doesn't make any sense unless SimpleDSNClassifier
-      // starts trying to find a recipient address.
       $processor->process($raw);
 
       // Reload user.
       $this->user = User::load($this->user->id());
 
       // Check the outcome.
-      $this->assertEqual($this
-        ->user
-        ->field_sendstate
-        ->value, $expected);
+      $this->assertEqual($this->user->field_sendstate->value, $expected);
     }
   }
 
@@ -105,12 +99,16 @@ class MailmuteMessageHandlerTest extends KernelTestBase {
 
   /**
    * Creates a new test user, deleting the previous one if it exists.
+   *
+   * The email address of the test user corresponds with the contents of the
+   * test message files.
    */
   public function resetUser() {
     // Delete the user if it exists.
     if (isset($this->user)) {
       $this->user->delete();
     }
+    // Create new user.
     $this->user = User::create(array(
       'name' => 'user',
       'mail' => 'user@example.org',

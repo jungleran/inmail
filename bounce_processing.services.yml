@@ -1,7 +1,7 @@
 services:
   bounce.processor:
     class: Drupal\bounce_processing\MessageProcessor
-  bounce.processor:
+  bounce.analyzer.verp:
     class: Drupal\bounce_processing\MessageAnalyzer\VERPAnalyzer
     tags:
       - { name: bounce.analyzer, priority: 55 }

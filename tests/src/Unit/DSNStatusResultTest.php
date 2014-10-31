@@ -25,7 +25,7 @@ class DSNStatusResultTest extends UnitTestCase {
    * @dataProvider provideInvalidCodes
    */
   public function testConstructInvalid($class, $subject, $detail) {
-    $status = new DSNStatusResult($class, $subject, $detail);
+    new DSNStatusResult($class, $subject, $detail);
   }
 
   /**
@@ -35,7 +35,7 @@ class DSNStatusResultTest extends UnitTestCase {
    * @dataProvider provideCodes
    */
   public function testParse($class, $subject, $detail) {
-    $status = DSNStatusResult::parse("$class.$subject.$detail");
+    DSNStatusResult::parse("$class.$subject.$detail");
   }
 
   /**
@@ -46,7 +46,7 @@ class DSNStatusResultTest extends UnitTestCase {
    * @dataProvider provideInvalidCodes
    */
   public function testParseInvalid($class, $subject, $detail) {
-    $status = DSNStatusResult::parse("$class.$subject.$detail");
+    DSNStatusResult::parse("$class.$subject.$detail");
   }
 
   /**
@@ -69,17 +69,6 @@ class DSNStatusResultTest extends UnitTestCase {
   public function testIsSuccess($class, $subject, $detail) {
     $status = new DSNStatusResult($class, $subject, $detail);
     $this->assertEquals($class == 2, $status->isSuccess());
-  }
-
-  /**
-   * Tests the isFailure method.
-   *
-   * @covers ::isFailure
-   * @dataProvider provideCodes
-   */
-  public function testIsFailure($class, $subject, $detail) {
-    $status = new DSNStatusResult($class, $subject, $detail);
-    $this->assertEquals($class == 4 || $class == 5, $status->isFailure());
   }
 
   /**
@@ -142,6 +131,7 @@ class DSNStatusResultTest extends UnitTestCase {
    */
   public function provideCodes() {
     $max_detail_per_subject = [0, 8, 4, 5, 7, 5, 5, 7];
+    $codes = [];
     foreach ([2, 4, 5] as $class) {
       foreach (range(0, 7) as $subject) {
         foreach (range(0, $max_detail_per_subject[$subject]) as $detail) {

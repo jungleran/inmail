@@ -7,7 +7,6 @@
 namespace Drupal\bounce_processing_mailmute\MessageHandler;
 
 use Drupal\bounce_processing\AnalyzerResultInterface;
-use Drupal\bounce_processing\DSNStatusResult;
 use Drupal\bounce_processing\Message;
 use Drupal\bounce_processing\MessageHandler\MessageHandlerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
@@ -48,12 +47,14 @@ class MailmuteMessageHandler implements MessageHandlerInterface {
     if (empty($result) || !$status_code = $result->getBounceStatusCode()) {
       return;
     }
+
     // Only handle bounces with an identifiable recipient.
     if (!$address = $result->getBounceRecipient()) {
       // @todo Log the message body or place it in a moderation queue.
       $this->loggerChannel->info('Bounce with status %code received but no recipient identified.', ['%code' => $status_code]);
       return;
     }
+
     // Only handle bounces with an identifiable recipient that we care about.
     if (!$this->sendstateManager->isManaged($address)) {
       $this->loggerChannel->info('Bounce with status %code received but recipient %address is not managed here.', [
@@ -62,6 +63,8 @@ class MailmuteMessageHandler implements MessageHandlerInterface {
       ]);
       return;
     }
+
+    // In the case of a "hard bounce", set the send state to a muting state.
     if ($status_code->isPermanentFailure()) {
       $new_state = 'bounce_invalid_address';
       $this->sendstateManager->setState($address, $new_state);
