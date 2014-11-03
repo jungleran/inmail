@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\MessageAnalyzer\BounceClassifier.
+ * Contains \Drupal\inmail\MessageAnalyzer\BounceClassifier.
  */
 
-namespace Drupal\bounce_processing\MessageAnalyzer;
+namespace Drupal\inmail\MessageAnalyzer;
 
-use Drupal\bounce_processing\AnalyzerResultInterface;
-use Drupal\bounce_processing\Message;
+use Drupal\inmail\AnalyzerResultInterface;
+use Drupal\inmail\Message;
 
 /**
  * Provides methods to determine the type of a message.
@@ -21,9 +21,9 @@ abstract class BounceClassifier implements MessageAnalyzerInterface {
   /**
    * Classifies a message and returns its type.
    *
-   * @param \Drupal\bounce_processing\Message $message
+   * @param \Drupal\inmail\Message $message
    *   An incoming message.
-   * @param \Drupal\bounce_processing\AnalyzerResultInterface $result
+   * @param \Drupal\inmail\AnalyzerResultInterface $result
    *   A result object to report analysis results to.
    *
    * @see http://tools.ietf.org/html/rfc1891

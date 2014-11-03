@@ -1,21 +1,21 @@
 <?php
 /**
  * @file
- * Contains \Drupal\Tests\bounce_processing\Unit\MessageAnalyzer\SimpleDSNReasonAnalyzerTest.
+ * Contains \Drupal\Tests\inmail\Unit\MessageAnalyzer\SimpleDSNReasonAnalyzerTest.
  */
 
-namespace Drupal\Tests\bounce_processing\Unit\MessageAnalyzer;
+namespace Drupal\Tests\inmail\Unit\MessageAnalyzer;
 
-use Drupal\bounce_processing\AnalyzerResult;
-use Drupal\bounce_processing\Message;
-use Drupal\bounce_processing\MessageAnalyzer\SimpleDSNReasonAnalyzer;
-use Drupal\Tests\bounce_processing\Unit\BounceProcessingUnitTestBase;
+use Drupal\inmail\AnalyzerResult;
+use Drupal\inmail\Message;
+use Drupal\inmail\MessageAnalyzer\SimpleDSNReasonAnalyzer;
+use Drupal\Tests\inmail\Unit\BounceProcessingUnitTestBase;
 
 /**
  * Unit tests for the DSN reason analyzer.
  *
- * @coversDefaultClass \Drupal\bounce_processing\MessageAnalyzer\SimpleDSNReasonAnalyzer
- * @group bounce_processing
+ * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\SimpleDSNReasonAnalyzer
+ * @group inmail
  */
 class SimpleDSNReasonAnalyzerTest extends BounceProcessingUnitTestBase {
 

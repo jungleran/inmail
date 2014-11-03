@@ -1,9 +1,0 @@
-name: Bounce Processing test
-type: module
-description: Resources for Bounce Processing tests
-core: 8.x
-hidden: true
-package: Mail
-
-dependencies:
-  - bounce_processing

@@ -1,21 +1,21 @@
 <?php
 /**
  * @file
- * Contains \Drupal\Tests\bounce_processing\Unit\MessageAnalyzer\SimpleDSNClassifierTest.
+ * Contains \Drupal\Tests\inmail\Unit\MessageAnalyzer\SimpleDSNClassifierTest.
  */
 
-namespace Drupal\Tests\bounce_processing\Unit\MessageAnalyzer;
+namespace Drupal\Tests\inmail\Unit\MessageAnalyzer;
 
-use Drupal\bounce_processing\AnalyzerResult;
-use Drupal\bounce_processing\Message;
-use Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier;
-use Drupal\Tests\bounce_processing\Unit\BounceProcessingUnitTestBase;
+use Drupal\inmail\AnalyzerResult;
+use Drupal\inmail\Message;
+use Drupal\inmail\MessageAnalyzer\SimpleDSNClassifier;
+use Drupal\Tests\inmail\Unit\BounceProcessingUnitTestBase;
 
 /**
  * Unit tests the simple DSN classifier.
  *
- * @coversDefaultClass \Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier
- * @group bounce_processing
+ * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\SimpleDSNClassifier
+ * @group inmail
  */
 class SimpleDSNClassifierTest extends BounceProcessingUnitTestBase {
 

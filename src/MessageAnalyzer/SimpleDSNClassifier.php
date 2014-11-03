@@ -1,14 +1,14 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier.
+ * Contains \Drupal\inmail\MessageAnalyzer\SimpleDSNClassifier.
  */
 
-namespace Drupal\bounce_processing\MessageAnalyzer;
+namespace Drupal\inmail\MessageAnalyzer;
 
-use Drupal\bounce_processing\AnalyzerResultInterface;
-use Drupal\bounce_processing\DSNStatusResult;
-use Drupal\bounce_processing\Message;
+use Drupal\inmail\AnalyzerResultInterface;
+use Drupal\inmail\DSNStatusResult;
+use Drupal\inmail\Message;
 
 /**
  * Extremely simple BounceClassifier instance.

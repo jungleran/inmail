@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\DSNStatusResult.
+ * Contains \Drupal\inmail\DSNStatusResult.
  */
 
-namespace Drupal\bounce_processing;
+namespace Drupal\inmail;
 
 /**
  * A message type corresponding to the RFC 3463 specification.

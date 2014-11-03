@@ -1,19 +1,19 @@
 <?php
 /**
  * @file
- * Contains \Drupal\Tests\bounce_processing\Unit\MessageTest.
+ * Contains \Drupal\Tests\inmail\Unit\MessageTest.
  */
 
-namespace Drupal\Tests\bounce_processing\Unit;
+namespace Drupal\Tests\inmail\Unit;
 
-use Drupal\bounce_processing\Message;
+use Drupal\inmail\Message;
 use Drupal\Tests\UnitTestCase;
 
 /**
  * Class MessageTest
  *
- * @coversDefaultClass \Drupal\bounce_processing\Message
- * @group bounce_processing
+ * @coversDefaultClass \Drupal\inmail\Message
+ * @group inmail
  */
 class MessageTest extends UnitTestCase {
 

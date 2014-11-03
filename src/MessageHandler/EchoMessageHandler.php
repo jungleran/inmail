@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\MessageHandler\EchoMessageHandler.
+ * Contains \Drupal\inmail\MessageHandler\EchoMessageHandler.
  */
 
-namespace Drupal\bounce_processing\MessageHandler;
+namespace Drupal\inmail\MessageHandler;
 
-use Drupal\bounce_processing\AnalyzerResultInterface;
-use Drupal\bounce_processing\Message;
+use Drupal\inmail\AnalyzerResultInterface;
+use Drupal\inmail\Message;
 use Drupal\Component\Utility\String;
 
 /**

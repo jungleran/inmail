@@ -1,0 +1,21 @@
+services:
+  inmail.processor:
+    class: Drupal\inmail\MessageProcessor
+    tags:
+      - { name: service_collector, tag: inmail.analyzer, call: addAnalyzer }
+      - { name: service_collector, tag: inmail.handler, call: addHandler }
+  inmail.analyzer.verp:
+    class: Drupal\inmail\MessageAnalyzer\VERPAnalyzer
+    tags:
+      - { name: inmail.analyzer, priority: 55 }
+  inmail.analyzer.simple_dsn_classifier:
+    class: Drupal\inmail\MessageAnalyzer\SimpleDSNClassifier
+    tags:
+      - { name: inmail.analyzer, priority: 50 }
+  inmail.analyzer.dsn_reason:
+    class: Drupal\inmail\MessageAnalyzer\SimpleDSNReasonAnalyzer
+    tags:
+      - { name: inmail.analyzer }
+  logger.channel.inmail:
+    parent: logger.channel_base
+    arguments: ['inmail']

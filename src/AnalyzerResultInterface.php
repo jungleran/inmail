@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\AnalyzerResultInterface.
+ * Contains \Drupal\inmail\AnalyzerResultInterface.
  */
 
-namespace Drupal\bounce_processing;
+namespace Drupal\inmail;
 
 /**
  * A container of message analysis results.
@@ -50,7 +50,7 @@ interface AnalyzerResultInterface {
   /**
    * Returns the reported status code of a bouce message.
    *
-   * @return \Drupal\bounce_processing\DSNStatusResult
+   * @return \Drupal\inmail\DSNStatusResult
    *   The status code, or NULL if it has not been reported.
    */
   public function getBounceStatusCode();

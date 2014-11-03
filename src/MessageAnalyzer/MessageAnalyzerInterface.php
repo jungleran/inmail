@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\MessageAnalyzer\MessageAnalyzerInterface.
+ * Contains \Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface.
  */
 
-namespace Drupal\bounce_processing\MessageAnalyzer;
+namespace Drupal\inmail\MessageAnalyzer;
 
-use Drupal\bounce_processing\AnalyzerResultInterface;
-use Drupal\bounce_processing\Message;
+use Drupal\inmail\AnalyzerResultInterface;
+use Drupal\inmail\Message;
 
 /**
  * Performs some analysis on a message.
@@ -17,9 +17,9 @@ interface MessageAnalyzerInterface {
   /**
    * Analyze the given message.
    *
-   * @param \Drupal\bounce_processing\Message $message
+   * @param \Drupal\inmail\Message $message
    *   A mail message to be analyzed.
-   * @param \Drupal\bounce_processing\AnalyzerResultInterface $result
+   * @param \Drupal\inmail\AnalyzerResultInterface $result
    *   The result object where results should be reported.
    */
   public function analyze(Message $message, AnalyzerResultInterface $result);

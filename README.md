@@ -1,7 +1,7 @@
-Bounce Processing
-=================
+Inmail
+======
 
-Mail bounce message handler module for [Drupal](http://drupal.org/) 8.
+Incoming mail processing module for [Drupal](http://drupal.org/) 8.
 
 Purpose:
 

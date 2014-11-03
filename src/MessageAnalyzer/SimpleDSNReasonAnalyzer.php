@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\MessageAnalyzer\SimpleDSNReasonAnalyzer.
+ * Contains \Drupal\inmail\MessageAnalyzer\SimpleDSNReasonAnalyzer.
  */
 
-namespace Drupal\bounce_processing\MessageAnalyzer;
+namespace Drupal\inmail\MessageAnalyzer;
 
-use Drupal\bounce_processing\AnalyzerResultInterface;
-use Drupal\bounce_processing\Message;
+use Drupal\inmail\AnalyzerResultInterface;
+use Drupal\inmail\Message;
 
 /**
  * Extracts the human-readable message from a DSN message.

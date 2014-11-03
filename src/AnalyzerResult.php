@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\AnalyzerResult.
+ * Contains \Drupal\inmail\AnalyzerResult.
  */
 
-namespace Drupal\bounce_processing;
+namespace Drupal\inmail;
 
 /**
  * Contains analyzer results.
@@ -32,7 +32,7 @@ class AnalyzerResult implements AnalyzerResultInterface {
     }
 
     // If subject and detail are 0 (like X.0.0), allow overriding those.
-    /** @var \Drupal\bounce_processing\DSNStatusResult $current_code */
+    /** @var \Drupal\inmail\DSNStatusResult $current_code */
     $current_code = $this->get('bounce_status_code');
     if ($current_code->getSubject() + $current_code->getDetail() == 0) {
       $new_code = new DSNStatusResult($current_code->getClass(), $code->getSubject(), $code->getDetail());

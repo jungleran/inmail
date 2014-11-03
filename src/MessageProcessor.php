@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\MessageProcessor.
+ * Contains \Drupal\inmail\MessageProcessor.
  */
 
-namespace Drupal\bounce_processing;
+namespace Drupal\inmail;
 
-use Drupal\bounce_processing\MessageAnalyzer\MessageAnalyzerInterface;
-use Drupal\bounce_processing\MessageHandler\MessageHandlerInterface;
+use Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface;
+use Drupal\inmail\MessageHandler\MessageHandlerInterface;
 
 /**
  * Mail message processor using services to analyze and handle messages.
@@ -17,21 +17,21 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * A list of message analyzers to use.
    *
-   * @var \Drupal\bounce_processing\MessageAnalyzer\MessageAnalyzerInterface[]
+   * @var \Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface[]
    */
   protected $analyzers = array();
 
   /**
    * A list of handlers to invoke for an analyzed message.
    *
-   * @var \Drupal\bounce_processing\MessageHandler\MessageHandlerInterface[]
+   * @var \Drupal\inmail\MessageHandler\MessageHandlerInterface[]
    */
   protected $handlers = array();
 
   /**
    * Adds an analyzer object to the list of analyzer.
    *
-   * @param \Drupal\bounce_processing\MessageAnalyzer\MessageAnalyzerInterface $analyzer
+   * @param \Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface $analyzer
    *   A message analyzer.
    * @param string $id
    *   The service id of the analyzer.
@@ -53,7 +53,7 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * Adds a handler object to the list of handlers.
    *
-   * @param \Drupal\bounce_processing\MessageHandler\MessageHandlerInterface $handler
+   * @param \Drupal\inmail\MessageHandler\MessageHandlerInterface $handler
    *   A message handler.
    * @param string $id
    *   The service id of the handler.
@@ -72,7 +72,7 @@ class MessageProcessor implements MessageProcessorInterface {
     unset($this->handlers[$id]);
   }
 
-  // @todo Are these really useful outside testing with drush bounce-services?
+  // @todo Are these really useful outside testing with drush inmail-services?
   public function getAnalyzers() {
     return array_map(function($obj) {
       return get_class($obj);

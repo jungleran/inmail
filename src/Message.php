@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\Message.
+ * Contains \Drupal\inmail\Message.
  */
 
-namespace Drupal\bounce_processing;
+namespace Drupal\inmail;
 
 /**
  * A mail message, minimally parsed into a body text and a list of mail headers.
@@ -127,7 +127,7 @@ class Message {
    * @param string $raw
    *   Raw mail message.
    *
-   * @return \Drupal\bounce_processing\Message
+   * @return \Drupal\inmail\Message
    *   Parsed message.
    */
   public static function parse($raw) {

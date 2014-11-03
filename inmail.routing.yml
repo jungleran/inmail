@@ -1,0 +1,7 @@
+inmail.settings:
+  path: admin/config/system/inmail
+  defaults:
+    _form: '\Drupal\inmail\Form\InmailSettingsForm'
+    _title: 'Inmail'
+  requirements:
+    _permission: 'administer inmail'

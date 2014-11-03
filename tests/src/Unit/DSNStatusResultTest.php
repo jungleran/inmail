@@ -1,19 +1,19 @@
 <?php
 /**
  * @file
- * Contains \Drupal\Tests\bounce_processing\Unit\DSNStatusResultTest.
+ * Contains \Drupal\Tests\inmail\Unit\DSNStatusResultTest.
  */
 
-namespace Drupal\Tests\bounce_processing\Unit;
+namespace Drupal\Tests\inmail\Unit;
 
-use Drupal\bounce_processing\DSNStatusResult;
+use Drupal\inmail\DSNStatusResult;
 use Drupal\Tests\UnitTestCase;
 
 /**
  * Unit tests the DSN status result class.
  *
- * @coversDefaultClass \Drupal\bounce_processing\DSNStatusResult
- * @group bounce_processing
+ * @coversDefaultClass \Drupal\inmail\DSNStatusResult
+ * @group inmail
  */
 class DSNStatusResultTest extends UnitTestCase {
 

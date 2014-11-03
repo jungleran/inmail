@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\MessageProcessorInterface.
+ * Contains \Drupal\inmail\MessageProcessorInterface.
  */
 
-namespace Drupal\bounce_processing;
+namespace Drupal\inmail;
 
 /**
  * Provides methods to process an incoming message.

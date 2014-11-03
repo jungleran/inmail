@@ -1,0 +1,5 @@
+services:
+  inmail.analyzer.cfortune:
+    class: Drupal\inmail_cfortune\MessageAnalyzer\CfortuneClassifier
+    tags:
+      - { name: inmail.analyzer, priority: 30 }

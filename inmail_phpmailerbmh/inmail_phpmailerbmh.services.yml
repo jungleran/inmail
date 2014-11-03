@@ -1,0 +1,5 @@
+services:
+  inmail.analyzer.phpmailerbmh:
+    class: Drupal\inmail_phpmailerbmh\MessageAnalyzer\PHPMailerBMHClassifier
+    tags:
+      - { name: inmail.analyzer, priority: 10 }
