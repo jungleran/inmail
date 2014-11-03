@@ -27,8 +27,17 @@ class AnalyzerResult implements AnalyzerResultInterface {
    * {@inheritdoc}
    */
   public function setBounceStatusCode(DSNStatusResult $code) {
-    // @todo If currently set to X.0.0, allow overriding subject/detail.
-    $this->set('bounce_status_code', $code);
+    if ($this->set('bounce_status_code', $code)) {
+      return;
+    }
+
+    // If subject and detail are 0 (like X.0.0), allow overriding those.
+    /** @var \Drupal\bounce_processing\DSNStatusResult $current_code */
+    $current_code = $this->get('bounce_status_code');
+    if ($current_code->getSubject() + $current_code->getDetail() == 0) {
+      $new_code = new DSNStatusResult($current_code->getClass(), $code->getSubject(), $code->getDetail());
+      $this->properties['bounce_status_code'] = $new_code;
+    }
   }
 
   /**
@@ -68,11 +77,16 @@ class AnalyzerResult implements AnalyzerResultInterface {
    *   The name of the property to set.
    * @param mixed $value
    *   The value of the property.
+   *
+   * @return bool
+   *   TRUE if the property was set, FALSE if it had already been set before.
    */
   protected function set($key, $value) {
     if (!isset($this->properties[$key])) {
       $this->properties[$key] = $value;
+      return TRUE;
     }
+    return FALSE;
   }
 
   /**

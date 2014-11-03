@@ -193,6 +193,36 @@ class DSNStatusResult {
   }
 
   /**
+   * Returns the class sub-code.
+   *
+   * @return int
+   *   The class sub-code.
+   */
+  public function getClass() {
+    return $this->class;
+  }
+
+  /**
+   * Returns the subject sub-code.
+   *
+   * @return int
+   *   The subject sub-code.
+   */
+  public function getSubject() {
+    return $this->subject;
+  }
+
+  /**
+   * Returns the detail sub-code.
+   *
+   * @return int
+   *   The detail sub-code.
+   */
+  public function getDetail() {
+    return $this->detail;
+  }
+
+  /**
    * Returns the label for the class sub-code.
    *
    * The label corresponds to the first line of the description of the class in
