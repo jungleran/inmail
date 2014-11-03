@@ -12,8 +12,8 @@ services:
     class: Drupal\bounce_processing\MessageAnalyzer\SimpleDSNClassifier
     tags:
       - { name: bounce.analyzer, priority: 50 }
-  bounce.analyzer.dsn_explanation:
-    class: Drupal\bounce_processing\MessageAnalyzer\SimpleDSNDescriptionAnalyzer
+  bounce.analyzer.dsn_reason:
+    class: Drupal\bounce_processing\MessageAnalyzer\SimpleDSNReasonAnalyzer
     tags:
       - { name: bounce.analyzer }
   logger.channel.bounce_processing:

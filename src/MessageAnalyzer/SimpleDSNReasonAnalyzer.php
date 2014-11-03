@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\bounce_processing\MessageAnalyzer\SimpleDSNDescriptionAnalyzer.
+ * Contains \Drupal\bounce_processing\MessageAnalyzer\SimpleDSNReasonAnalyzer.
  */
 
 namespace Drupal\bounce_processing\MessageAnalyzer;
@@ -11,8 +11,10 @@ use Drupal\bounce_processing\Message;
 
 /**
  * Extracts the human-readable message from a DSN message.
+ *
+ * @todo Remove "Simple" prefix or replace with "Standard"?
  */
-class SimpleDSNDescriptionAnalyzer implements MessageAnalyzerInterface {
+class SimpleDSNReasonAnalyzer implements MessageAnalyzerInterface {
 
   /**
    * {@inheritdoc}
@@ -23,7 +25,7 @@ class SimpleDSNDescriptionAnalyzer implements MessageAnalyzerInterface {
       return;
     }
 
-    // Save the human-readable description, without the pseudo-headers part.
-    $result->setBounceExplanation(trim(explode("\n\n", $message->getParts()[1], 2)[1]));
+    // Save the human-readable bounce reason, without the pseudo-headers part.
+    $result->setBounceReason(trim(strstr($message->getParts()[1], "\n\n")));
   }
 }

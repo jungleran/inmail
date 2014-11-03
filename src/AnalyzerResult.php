@@ -43,8 +43,8 @@ class AnalyzerResult implements AnalyzerResultInterface {
   /**
    * {@inheritdoc}
    */
-  public function setBounceExplanation($explanation) {
-    $this->set('bounce_explanation', $explanation);
+  public function setBounceReason($reason) {
+    $this->set('bounce_reason', $reason);
   }
 
   /**
@@ -64,8 +64,8 @@ class AnalyzerResult implements AnalyzerResultInterface {
   /**
    * {@inheritdoc}
    */
-  public function getBounceExplanation() {
-    return $this->get('bounce_explanation');
+  public function getBounceReason() {
+    return $this->get('bounce_reason');
   }
 
   /**

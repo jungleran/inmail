@@ -31,12 +31,12 @@ interface AnalyzerResultInterface {
   public function setBounceStatusCode(DSNStatusResult $code);
 
   /**
-   * Report an explanation for a bounce.
+   * Report the reason for a bounce.
    *
-   * @param string $explanation
+   * @param string $reason
    *   Human-readable information in English explaning why the bounce happened.
    */
-  public function setBounceExplanation($explanation);
+  public function setBounceReason($reason);
 
   /**
    * Returns the reported recipient for a bounce message.
@@ -56,10 +56,11 @@ interface AnalyzerResultInterface {
   public function getBounceStatusCode();
 
   /**
-   * Returns the explanation for a bounce.
+   * Returns the reason for a bounce.
+   *
    * @return string|null
-   *   The explanation message, in English, or NULL if it has not been reported.
+   *   The reason message, in English, or NULL if it has not been reported.
    */
-  public function getBounceExplanation();
+  public function getBounceReason();
 
 }

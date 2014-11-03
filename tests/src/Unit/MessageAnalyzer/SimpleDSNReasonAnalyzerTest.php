@@ -1,42 +1,42 @@
 <?php
 /**
  * @file
- * Contains \Drupal\Tests\bounce_processing\Unit\MessageAnalyzer\SimpleDSNDescriptionAnalyzerTest.
+ * Contains \Drupal\Tests\bounce_processing\Unit\MessageAnalyzer\SimpleDSNReasonAnalyzerTest.
  */
 
 namespace Drupal\Tests\bounce_processing\Unit\MessageAnalyzer;
 
 use Drupal\bounce_processing\AnalyzerResult;
 use Drupal\bounce_processing\Message;
-use Drupal\bounce_processing\MessageAnalyzer\SimpleDSNDescriptionAnalyzer;
+use Drupal\bounce_processing\MessageAnalyzer\SimpleDSNReasonAnalyzer;
 use Drupal\Tests\bounce_processing\Unit\BounceProcessingUnitTestBase;
 
 /**
- * Unit tests for the DSN descriptoin classifier.
+ * Unit tests for the DSN reason analyzer.
  *
- * @coversDefaultClass \Drupal\bounce_processing\MessageAnalyzer\SimpleDSNDescriptionAnalyzer
+ * @coversDefaultClass \Drupal\bounce_processing\MessageAnalyzer\SimpleDSNReasonAnalyzer
  * @group bounce_processing
  */
-class SimpleDSNDescriptionAnalyzerTest extends BounceProcessingUnitTestBase {
+class SimpleDSNReasonAnalyzerTest extends BounceProcessingUnitTestBase {
 
   /**
    * Tests the classification.
    *
    * @covers ::classify
-   * @dataProvider provideMessages
+   * @dataProvider provideReasons
    */
-  public function testClassify($filename, $expected_message) {
+  public function testClassify($filename, $expected_reason) {
     $message = Message::parse($this->getRaw($filename));
-    $analyzer = new SimpleDSNDescriptionAnalyzer();
+    $analyzer = new SimpleDSNReasonAnalyzer();
     $result = new AnalyzerResult();
     $analyzer->analyze($message, $result);
-    $this->assertEquals($expected_message, $result->getBounceExplanation());
+    $this->assertEquals($expected_reason, $result->getBounceReason());
   }
 
   /**
-   * Provides expected DSN description messages for test message files.
+   * Provides expected DSN reason messages for test message files.
    */
-  public function provideMessages() {
+  public function provideReasons() {
     return [
       ['accessdenied.eml',
         "This is the Postfix program at host kyle.greenpeace.org.

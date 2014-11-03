@@ -12,6 +12,8 @@ use Drupal\bounce_processing\Message;
 
 /**
  * Extremely simple BounceClassifier instance.
+ *
+ * @todo Remove "Simple" prefix or replace with "Standard"?
  */
 class SimpleDSNClassifier extends BounceClassifier {
   // The parsing in this class follows the standards defined in RFC 3464, "An
