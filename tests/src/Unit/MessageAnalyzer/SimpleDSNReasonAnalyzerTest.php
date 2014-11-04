@@ -9,7 +9,7 @@ namespace Drupal\Tests\inmail\Unit\MessageAnalyzer;
 use Drupal\inmail\AnalyzerResult;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\SimpleDSNReasonAnalyzer;
-use Drupal\Tests\inmail\Unit\BounceProcessingUnitTestBase;
+use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 
 /**
  * Unit tests for the DSN reason analyzer.
@@ -17,7 +17,7 @@ use Drupal\Tests\inmail\Unit\BounceProcessingUnitTestBase;
  * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\SimpleDSNReasonAnalyzer
  * @group inmail
  */
-class SimpleDSNReasonAnalyzerTest extends BounceProcessingUnitTestBase {
+class SimpleDSNReasonAnalyzerTest extends InmailUnitTestBase {
 
   /**
    * Tests the classification.

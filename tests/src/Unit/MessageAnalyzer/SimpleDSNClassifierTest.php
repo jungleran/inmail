@@ -9,7 +9,7 @@ namespace Drupal\Tests\inmail\Unit\MessageAnalyzer;
 use Drupal\inmail\AnalyzerResult;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\SimpleDSNClassifier;
-use Drupal\Tests\inmail\Unit\BounceProcessingUnitTestBase;
+use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 
 /**
  * Unit tests the simple DSN classifier.
@@ -17,7 +17,7 @@ use Drupal\Tests\inmail\Unit\BounceProcessingUnitTestBase;
  * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\SimpleDSNClassifier
  * @group inmail
  */
-class SimpleDSNClassifierTest extends BounceProcessingUnitTestBase {
+class SimpleDSNClassifierTest extends InmailUnitTestBase {
 
   /**
    * Tests the classify method.

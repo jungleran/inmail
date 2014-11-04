@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\Tests\inmail\Unit\BounceProcessingUnitTestBase.
+ * Contains \Drupal\Tests\inmail\Unit\InmailUnitTestBase.
  */
 
 namespace Drupal\Tests\inmail\Unit;
@@ -11,7 +11,7 @@ use Drupal\Tests\UnitTestCase;
 /**
  * Base class for Inmail unit tests.
  */
-class BounceProcessingUnitTestBase extends UnitTestCase {
+class InmailUnitTestBase extends UnitTestCase {
 
   /**
    * Returns the raw contents of a given test message file.
