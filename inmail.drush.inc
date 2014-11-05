@@ -35,7 +35,7 @@ function inmail_drush_command() {
 /**
  * Drush command implementation for processing a mail message.
  */
-function drush_inmail_inmail_process() {
+function drush_inmail_process() {
   inmail_drush_setup();
 
   $args = func_get_args();
@@ -56,7 +56,7 @@ function drush_inmail_inmail_process() {
 /**
  * Output the class names of current analysis and handling services.
  */
-function drush_inmail_inmail_services() {
+function drush_inmail_services() {
   inmail_drush_setup();
 
   $processor = \Drupal::service('inmail.processor');
