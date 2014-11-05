@@ -14,6 +14,7 @@ use Drupal\mailmute\Plugin\Mailmute\SendState\OnHold;
  * @SendState(
  *   id = "inmail_temporarily_unavailable",
  *   label = @Translation("Temporarily unavailable"),
+ *   admin = true
  * )
  */
 class TemporarilyUnreachable extends OnHold {

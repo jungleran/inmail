@@ -6,10 +6,10 @@
 
 namespace Drupal\inmail_mailmute\MessageHandler;
 
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\inmail\AnalyzerResultInterface;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageHandler\MessageHandlerInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\mailmute\SendStateManagerInterface;
 
 /**
@@ -67,12 +67,21 @@ class MailmuteMessageHandler implements MessageHandlerInterface {
     // In the case of a "hard bounce", set the send state to a muting state.
     if ($status_code->isPermanentFailure()) {
       $new_state = 'inmail_invalid_address';
-      $this->sendstateManager->setState($address, $new_state);
-      $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', [
-        '%code' => $status_code->getCode(),
-        '%address' => $address,
-        '%new_state' => $new_state,
-      ]);
+      // Allow transition unless current state is Persistent send.
+      if ($this->sendstateManager->getState($address) != 'persistent_send') {
+        $this->sendstateManager->setState($address, $new_state);
+        $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', [
+          '%code' => $status_code->getCode(),
+          '%address' => $address,
+          '%new_state' => $new_state,
+        ]);
+      }
+      else {
+        $this->loggerChannel->info('Send state not transitioned for %address because state was %old_state', [
+          '%address' => $address,
+          '%old_state' => 'persistent_send',
+        ]);
+      }
     }
     else {
       // @todo Handle transient bounces (mailbox full, connection error).

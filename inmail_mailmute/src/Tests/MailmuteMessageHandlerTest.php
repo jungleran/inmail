@@ -6,6 +6,10 @@
 
 namespace Drupal\inmail_mailmute\Tests;
 
+use Drupal\Component\Utility\String;
+use Drupal\inmail\AnalyzerResult;
+use Drupal\inmail\DSNStatusResult;
+use Drupal\inmail\Message;
 use Drupal\simpletest\KernelTestBase;
 use Drupal\user\Entity\User;
 
@@ -80,6 +84,41 @@ class MailmuteMessageHandlerTest extends KernelTestBase {
 
       // Check the outcome.
       $this->assertEqual($this->user->field_sendstate->value, $expected);
+    }
+  }
+
+  /**
+   * Test the "Persistent send" state.
+   */
+  public function testPersistentSendstate() {
+    /** @var \Drupal\mailmute\SendStateManagerInterface $sendstate_manager */
+    $sendstate_manager = \Drupal::service('plugin.manager.sendstate');
+    $this->resetUser();
+
+    // Some bounce result statuses to test.
+    /** @var \Drupal\inmail\DSNStatusResult[] $statuses */
+    $statuses = array(
+      // Not a bounce.
+      new DSNStatusResult(2, 0, 0),
+      // Soft bounce (temporarily unavailable).
+      new DSNStatusResult(4, 0, 0),
+      // Hard bounce (unexisting addres etc).
+      new DSNStatusResult(5, 0, 0),
+    );
+
+    foreach ($statuses as $status) {
+      // Set the user's state to Persistent send.
+      $sendstate_manager->setState($this->user->getEmail(), 'persistent_send');
+
+      // Invoke the handler.
+      $result = new AnalyzerResult();
+      $result->setBounceStatusCode($status);
+      \Drupal::service('inmail.handler.mailmute')->invoke(new Message(), $result);
+
+      // Check that the state did not change.
+      $new_state = $sendstate_manager->getState($this->user->getEmail());
+      $message = String::format('Status %status results in state %state', array('%status' => $status->getCode(), '%state' => $new_state->getPluginId()));
+      $this->assertEqual($new_state->getPluginId(), 'persistent_send', $message);
     }
   }
 
