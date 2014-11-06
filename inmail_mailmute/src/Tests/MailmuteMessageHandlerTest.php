@@ -55,9 +55,9 @@ class MailmuteMessageHandlerTest extends KernelTestBase {
   }
 
   /**
-   * Classify messages and test that the send state is transitioned correctly.
+   * Process messages and test that the send state is transitioned correctly.
    */
-  public function testClassifyAndTriggerSendStateTransition() {
+  public function testProcessAndTriggerSendStateTransition() {
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
 

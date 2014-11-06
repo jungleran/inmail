@@ -1,6 +1,6 @@
-name: Message classifier: PHPMailer-BMH
+name: Message Analyzer: PHPMailer-BMH
 type: module
-description: Message Classifier wrapper for PHPMailer-BMH (https://github.com/instaclick/PHPMailer-BMH).
+description: Message Analyzer wrapper for PHPMailer-BMH (https://github.com/instaclick/PHPMailer-BMH).
 package: Mail
 core: 8.x
 

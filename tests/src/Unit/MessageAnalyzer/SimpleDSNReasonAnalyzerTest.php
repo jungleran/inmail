@@ -8,26 +8,26 @@ namespace Drupal\Tests\inmail\Unit\MessageAnalyzer;
 
 use Drupal\inmail\AnalyzerResult;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\SimpleDSNReasonAnalyzer;
+use Drupal\inmail\MessageAnalyzer\StandardDSNReasonAnalyzer;
 use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 
 /**
  * Unit tests for the DSN reason analyzer.
  *
- * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\SimpleDSNReasonAnalyzer
+ * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\StandardDSNReasonAnalyzer
  * @group inmail
  */
 class SimpleDSNReasonAnalyzerTest extends InmailUnitTestBase {
 
   /**
-   * Tests the classification.
+   * Tests the analyze method.
    *
-   * @covers ::classify
+   * @covers ::analyze
    * @dataProvider provideReasons
    */
-  public function testClassify($filename, $expected_reason) {
+  public function testAnalyze($filename, $expected_reason) {
     $message = Message::parse($this->getRaw($filename));
-    $analyzer = new SimpleDSNReasonAnalyzer();
+    $analyzer = new StandardDSNReasonAnalyzer();
     $result = new AnalyzerResult();
     $analyzer->analyze($message, $result);
     $this->assertEquals($expected_reason, $result->getBounceReason());

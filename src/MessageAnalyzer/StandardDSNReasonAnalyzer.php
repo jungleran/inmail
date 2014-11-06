@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\MessageAnalyzer\SimpleDSNReasonAnalyzer.
+ * Contains \Drupal\inmail\MessageAnalyzer\StandardDSNReasonAnalyzer.
  */
 
 namespace Drupal\inmail\MessageAnalyzer;
@@ -11,10 +11,8 @@ use Drupal\inmail\Message;
 
 /**
  * Extracts the human-readable message from a DSN message.
- *
- * @todo Remove "Simple" prefix or replace with "Standard"?
  */
-class SimpleDSNReasonAnalyzer implements MessageAnalyzerInterface {
+class StandardDSNReasonAnalyzer implements MessageAnalyzerInterface {
 
   /**
    * {@inheritdoc}

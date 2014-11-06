@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_cfortune\MessageAnalyzer\CfortuneClassifier.
+ * Contains \Drupal\inmail_cfortune\MessageAnalyzer\CfortuneAnalyzer.
  */
 
 namespace Drupal\inmail_cfortune\MessageAnalyzer;
@@ -10,17 +10,17 @@ use cfortune\PHPBounceHandler\BounceHandler;
 use Drupal\inmail\AnalyzerResultInterface;
 use Drupal\inmail\DSNStatusResult;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\BounceClassifier;
+use Drupal\inmail\Messageanalyzer\MessageAnalyzerInterface;
 
 /**
- * Message Classifier wrapper for cfortune's BounceHandler class.
+ * Message Analyzer wrapper for cfortune's BounceHandler class.
  */
-class CfortuneClassifier extends BounceClassifier {
+class CfortuneAnalyzer implements MessageAnalyzerInterface {
 
   /**
    * {@inheritdoc}
    */
-  public function classify(Message $message, AnalyzerResultInterface $result) {
+  public function analyze(Message $message, AnalyzerResultInterface $result) {
     // All operational code is contained in the BounceHandler class.
     $handler = new BounceHandler();
 

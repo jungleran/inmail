@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\MessageAnalyzer\SimpleDSNClassifier.
+ * Contains \Drupal\inmail\MessageAnalyzer\StandardDSNAnalyzer.
  */
 
 namespace Drupal\inmail\MessageAnalyzer;
@@ -11,18 +11,16 @@ use Drupal\inmail\DSNStatusResult;
 use Drupal\inmail\Message;
 
 /**
- * Extremely simple BounceClassifier instance.
- *
- * @todo Remove "Simple" prefix or replace with "Standard"?
+ * Identifies standard Delivery Status Notification (DSN) messages.
  */
-class SimpleDSNClassifier extends BounceClassifier {
+class StandardDSNAnalyzer implements MessageAnalyzerInterface {
   // The parsing in this class follows the standards defined in RFC 3464, "An
   // Extensible Message Format for Delivery Status Notifications".
 
   /**
    * {@inheritdoc}
    */
-  public function classify(Message $message, AnalyzerResultInterface $result) {
+  public function analyze(Message $message, AnalyzerResultInterface $result) {
     // DSN's are declared with the 'Content-Type' header. Example:
     // Content-Type: multipart/report; report-type=delivery-status;
     //   boundary="boundary_2634_73ab76f8"

@@ -11,7 +11,7 @@ use Drupal\inmail\Message;
 use Drupal\Component\Utility\String;
 
 /**
- * Handles classified bounce messages by echoing the status code.
+ * Handles identified bounce messages by echoing the status code.
  *
  * This might only make sense in a console environment like drush.
  */

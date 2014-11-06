@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_phpmailerbmh\MessageAnalyzer\PHPMailerBMHClassifier.
+ * Contains \Drupal\inmail_phpmailerbmh\MessageAnalyzer\PHPMailerBMHAnalyzer.
  */
 
 namespace Drupal\inmail_phpmailerbmh\MessageAnalyzer;
@@ -9,12 +9,12 @@ namespace Drupal\inmail_phpmailerbmh\MessageAnalyzer;
 use Drupal\inmail\AnalyzerResultInterface;
 use Drupal\inmail\DSNStatusResult;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\BounceClassifier;
+use Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface;
 
 /**
- * Message Classifier wrapper for the PHPMailer-BMH class.
+ * Message Analyzer wrapper for the PHPMailer-BMH class.
  */
-class PHPMailerBMHClassifier extends BounceClassifier {
+class PHPMailerBMHAnalyzer implements MessageAnalyzerInterface {
 
   /**
    * Maps results from the library to appropriate DSN status codes.
@@ -52,7 +52,7 @@ class PHPMailerBMHClassifier extends BounceClassifier {
   /**
    * {@inheritdoc}
    */
-  public function classify(Message $message, AnalyzerResultInterface $result) {
+  public function analyze(Message $message, AnalyzerResultInterface $result) {
     // The analysis part of the library is in the bmhDSNRules and bmhBodyRules
     // functions.
     require_once $this->getLibraryPath() . '/lib/BounceMailHandler/phpmailer-bmh_rules.php';

@@ -49,7 +49,7 @@ class VERPTest extends KernelTestBase {
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
     $result_keeper = new ResultKeeperHandler();
     $processor = \Drupal::service('inmail.processor');
-    $processor->removeAnalyzer('inmail.analyzer.simple_dsn_classifier');
+    $processor->removeAnalyzer('inmail.analyzer.dsn');
     $processor->addHandler($result_keeper, 'inmail.handler.keeper');
     $processor->process($raw);
 

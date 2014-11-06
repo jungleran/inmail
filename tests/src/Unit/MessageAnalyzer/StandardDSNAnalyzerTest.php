@@ -1,37 +1,37 @@
 <?php
 /**
  * @file
- * Contains \Drupal\Tests\inmail\Unit\MessageAnalyzer\SimpleDSNClassifierTest.
+ * Contains \Drupal\Tests\inmail\Unit\MessageAnalyzer\StandardDSNAnalyzerTest.
  */
 
 namespace Drupal\Tests\inmail\Unit\MessageAnalyzer;
 
 use Drupal\inmail\AnalyzerResult;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\SimpleDSNClassifier;
+use Drupal\inmail\MessageAnalyzer\StandardDSNAnalyzer;
 use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 
 /**
- * Unit tests the simple DSN classifier.
+ * Unit tests the DSN bounce message Analyzer.
  *
- * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\SimpleDSNClassifier
+ * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\StandardDSNAnalyzer
  * @group inmail
  */
-class SimpleDSNClassifierTest extends InmailUnitTestBase {
+class StandardDSNAnalyzerTest extends InmailUnitTestBase {
 
   /**
-   * Tests the classify method.
+   * Tests the analyze method.
    *
-   * @covers ::classify
+   * @covers ::analyze
    * @dataProvider provideExpectedResults
    */
-  public function testClassify($filename, $expected_code, $expected_recipient) {
+  public function testAnalyze($filename, $expected_code, $expected_recipient) {
     $message = Message::parse($this->getRaw($filename));
 
-    // Run the classifier.
-    $classifier = new SimpleDSNClassifier();
+    // Run the analyzer.
+    $analyzer = new StandardDSNAnalyzer();
     $result = new AnalyzerResult();
-    $classifier->classify($message, $result);
+    $analyzer->analyze($message, $result);
 
     // Test the reported code.
     if (isset($expected_code)) {

@@ -8,12 +8,12 @@ services:
     class: Drupal\inmail\MessageAnalyzer\VERPAnalyzer
     tags:
       - { name: inmail.analyzer, priority: 55 }
-  inmail.analyzer.simple_dsn_classifier:
-    class: Drupal\inmail\MessageAnalyzer\SimpleDSNClassifier
+  inmail.analyzer.dsn:
+    class: Drupal\inmail\MessageAnalyzer\StandardDSNAnalyzer
     tags:
       - { name: inmail.analyzer, priority: 50 }
   inmail.analyzer.dsn_reason:
-    class: Drupal\inmail\MessageAnalyzer\SimpleDSNReasonAnalyzer
+    class: Drupal\inmail\MessageAnalyzer\StandardDSNReasonAnalyzer
     tags:
       - { name: inmail.analyzer }
   logger.channel.inmail:
