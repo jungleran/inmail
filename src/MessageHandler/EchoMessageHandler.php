@@ -6,9 +6,9 @@
 
 namespace Drupal\inmail\MessageHandler;
 
-use Drupal\inmail\AnalyzerResultInterface;
-use Drupal\inmail\Message;
 use Drupal\Component\Utility\String;
+use Drupal\inmail\Message;
+use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
 
 /**
  * Handles identified bounce messages by echoing the status code.
@@ -20,7 +20,7 @@ class EchoMessageHandler implements MessageHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, AnalyzerResultInterface $result) {
+  public function invoke(Message $message, AnalyzerResultReadableInterface $result) {
     if ($code = $result->getBounceStatusCode()) {
       echo String::format("Bounce from @recipient classified as @code\n", array(
         '@recipient' => $result->getBounceRecipient() ?: '(unknown)',

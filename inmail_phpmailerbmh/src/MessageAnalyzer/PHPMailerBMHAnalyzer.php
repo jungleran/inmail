@@ -6,10 +6,10 @@
 
 namespace Drupal\inmail_phpmailerbmh\MessageAnalyzer;
 
-use Drupal\inmail\AnalyzerResultInterface;
 use Drupal\inmail\DSNStatusResult;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface;
+use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
 /**
  * Message Analyzer wrapper for the PHPMailer-BMH class.
@@ -52,7 +52,7 @@ class PHPMailerBMHAnalyzer implements MessageAnalyzerInterface {
   /**
    * {@inheritdoc}
    */
-  public function analyze(Message $message, AnalyzerResultInterface $result) {
+  public function analyze(Message $message, AnalyzerResultWritableInterface $result) {
     // The analysis part of the library is in the bmhDSNRules and bmhBodyRules
     // functions.
     require_once $this->getLibraryPath() . '/lib/BounceMailHandler/phpmailer-bmh_rules.php';

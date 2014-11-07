@@ -6,8 +6,8 @@
 
 namespace Drupal\inmail_test\MessageHandler;
 
-use Drupal\inmail\AnalyzerResultInterface;
 use Drupal\inmail\Message;
+use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
 use Drupal\inmail\MessageHandler\MessageHandlerInterface;
 
 /**
@@ -25,14 +25,14 @@ class ResultKeeperHandler implements MessageHandlerInterface {
   /**
    * The analysis result.
    *
-   * @var \Drupal\inmail\AnalyzerResultInterface
+   * @var \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface
    */
   public $result;
 
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, AnalyzerResultInterface $result) {
+  public function invoke(Message $message, AnalyzerResultReadableInterface $result) {
     $this->message = $message;
     $this->result = $result;
   }

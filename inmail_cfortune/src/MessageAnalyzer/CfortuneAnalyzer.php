@@ -7,10 +7,10 @@
 namespace Drupal\inmail_cfortune\MessageAnalyzer;
 
 use cfortune\PHPBounceHandler\BounceHandler;
-use Drupal\inmail\AnalyzerResultInterface;
 use Drupal\inmail\DSNStatusResult;
 use Drupal\inmail\Message;
 use Drupal\inmail\Messageanalyzer\MessageAnalyzerInterface;
+use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
 /**
  * Message Analyzer wrapper for cfortune's BounceHandler class.
@@ -20,7 +20,7 @@ class CfortuneAnalyzer implements MessageAnalyzerInterface {
   /**
    * {@inheritdoc}
    */
-  public function analyze(Message $message, AnalyzerResultInterface $result) {
+  public function analyze(Message $message, AnalyzerResultWritableInterface $result) {
     // All operational code is contained in the BounceHandler class.
     $handler = new BounceHandler();
 

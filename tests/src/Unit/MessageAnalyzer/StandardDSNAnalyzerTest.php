@@ -6,8 +6,8 @@
 
 namespace Drupal\Tests\inmail\Unit\MessageAnalyzer;
 
-use Drupal\inmail\AnalyzerResult;
 use Drupal\inmail\Message;
+use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
 use Drupal\inmail\MessageAnalyzer\StandardDSNAnalyzer;
 use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 

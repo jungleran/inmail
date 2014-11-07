@@ -1,10 +1,12 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\AnalyzerResult.
+ * Contains \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult.
  */
 
-namespace Drupal\inmail;
+namespace Drupal\inmail\MessageAnalyzer\Result;
+
+use Drupal\inmail\DSNStatusResult;
 
 /**
  * Contains analyzer results.
@@ -12,7 +14,7 @@ namespace Drupal\inmail;
  * The setter methods only have effect the first time they are called, so values
  * are only writable once.
  */
-class AnalyzerResult implements AnalyzerResultInterface {
+class AnalyzerResult implements AnalyzerResultWritableInterface, AnalyzerResultReadableInterface {
 
   protected $properties = array();
 

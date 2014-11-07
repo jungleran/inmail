@@ -6,8 +6,8 @@
 
 namespace Drupal\inmail\MessageAnalyzer;
 
-use Drupal\inmail\AnalyzerResultInterface;
 use Drupal\inmail\Message;
+use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
 /**
  * Performs some analysis on a message.
@@ -19,9 +19,9 @@ interface MessageAnalyzerInterface {
    *
    * @param \Drupal\inmail\Message $message
    *   A mail message to be analyzed.
-   * @param \Drupal\inmail\AnalyzerResultInterface $result
+   * @param \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface $result
    *   The result object where results should be reported.
    */
-  public function analyze(Message $message, AnalyzerResultInterface $result);
+  public function analyze(Message $message, AnalyzerResultWritableInterface $result);
 
 }

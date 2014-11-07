@@ -6,9 +6,9 @@
 
 namespace Drupal\inmail\MessageAnalyzer;
 
-use Drupal\inmail\AnalyzerResultInterface;
 use Drupal\inmail\DSNStatusResult;
 use Drupal\inmail\Message;
+use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
 /**
  * Identifies standard Delivery Status Notification (DSN) messages.
@@ -20,7 +20,7 @@ class StandardDSNAnalyzer implements MessageAnalyzerInterface {
   /**
    * {@inheritdoc}
    */
-  public function analyze(Message $message, AnalyzerResultInterface $result) {
+  public function analyze(Message $message, AnalyzerResultWritableInterface $result) {
     // DSN's are declared with the 'Content-Type' header. Example:
     // Content-Type: multipart/report; report-type=delivery-status;
     //   boundary="boundary_2634_73ab76f8"

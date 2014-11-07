@@ -7,8 +7,8 @@
 namespace Drupal\inmail_mailmute\MessageHandler;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\inmail\AnalyzerResultInterface;
 use Drupal\inmail\Message;
+use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
 use Drupal\inmail\MessageHandler\MessageHandlerInterface;
 use Drupal\mailmute\SendStateManagerInterface;
 
@@ -42,7 +42,7 @@ class MailmuteMessageHandler implements MessageHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, AnalyzerResultInterface $result) {
+  public function invoke(Message $message, AnalyzerResultReadableInterface $result) {
     // Only handle bounces.
     if (empty($result) || !$status_code = $result->getBounceStatusCode()) {
       return;

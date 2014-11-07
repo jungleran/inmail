@@ -7,9 +7,9 @@
 namespace Drupal\inmail_mailmute\Tests;
 
 use Drupal\Component\Utility\String;
-use Drupal\inmail\AnalyzerResult;
 use Drupal\inmail\DSNStatusResult;
 use Drupal\inmail\Message;
+use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
 use Drupal\simpletest\KernelTestBase;
 use Drupal\user\Entity\User;
 

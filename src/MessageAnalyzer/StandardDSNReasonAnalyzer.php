@@ -6,8 +6,8 @@
 
 namespace Drupal\inmail\MessageAnalyzer;
 
-use Drupal\inmail\AnalyzerResultInterface;
 use Drupal\inmail\Message;
+use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
 /**
  * Extracts the human-readable message from a DSN message.
@@ -17,7 +17,7 @@ class StandardDSNReasonAnalyzer implements MessageAnalyzerInterface {
   /**
    * {@inheritdoc}
    */
-  public function analyze(Message $message, AnalyzerResultInterface $result) {
+  public function analyze(Message $message, AnalyzerResultWritableInterface $result) {
     // Ignore messages that are not DSN.
     if (!$message->isDSN()) {
       return;

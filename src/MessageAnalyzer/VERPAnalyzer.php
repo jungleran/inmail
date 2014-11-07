@@ -6,8 +6,8 @@
 
 namespace Drupal\inmail\MessageAnalyzer;
 
-use Drupal\inmail\AnalyzerResultInterface;
 use Drupal\inmail\Message;
+use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
 /**
  * Extracts a recipient address from a VERP 'To' header of a bounce.
@@ -21,7 +21,7 @@ class VERPAnalyzer implements MessageAnalyzerInterface {
   /**
    * {@inheritdoc}
    */
-  public function analyze(Message $message, AnalyzerResultInterface $result) {
+  public function analyze(Message $message, AnalyzerResultWritableInterface $result) {
     // Cancel if VERP is disabled.
     if (!\Drupal::config('inmail.settings')->get('verp')) {
       return;
