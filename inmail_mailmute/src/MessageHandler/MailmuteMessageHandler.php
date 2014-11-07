@@ -47,6 +47,9 @@ class MailmuteMessageHandler implements MessageHandlerInterface {
     if (empty($result) || !$status_code = $result->getBounceStatusCode()) {
       return;
     }
+    if ($status_code->isSuccess()) {
+      return;
+    }
 
     // Only handle bounces with an identifiable recipient.
     if (!$address = $result->getBounceRecipient()) {
@@ -64,19 +67,17 @@ class MailmuteMessageHandler implements MessageHandlerInterface {
       return;
     }
 
+    // Block transition if current state is "Persistent send".
+    if ($this->sendstateManager->getState($address)->getPluginId() == 'persistent_send') {
+      $this->loggerChannel->info('Send state not transitioned for %address because state was %old_state', [
+        '%address' => $address,
+        '%old_state' => 'persistent_send',
+      ]);
+      return;
+    }
+
     // In the case of a "hard bounce", set the send state to a muting state.
     if ($status_code->isPermanentFailure()) {
-
-      // Block transition if current state is "Persistent send".
-      if ($this->sendstateManager->getState($address)->getPluginId() == 'persistent_send') {
-        $this->loggerChannel->info('Send state not transitioned for %address because state was %old_state', [
-          '%address' => $address,
-          '%old_state' => 'persistent_send',
-        ]);
-        return;
-      }
-
-      // Transition.
       $new_state = 'inmail_invalid_address';
       $this->sendstateManager->setState($address, $new_state);
       $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', [

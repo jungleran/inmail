@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_mailmute\Tests\MailmuteMessageHandlerTest.
+ * Contains \Drupal\inmail_mailmute\Tests\InmailMailmuteTest.
  */
 
 namespace Drupal\inmail_mailmute\Tests;
@@ -18,7 +18,7 @@ use Drupal\user\Entity\User;
  *
  * @group inmail
  */
-class MailmuteMessageHandlerTest extends KernelTestBase {
+class InmailMailmuteTest extends KernelTestBase {
 
   /**
    * Modules to enable.

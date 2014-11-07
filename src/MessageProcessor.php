@@ -92,6 +92,7 @@ class MessageProcessor implements MessageProcessorInterface {
     // Parse message.
     $message = Message::parse($raw);
 
+    // @todo Pass write-only to Analyzers, pass read-only to Handlers.
     // Analyze message.
     $result = new AnalyzerResult();
     foreach ($this->analyzers as $analyzer) {
