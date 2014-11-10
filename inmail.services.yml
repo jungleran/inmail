@@ -3,7 +3,6 @@ services:
     class: Drupal\inmail\MessageProcessor
     tags:
       - { name: service_collector, tag: inmail.analyzer, call: addAnalyzer }
-      - { name: service_collector, tag: inmail.handler, call: addHandler }
   inmail.analyzer.verp:
     class: Drupal\inmail\MessageAnalyzer\VERPAnalyzer
     tags:
@@ -16,6 +15,9 @@ services:
     class: Drupal\inmail\MessageAnalyzer\StandardDSNReasonAnalyzer
     tags:
       - { name: inmail.analyzer }
+  plugin.manager.inmail.handler:
+    class: Drupal\inmail\HandlerManager
+    parent: default_plugin_manager
   logger.channel.inmail:
     parent: logger.channel_base
     arguments: ['inmail']

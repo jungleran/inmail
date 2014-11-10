@@ -8,7 +8,7 @@ namespace Drupal\inmail;
 
 use Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
-use Drupal\inmail\MessageHandler\MessageHandlerInterface;
+use Drupal\inmail\Plugin\inmail\Handler\HandlerInterface;
 
 /**
  * Mail message processor using services to analyze and handle messages.
@@ -25,7 +25,7 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * A list of handlers to invoke for an analyzed message.
    *
-   * @var \Drupal\inmail\MessageHandler\MessageHandlerInterface[]
+   * @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface[]
    */
   protected $handlers = array();
 
@@ -49,28 +49,6 @@ class MessageProcessor implements MessageProcessorInterface {
    */
   public function removeAnalyzer($id) {
     unset($this->analyzers[$id]);
-  }
-
-  /**
-   * Adds a handler object to the list of handlers.
-   *
-   * @param \Drupal\inmail\MessageHandler\MessageHandlerInterface $handler
-   *   A message handler.
-   * @param string $id
-   *   The service id of the handler.
-   */
-  public function addHandler(MessageHandlerInterface $handler, $id) {
-    $this->handlers[$id] = $handler;
-  }
-
-  /**
-   * Removes a handler object from the list of handlers.
-   *
-   * @param string $id
-   *   The service id of the handler.
-   */
-  public function removeHandler($id) {
-    unset($this->handlers[$id]);
   }
 
   // @todo Are these really useful outside testing with drush inmail-services?
@@ -100,7 +78,10 @@ class MessageProcessor implements MessageProcessorInterface {
     }
 
     // Handle message.
-    foreach ($this->handlers as $handler) {
+    // @todo Inject handler manager.
+    /** @var \Drupal\inmail\HandlerManager $handler_manager */
+    $handler_manager = \Drupal::service('plugin.manager.inmail.handler');
+    foreach ($handler_manager->getHandlers() as $handler) {
       $handler->invoke($message, $result);
     }
   }

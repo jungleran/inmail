@@ -4,16 +4,20 @@
  * Contains \Drupal\inmail_test\MessageHandler\ResultKeeperHandler.
  */
 
-namespace Drupal\inmail_test\MessageHandler;
+namespace Drupal\inmail_test\Plugin\inmail\Handler;
 
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
-use Drupal\inmail\MessageHandler\MessageHandlerInterface;
+use Drupal\inmail\Plugin\inmail\Handler\HandlerInterface;
 
 /**
  * Stores analysis results to let them be easily evaluated by tests.
+ *
+ * @MessageHandler(
+ *   id = "result_keeper"
+ * )
  */
-class ResultKeeperHandler implements MessageHandlerInterface {
+class ResultKeeperHandler implements HandlerInterface {
 
   /**
    * The processed message.

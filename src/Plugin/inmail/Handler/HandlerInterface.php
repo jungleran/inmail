@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\MessageHandler\MessageHandlerInterface.
+ * Contains \Drupal\inmail\MessageHandler\HandlerInterface.
  */
 
-namespace Drupal\inmail\MessageHandler;
+namespace Drupal\inmail\Plugin\inmail\Handler;
 
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
@@ -12,7 +12,7 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
 /**
  * Provides callbacks to execute for an analyzed message.
  */
-interface MessageHandlerInterface {
+interface HandlerInterface {
 
   /**
    * Executes callbacks for an analyzed message.

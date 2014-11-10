@@ -113,7 +113,9 @@ class InmailMailmuteTest extends KernelTestBase {
       // Invoke the handler.
       $result = new AnalyzerResult();
       $result->setBounceStatusCode($status);
-      \Drupal::service('inmail.handler.mailmute')->invoke(new Message(), $result);
+      /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
+      $handler = \Drupal::service('plugin.manager.inmail.handler')->getHandler('mailmute');
+      $handler->invoke(new Message(), $result);
 
       // Check that the state did not change.
       $new_state = $sendstate_manager->getState($this->user->getEmail());

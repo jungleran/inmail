@@ -1,6 +1,0 @@
-services:
-  inmail.handler.mailmute:
-    class: Drupal\inmail_mailmute\MessageHandler\MailmuteMessageHandler
-    arguments: ['@plugin.manager.sendstate', '@logger.channel.inmail']
-    tags:
-      - { name: inmail.handler }

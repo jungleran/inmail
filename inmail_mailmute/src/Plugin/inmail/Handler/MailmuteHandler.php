@@ -1,21 +1,28 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_mailmute\MessageHandler\MailmuteMessageHandler.
+ * Contains \Drupal\inmail_mailmute\Plugin\inmail\Handler\MailmuteHandler.
  */
 
-namespace Drupal\inmail_mailmute\MessageHandler;
+namespace Drupal\inmail_mailmute\Plugin\inmail\Handler;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Plugin\PluginBase;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
-use Drupal\inmail\MessageHandler\MessageHandlerInterface;
+use Drupal\inmail\Plugin\inmail\Handler\HandlerInterface;
 use Drupal\mailmute\SendStateManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Reacts to bounce messages by managing the send state of the bouncing address.
+ *
+ * @MessageHandler(
+ *   id = "mailmute"
+ * )
  */
-class MailmuteMessageHandler implements MessageHandlerInterface {
+class MailmuteHandler extends PluginBase implements HandlerInterface, ContainerFactoryPluginInterface {
 
   /**
    * The Mailmute send state manager.
@@ -32,11 +39,22 @@ class MailmuteMessageHandler implements MessageHandlerInterface {
   protected $loggerChannel;
 
   /**
-   * Constructs a new MailmuteMessageHandler.
+   * Constructs a new MailmuteHandler.
    */
-  public function __construct(SendStateManagerInterface $sendstate_manager, LoggerChannelInterface $logger_channel) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, SendStateManagerInterface $sendstate_manager, LoggerChannelInterface $logger_channel) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->sendstateManager = $sendstate_manager;
     $this->loggerChannel = $logger_channel;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static($configuration, $plugin_id, $plugin_definition,
+      $container->get('plugin.manager.sendstate'),
+      $container->get('logger.factory')->get('inmail')
+    );
   }
 
   /**

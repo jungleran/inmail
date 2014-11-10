@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
-use Drupal\inmail_test\MessageHandler\ResultKeeperHandler;
+use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\simpletest\KernelTestBase;
 
@@ -47,10 +47,9 @@ class VERPTest extends KernelTestBase {
     // Process a bounce message with a VERP-y 'To' header, check the parsing.
     $path = drupal_get_path('module', 'inmail') . '/tests/modules/inmail_test/eml/full.eml';
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
-    $result_keeper = new ResultKeeperHandler();
+    $result_keeper = \Drupal::service('plugin.manager.inmail.handler')->getHandler('result_keeper');
     $processor = \Drupal::service('inmail.processor');
     $processor->removeAnalyzer('inmail.analyzer.dsn');
-    $processor->addHandler($result_keeper, 'inmail.handler.keeper');
     $processor->process($raw);
 
     $parsed_recipient = $result_keeper->result->getBounceRecipient();

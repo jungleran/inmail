@@ -4,8 +4,6 @@
  * Drush commands for the Inmail module.
  */
 
-use Drupal\inmail\MessageHandler\EchoMessageHandler;
-
 /**
  * Implements hook_drush_commands().
  */
@@ -87,9 +85,6 @@ function inmail_drush_setup() {
   if (\Drupal::moduleHandler()->moduleExists('composer_manager')) {
     \Drupal::service('composer_manager.manager')->registerAutolaoder();
   }
-
-  // Add the echo message handler.
-  \Drupal::service('inmail.processor')->addHandler(new EchoMessageHandler(), 'inmail.handler.echo');
 }
 
 
