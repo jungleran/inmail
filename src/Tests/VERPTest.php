@@ -47,12 +47,11 @@ class VERPTest extends KernelTestBase {
     // Process a bounce message with a VERP-y 'To' header, check the parsing.
     $path = drupal_get_path('module', 'inmail') . '/tests/modules/inmail_test/eml/full.eml';
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
-    $result_keeper = \Drupal::service('plugin.manager.inmail.handler')->getHandler('result_keeper');
     $processor = \Drupal::service('inmail.processor');
     $processor->removeAnalyzer('inmail.analyzer.dsn');
     $processor->process($raw);
 
-    $parsed_recipient = $result_keeper->result->getBounceRecipient();
+    $parsed_recipient = ResultKeeperHandler::$result->getBounceRecipient();
     $this->assertEqual($parsed_recipient, $recipient);
   }
 

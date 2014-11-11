@@ -6,13 +6,15 @@
 
 namespace Drupal\inmail\Plugin\inmail\Handler;
 
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
 
 /**
  * Provides callbacks to execute for an analyzed message.
  */
-interface HandlerInterface {
+interface HandlerInterface extends ConfigurablePluginInterface, PluginFormInterface {
 
   /**
    * Executes callbacks for an analyzed message.

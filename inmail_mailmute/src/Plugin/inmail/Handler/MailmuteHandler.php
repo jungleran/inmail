@@ -6,12 +6,12 @@
 
 namespace Drupal\inmail_mailmute\Plugin\inmail\Handler;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Plugin\PluginBase;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
-use Drupal\inmail\Plugin\inmail\Handler\HandlerInterface;
+use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
 use Drupal\mailmute\SendStateManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -19,10 +19,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Reacts to bounce messages by managing the send state of the bouncing address.
  *
  * @MessageHandler(
- *   id = "mailmute"
+ *   id = "mailmute",
+ *   label = @Translation("Mailmute")
  * )
  */
-class MailmuteHandler extends PluginBase implements HandlerInterface, ContainerFactoryPluginInterface {
+class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInterface {
 
   /**
    * The Mailmute send state manager.
@@ -45,6 +46,7 @@ class MailmuteHandler extends PluginBase implements HandlerInterface, ContainerF
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->sendstateManager = $sendstate_manager;
     $this->loggerChannel = $logger_channel;
+    $this->setConfiguration($configuration);
   }
 
   /**
@@ -107,6 +109,40 @@ class MailmuteHandler extends PluginBase implements HandlerInterface, ContainerF
     else {
       // @todo Handle transient bounces (mailbox full, connection error).
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return array(
+      'soft_tolerance' => 5,
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
+
+    $form['soft_tolerance'] = array(
+      '#title' => 'Soft bounce tolerance',
+      '#type' => 'number',
+      '#default_value' => $this->configuration['soft_tolerance'],
+      '#description' => $this->t('This defines how many soft bounces may be received from an address before its state is transitioned to "Temporarily unreachable".'),
+      '#description_display' => 'after',
+    );
+
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
+    $this->configuration['soft_tolerance'] = $form_state->getValue('soft_tolerance');
   }
 
 }

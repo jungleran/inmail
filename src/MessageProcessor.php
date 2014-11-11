@@ -6,9 +6,9 @@
 
 namespace Drupal\inmail;
 
+use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
-use Drupal\inmail\Plugin\inmail\Handler\HandlerInterface;
 
 /**
  * Mail message processor using services to analyze and handle messages.
@@ -30,6 +30,20 @@ class MessageProcessor implements MessageProcessorInterface {
   protected $handlers = array();
 
   /**
+   * The storage for message handler configuration entities.
+   *
+   * @var \Drupal\Core\Config\Entity\ConfigEntityStorage
+   */
+  protected $handlerStorage;
+
+  /**
+   * The plugin manager for handler plugins.
+   *
+   * @var \Drupal\inmail\HandlerManager
+   */
+  protected $handlerManager;
+
+  /**
    * Adds an analyzer object to the list of analyzer.
    *
    * @param \Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface $analyzer
@@ -39,6 +53,14 @@ class MessageProcessor implements MessageProcessorInterface {
    */
   public function addAnalyzer(MessageAnalyzerInterface $analyzer, $id) {
     $this->analyzers[$id] = $analyzer;
+  }
+
+  /**
+   * Constructs a new message processor.
+   */
+  function __construct(EntityManagerInterface $entity_manager, HandlerManager $handler_manager) {
+    $this->handlerStorage = $entity_manager->getStorage('inmail_handler');
+    $this->handlerManager = $handler_manager;
   }
 
   /**
@@ -78,11 +100,12 @@ class MessageProcessor implements MessageProcessorInterface {
     }
 
     // Handle message.
-    // @todo Inject handler manager.
-    /** @var \Drupal\inmail\HandlerManager $handler_manager */
-    $handler_manager = \Drupal::service('plugin.manager.inmail.handler');
-    foreach ($handler_manager->getHandlers() as $handler) {
-      $handler->invoke($message, $result);
+    foreach ($this->handlerStorage->loadMultiple() as $handler_config) {
+      /** @var \Drupal\inmail\Entity\Handler $handler_config */
+      if ($handler_config->status()) {
+        $handler = $this->handlerManager->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
+        $handler->invoke($message, $result);
+      }
     }
   }
 

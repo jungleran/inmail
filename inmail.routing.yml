@@ -5,3 +5,33 @@ inmail.settings:
     _title: 'Inmail'
   requirements:
     _permission: 'administer inmail'
+
+inmail.handler_list:
+  path: admin/config/system/inmail/handlers
+  defaults:
+    _entity_list: 'inmail_handler'
+    _title: 'Message handlers'
+  requirements:
+    _permission: 'administer inmail'
+
+entity.inmail_handler.edit_form:
+  path: admin/config/system/inmail/handlers/{inmail_handler}
+  defaults:
+    _entity_form: 'inmail_handler.default'
+    _title_callback: \Drupal\inmail\Controller\HandlerController::titleEdit
+  requirements:
+    _permission: 'administer inmail'
+
+entity.inmail_handler.enable:
+  path: admin/config/system/inmail/handlers/{inmail_handler}/enable
+  defaults:
+    _content: \Drupal\inmail\Controller\HandlerController::enable
+  requirements:
+    _permission: 'administer inmail'
+
+entity.inmail_handler.disable:
+  path: admin/config/system/inmail/handlers/{inmail_handler}/disable
+  defaults:
+    _content: \Drupal\inmail\Controller\HandlerController::disable
+  requirements:
+    _permission: 'administer inmail'

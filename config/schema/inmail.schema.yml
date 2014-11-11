@@ -1,0 +1,22 @@
+inmail.inmail_handler.*:
+  label: 'Message handler'
+  type: mapping
+  mapping:
+    id:
+      label: 'Handler ID'
+      type: string
+    label:
+      label: 'Label'
+      type: string
+    enabled:
+      label: 'Enabled'
+      type: bool
+    plugin:
+      label: 'Plugin'
+      type: string
+    configuration:
+      label: 'Configuration'
+      type: inmail.handler.[%parent.plugin]
+    status:
+      label: 'Enabled'
+      type: bool

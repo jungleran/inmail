@@ -51,7 +51,7 @@ class InmailMailmuteTest extends KernelTestBase {
     $this->installSchema('system', ['sequences']);
     $this->installSchema('user', ['users_data']);
     $this->installEntitySchema('user');
-    $this->installConfig(['mailmute', 'system']);
+    $this->installConfig(['mailmute', 'inmail_mailmute', 'system']);
   }
 
   /**
@@ -114,7 +114,8 @@ class InmailMailmuteTest extends KernelTestBase {
       $result = new AnalyzerResult();
       $result->setBounceStatusCode($status);
       /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
-      $handler = \Drupal::service('plugin.manager.inmail.handler')->getHandler('mailmute');
+      $handler_config = \Drupal::entityManager()->getStorage('inmail_handler')->load('mailmute');
+      $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
       $handler->invoke(new Message(), $result);
 
       // Check that the state did not change.

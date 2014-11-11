@@ -1,6 +1,7 @@
 services:
   inmail.processor:
     class: Drupal\inmail\MessageProcessor
+    arguments: ['@entity.manager', '@plugin.manager.inmail.handler']
     tags:
       - { name: service_collector, tag: inmail.analyzer, call: addAnalyzer }
   inmail.analyzer.verp:
