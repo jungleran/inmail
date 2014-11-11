@@ -1,0 +1,9 @@
+inmail.settings:
+  route_name: inmail.settings
+  title: 'Settings'
+  base_route: inmail.settings
+
+inmail.handler_list:
+  route_name: inmail.handler_list
+  title: 'Message handlers'
+  base_route: inmail.settings
