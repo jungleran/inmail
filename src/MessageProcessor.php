@@ -39,7 +39,7 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * The plugin manager for handler plugins.
    *
-   * @var \Drupal\inmail\HandlerManager
+   * @var \Drupal\inmail\HandlerManagerInterface
    */
   protected $handlerManager;
 
@@ -58,7 +58,7 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * Constructs a new message processor.
    */
-  function __construct(EntityManagerInterface $entity_manager, HandlerManager $handler_manager) {
+  function __construct(EntityManagerInterface $entity_manager, HandlerManagerInterface $handler_manager) {
     $this->handlerStorage = $entity_manager->getStorage('inmail_handler');
     $this->handlerManager = $handler_manager;
   }

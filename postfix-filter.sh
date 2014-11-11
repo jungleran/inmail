@@ -11,7 +11,7 @@
 #
 # As example usage, you can configure Postfix to redirect mail to your mail
 # spool, and put the following in ~/.forward (including quotes):
-# "| PATH=/usr/local/bin:$PATH /var/www/drupal/modules/inmail/postfix-filter.sh > /tmp/process_result"
+# "| PATH=/usr/local/bin:$PATH /var/www/drupal/modules/inmail/postfix-filter.sh"
 
 # Parse options
 while getopts d option; do
@@ -20,6 +20,7 @@ while getopts d option; do
       id
       set
       drush status
+      drush inmail-services
       ;;
   esac
 done

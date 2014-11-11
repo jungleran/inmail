@@ -10,7 +10,7 @@ use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\inmail\HandlerManager;
+use Drupal\inmail\HandlerManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -25,7 +25,7 @@ class HandlerConfigurationForm extends EntityForm {
   /**
    * The message handler plugin manager.
    *
-   * @var \Drupal\inmail\HandlerManager
+   * @var \Drupal\inmail\HandlerManagerInterface
    */
   protected $handlerManager;
 
@@ -39,7 +39,7 @@ class HandlerConfigurationForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function __construct(HandlerManager $handler_manager, ConfigEntityStorageInterface $storage) {
+  public function __construct(HandlerManagerInterface $handler_manager, ConfigEntityStorageInterface $storage) {
     $this->handlerManager = $handler_manager;
     $this->storage = $storage;
   }
@@ -61,7 +61,7 @@ class HandlerConfigurationForm extends EntityForm {
     $form = parent::buildForm($form, $form_state);
 
     // Load plugin instance.
-    $plugin = $this->handlerManager->getHandler($this->getEntity()->getPluginId());
+    $plugin = $this->handlerManager->createInstance($this->getEntity()->getPluginId(), $this->getEntity()->getConfiguration());
     $plugin->setConfiguration($this->getEntity()->getConfiguration());
     $form_state->set('plugin', $plugin);
 

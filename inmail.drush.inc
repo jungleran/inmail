@@ -68,13 +68,11 @@ function drush_inmail_services() {
     echo "No analyzers registered.\n";
   }
 
-  if ($handlers = $processor->getHandlers()) {
-    foreach ($handlers as $class) {
-      echo "Handler: $class\n";
-    }
-  }
-  else {
+  if (!$handlers = \Drupal::service('plugin.manager.inmail.handler')->getDefinitions()) {
     echo "No handlers registered.\n";
+  }
+  foreach ($handlers as $definition) {
+    echo "Handler: {$definition['label']}\n";
   }
 }
 

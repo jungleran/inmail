@@ -20,14 +20,14 @@ class HandlerListBuilder extends ConfigEntityListBuilder {
   /**
    * The message handler plugin manager.
    *
-   * @var \Drupal\inmail\HandlerManager
+   * @var \Drupal\inmail\HandlerManagerInterface
    */
   protected $handlerManager;
 
   /**
    * Constructs a new HandlerListBuilder.
    */
-  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, HandlerManager $handler_manager) {
+  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, HandlerManagerInterface $handler_manager) {
     parent::__construct($entity_type, $storage);
     $this->handlerManager = $handler_manager;
   }

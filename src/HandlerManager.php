@@ -7,16 +7,13 @@
 namespace Drupal\inmail;
 
 use Drupal\Core\Cache\CacheBackendInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 
 /**
  * Plugin manager for Inmail message handlers.
- *
- * @todo Create HandlerManagerInterface.
  */
-class HandlerManager extends DefaultPluginManager {
+class HandlerManager extends DefaultPluginManager implements HandlerManagerInterface {
 
   /**
    * {@inheritdoc}

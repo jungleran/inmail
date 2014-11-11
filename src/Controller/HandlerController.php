@@ -7,11 +7,7 @@
 namespace Drupal\inmail\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Form\FormState;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 use Drupal\inmail\Entity\Handler;
-use Drupal\inmail\HandlerManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -19,18 +15,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  * Route controller for message handlers.
  */
 class HandlerController extends ControllerBase {
-
-  /**
-   * @var \Drupal\inmail\HandlerManager
-   */
-  protected $handlerManager;
-
-  /**
-   * Constructs a HandlerController.
-   */
-  public function __construct(HandlerManager $handler_manager) {
-    $this->handlerManager = $handler_manager;
-  }
 
   /**
    * {@inheritdoc}
