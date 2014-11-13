@@ -14,6 +14,7 @@ use Drupal\mailmute\Plugin\Mailmute\SendState\OnHold;
  * @SendState(
  *   id = "inmail_invalid_address",
  *   label = @Translation("Invalid address"),
+ *   mute = true,
  *   admin = true
  * )
  */

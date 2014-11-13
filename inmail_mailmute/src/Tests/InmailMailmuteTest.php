@@ -83,7 +83,7 @@ class InmailMailmuteTest extends KernelTestBase {
       $this->user = User::load($this->user->id());
 
       // Check the outcome.
-      $this->assertEqual($this->user->field_sendstate->value, $expected);
+      $this->assertEqual($this->user->field_sendstate->plugin_id, $expected);
     }
   }
 

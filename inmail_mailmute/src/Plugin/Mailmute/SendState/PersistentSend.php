@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
 
-use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateBase;
+use Drupal\mailmute\Plugin\Mailmute\SendState\Send;
 
 /**
  * Indicates that messages should be sent, and no transitions allowed.
@@ -18,16 +18,9 @@ use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateBase;
  * @SendState(
  *   id = "persistent_send",
  *   label = @Translation("Persistent send"),
+ *   mute = false,
  *   admin = true
  * )
  */
-class PersistentSend extends SendStateBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isMute() {
-    return FALSE;
-  }
-
+class PersistentSend extends Send {
 }
