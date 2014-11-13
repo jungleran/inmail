@@ -2,6 +2,6 @@ inmail.handler.mailmute:
   label: 'Mailmute handler configuration'
   type: mapping
   mapping:
-    soft_tolerance:
+    soft_threshold:
       label: 'Soft bounce tolerance'
       type: int

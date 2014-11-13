@@ -12,8 +12,8 @@ use Drupal\mailmute\Plugin\Mailmute\SendState\OnHold;
  * Indicates that the address owner is temporarily unreachable.
  *
  * @SendState(
- *   id = "inmail_temporarily_unavailable",
- *   label = @Translation("Temporarily unavailable"),
+ *   id = "inmail_temporarily_unreachable",
+ *   label = @Translation("Temporarily unreachable"),
  *   mute = true,
  *   admin = true
  * )

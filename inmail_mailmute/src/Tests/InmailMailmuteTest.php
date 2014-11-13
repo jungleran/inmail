@@ -64,8 +64,8 @@ class InmailMailmuteTest extends KernelTestBase {
     $cases = array(
       // Normal message should not trigger mute.
       'normal.eml' => 'send',
-      // "Mailbox full" bounce should not trigger mute.
-      'full.eml' => 'send',
+      // "Mailbox full" bounce should trigger counting.
+      'full.eml' => 'inmail_counting',
       // "No such user" bounce should trigger mute.
       'nouser.eml' => 'inmail_invalid_address',
       // "Access denied" bounce should trigger mute.
@@ -108,7 +108,7 @@ class InmailMailmuteTest extends KernelTestBase {
 
     foreach ($statuses as $status) {
       // Set the user's state to Persistent send.
-      $sendstate_manager->setState($this->user->getEmail(), 'persistent_send');
+      $sendstate_manager->transition($this->user->getEmail(), 'persistent_send');
 
       // Invoke the handler.
       $result = new AnalyzerResult();
@@ -123,6 +123,36 @@ class InmailMailmuteTest extends KernelTestBase {
       $message = String::format('Status %status results in state %state', array('%status' => $status->getCode(), '%state' => $new_state->getPluginId()));
       $this->assertEqual($new_state->getPluginId(), 'persistent_send', $message);
     }
+  }
+
+  /**
+   * Test the counting of soft bounces.
+   */
+  public function testBounceCounting() {
+    /** @var \Drupal\inmail\MessageProcessorInterface $processor */
+    $processor = \Drupal::service('inmail.processor');
+    $this->resetUser();
+
+    // Initial state is "send".
+    $this->assertEqual($this->user->field_sendstate->plugin_id, 'send');
+
+    // Process 5 (default value of soft_threshold in the handler) bounces.
+    for ($count = 1; $count < 5; $count++) {
+      // Process a soft bounce from the user.
+      $raw = $this->getMessageFileContents('full.eml');
+      $processor->process($raw);
+
+      // Reload user and check the count.
+      $this->user = User::load($this->user->id());
+      $this->assertEqual($this->user->field_sendstate->plugin_id, 'inmail_counting');
+      $this->assertEqual($this->user->field_sendstate->first()->getPlugin()->getCount(), $count);
+    }
+
+    // Process another one and check that the user is now muted.
+    $raw = $this->getMessageFileContents('full.eml');
+    $processor->process($raw);
+    $this->user = User::load($this->user->id());
+    $this->assertEqual($this->user->field_sendstate->plugin_id, 'inmail_temporarily_unreachable');
   }
 
   /**

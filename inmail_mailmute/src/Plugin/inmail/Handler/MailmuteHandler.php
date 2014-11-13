@@ -12,6 +12,8 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
+use Drupal\inmail_mailmute\Plugin\Mailmute\SendState\CountingBounces;
+use Drupal\inmail_mailmute\Plugin\Mailmute\SendState\PersistentSend;
 use Drupal\mailmute\SendStateManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -71,43 +73,60 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
       return;
     }
 
+    $log_context = ['%code' => $status_code->getCode()];
+
     // Only handle bounces with an identifiable recipient.
     if (!$address = $result->getBounceRecipient()) {
       // @todo Log the message body or place it in a moderation queue.
-      $this->loggerChannel->info('Bounce with status %code received but no recipient identified.', ['%code' => $status_code]);
+      $this->loggerChannel->info('Bounce with status %code received but no recipient identified.', $log_context);
       return;
     }
+
+    $log_context += ['%address' => $address];
 
     // Only handle bounces with an identifiable recipient that we care about.
     if (!$this->sendstateManager->isManaged($address)) {
-      $this->loggerChannel->info('Bounce with status %code received but recipient %address is not managed here.', [
-        '%code' => $status_code,
-        '%address' => $address,
-      ]);
+      $this->loggerChannel->info('Bounce with status %code received but recipient %address is not managed here.', $log_context);
       return;
     }
 
+    $state = $this->sendstateManager->getState($address);
+
     // Block transition if current state is "Persistent send".
-    if ($this->sendstateManager->getState($address)->getPluginId() == 'persistent_send') {
-      $this->loggerChannel->info('Send state not transitioned for %address because state was %old_state', [
-        '%address' => $address,
-        '%old_state' => 'persistent_send',
-      ]);
+    if ($state instanceof PersistentSend) {
+      $this->loggerChannel->info('Send state not transitioned for %address because state was %old_state', $log_context + ['%old_state' => 'persistent_send']);
       return;
     }
 
     // In the case of a "hard bounce", set the send state to a muting state.
     if ($status_code->isPermanentFailure()) {
-      $new_state = 'inmail_invalid_address';
-      $this->sendstateManager->setState($address, $new_state);
-      $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', [
-        '%code' => $status_code->getCode(),
-        '%address' => $address,
-        '%new_state' => $new_state,
-      ]);
+      $this->sendstateManager->transition($address, 'inmail_invalid_address');
+      $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_invalid_address']);
+      return;
     }
-    else {
-      // @todo Handle transient bounces (mailbox full, connection error).
+
+    // Not success and not hard bounce, so status must indicate a "soft bounce".
+    // If already counting bounces, add 1.
+    if ($state instanceof CountingBounces) {
+      $state->increment();
+
+      // If the threshold is reached, start muting.
+      if ($state->getCount() >= $state->getThreshold()) {
+        $this->sendstateManager->transition($address, 'inmail_temporarily_unreachable');
+        $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_temporarily_unreachable']);
+      }
+      else {
+        $this->sendstateManager->save($address);
+        $this->loggerChannel->info('Bounce with status %code triggered soft bounce count increment for %address', $log_context);
+      }
+      return;
+    }
+
+    // If still sending, start counting bounces.
+    if (!$state->isMute()) {
+      $this->sendstateManager->transition($address, 'inmail_counting', array('count' => 1, 'threshold' => $this->configuration['soft_threshold']));
+      $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_counting']);
+      return;
     }
   }
 
@@ -116,7 +135,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
    */
   public function defaultConfiguration() {
     return array(
-      'soft_tolerance' => 5,
+      'soft_threshold' => 5,
     );
   }
 
@@ -126,10 +145,10 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 
-    $form['soft_tolerance'] = array(
+    $form['soft_threshold'] = array(
       '#title' => 'Soft bounce tolerance',
       '#type' => 'number',
-      '#default_value' => $this->configuration['soft_tolerance'],
+      '#default_value' => $this->configuration['soft_threshold'],
       '#description' => $this->t('This defines how many soft bounces may be received from an address before its state is transitioned to "Temporarily unreachable".'),
       '#description_display' => 'after',
     );
@@ -142,7 +161,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
-    $this->configuration['soft_tolerance'] = $form_state->getValue('soft_tolerance');
+    $this->configuration['soft_threshold'] = $form_state->getValue('soft_threshold');
   }
 
 }

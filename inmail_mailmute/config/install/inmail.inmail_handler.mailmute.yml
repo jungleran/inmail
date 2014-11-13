@@ -2,4 +2,4 @@ id: mailmute
 label: 'Mute bouncing users'
 plugin: mailmute
 configuration:
-  soft_tolerance: '5'
+  soft_threshold: '5'
