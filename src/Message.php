@@ -138,6 +138,7 @@ class Message {
     $raw = str_replace("\r\n", "\n", $raw);
 
     // A blank line separates headers from the body.
+    // @todo Decode base64 body.
     list($headers, $message->body) = explode("\n\n", $raw, 2);
 
     // Join so-called folded (multi-line) headers.
@@ -150,6 +151,7 @@ class Message {
       if (preg_match("@boundary=\"([$boundarychar ]+[$boundarychar])\"@", $message->getHeader('Content-Type'), $matches)) {
         $boundary = $matches[1];
         $message->parts = explode("\n--$boundary\n", $message->getBody());
+        // @todo Decode base64 parts.
       }
     }
 

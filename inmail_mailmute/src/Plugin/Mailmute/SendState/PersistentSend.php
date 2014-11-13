@@ -6,8 +6,6 @@
 
 namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
 
-use Drupal\mailmute\Plugin\Mailmute\SendState\Send;
-
 /**
  * Indicates that messages should be sent, and no transitions allowed.
  *
@@ -22,5 +20,5 @@ use Drupal\mailmute\Plugin\Mailmute\SendState\Send;
  *   admin = true
  * )
  */
-class PersistentSend extends Send {
+class PersistentSend extends BounceSendstateBase {
 }

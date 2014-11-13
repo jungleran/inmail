@@ -6,8 +6,6 @@
 
 namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
 
-use Drupal\mailmute\Plugin\Mailmute\SendState\OnHold;
-
 /**
  * Indicates that hard bounces have been received from the address.
  *
@@ -18,5 +16,5 @@ use Drupal\mailmute\Plugin\Mailmute\SendState\OnHold;
  *   admin = true
  * )
  */
-class InvalidAddress extends OnHold {
+class InvalidAddress extends BounceSendstateBase {
 }

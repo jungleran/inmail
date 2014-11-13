@@ -98,9 +98,14 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
       return;
     }
 
+    $state_configuration = array(
+      'code' => $result->getBounceStatusCode(),
+      'reason' => $result->getBounceReason(),
+    );
+
     // In the case of a "hard bounce", set the send state to a muting state.
     if ($status_code->isPermanentFailure()) {
-      $this->sendstateManager->transition($address, 'inmail_invalid_address');
+      $this->sendstateManager->transition($address, 'inmail_invalid_address', $state_configuration);
       $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_invalid_address']);
       return;
     }
@@ -111,8 +116,8 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
       $state->increment();
 
       // If the threshold is reached, start muting.
-      if ($state->getCount() >= $state->getThreshold()) {
-        $this->sendstateManager->transition($address, 'inmail_temporarily_unreachable');
+      if ($state->getThreshold() && $state->getCount() >= $state->getThreshold()) {
+        $this->sendstateManager->transition($address, 'inmail_temporarily_unreachable', $state_configuration);
         $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_temporarily_unreachable']);
       }
       else {
@@ -124,7 +129,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
 
     // If still sending, start counting bounces.
     if (!$state->isMute()) {
-      $this->sendstateManager->transition($address, 'inmail_counting', array('count' => 1, 'threshold' => $this->configuration['soft_threshold']));
+      $this->sendstateManager->transition($address, 'inmail_counting', array('count' => 1, 'threshold' => $this->configuration['soft_threshold']) + $state_configuration);
       $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_counting']);
       return;
     }

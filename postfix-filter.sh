@@ -21,6 +21,7 @@ while getopts d option; do
       set
       drush status
       drush inmail-services
+      DRUSHOPTS=-d
       ;;
   esac
 done
@@ -29,4 +30,4 @@ done
 cd `dirname $0`
 
 # Email content (one message) is piped from stdin to the Drush command
-drush inmail-process
+drush $DRUSHOPTS inmail-process

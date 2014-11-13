@@ -6,8 +6,6 @@
 
 namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
 
-use Drupal\mailmute\Plugin\Mailmute\SendState\Send;
-
 /**
  * Class CountingBounces
  *
@@ -18,25 +16,30 @@ use Drupal\mailmute\Plugin\Mailmute\SendState\Send;
  *   admin = true
  * )
  */
-class CountingBounces extends Send {
+class CountingBounces extends BounceSendstateBase {
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct(array $configuration, $plugin_id, $plugin_definition) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    // Trigger exception if threshold is invalid or not set.
-    $this->setThreshold($configuration['threshold']);
   }
 
   /**
    * {@inheritdoc}
    */
   public function display() {
-    return array(
-      '#markup' => $this->t('%label (%count of %threshold received)', array(
-        '%label' => $this->getPluginDefinition()['label'],
-        '%count' => $this->configuration['count'],
-        '%threshold' => $this->configuration['threshold'],
+    $display = parent::display();
+
+    $display['label'] = array(
+      '#markup' => $this->t($this->getThreshold() ? '@label (@count of @threshold received)' : '@label (@count received, no threshold set)', array(
+        '@label' => $this->getPluginDefinition()['label'],
+        '@count' => $this->getCount(),
+        '@threshold' => $this->getThreshold(),
       )),
     );
+
+    return $display;
   }
 
   /**
@@ -73,8 +76,7 @@ class CountingBounces extends Send {
    *   An integer threshold value.
    */
   public function getThreshold() {
-    // This value must be set.
-    return $this->configuration['threshold'];
+    return isset($this->configuration['threshold']) ? $this->configuration['threshold'] : NULL;
   }
 
   /**

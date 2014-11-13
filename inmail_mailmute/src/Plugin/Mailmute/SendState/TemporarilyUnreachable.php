@@ -6,8 +6,6 @@
 
 namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
 
-use Drupal\mailmute\Plugin\Mailmute\SendState\OnHold;
-
 /**
  * Indicates that the address owner is temporarily unreachable.
  *
@@ -18,5 +16,5 @@ use Drupal\mailmute\Plugin\Mailmute\SendState\OnHold;
  *   admin = true
  * )
  */
-class TemporarilyUnreachable extends OnHold {
+class TemporarilyUnreachable extends BounceSendstateBase {
 }
