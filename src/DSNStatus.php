@@ -56,6 +56,25 @@ class DSNStatus {
   );
 
   /**
+   * Labels for the subject sub-codes specified in RFC 3463.
+   *
+   * These are only used if the subject sub-code is recognized but the detail
+   * sub-code is not.
+   *
+   * @var array
+   */
+  private static $subjectMap = array(
+    '0' => 'Other or Undefined Status',
+    '1' => 'Addressing Status',
+    '2' => 'Mailbox Status',
+    '3' => 'Mail System Status',
+    '4' => 'Network and Routing Status',
+    '5' => 'Mail Delivery Protocol Status',
+    '6' => 'Message Content or Media Status',
+    '7' => 'Security or Policy Status',
+  );
+
+  /**
    * Labels for the detail sub-codes specified in RFC 3463.
    *
    * @var array
@@ -234,18 +253,27 @@ class DSNStatus {
   /**
    * Returns the label for the subject/detail sub-codes.
    *
-   * The label corresponds to the first line of the description of the detail in
-   * RFC 3463.
+   * The label corresponds to the first line of the description of the
+   * subject/detail in RFC 3463.
    *
    * @return string|null
-   *   The detail label. If the subject/detail sub-codes are defined outside the
-   *   RFC, this returns NULL.
+   *   The detail label, e.g. "Mail system congestion". If the detail sub-code
+   *   is not defined in the RFC, this returns the more generic subject
+   *   sub-code, e.g. "Security or Policy Status". If that too is not defined in
+   *   the RFC, this returns NULL.
    */
   public function getDetailLabel() {
+    // A known status code, e.g. 5.1.1
     if (isset(static::$detailMap[$this->subject][$this->detail])) {
       return static::$detailMap[$this->subject][$this->detail];
     }
 
+    // Didn't recognize detail sub-code (last number), e.g. 4.1.162
+    if (isset(static::$subjectMap[$this->subject])) {
+      return static::$subjectMap[$this->subject];
+    }
+
+    // Didn't recognize this code at all.
     return NULL;
   }
 

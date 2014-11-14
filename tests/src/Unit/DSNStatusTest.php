@@ -109,6 +109,30 @@ class DSNStatusTest extends UnitTestCase {
   }
 
   /**
+   * Tests label methods for codes with known subject sub-code (second number).
+   *
+   * @covers ::getLabel
+   * @covers ::getClassLabel
+   * @covers ::getDetailLabel
+   */
+  public function getLabel3463Subject($class, $subject, $detail) {
+    // Not bothering to write a provider method for this.
+    $classes = [2, 4, 5];
+    $subjects = range(0, 7);
+    // Just set the detail to something valid (0 < x < 999) but unrecognized.
+    $detail = 162;
+
+    foreach ($classes as $class) {
+      foreach ($subjects as $subject) {
+        $status = new DSNStatus($class, $subject, $detail);
+        $this->assertTrue(strlen($status->getClassLabel()) > 0);
+        $this->assertTrue(strlen($status->getDetailLabel()) > 0);
+        $this->assertEquals($status->getClassLabel() . ': ' . $status->getDetailLabel(), $status->getLabel());
+      }
+    }
+  }
+
+  /**
    * Tests label methods for valid but unknown codes.
    *
    * @covers ::getLabel
