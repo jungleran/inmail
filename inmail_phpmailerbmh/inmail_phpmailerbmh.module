@@ -13,6 +13,8 @@ if (!function_exists('imap_rfc822_parse_adrlist')) {
    * This function is used in bmhDSNRules(). To avoid having to depend on the
    * IMAP extension just for this, this defines an alternative address parser.
    *
+   * @ingroup analyzer
+   *
    * @see http://php.net/manual/en/function.imap-rfc822-parse-adrlist.php
    */
   function imap_rfc822_parse_adrlist($address, $default_host) {

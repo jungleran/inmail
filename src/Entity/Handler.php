@@ -11,6 +11,8 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
 /**
  * Message handler configuration entity.
  *
+ * @ingroup handler
+ *
  * @ConfigEntityType(
  *   id = "inmail_handler",
  *   label = @Translation("Message handler"),

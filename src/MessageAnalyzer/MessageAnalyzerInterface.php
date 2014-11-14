@@ -11,6 +11,8 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
 /**
  * Performs some analysis on a message.
+ *
+ * @ingroup analyzer
  */
 interface MessageAnalyzerInterface {
 

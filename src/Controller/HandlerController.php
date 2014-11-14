@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Route controller for message handlers.
+ *
+ * @ingroup handler
  */
 class HandlerController extends ControllerBase {
 

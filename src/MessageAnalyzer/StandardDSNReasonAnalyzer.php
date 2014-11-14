@@ -11,6 +11,8 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
 /**
  * Extracts the human-readable message from a DSN message.
+ *
+ * @ingroup analyzer
  */
 class StandardDSNReasonAnalyzer implements MessageAnalyzerInterface {
 

@@ -7,7 +7,9 @@
 namespace Drupal\inmail\MessageAnalyzer\Result;
 
 /**
- * A container of message analysis results.
+ * Defines methods to read reported message analysis results.
+ *
+ * @ingroup analyzer
  */
 interface AnalyzerResultReadableInterface {
   // @todo Add getters also for properties outside the bounce domain

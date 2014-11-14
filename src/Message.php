@@ -7,7 +7,17 @@
 namespace Drupal\inmail;
 
 /**
- * A mail message, minimally parsed into a body text and a list of mail headers.
+ *
+ * Contains a minimally parsed email message.
+ *
+ * A Message object is created by passing a raw email message to ::parse(). It
+ * is split into a list of headers and the message body. If the Content-Type
+ * header indicates that it is a MIME Multipart message, the body is also split
+ * into parts.
+ *
+ * @todo Decode base64 parts/body
+ *
+ * @ingroup processing
  */
 class Message {
 
@@ -138,7 +148,6 @@ class Message {
     $raw = str_replace("\r\n", "\n", $raw);
 
     // A blank line separates headers from the body.
-    // @todo Decode base64 body.
     list($headers, $message->body) = explode("\n\n", $raw, 2);
 
     // Join so-called folded (multi-line) headers.
@@ -151,7 +160,6 @@ class Message {
       if (preg_match("@boundary=\"([$boundarychar ]+[$boundarychar])\"@", $message->getHeader('Content-Type'), $matches)) {
         $boundary = $matches[1];
         $message->parts = explode("\n--$boundary\n", $message->getBody());
-        // @todo Decode base64 parts.
       }
     }
 

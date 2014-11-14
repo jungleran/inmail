@@ -11,6 +11,8 @@ use Drupal\Component\Annotation\Plugin;
 /**
  * Defines the plugin annotation of message handlers.
  *
+ * @ingroup handler
+ *
  * @Annotation
  */
 class MessageHandler extends Plugin {

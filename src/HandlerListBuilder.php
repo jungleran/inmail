@@ -13,7 +13,9 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * List builder for meassge handler configurations.
+ * List builder for message handler configurations.
+ *
+ * @ingroup handler
  */
 class HandlerListBuilder extends ConfigEntityListBuilder {
 

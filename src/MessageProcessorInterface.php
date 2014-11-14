@@ -8,6 +8,8 @@ namespace Drupal\inmail;
 
 /**
  * Provides methods to process an incoming message.
+ *
+ * @ingroup processing
  */
 interface MessageProcessorInterface {
 

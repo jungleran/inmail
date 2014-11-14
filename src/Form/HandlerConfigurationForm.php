@@ -19,6 +19,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Handler plugins that inherit
  * \Drupal\Component\Plugin\ConfigurablePluginInterface may specify
  * plugin-specific configuration.
+ *
+ * @ingroup handler
  */
 class HandlerConfigurationForm extends EntityForm {
 

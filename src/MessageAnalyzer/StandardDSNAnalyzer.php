@@ -12,6 +12,20 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
 /**
  * Identifies standard Delivery Status Notification (DSN) messages.
+ *
+ * This analyzer parses headers and multipart message parts according to the
+ * standards defined in
+ * @link http://tools.ietf.org/html/rfc3464 RFC 3464 @endlink. It aims to
+ * identify:
+ *   - whether the message is a bounce message or not,
+ *   - the bounce status code reported by the mail server, and
+ *   - the indented recipient of the message that bounced.
+ *
+ * This analyzer will likely fail to identify non-standard messages. This
+ * behaviour is intended for the sake of simplicity; other analyzers may be
+ * enabled to accomplish more reliable bounce message classification.
+ *
+ * @ingroup analyzer
  */
 class StandardDSNAnalyzer implements MessageAnalyzerInterface {
   // The parsing in this class follows the standards defined in RFC 3464, "An

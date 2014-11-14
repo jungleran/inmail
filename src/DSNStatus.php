@@ -20,6 +20,8 @@ namespace Drupal\inmail;
  *
  * @see https://tools.ietf.org/html/rfc3463
  * @see http://tools.ietf.org/html/rfc3464
+ *
+ * @ingroup processing
  */
 class DSNStatus {
 

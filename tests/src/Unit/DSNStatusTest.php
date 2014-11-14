@@ -99,9 +99,9 @@ class DSNStatusTest extends UnitTestCase {
    * @covers ::getLabel
    * @covers ::getClassLabel
    * @covers ::getDetailLabel
-   * @dataProvider provide3463Codes
+   * @dataProvider provideKnownCodes
    */
-  public function getLabel3463($class, $subject, $detail) {
+  public function getLabelKnown($class, $subject, $detail) {
     $status = new DSNStatus($class, $subject, $detail);
     $this->assertTrue(strlen($status->getClassLabel()) > 0);
     $this->assertTrue(strlen($status->getDetailLabel()) > 0);
@@ -115,7 +115,7 @@ class DSNStatusTest extends UnitTestCase {
    * @covers ::getClassLabel
    * @covers ::getDetailLabel
    */
-  public function getLabel3463Subject($class, $subject, $detail) {
+  public function getLabelKnownSubject() {
     // Not bothering to write a provider method for this.
     $classes = [2, 4, 5];
     $subjects = range(0, 7);
@@ -156,7 +156,7 @@ class DSNStatusTest extends UnitTestCase {
    *   An array where each element is a three-element array of integers and
    *   represents a status code.
    */
-  public function provide3463Codes() {
+  public function provideKnownCodes() {
     $max_detail_per_subject = [0, 8, 4, 5, 7, 5, 5, 7];
     $codes = [];
     foreach ([2, 4, 5] as $class) {
@@ -200,7 +200,7 @@ class DSNStatusTest extends UnitTestCase {
    *   represents a status code.
    */
   public function provideValidCodes() {
-    return array_merge($this->provide3463Codes(), $this->provideOtherCodes());
+    return array_merge($this->provideKnownCodes(), $this->provideOtherCodes());
   }
 
   /**

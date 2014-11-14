@@ -11,6 +11,8 @@ use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Form for general Inmail configuration.
+ *
+ * @ingroup processing
  */
 class InmailSettingsForm extends ConfigFormBase {
 

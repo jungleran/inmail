@@ -9,6 +9,8 @@ namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
 /**
  * Indicates that hard bounces have been received from the address.
  *
+ * @ingroup mailmute
+ *
  * @SendState(
  *   id = "inmail_invalid_address",
  *   label = @Translation("Invalid address"),

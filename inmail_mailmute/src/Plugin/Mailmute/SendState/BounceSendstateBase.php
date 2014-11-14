@@ -10,6 +10,8 @@ use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateBase;
 
 /**
  * Declares methods for send states that are triggered from bounce messages.
+ *
+ * @ingroup mailmute
  */
 abstract class BounceSendstateBase extends SendStateBase {
 

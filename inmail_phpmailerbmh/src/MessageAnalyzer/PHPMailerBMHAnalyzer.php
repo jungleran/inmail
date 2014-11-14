@@ -12,7 +12,19 @@ use Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
 /**
- * Message Analyzer wrapper for the PHPMailer-BMH class.
+ * Message Analyzer wrapper for the BounceMailHandler library.
+ *
+ * The main class included in the library assumes responsibility for the whole
+ * processing flow, by connecting to an IMAP provider and moving messages into
+ * folders depending on the analysis. The analysis is however (fortunately)
+ * delegated to two static functions. This wrapper ignores the processing class
+ * and uses only the analysis functions.
+ *
+ * The library was originally developed by Andy Prevost at WorxWare
+ * (http://sourceforge.net/projects/bmh/) but a fork is currently maintained by
+ * Anthon Pang on https://github.com/instaclick/PHPMailer-BMH
+ *
+ * @ingroup analyzer
  */
 class PHPMailerBMHAnalyzer implements MessageAnalyzerInterface {
 

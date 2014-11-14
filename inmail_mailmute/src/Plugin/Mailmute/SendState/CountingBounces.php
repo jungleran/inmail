@@ -9,6 +9,8 @@ namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
 /**
  * Class CountingBounces
  *
+ * @ingroup mailmute
+ *
  * @SendState(
  *   id = "inmail_counting",
  *   label = @Translation("Counting soft bounces"),

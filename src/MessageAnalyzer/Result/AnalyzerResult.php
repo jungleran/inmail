@@ -13,6 +13,8 @@ use Drupal\inmail\DSNStatus;
  *
  * The setter methods only have effect the first time they are called, so values
  * are only writable once.
+ *
+ * @ingroup analyzer
  */
 class AnalyzerResult implements AnalyzerResultWritableInterface, AnalyzerResultReadableInterface {
 

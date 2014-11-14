@@ -14,6 +14,16 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
 /**
  * Message Analyzer wrapper for cfortune's BounceHandler class.
+ *
+ * The BounceHandler class tries to identify a standardized DSN code and the
+ * intended recipient of the original message. If the status is not directly
+ * deducible, some pattern-matching for well-known notice strings is applied to
+ * cover more cases.
+ *
+ * The class is maintained by Patrick O'Connell (Rambomst) as a fork of the
+ * PHP-Bounce-Handler project: https://github.com/Rambomst/PHP-Bounce-Handler
+ *
+ * @ingroup analyzer
  */
 class CfortuneAnalyzer implements MessageAnalyzerInterface {
 

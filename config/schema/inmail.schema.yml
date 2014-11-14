@@ -8,9 +8,6 @@ inmail.inmail_handler.*:
     label:
       label: 'Label'
       type: string
-    enabled:
-      label: 'Enabled'
-      type: bool
     plugin:
       label: 'Plugin'
       type: string

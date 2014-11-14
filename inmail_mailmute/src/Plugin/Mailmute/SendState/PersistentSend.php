@@ -13,6 +13,8 @@ namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
  * to mute innocent users. A better protection is always to enable VERP or
  * similar recipient identification, if possible.
  *
+ * @ingroup mailmute
+ *
  * @SendState(
  *   id = "persistent_send",
  *   label = @Translation("Persistent send"),

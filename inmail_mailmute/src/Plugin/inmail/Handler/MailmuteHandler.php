@@ -20,6 +20,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Reacts to bounce messages by managing the send state of the bouncing address.
  *
+ * @ingroup mailmute
+ *
  * @MessageHandler(
  *   id = "mailmute",
  *   label = @Translation("Mailmute")

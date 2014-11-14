@@ -5,6 +5,20 @@
  */
 
 /**
+ * @addtogroup processing
+ * @{
+ * The primary purpose of Drush integration for Inmail is to pipe incoming mail
+ * to the message processor. You may want to configure your MTA to redirect
+ * messages to a script that runs `drush inmail-process`. You can use the
+ * provided postfix-filter.sh bash script or create your own.
+ *
+ * Another use for the Drush commands is manual testing during development. You
+ * can evaluate the effects of various types of messages by feeding the email
+ * source files to `drush inmail-process`, just as if the message had just been
+ * fetched and forwarded by an MTA.
+ */
+
+/**
  * Implements hook_drush_commands().
  */
 function inmail_drush_command() {
@@ -102,3 +116,7 @@ function _inmail_get_piped_input() {
   }
   return $data;
 }
+
+/**
+ * @}
+ */

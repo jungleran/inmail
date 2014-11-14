@@ -12,6 +12,8 @@ use Drupal\Core\Plugin\DefaultPluginManager;
 
 /**
  * Plugin manager for Inmail message handlers.
+ *
+ * @ingroup handler
  */
 class HandlerManager extends DefaultPluginManager implements HandlerManagerInterface {
 

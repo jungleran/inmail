@@ -12,6 +12,8 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
 
 /**
  * Mail message processor using services to analyze and handle messages.
+ *
+ * @ingroup processing
  */
 class MessageProcessor implements MessageProcessorInterface {
 

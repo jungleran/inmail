@@ -12,9 +12,26 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 /**
  * Extracts a recipient address from a VERP 'To' header of a bounce.
  *
+ * Variable Envelope Return Path (VERP) is a method to reliably identify the
+ * target recipient when analyzing a bounce message.
+ *
+ * The Return-Path header for outgoing messages is set to an address that
+ * includes the address of the target recipient:
+ * @code
+ * bounce-mailbox '+' target-mailbox '=' target-host '@' bounce-host
+ * @endcode
+ * In other words, the recipient's address is appended to the Return-Path
+ * address mailbox part, with a preceding '+' and with its '@' character
+ * replaced by '='.
+ *
+ * Appending with '+' is known as "subaddress extension" and is described in RFC
+ * 5233. Commonly, messages to foo+anything@example.com are delivered directly
+ * to foo@example.com. Note that support for subaddress extension is limited
+ * among mail services.
+ *
  * @see inmail_mail_alter_VERP()
- * @see https://en.wikipedia.org/wiki/VERP
- * @todo Document VERP here instead.
+ *
+ * @ingroup analyzer
  */
 class VERPAnalyzer implements MessageAnalyzerInterface {
 

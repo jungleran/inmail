@@ -12,7 +12,9 @@ use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
 
 /**
- * Provides callbacks to execute for an analyzed message.
+ * Provides a callback to execute for an analyzed message.
+ *
+ * @ingroup handler
  */
 interface HandlerInterface extends ConfigurablePluginInterface, PluginFormInterface {
 

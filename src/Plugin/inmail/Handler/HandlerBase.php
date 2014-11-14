@@ -11,6 +11,11 @@ use Drupal\Core\Plugin\PluginBase;
 
 /**
  * Base class for message handler plugins.
+ *
+ * This provides dumb implementations for most handler methods, but leaves
+ * ::invoke() abstract.
+ *
+ * @ingroup handler
  */
 abstract class HandlerBase extends PluginBase implements HandlerInterface {
 
