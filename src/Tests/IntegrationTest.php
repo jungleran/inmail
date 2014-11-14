@@ -51,6 +51,7 @@ class IntegrationTest extends WebTestBase {
     $admin = $this->drupalCreateUser(array(
       'administer users',
       'administer user display',
+      'administer send state',
     ));
     $this->drupalLogin($admin);
     $approve_edit = array(
@@ -66,15 +67,12 @@ class IntegrationTest extends WebTestBase {
     // script or a mail fetcher.
     \Drupal::service('inmail.processor')->process($raw);
 
-    // Enable sendstate widget/formatter.
-    $edit = array(
-      'fields[field_sendstate][type]' => 'sendstate',
-    );
-    $this->drupalPostForm('admin/config/people/accounts/display', $edit, 'Save');
-
     // Check send state.
     $this->drupalGet('user/2');
-    $this->assertTrue(preg_match('/Send emails\s*Invalid address/', $this->getTextContent()));
+    $this->assertText('Invalid address', $this->getTextContent());
+    $this->assertText('5.1.1');
+    $this->assertText('Permanent Failure: Bad destination mailbox address');
+    $this->assertText('This didn\'t go too well.');
   }
 
   /**
@@ -91,7 +89,6 @@ class IntegrationTest extends WebTestBase {
    *   The generated bounce message.
    */
   protected static function generateBounceMessage(array $original_message) {
-    debug($original_message);
     // Set replacement variables.
     $from = $original_message['from'];
     $subject = $original_message['subject'];
