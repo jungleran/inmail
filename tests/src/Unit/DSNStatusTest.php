@@ -32,7 +32,7 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the parse method for valid codes.
    *
    * @covers ::parse
-   * @dataProvider provideCodes
+   * @dataProvider provideValidCodes
    */
   public function testParse($class, $subject, $detail) {
     DSNStatus::parse("$class.$subject.$detail");
@@ -53,7 +53,7 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the getCode method.
    *
    * @covers ::getCode
-   * @dataProvider provideCodes
+   * @dataProvider provideValidCodes
    */
   public function testGetCode($class, $subject, $detail) {
     $status = new DSNStatus($class, $subject, $detail);
@@ -64,7 +64,7 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the isSuccess method.
    *
    * @covers ::isSuccess
-   * @dataProvider provideCodes
+   * @dataProvider provideValidCodes
    */
   public function testIsSuccess($class, $subject, $detail) {
     $status = new DSNStatus($class, $subject, $detail);
@@ -75,7 +75,7 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the isPermanentFailure method.
    *
    * @covers ::isPermanentFailure
-   * @dataProvider provideCodes
+   * @dataProvider provideValidCodes
    */
   public function testIsPermanentFailure($class, $subject, $detail) {
     $status = new DSNStatus($class, $subject, $detail);
@@ -86,7 +86,7 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the isTransientFailure method.
    *
    * @covers ::isTransientFailure
-   * @dataProvider provideCodes
+   * @dataProvider provideValidCodes
    */
   public function testIsTransientFailure($class, $subject, $detail) {
     $status = new DSNStatus($class, $subject, $detail);
@@ -94,13 +94,14 @@ class DSNStatusTest extends UnitTestCase {
   }
 
   /**
-   * Tests the getLabel, getClassLabel and getDetailLabel methods.
+   * Tests label methods for known codes.
    *
    * @covers ::getLabel
    * @covers ::getClassLabel
    * @covers ::getDetailLabel
+   * @dataProvider provide3463Codes
    */
-  public function getLabel($class, $subject, $detail) {
+  public function getLabel3463($class, $subject, $detail) {
     $status = new DSNStatus($class, $subject, $detail);
     $this->assertTrue(strlen($status->getClassLabel()) > 0);
     $this->assertTrue(strlen($status->getDetailLabel()) > 0);
@@ -108,13 +109,30 @@ class DSNStatusTest extends UnitTestCase {
   }
 
   /**
-   * Provides valid DSN status codes.
+   * Tests label methods for valid but unknown codes.
+   *
+   * @covers ::getLabel
+   * @covers ::getClassLabel
+   * @covers ::getDetailLabel
+   * @dataProvider provideOtherCodes
+   */
+  public function getLabelOther($class, $subject, $detail) {
+    $status = new DSNStatus($class, $subject, $detail);
+    $this->assertTrue(strlen($status->getClassLabel()) > 0);
+    $this->assertNull($status->getDetailLabel());
+    $this->assertEquals($status->getClassLabel(), $status->getLabel());
+  }
+
+  /**
+   * Provides the DSN status codes defined in RFC 3463.
+   *
+   * These all have labels assigned to them in DSNStatus.
    *
    * @return array
    *   An array where each element is a three-element array of integers and
    *   represents a status code.
    */
-  public function provideCodes() {
+  public function provide3463Codes() {
     $max_detail_per_subject = [0, 8, 4, 5, 7, 5, 5, 7];
     $codes = [];
     foreach ([2, 4, 5] as $class) {
@@ -125,6 +143,40 @@ class DSNStatusTest extends UnitTestCase {
       }
     }
     return $codes;
+  }
+
+  /**
+   * Provides some DSN status codes that are valid but not defined in RFC 3463.
+   *
+   * @return array
+   *   An array where each element is a three-element array of integers and
+   *   represents a status code.
+   */
+  public function provideOtherCodes() {
+    return [
+      // Excessive subject part.
+      [4, 8, 0],
+      // Excessive detail part per subject; 1 more than the greatest defined.
+      [4, 0, 1],
+      [4, 1, 9],
+      [4, 2, 5],
+      [4, 3, 6],
+      [4, 4, 8],
+      [4, 5, 6],
+      [4, 6, 6],
+      [4, 7, 8],
+    ];
+  }
+
+  /**
+   * Provides the DSN status codes defined in 3463 and a few other valid codes.
+   *
+   * @return array
+   *   An array where each element is a three-element array of integers and
+   *   represents a status code.
+   */
+  public function provideValidCodes() {
+    return array_merge($this->provide3463Codes(), $this->provideOtherCodes());
   }
 
   /**
@@ -139,17 +191,11 @@ class DSNStatusTest extends UnitTestCase {
       [1, 0, 0],
       [3, 0, 0],
       [6, 0, 0],
-      // Invalid subject part.
-      [4, 8, 0],
-      // Invalid detail part; 1 more than the greatest valid for each subject.
-      [4, 0, 1],
-      [4, 1, 9],
-      [4, 2, 5],
-      [4, 3, 6],
-      [4, 4, 8],
-      [4, 5, 6],
-      [4, 6, 6],
-      [4, 7, 8],
+      // Invalid subject/detail parts.
+      [4, -1, 0],
+      [4, 1000, 0],
+      [4, 0, -1],
+      [4, 0, 1000],
     ];
   }
 

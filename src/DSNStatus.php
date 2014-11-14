@@ -15,6 +15,9 @@ namespace Drupal\inmail;
  * classification of the status, which is further specified by the subject and
  * the detail.
  *
+ * The RFC defines a basic set of codes, with associated descriptions. The
+ * description headings ("labels") of those codes are included in this class.
+ *
  * @see https://tools.ietf.org/html/rfc3463
  * @see http://tools.ietf.org/html/rfc3464
  */
@@ -53,7 +56,7 @@ class DSNStatus {
   );
 
   /**
-   * Labels for the detail sub-codes, as specified by the RFC.
+   * Labels for the detail sub-codes specified in RFC 3463.
    *
    * @var array
    */
@@ -142,11 +145,11 @@ class DSNStatus {
     if (!in_array($class, [2, 4, 5])) {
       throw new \InvalidArgumentException("Invalid 'class' part: $class.");
     }
-    if (!in_array($subject, range(0, 7))) {
+    if ($subject < 0 || 999 < $subject) {
       throw new \InvalidArgumentException("Invalid 'subject' part: $subject");
     }
-    if (!isset(static::$detailMap[$subject][$detail])) {
-      throw new \InvalidArgumentException("Invalid 'detail' part: $subject.$detail");
+    if ($detail < 0 || 999 < $detail) {
+      throw new \InvalidArgumentException("Invalid 'detail' part: $detail");
     }
     $this->class = intval($class);
     $this->subject = intval($subject);
@@ -170,7 +173,9 @@ class DSNStatus {
     if (count($parts) == 3) {
       return new static($parts[0], $parts[1], $parts[2]);
     }
-    // Unreachable point. Above statement either returns or throws.
+    else {
+      throw new \InvalidargumentException("Invalid code: $code");
+    }
   }
 
   /**
@@ -230,13 +235,18 @@ class DSNStatus {
    * Returns the label for the subject/detail sub-codes.
    *
    * The label corresponds to the first line of the description of the detail in
-   * the RFC.
+   * RFC 3463.
    *
-   * @return string
-   *   The detail label.
+   * @return string|null
+   *   The detail label. If the subject/detail sub-codes are defined outside the
+   *   RFC, this returns NULL.
    */
   public function getDetailLabel() {
-    return static::$detailMap[$this->subject][$this->detail];
+    if (isset(static::$detailMap[$this->subject][$this->detail])) {
+      return static::$detailMap[$this->subject][$this->detail];
+    }
+
+    return NULL;
   }
 
   /**
@@ -283,6 +293,6 @@ class DSNStatus {
    *   RFC, and is thus in English and untranslatable.
    */
   public function getLabel() {
-    return $this->getClassLabel() . ': ' . $this->getDetailLabel();
+    return $this->getClassLabel() . ($this->getDetailLabel() ? ': ' . $this->getDetailLabel() : '');
   }
 }
