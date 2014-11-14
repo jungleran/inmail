@@ -1,21 +1,21 @@
 <?php
 /**
  * @file
- * Contains \Drupal\Tests\inmail\Unit\DSNStatusResultTest.
+ * Contains \Drupal\Tests\inmail\Unit\DSNStatusTest.
  */
 
 namespace Drupal\Tests\inmail\Unit;
 
-use Drupal\inmail\DSNStatusResult;
+use Drupal\inmail\DSNStatus;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Unit tests the DSN status result class.
+ * Unit tests the DSN status class.
  *
- * @coversDefaultClass \Drupal\inmail\DSNStatusResult
+ * @coversDefaultClass \Drupal\inmail\DSNStatus
  * @group inmail
  */
-class DSNStatusResultTest extends UnitTestCase {
+class DSNStatusTest extends UnitTestCase {
 
   /**
    * Tests the constructor for invalid codes.
@@ -25,7 +25,7 @@ class DSNStatusResultTest extends UnitTestCase {
    * @dataProvider provideInvalidCodes
    */
   public function testConstructInvalid($class, $subject, $detail) {
-    new DSNStatusResult($class, $subject, $detail);
+    new DSNStatus($class, $subject, $detail);
   }
 
   /**
@@ -35,7 +35,7 @@ class DSNStatusResultTest extends UnitTestCase {
    * @dataProvider provideCodes
    */
   public function testParse($class, $subject, $detail) {
-    DSNStatusResult::parse("$class.$subject.$detail");
+    DSNStatus::parse("$class.$subject.$detail");
   }
 
   /**
@@ -46,7 +46,7 @@ class DSNStatusResultTest extends UnitTestCase {
    * @dataProvider provideInvalidCodes
    */
   public function testParseInvalid($class, $subject, $detail) {
-    DSNStatusResult::parse("$class.$subject.$detail");
+    DSNStatus::parse("$class.$subject.$detail");
   }
 
   /**
@@ -56,7 +56,7 @@ class DSNStatusResultTest extends UnitTestCase {
    * @dataProvider provideCodes
    */
   public function testGetCode($class, $subject, $detail) {
-    $status = new DSNStatusResult($class, $subject, $detail);
+    $status = new DSNStatus($class, $subject, $detail);
     $this->assertEquals("$class.$subject.$detail", $status->getCode());
   }
 
@@ -67,7 +67,7 @@ class DSNStatusResultTest extends UnitTestCase {
    * @dataProvider provideCodes
    */
   public function testIsSuccess($class, $subject, $detail) {
-    $status = new DSNStatusResult($class, $subject, $detail);
+    $status = new DSNStatus($class, $subject, $detail);
     $this->assertEquals($class == 2, $status->isSuccess());
   }
 
@@ -78,7 +78,7 @@ class DSNStatusResultTest extends UnitTestCase {
    * @dataProvider provideCodes
    */
   public function testIsPermanentFailure($class, $subject, $detail) {
-    $status = new DSNStatusResult($class, $subject, $detail);
+    $status = new DSNStatus($class, $subject, $detail);
     $this->assertEquals($class == 5, $status->isPermanentFailure());
   }
 
@@ -89,7 +89,7 @@ class DSNStatusResultTest extends UnitTestCase {
    * @dataProvider provideCodes
    */
   public function testIsTransientFailure($class, $subject, $detail) {
-    $status = new DSNStatusResult($class, $subject, $detail);
+    $status = new DSNStatus($class, $subject, $detail);
     $this->assertEquals($class == 4, $status->isTransientFailure());
   }
 
@@ -101,25 +101,10 @@ class DSNStatusResultTest extends UnitTestCase {
    * @covers ::getDetailLabel
    */
   public function getLabel($class, $subject, $detail) {
-    $status = new DSNStatusResult($class, $subject, $detail);
+    $status = new DSNStatus($class, $subject, $detail);
     $this->assertTrue(strlen($status->getClassLabel()) > 0);
     $this->assertTrue(strlen($status->getDetailLabel()) > 0);
     $this->assertEquals($status->getClassLabel() . ': ' . $status->getDetailLabel(), $status->getLabel());
-  }
-
-  /**
-   * Tests the getRecipient and setRecipient methods.
-   *
-   * @covers ::setRecipient
-   * @covers ::getRecipient
-   * @dataProvider provideCodes
-   */
-  public function testSetGetRecipient($class, $subject, $detail) {
-    $recipient = $this->randomMachineName();
-    $status = new DSNStatusResult($class, $subject, $detail);
-    $this->assertNull($status->getRecipient());
-    $status->setRecipient($recipient);
-    $this->assertEquals($recipient, $status->getRecipient());
   }
 
   /**

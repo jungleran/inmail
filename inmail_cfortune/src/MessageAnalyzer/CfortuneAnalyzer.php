@@ -7,7 +7,7 @@
 namespace Drupal\inmail_cfortune\MessageAnalyzer;
 
 use cfortune\PHPBounceHandler\BounceHandler;
-use Drupal\inmail\DSNStatusResult;
+use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Message;
 use Drupal\inmail\Messageanalyzer\MessageAnalyzerInterface;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
@@ -29,7 +29,7 @@ class CfortuneAnalyzer implements MessageAnalyzerInterface {
 
     // The status property possibly contains an RFC 3463 status code.
     if ($handler->status) {
-      $result->setBounceStatusCode(DSNStatusResult::parse($handler->status));
+      $result->setBounceStatusCode(DSNStatus::parse($handler->status));
     }
     // The recipient property possibly contains the target recipient of the
     // message that bounced.

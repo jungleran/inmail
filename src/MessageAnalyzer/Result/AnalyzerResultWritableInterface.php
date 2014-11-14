@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail\MessageAnalyzer\Result;
 
-use Drupal\inmail\DSNStatusResult;
+use Drupal\inmail\DSNStatus;
 
 /**
  * A container of message analysis results.
@@ -25,10 +25,10 @@ interface AnalyzerResultWritableInterface {
   /**
    * Report the status code of a bounce message.
    *
-   * @param DSNStatusResult $code
+   * @param DSNStatus $code
    *   A status code.
    */
-  public function setBounceStatusCode(DSNStatusResult $code);
+  public function setBounceStatusCode(DSNStatus $code);
 
   /**
    * Report the reason for a bounce.

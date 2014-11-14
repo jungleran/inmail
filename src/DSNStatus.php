@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\DSNStatusResult.
+ * Contains \Drupal\inmail\DSNStatus.
  */
 
 namespace Drupal\inmail;
@@ -17,10 +17,8 @@ namespace Drupal\inmail;
  *
  * @see https://tools.ietf.org/html/rfc3463
  * @see http://tools.ietf.org/html/rfc3464
- *
- * @todo Rename to DSNStatus.
  */
-class DSNStatusResult {
+class DSNStatus {
 
   /**
    * Class sub-code (first part of status code).
@@ -42,13 +40,6 @@ class DSNStatusResult {
    * @var int
    */
   protected $detail;
-
-  /**
-   * The intended recipient address of the message that bounced.
-   *
-   * @var string
-   */
-  protected $recipient;
 
   /**
    * Labels for the class sub-code, as specified by the RFC.
@@ -135,7 +126,7 @@ class DSNStatusResult {
   );
 
   /**
-   * Constructs a DSNStatusResult object.
+   * Constructs a DSNStatus object.
    *
    * @param int|string $class
    *   The class sub-code (first number in the status code).
@@ -169,7 +160,7 @@ class DSNStatusResult {
    *   Three-number status code.
    *
    * @return static
-   *   A new DSNStatusResult object for the given code.
+   *   A new DSNStatus object for the given code.
    *
    * @throws \InvalidArgumentException
    *   If the given code is not in accordance with the RFC.
@@ -282,26 +273,6 @@ class DSNStatusResult {
    */
   public function isPermanentFailure() {
     return $this->class == 5;
-  }
-
-  /**
-   * Specify the target recipient of the mail that bounced.
-   *
-   * @param string $address
-   *   The address of the identified target recipient.
-   */
-  public function setRecipient($address) {
-    $this->recipient = trim($address) ?: NULL;
-  }
-
-  /**
-   * Returns the target recipient of the mail that bounced, if identified.
-   *
-   * @return string
-   *   The address of the identified target recipient.
-   */
-  public function getRecipient() {
-    return $this->recipient;
   }
 
   /**

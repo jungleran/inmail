@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail\MessageAnalyzer\Result;
 
-use Drupal\inmail\DSNStatusResult;
+use Drupal\inmail\DSNStatus;
 
 /**
  * Contains analyzer results.
@@ -28,16 +28,16 @@ class AnalyzerResult implements AnalyzerResultWritableInterface, AnalyzerResultR
   /**
    * {@inheritdoc}
    */
-  public function setBounceStatusCode(DSNStatusResult $code) {
+  public function setBounceStatusCode(DSNStatus $code) {
     if ($this->set('bounce_status_code', $code)) {
       return;
     }
 
     // If subject and detail are 0 (like X.0.0), allow overriding those.
-    /** @var \Drupal\inmail\DSNStatusResult $current_code */
+    /** @var \Drupal\inmail\DSNStatus $current_code */
     $current_code = $this->get('bounce_status_code');
     if ($current_code->getSubject() + $current_code->getDetail() == 0) {
-      $new_code = new DSNStatusResult($current_code->getClass(), $code->getSubject(), $code->getDetail());
+      $new_code = new DSNStatus($current_code->getClass(), $code->getSubject(), $code->getDetail());
       $this->properties['bounce_status_code'] = $new_code;
     }
   }

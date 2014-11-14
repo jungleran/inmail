@@ -7,7 +7,7 @@
 namespace Drupal\inmail_mailmute\Tests;
 
 use Drupal\Component\Utility\String;
-use Drupal\inmail\DSNStatusResult;
+use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
 use Drupal\simpletest\KernelTestBase;
@@ -96,14 +96,14 @@ class InmailMailmuteTest extends KernelTestBase {
     $this->resetUser();
 
     // Some bounce result statuses to test.
-    /** @var \Drupal\inmail\DSNStatusResult[] $statuses */
+    /** @var \Drupal\inmail\DSNStatus[] $statuses */
     $statuses = array(
       // Not a bounce.
-      new DSNStatusResult(2, 0, 0),
+      new DSNStatus(2, 0, 0),
       // Soft bounce (temporarily unavailable).
-      new DSNStatusResult(4, 0, 0),
+      new DSNStatus(4, 0, 0),
       // Hard bounce (unexisting addres etc).
-      new DSNStatusResult(5, 0, 0),
+      new DSNStatus(5, 0, 0),
     );
 
     foreach ($statuses as $status) {

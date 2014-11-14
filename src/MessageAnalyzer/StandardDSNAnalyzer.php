@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail\MessageAnalyzer;
 
-use Drupal\inmail\DSNStatusResult;
+use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
@@ -39,7 +39,7 @@ class StandardDSNAnalyzer implements MessageAnalyzerInterface {
 
     // Parse the 'Status:' pseudo-header.
     if (preg_match('/\nStatus\s*:\s*([245])\.(\d{1,3})\.(\d{1,3})/i', $machine_part, $matches)) {
-      $result->setBounceStatusCode(new DSNStatusResult($matches[1], $matches[2], $matches[3]));
+      $result->setBounceStatusCode(new DSNStatus($matches[1], $matches[2], $matches[3]));
     }
 
     // Parse the 'Final-Recipient:' pseudo-header.

@@ -24,7 +24,7 @@ interface AnalyzerResultReadableInterface {
   /**
    * Returns the reported status code of a bouce message.
    *
-   * @return \Drupal\inmail\DSNStatusResult
+   * @return \Drupal\inmail\DSNStatus
    *   The status code, or NULL if it has not been reported.
    */
   public function getBounceStatusCode();

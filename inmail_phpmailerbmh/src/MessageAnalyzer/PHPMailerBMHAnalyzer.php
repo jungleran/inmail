@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail_phpmailerbmh\MessageAnalyzer;
 
-use Drupal\inmail\DSNStatusResult;
+use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
@@ -75,7 +75,7 @@ class PHPMailerBMHAnalyzer implements MessageAnalyzerInterface {
     if (isset(static::$rulecatStatusMap[$bmh_result['rule_cat']])) {
       $code = static::$rulecatStatusMap[$bmh_result['rule_cat']];
       if ($code) {
-        $result->setBounceStatusCode(DSNStatusResult::parse($code));
+        $result->setBounceStatusCode(DSNStatus::parse($code));
         $result->setBounceRecipient($bmh_result['email']);
       }
     }

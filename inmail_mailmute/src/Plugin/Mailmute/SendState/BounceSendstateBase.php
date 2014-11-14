@@ -40,7 +40,7 @@ abstract class BounceSendstateBase extends SendStateBase {
   /**
    * Set a status code for the bounce triggering this state.
    *
-   * @param \Drupal\inmail\DSNStatusResult $code
+   * @param \Drupal\inmail\DSNStatus $code
    *   The bounce status object.
    *
    * @return static
@@ -54,7 +54,7 @@ abstract class BounceSendstateBase extends SendStateBase {
   /**
    * Returns the status code for the bounce that triggered this state.
    *
-   * @return \Drupal\inmail\DSNStatusResult
+   * @return \Drupal\inmail\DSNStatus
    *   The bounce status code, or NULL if none is set.
    */
   public function getStatus() {
