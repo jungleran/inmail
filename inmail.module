@@ -175,3 +175,19 @@ function inmail_generate_VERP($return_path, $recipient) {
   $to = str_replace('@', '=', $recipient);
   return str_replace('@', "+$to@", $return_path);
 }
+
+/**
+ * Implements hook_mail().
+ */
+function inmail_mail($key, &$message, $params) {
+  switch ($key) {
+    // Forwards unclassified bounces through ModeratorForwardHandler.
+    case 'handler_moderator_forward':
+      $message['subject'] = t("Fwd: %subject", $message['subject']);
+      $message['body'][] = t('The following message was sent to @site and has been forwarded to you.', array('%site' => \Drupal::config('system.site')->get('name')));
+      $message['body'][] = $params['original'];
+      // Add a custom header that we can check for in the handler.
+      $message['headers']['X-Inmail-Forwarded'] = 'handler_moderator_forward';
+      break;
+  }
+}
