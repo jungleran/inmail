@@ -6,6 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\inmail\Entity\Handler;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -48,6 +49,18 @@ class InmailWebTest extends WebTestBase {
 
     $this->drupalPostForm(NULL, ['return_path' => 'bounces@example.com'], 'Save configuration');
     $this->assertText('The configuration options have been saved.');
+
+    // Check Handler list and fallback plugin.
+    $this->clickLink('Message handlers');
+    $this->assertText('There is no Message handler yet');
+    Handler::create(array(
+      'id' => 'unicorn',
+      'plugin_id' => 'unicorn',
+      'label' => 'Unicorn',
+    ))->save();
+    $this->drupalGet('admin/config/system/inmail/handlers');
+    $this->assertText('Unicorn');
+    $this->assertText('Plugin missing');
   }
 
 }
