@@ -4,6 +4,8 @@
  * Drush commands for the Inmail module.
  */
 
+use Drupal\inmail\Entity\Handler;
+
 /**
  * @addtogroup processing
  * @{
@@ -82,11 +84,14 @@ function drush_inmail_services() {
     echo "No analyzers registered.\n";
   }
 
-  if (!$handlers = \Drupal::service('plugin.manager.inmail.handler')->getDefinitions()) {
+  if (!$handler_configs = Handler::loadMultiple()) {
     echo "No handlers registered.\n";
   }
-  foreach ($handlers as $definition) {
-    echo "Handler: {$definition['label']}\n";
+  foreach ($handler_configs as $handler_config) {
+    // Creating an instance enables us to detect if a config references a
+    // missing plugin.
+    $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId());
+    echo "Handler: {$handler_config->label()} ({$handler->getPluginId()})\n";
   }
 }
 

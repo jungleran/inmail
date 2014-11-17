@@ -24,4 +24,11 @@ class HandlerManager extends DefaultPluginManager implements HandlerManagerInter
     parent::__construct('Plugin/inmail/Handler', $namespaces, $module_handler, 'Drupal\inmail\Plugin\inmail\Handler\HandlerInterface', 'Drupal\inmail\Annotation\MessageHandler');
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getFallbackPluginId($plugin_id, array $configuration = array()) {
+    return 'broken';
+  }
+
 }
