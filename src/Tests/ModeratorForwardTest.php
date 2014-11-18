@@ -7,6 +7,7 @@
 namespace Drupal\inmail\Tests;
 
 use Drupal\inmail\Entity\Handler;
+use Drupal\inmail\Message;
 use Drupal\simpletest\KernelTestBase;
 
 /**
@@ -21,7 +22,7 @@ class ModeratorForwardTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail', 'system');
+  public static $modules = array('inmail', 'inmail_test', 'system');
 
   /**
    * {@inheritdoc}
@@ -31,7 +32,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $this->installConfig(array('inmail'));
     $this->installEntitySchema('inmail_handler');
     \Drupal::config('system.mail')
-      ->set('interface.default', 'test_mail_collector')
+      ->set('interface.default', 'inmail_test_mail_collector')
       ->save();
     \Drupal::config('system.site')
       ->set('mail', 'bounces@example.com')
@@ -82,7 +83,27 @@ class ModeratorForwardTest extends KernelTestBase {
    * Tests the forwarded message.
    */
   public function testModeratorForwardMessage() {
-    $this->fail('@todo');
+    // Get an original.
+    $original = $this->getMessageFileContents('normal.eml');
+    $original_parsed = Message::parse($original);
+
+    // Conceive a forward.
+    Handler::load('moderator_forward')
+      ->set('configuration', array('moderator' => 'moderator@example.com'))
+      ->save();
+    \Drupal::service('inmail.processor')->process($original);
+    $messages = \Drupal::state()->get('system.test_mail_collector');
+    $forward = array_pop($messages);
+
+    // Body should be unchanged.
+    $this->assertEqual(implode("\n", $forward['body']), $original_parsed->getBody(), 'Forwarded message body is unchanged.');
+
+    // Headers should have the correct changes.
+    $headers_prefix = "X-Inmail-Forwarded: handler_moderator_forward\nTo: moderator@example.com\n";
+    $expected_headers = implode("\n", $original_parsed->getHeaders());
+    $expected_headers = str_replace("To: Arild Matsson <inmail_test@example.com>\n", '', $expected_headers);
+    $expected_headers = $headers_prefix . $expected_headers;
+    $this->assertEqual($forward['raw_headers'], $expected_headers, 'Forwarded message headers have the correct changes.');
   }
 
   /**

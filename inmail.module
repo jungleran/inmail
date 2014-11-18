@@ -183,11 +183,25 @@ function inmail_mail($key, &$message, $params) {
   switch ($key) {
     // Forwards unclassified bounces through ModeratorForwardHandler.
     case 'handler_moderator_forward':
-      $message['subject'] = t("Fwd: %subject", array('%subject' => $message['subject']));
-      $message['body'][] = t('The following message was sent to @site and has been forwarded to you.', array('%site' => \Drupal::config('system.site')->get('name')));
-      $message['body'][] = $params['original'];
-      // Add a custom header that we can check for in the handler.
-      $message['headers']['X-Inmail-Forwarded'] = 'handler_moderator_forward';
+      /** @var \Drupal\inmail\Message $original */
+      $original = $params['original'];
+
+      // Set subject.
+      $message['subject'] = $original->getHeader('Subject');
+
+      // Set body.
+      $message['body'][] = $original->getBody();
+
+      // Set headers, with custom To and X headers prepended.
+      // Alter hooks expect headers to be in name => value format. Such a
+      // structure cannot handle duplicate header names, as is common with e.g.
+      // the Received header and therefore a requirement in the context of
+      // forwarding. Thus the headers are assigned to $message['raw_headers']
+      // here, and the same is expected by DirectMail.
+      $headers = preg_replace('/\nTo: [^\n]*/', '', implode("\n", $original->getHeaders()));
+      $headers = "To: {$message['to']}\n" . $headers;
+      $headers = "X-Inmail-Forwarded: handler_moderator_forward\n" . $headers;
+      $message['raw_headers'] = $headers;
       break;
   }
 }

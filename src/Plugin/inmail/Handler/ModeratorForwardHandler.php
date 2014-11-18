@@ -56,7 +56,8 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
       $plugin_id,
       $plugin_definition,
       $container->get('plugin.manager.mail'),
-      $container->get('logger.factory')->get('inmail')
+      $container->get('logger.factory')->get('inmail'),
+      $container->get('config.factory')->get('system.mail')
     );
   }
 
@@ -88,10 +89,10 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
       return;
     }
 
-    // Send forward, see inmail_mail().
-    $params = array(
-      'original' => $message->getRaw(),
-    );
+    // Send forward.
+    // DirectMail is set as mail plugin through default config.
+    // Message is composed in inmail_mail().
+    $params = array('original' => $message);
     // @todo Include language in settings form.
     $this->mailManager->mail('inmail', 'handler_moderator_forward', $moderator, \Drupal::languageManager()->getDefaultLanguage(), $params);
   }
