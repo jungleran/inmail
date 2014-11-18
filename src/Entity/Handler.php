@@ -92,9 +92,13 @@ class Handler extends ConfigEntityBase {
    * @param array $configuration
    *   New plugin configuraion. Should match the properties defined by the
    *   plugin referenced by ::$plugin.
+   *
+   * @return static
+   *   $this
    */
   public function setConfiguration($configuration) {
     $this->configuration = $configuration;
+    return $this;
   }
 
 }
