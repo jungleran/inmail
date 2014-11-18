@@ -23,6 +23,9 @@ class DirectMail implements MailInterface {
    * {@inheritdoc}
    */
   public function format(array $message) {
+    // Join the body array into one string.
+    $message['body'] = implode("\n\n", $message['body']);
+
     return $message;
   }
 

@@ -99,7 +99,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $this->assertEqual(implode("\n", $forward['body']), $original_parsed->getBody(), 'Forwarded message body is unchanged.');
 
     // Headers should have the correct changes.
-    $headers_prefix = "X-Inmail-Forwarded: handler_moderator_forward\nTo: moderator@example.com\n";
+    $headers_prefix = "X-Inmail-Forwarded: handler_moderator_forward\n";
     $expected_headers = implode("\n", $original_parsed->getHeaders());
     $expected_headers = str_replace("To: Arild Matsson <inmail_test@example.com>\n", '', $expected_headers);
     $expected_headers = $headers_prefix . $expected_headers;

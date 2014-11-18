@@ -90,7 +90,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
     }
 
     // Send forward.
-    // DirectMail is set as mail plugin through default config.
+    // DirectMail is set as mail plugin on install.
     // Message is composed in inmail_mail().
     $params = array('original' => $message);
     // @todo Include language in settings form.

@@ -192,14 +192,13 @@ function inmail_mail($key, &$message, $params) {
       // Set body.
       $message['body'][] = $original->getBody();
 
-      // Set headers, with custom To and X headers prepended.
+      // Set headers, with custom X header prepended.
       // Alter hooks expect headers to be in name => value format. Such a
       // structure cannot handle duplicate header names, as is common with e.g.
       // the Received header and therefore a requirement in the context of
       // forwarding. Thus the headers are assigned to $message['raw_headers']
       // here, and the same is expected by DirectMail.
       $headers = preg_replace('/\nTo: [^\n]*/', '', implode("\n", $original->getHeaders()));
-      $headers = "To: {$message['to']}\n" . $headers;
       $headers = "X-Inmail-Forwarded: handler_moderator_forward\n" . $headers;
       $message['raw_headers'] = $headers;
       break;

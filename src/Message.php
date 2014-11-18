@@ -151,8 +151,11 @@ class Message {
     list($headers, $message->body) = explode("\n\n", $raw, 2);
 
     // Join so-called folded (multi-line) headers.
-    $headers = preg_replace('/\n([\s])/', '\1', $headers);
+    $headers = preg_replace('/\n([\s])/', "\r\\1", $headers);
     $message->headers = explode("\n", $headers);
+    foreach ($message->headers as &$header) {
+      $header = str_replace("\r", "\n", $header);
+    }
 
     // Identify and split a multipart message.
     if ($message->isMultipart()) {
