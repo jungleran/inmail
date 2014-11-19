@@ -52,7 +52,7 @@ class InmailWebTest extends WebTestBase {
 
     // Check Handler list and fallback plugin.
     $this->clickLink('Message handlers');
-    $this->assertText('There is no Message handler yet');
+    $this->assertText('Forward unclassified bounces');
     Handler::create(array(
       'id' => 'unicorn',
       'plugin_id' => 'unicorn',

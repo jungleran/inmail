@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @Handler(
  *   id = "moderator_forward",
- *   label = @Translation("Forward unclassified bounces"),
+ *   label = @Translation("Moderator Forward"),
  *   description = @Translation("Forwards non-bounces by email to a moderator.")
  * )
  */
