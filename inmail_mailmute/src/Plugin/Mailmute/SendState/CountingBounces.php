@@ -14,8 +14,10 @@ namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
  * @SendState(
  *   id = "inmail_counting",
  *   label = @Translation("Counting soft bounces"),
+ *   description = @Translation("Earlier messages to the address have resulted in soft bounces."),
  *   mute = false,
- *   admin = true
+ *   admin = true,
+ *   parent_id = "send"
  * )
  */
 class CountingBounces extends BounceSendstateBase {

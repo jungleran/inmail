@@ -18,8 +18,10 @@ namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
  * @SendState(
  *   id = "persistent_send",
  *   label = @Translation("Persistent send"),
+ *   description = @Translation("Messages are not suppressed, and automatic transition to other states is disabled."),
  *   mute = false,
- *   admin = true
+ *   admin = true,
+ *   parent_id = "send"
  * )
  */
 class PersistentSend extends BounceSendstateBase {

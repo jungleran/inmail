@@ -43,7 +43,7 @@ EOF;
 
     $this->assertCount(2, $message->getHeaders());
     $this->assertEquals('This should be trimmed', $message->getHeader('x-single-line-header'));
-    $this->assertEquals('This suit is black not!', $message->getHeader('x-multi-line-header'));
+    $this->assertEquals("This suit is black\n not!", $message->getHeader('x-multi-line-header'));
     $this->assertEquals("I'm a message body.\n\nI'm the same body.", $message->getBody());
     $this->assertEquals($raw, $message->getRaw());
     $this->assertFalse($message->isMultipart());
