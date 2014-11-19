@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_test\MessageHandler\ResultKeeperHandler.
+ * Contains \Drupal\inmail_test\Handler\ResultKeeperHandler.
  */
 
 namespace Drupal\inmail_test\Plugin\inmail\Handler;
@@ -13,9 +13,8 @@ use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
 /**
  * Stores analysis results to let them be easily evaluated by tests.
  *
- * @MessageHandler(
+ * @Handler(
  *   id = "result_keeper",
- *   label = @Translation("Result keeper")
  * )
  */
 class ResultKeeperHandler extends HandlerBase {
@@ -33,6 +32,13 @@ class ResultKeeperHandler extends HandlerBase {
    * @var \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface
    */
   public static $result;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function help() {
+    return array();
+  }
 
   /**
    * {@inheritdoc}

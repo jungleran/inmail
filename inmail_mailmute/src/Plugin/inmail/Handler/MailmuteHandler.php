@@ -22,9 +22,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup mailmute
  *
- * @MessageHandler(
+ * @Handler(
  *   id = "mailmute",
- *   label = @Translation("Mailmute")
+ *   label = @Translation("Mailmute"),
+ *   description = @Translation("Reacts to bounce messages by managing the send state of the bouncing address.")
  * )
  */
 class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInterface {
@@ -60,6 +61,16 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
     return new static($configuration, $plugin_id, $plugin_definition,
       $container->get('plugin.manager.sendstate'),
       $container->get('logger.factory')->get('inmail')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function help() {
+    return array(
+      '#type' => 'item',
+      '#markup' => $this->t('<p>Soft bounces trigger a transition to the <em>Counting bounces</em> state. After a number of bounces, the state transitions to <em>Temporarily unreachable</em>.</p> <p>Hard bounces cause the send state to transition to <em>Invalid address</em>.</p>'),
     );
   }
 

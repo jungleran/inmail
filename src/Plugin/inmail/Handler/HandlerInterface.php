@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\MessageHandler\HandlerInterface.
+ * Contains \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface.
  */
 
 namespace Drupal\inmail\Plugin\inmail\Handler;
@@ -17,6 +17,14 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
  * @ingroup handler
  */
 interface HandlerInterface extends ConfigurablePluginInterface, PluginFormInterface {
+
+  /**
+   * Returns helpful explanation for using and configuring the handler.
+   *
+   * @return array
+   *   A build array structure with a description of the handler.
+   */
+  public function help();
 
   /**
    * Executes callbacks for an analyzed message.

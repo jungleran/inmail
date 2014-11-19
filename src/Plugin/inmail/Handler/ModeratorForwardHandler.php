@@ -17,9 +17,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Message handler that forwards unclassified bounces by email to a moderator.
  *
- * @MessageHandler(
+ * @Handler(
  *   id = "moderator_forward",
- *   label = @Translation("Forward unclassified bounces")
+ *   label = @Translation("Forward unclassified bounces"),
+ *   description = @Translation("Forwards non-bounces by email to a moderator.")
  * )
  */
 class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPluginInterface {
@@ -58,6 +59,16 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
       $container->get('plugin.manager.mail'),
       $container->get('logger.factory')->get('inmail'),
       $container->get('config.factory')->get('system.mail')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function help() {
+    return array(
+      '#type' => 'item',
+      '#markup' => $this->t('Messages are forwarded with minimal modification. The header <code>X-Inmail-Forwarded</code> is added, and the <code>To</code> is changed to match the moderator address. Note that the Mail Transfer Agent (MTA) may add a few more headers when sending the message.'),
     );
   }
 

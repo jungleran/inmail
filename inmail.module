@@ -3,6 +3,7 @@
  * @file
  * Main procedural code file for the Inmail module.
  */
+use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * @mainpage
@@ -121,6 +122,19 @@
  * automatically, it may be forwarded to an administrator for manual handling.
  * @}
  */
+
+function inmail_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Display handler information on handler configuration forms.
+    case 'entity.inmail_handler.edit_form':
+      $handler_config = $route_match->getParameter('inmail_handler');
+      /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
+      $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId());
+      $help = $handler->help();
+      return drupal_render($help);
+      break;
+  }
+}
 
 /**
  * Implements hook_mail_alter().

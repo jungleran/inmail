@@ -21,7 +21,7 @@ class HandlerManager extends DefaultPluginManager implements HandlerManagerInter
    * {@inheritdoc}
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
-    parent::__construct('Plugin/inmail/Handler', $namespaces, $module_handler, 'Drupal\inmail\Plugin\inmail\Handler\HandlerInterface', 'Drupal\inmail\Annotation\MessageHandler');
+    parent::__construct('Plugin/inmail/Handler', $namespaces, $module_handler, 'Drupal\inmail\Plugin\inmail\Handler\HandlerInterface', 'Drupal\inmail\Annotation\Handler');
   }
 
   /**
