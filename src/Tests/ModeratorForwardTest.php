@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
-use Drupal\inmail\Entity\Handler;
+use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\Message;
 use Drupal\simpletest\KernelTestBase;
 
@@ -52,8 +52,8 @@ class ModeratorForwardTest extends KernelTestBase {
     $this->assertMailCount(0);
 
     // Do not handle if moderator address is unset.
-    /** @var \Drupal\inmail\Entity\Handler $handler_config */
-    $handler_config = Handler::load('moderator_forward');
+    /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
+    $handler_config = HandlerConfig::load('moderator_forward');
     $this->assertEqual($handler_config->getConfiguration()['moderator'], '');
     $processor->process($regular);
     $this->assertMailCount(0);
@@ -88,7 +88,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $original_parsed = Message::parse($original);
 
     // Conceive a forward.
-    Handler::load('moderator_forward')
+    HandlerConfig::load('moderator_forward')
       ->set('configuration', array('moderator' => 'moderator@example.com'))
       ->save();
     \Drupal::service('inmail.processor')->process($original);

@@ -58,7 +58,7 @@ class HandlerListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /** @var \Drupal\inmail\Entity\Handler $entity */
+    /** @var \Drupal\inmail\Entity\HandlerConfig $entity */
     $plugin_id = $entity->getPluginId();
     if ($this->handlerManager->hasDefinition($plugin_id)) {
       $label = $this->handlerManager->getDefinition($plugin_id)['label'];

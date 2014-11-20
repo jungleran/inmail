@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
-use Drupal\inmail\Entity\Handler;
+use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -53,7 +53,7 @@ class InmailWebTest extends WebTestBase {
     // Check Handler list and fallback plugin.
     $this->clickLink('Message handlers');
     $this->assertText('Forward unclassified bounces');
-    Handler::create(array(
+    HandlerConfig::create(array(
       'id' => 'unicorn',
       'plugin_id' => 'unicorn',
       'label' => 'Unicorn',

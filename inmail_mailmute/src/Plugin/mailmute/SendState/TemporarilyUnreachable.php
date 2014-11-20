@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_mailmute\Plugin\Mailmute\SendState\TemporarilyUnreachable.
+ * Contains \Drupal\inmail_mailmute\Plugin\mailmute\SendState\TemporarilyUnreachable.
  */
 
-namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
+namespace Drupal\inmail_mailmute\Plugin\mailmute\SendState;
 
 /**
  * Indicates that the address owner is temporarily unreachable.

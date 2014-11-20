@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Entity\Handler.
+ * Contains \Drupal\inmail\Entity\HandlerConfig.
  */
 
 namespace Drupal\inmail\Entity;
@@ -10,6 +10,8 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
 
 /**
  * Message handler configuration entity.
+ *
+ * This entity type is for storing the configuration of a handler plugin.
  *
  * @ingroup handler
  *
@@ -35,7 +37,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *   }
  * )
  */
-class Handler extends ConfigEntityBase {
+class HandlerConfig extends ConfigEntityBase {
 
   /**
    * A machine name for the handler configuration.

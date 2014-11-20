@@ -4,7 +4,7 @@
  * Drush commands for the Inmail module.
  */
 
-use Drupal\inmail\Entity\Handler;
+use Drupal\inmail\Entity\HandlerConfig;
 
 /**
  * @addtogroup processing
@@ -84,7 +84,7 @@ function drush_inmail_services() {
     echo "No analyzers registered.\n";
   }
 
-  if (!$handler_configs = Handler::loadMultiple()) {
+  if (!$handler_configs = HandlerConfig::loadMultiple()) {
     echo "No handlers registered.\n";
   }
   foreach ($handler_configs as $handler_config) {

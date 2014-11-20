@@ -7,7 +7,7 @@
 namespace Drupal\inmail\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\inmail\Entity\Handler;
+use Drupal\inmail\Entity\HandlerConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -28,14 +28,14 @@ class HandlerController extends ControllerBase {
   /**
    * Returns a title for the handler configuration edit page.
    */
-  public function titleEdit(Handler $inmail_handler) {
+  public function titleEdit(HandlerConfig $inmail_handler) {
     return $this->t('Configure %label handler', array('%label' => $inmail_handler->label()));
   }
 
   /**
    * Enables a message handler.
    */
-  public function enable(Handler $inmail_handler) {
+  public function enable(HandlerConfig $inmail_handler) {
     $inmail_handler->enable()->save();
     return new RedirectResponse(\Drupal::url('inmail.handler_list'));
   }
@@ -43,7 +43,7 @@ class HandlerController extends ControllerBase {
   /**
    * Disables a message handler.
    */
-  public function disable(Handler $inmail_handler) {
+  public function disable(HandlerConfig $inmail_handler) {
     $inmail_handler->disable()->save();
     return new RedirectResponse(\Drupal::url('inmail.handler_list'));
   }

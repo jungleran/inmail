@@ -3,7 +3,7 @@ inmail.inmail_handler.*:
   type: mapping
   mapping:
     id:
-      label: 'Handler ID'
+      label: 'Machine-name'
       type: string
     label:
       label: 'Label'

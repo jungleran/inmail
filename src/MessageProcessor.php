@@ -103,7 +103,7 @@ class MessageProcessor implements MessageProcessorInterface {
 
     // Handle message.
     foreach ($this->handlerStorage->loadMultiple() as $handler_config) {
-      /** @var \Drupal\inmail\Entity\Handler $handler_config */
+      /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
       if ($handler_config->status()) {
         $handler = $this->handlerManager->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
         $handler->invoke($message, $result);

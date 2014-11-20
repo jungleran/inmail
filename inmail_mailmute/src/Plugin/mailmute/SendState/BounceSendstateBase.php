@@ -1,12 +1,12 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_mailmute\Plugin\Mailmute\SendState\BounceSendstateBase.
+ * Contains \Drupal\inmail_mailmute\Plugin\mailmute\SendState\BounceSendstateBase.
  */
 
-namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
+namespace Drupal\inmail_mailmute\Plugin\mailmute\SendState;
 
-use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateBase;
+use Drupal\mailmute\Plugin\mailmute\SendState\SendStateBase;
 
 /**
  * Declares methods for send states that are triggered from bounce messages.

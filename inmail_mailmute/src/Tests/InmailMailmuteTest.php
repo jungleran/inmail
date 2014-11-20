@@ -83,7 +83,7 @@ class InmailMailmuteTest extends KernelTestBase {
       $this->user = User::load($this->user->id());
 
       // Check the outcome.
-      $this->assertEqual($this->user->field_sendstate->plugin_id, $expected);
+      $this->assertEqual($this->user->sendstate->plugin_id, $expected);
     }
   }
 
@@ -134,7 +134,7 @@ class InmailMailmuteTest extends KernelTestBase {
     $this->resetUser();
 
     // Initial state is "send".
-    $this->assertEqual($this->user->field_sendstate->plugin_id, 'send');
+    $this->assertEqual($this->user->sendstate->plugin_id, 'send');
 
     // Process 5 (default value of soft_threshold in the handler) bounces.
     for ($count = 1; $count < 5; $count++) {
@@ -144,15 +144,15 @@ class InmailMailmuteTest extends KernelTestBase {
 
       // Reload user and check the count.
       $this->user = User::load($this->user->id());
-      $this->assertEqual($this->user->field_sendstate->plugin_id, 'inmail_counting');
-      $this->assertEqual($this->user->field_sendstate->first()->getPlugin()->getCount(), $count);
+      $this->assertEqual($this->user->sendstate->plugin_id, 'inmail_counting');
+      $this->assertEqual($this->user->sendstate->first()->getPlugin()->getCount(), $count);
     }
 
     // Process another one and check that the user is now muted.
     $raw = $this->getMessageFileContents('full.eml');
     $processor->process($raw);
     $this->user = User::load($this->user->id());
-    $this->assertEqual($this->user->field_sendstate->plugin_id, 'inmail_temporarily_unreachable');
+    $this->assertEqual($this->user->sendstate->plugin_id, 'inmail_temporarily_unreachable');
   }
 
   /**

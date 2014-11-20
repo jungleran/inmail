@@ -12,8 +12,8 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
-use Drupal\inmail_mailmute\Plugin\Mailmute\SendState\CountingBounces;
-use Drupal\inmail_mailmute\Plugin\Mailmute\SendState\PersistentSend;
+use Drupal\inmail_mailmute\Plugin\mailmute\SendState\CountingBounces;
+use Drupal\inmail_mailmute\Plugin\mailmute\SendState\PersistentSend;
 use Drupal\mailmute\SendStateManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

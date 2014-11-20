@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_mailmute\Plugin\Mailmute\SendState\PersistentSend.
+ * Contains \Drupal\inmail_mailmute\Plugin\mailmute\SendState\PersistentSend.
  */
 
-namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
+namespace Drupal\inmail_mailmute\Plugin\mailmute\SendState;
 
 /**
  * Indicates that messages should be sent, and no transitions allowed.

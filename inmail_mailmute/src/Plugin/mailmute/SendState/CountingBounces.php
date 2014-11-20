@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_mailmute\Plugin\Mailmute\SendState\CountingBounces.
+ * Contains \Drupal\inmail_mailmute\Plugin\mailmute\SendState\CountingBounces.
  */
 
-namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
+namespace Drupal\inmail_mailmute\Plugin\mailmute\SendState;
 
 /**
  * Class CountingBounces

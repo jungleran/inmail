@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_mailmute\Plugin\Mailmute\SendState\InvalidAddress.
+ * Contains \Drupal\inmail_mailmute\Plugin\mailmute\SendState\InvalidAddress.
  */
 
-namespace Drupal\inmail_mailmute\Plugin\Mailmute\SendState;
+namespace Drupal\inmail_mailmute\Plugin\mailmute\SendState;
 
 /**
  * Indicates that hard bounces have been received from the address.
