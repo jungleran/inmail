@@ -5,7 +5,7 @@
  */
 
 /**
- * Implements hook_mail().
+ * Implements hook_install().
  */
 function inmail_install() {
   // Register the special mail plugin used with the ModeratorForward handler.

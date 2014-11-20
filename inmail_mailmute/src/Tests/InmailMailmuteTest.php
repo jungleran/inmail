@@ -8,6 +8,7 @@ namespace Drupal\inmail_mailmute\Tests;
 
 use Drupal\Component\Utility\String;
 use Drupal\inmail\DSNStatus;
+use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
 use Drupal\simpletest\KernelTestBase;
@@ -136,8 +137,13 @@ class InmailMailmuteTest extends KernelTestBase {
     // Initial state is "send".
     $this->assertEqual($this->user->sendstate->plugin_id, 'send');
 
-    // Process 5 (default value of soft_threshold in the handler) bounces.
-    for ($count = 1; $count < 5; $count++) {
+    // Set soft_threshold to non-default value.
+    /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
+    $handler_config = HandlerConfig::load('mailmute');
+    $handler_config->setConfiguration(array('soft_threshold' => 3))->save();
+
+    // Process the configured number of bounces.
+    for ($count = 1; $count < 3; $count++) {
       // Process a soft bounce from the user.
       $raw = $this->getMessageFileContents('full.eml');
       $processor->process($raw);
