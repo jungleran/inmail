@@ -37,7 +37,7 @@ class HandlerController extends ControllerBase {
    */
   public function enable(HandlerConfig $inmail_handler) {
     $inmail_handler->enable()->save();
-    return new RedirectResponse(\Drupal::url('inmail.handler_list'));
+    return new RedirectResponse(\Drupal::url('inmail.handler_list', [], ['absolute' => TRUE]));
   }
 
   /**
@@ -45,7 +45,7 @@ class HandlerController extends ControllerBase {
    */
   public function disable(HandlerConfig $inmail_handler) {
     $inmail_handler->disable()->save();
-    return new RedirectResponse(\Drupal::url('inmail.handler_list'));
+    return new RedirectResponse(\Drupal::url('inmail.handler_list', [], ['absolute' => TRUE]));
   }
 
 }

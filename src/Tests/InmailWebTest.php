@@ -53,6 +53,11 @@ class InmailWebTest extends WebTestBase {
     // Check Handler list and fallback plugin.
     $this->clickLink('Message handlers');
     $this->assertText('Forward unclassified bounces');
+    $this->assertNoLink('Enable');
+    $this->clickLink('Disable');
+    $this->assertNoLink('Disable');
+    $this->assertLink('Enable');
+
     HandlerConfig::create(array(
       'id' => 'unicorn',
       'plugin_id' => 'unicorn',
