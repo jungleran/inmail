@@ -28,8 +28,6 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
  * @ingroup analyzer
  */
 class StandardDSNAnalyzer implements MessageAnalyzerInterface {
-  // The parsing in this class follows the standards defined in RFC 3464, "An
-  // Extensible Message Format for Delivery Status Notifications".
 
   /**
    * {@inheritdoc}
@@ -37,7 +35,7 @@ class StandardDSNAnalyzer implements MessageAnalyzerInterface {
   public function analyze(Message $message, AnalyzerResultWritableInterface $result) {
     // DSN's are declared with the 'Content-Type' header. Example:
     // Content-Type: multipart/report; report-type=delivery-status;
-    //   boundary="boundary_2634_73ab76f8"
+    // boundary="boundary_2634_73ab76f8"
     if (strpos($message->getHeader('Content-Type'), 'report-type=delivery-status') === FALSE) {
       // Ignore the message if it does not look like a DSN.
       return;
@@ -46,7 +44,7 @@ class StandardDSNAnalyzer implements MessageAnalyzerInterface {
     // Get the third body part, which has an easy-to-parse, standardized format.
     $parts = $message->getParts();
     if (!isset($parts[2])) {
-      // @todo Message malformed - what to do?
+      // Malformed message, give up.
       return;
     }
     $machine_part = $parts[2];

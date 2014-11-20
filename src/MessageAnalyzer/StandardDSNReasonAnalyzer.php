@@ -26,6 +26,11 @@ class StandardDSNReasonAnalyzer implements MessageAnalyzerInterface {
     }
 
     // Save the human-readable bounce reason, without the pseudo-headers part.
+    $parts = $message->getParts();
+    if (!isset($parts[1])) {
+      // Malformed message, give up.
+      return;
+    }
     $result->setBounceReason(trim(strstr($message->getParts()[1], "\n\n")));
   }
 }

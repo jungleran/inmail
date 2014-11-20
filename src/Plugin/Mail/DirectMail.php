@@ -33,7 +33,8 @@ class DirectMail implements MailInterface {
    * {@inheritdoc}
    */
   public function mail(array $message) {
-    // Headers are $message['raw_headers'], explanation in inmail_mail().
+    // Headers are passed in $message['raw_headers'], see explanation in
+    // inmail_mail().
     return (bool) mail(
       $message['to'],
       $message['subject'],

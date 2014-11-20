@@ -98,7 +98,7 @@ class HandlerConfig extends ConfigEntityBase {
    * @return static
    *   $this
    */
-  public function setConfiguration($configuration) {
+  public function setConfiguration(array $configuration) {
     $this->configuration = $configuration;
     return $this;
   }

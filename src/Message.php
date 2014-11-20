@@ -7,7 +7,6 @@
 namespace Drupal\inmail;
 
 /**
- *
  * Contains a minimally parsed email message.
  *
  * A Message object is created by passing a raw email message to ::parse(). It

@@ -67,6 +67,8 @@ class PHPMailerBMHAnalyzer implements MessageAnalyzerInterface {
   public function analyze(Message $message, AnalyzerResultWritableInterface $result) {
     // The analysis part of the library is in the bmhDSNRules and bmhBodyRules
     // functions.
+    // @todo Log an error about Composer Manager if file does not exist.
+    // @todo Check that file exists in hook_requirements()?
     require_once $this->getLibraryPath() . '/lib/BounceMailHandler/phpmailer-bmh_rules.php';
     if ($message->isDSN()) {
       // The bmhDSNRules function takes the two report parts (human-readable and

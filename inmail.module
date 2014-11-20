@@ -3,6 +3,7 @@
  * @file
  * Main procedural code file for the Inmail module.
  */
+
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
@@ -123,6 +124,9 @@ use Drupal\Core\Routing\RouteMatchInterface;
  * @}
  */
 
+/**
+ * Implements hook_help().
+ */
 function inmail_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     // Display handler information on handler configuration forms.
@@ -132,7 +136,7 @@ function inmail_help($route_name, RouteMatchInterface $route_match) {
       $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId());
       $help = $handler->help();
       return drupal_render($help);
-      break;
+
   }
 }
 

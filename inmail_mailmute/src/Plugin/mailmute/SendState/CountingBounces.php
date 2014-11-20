@@ -7,7 +7,7 @@
 namespace Drupal\inmail_mailmute\Plugin\mailmute\SendState;
 
 /**
- * Class CountingBounces
+ * Indicates that soft bounces have been received from the address.
  *
  * @ingroup mailmute
  *

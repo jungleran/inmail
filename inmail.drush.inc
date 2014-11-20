@@ -84,12 +84,14 @@ function drush_inmail_services() {
     echo "No analyzers registered.\n";
   }
 
+  /** @var \Drupal\inmail\Entity\HandlerConfig[] $handler_configs */
   if (!$handler_configs = HandlerConfig::loadMultiple()) {
-    echo "No handlers registered.\n";
+    echo "No handlers found.\n";
   }
   foreach ($handler_configs as $handler_config) {
     // Creating an instance enables us to detect if a config references a
     // missing plugin.
+    /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
     $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId());
     echo "Handler: {$handler_config->label()} ({$handler->getPluginId()})\n";
   }

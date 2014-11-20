@@ -9,14 +9,12 @@ namespace Drupal\inmail_test\Plugin\Mail;
 use Drupal\Core\Mail\Plugin\Mail\TestMailCollector;
 
 /**
- * Class InmailTestMailCollector
+ * Works like Mail collector, but does not modify the message body.
  *
- * @package Drupal\inmail_test\Plugin\Mail
+ * @see \Drupal\Core\Mail\Plugin\Mail\TestMailCollector
  *
  * @Mail(
  *   id = "inmail_test_mail_collector",
- *   label = @Translation("Inmail mail collector"),
- *   description = @Translation("Works like Mail collector, but does not modify the message body.")
  * )
  */
 class InmailTestMailCollector extends TestMailCollector {

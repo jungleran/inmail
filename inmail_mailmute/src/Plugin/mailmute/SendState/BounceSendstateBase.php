@@ -6,6 +6,7 @@
 
 namespace Drupal\inmail_mailmute\Plugin\mailmute\SendState;
 
+use Drupal\inmail\DSNStatus;
 use Drupal\mailmute\Plugin\mailmute\SendState\SendStateBase;
 
 /**
@@ -48,8 +49,8 @@ abstract class BounceSendstateBase extends SendStateBase {
    * @return static
    *   $this
    */
-  public function setStatus($code) {
-    $this->configuration['code'] = (string) $code;
+  public function setStatus(DSNStatus $code) {
+    $this->configuration['code'] = $code;
     return $this;
   }
 

@@ -131,6 +131,15 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
   /**
    * {@inheritdoc}
    */
+  public function defaultConfiguration() {
+    return array(
+      'moderator' => '',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 

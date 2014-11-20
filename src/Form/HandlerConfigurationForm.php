@@ -61,22 +61,24 @@ class HandlerConfigurationForm extends EntityForm {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
+    /** @var \Drupal\inmail\Entity\HandlerConfig $entity */
+    $entity = $this->getEntity();
 
     // Load plugin instance.
-    $plugin = $this->handlerManager->createInstance($this->getEntity()->getPluginId(), $this->getEntity()->getConfiguration());
-    $plugin->setConfiguration($this->getEntity()->getConfiguration());
+    /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $plugin */
+    $plugin = $this->handlerManager->createInstance($entity->getPluginId(), $entity->getConfiguration());
     $form_state->set('plugin', $plugin);
 
     $form['label'] = array(
       '#title' => $this->t('Label'),
       '#type' => 'textfield',
-      '#default_value' => $this->getEntity()->label(),
+      '#default_value' => $entity->label(),
     );
 
     $form['id'] = array(
       '#type' => 'machine_name',
-      '#default_value' => $this->entity->id(),
-      '#disabled' => !$this->entity->isNew(),
+      '#default_value' => $entity->id(),
+      '#disabled' => !$entity->isNew(),
       '#machine_name' => array(
         'exists' => array($this, 'exists'),
       ),
@@ -97,7 +99,7 @@ class HandlerConfigurationForm extends EntityForm {
    * Determines if the handler already exists.
    *
    * @param string $id
-   *   The handler configuration ID
+   *   The handler configuration ID.
    *
    * @return bool
    *   TRUE if the handler exists, FALSE otherwise.
@@ -111,15 +113,18 @@ class HandlerConfigurationForm extends EntityForm {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
-    $form_state->get('plugin')->validateConfigurationForm($form, $form_state);
+    /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $plugin */
+    $plugin = $form_state->get('plugin');
+    $plugin->validateConfigurationForm($form, $form_state);
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $handler = $form_state->get('plugin');
-    $handler->submitConfigurationForm($form, $form_state);
+    /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $plugin */
+    $plugin = $form_state->get('plugin');
+    $plugin->submitConfigurationForm($form, $form_state);
     parent::submitForm($form, $form_state);
     $form_state->setRedirect('inmail.handler_list');
   }
@@ -128,6 +133,7 @@ class HandlerConfigurationForm extends EntityForm {
    * {@inheritdoc}
    */
   protected function copyFormValuesToEntity(EntityInterface $entity, array $form, FormStateInterface $form_state) {
+    /** @var \Drupal\inmail\Entity\HandlerConfig $entity */
     parent::copyFormValuesToEntity($entity, $form, $form_state);
     $entity->setConfiguration($form_state->get('plugin')->getConfiguration());
   }

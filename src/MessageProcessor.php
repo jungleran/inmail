@@ -60,7 +60,7 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * Constructs a new message processor.
    */
-  function __construct(EntityManagerInterface $entity_manager, HandlerManagerInterface $handler_manager) {
+  public function __construct(EntityManagerInterface $entity_manager, HandlerManagerInterface $handler_manager) {
     $this->handlerStorage = $entity_manager->getStorage('inmail_handler');
     $this->handlerManager = $handler_manager;
   }
@@ -75,17 +75,11 @@ class MessageProcessor implements MessageProcessorInterface {
     unset($this->analyzers[$id]);
   }
 
-  // @todo Are these really useful outside testing with drush inmail-services?
+  // @todo Remove when analyzers are plugins.
   public function getAnalyzers() {
     return array_map(function($obj) {
       return get_class($obj);
     }, $this->analyzers);
-  }
-
-  public function getHandlers() {
-    return array_map(function($obj) {
-      return get_class($obj);
-    }, $this->handlers);
   }
 
   /**

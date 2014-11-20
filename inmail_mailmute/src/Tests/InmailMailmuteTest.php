@@ -145,7 +145,7 @@ class InmailMailmuteTest extends KernelTestBase {
       // Reload user and check the count.
       $this->user = User::load($this->user->id());
       $this->assertEqual($this->user->sendstate->plugin_id, 'inmail_counting');
-      $this->assertEqual($this->user->sendstate->first()->getPlugin()->getCount(), $count);
+      $this->assertEqual($this->user->sendstate->configuration['count'], $count);
     }
 
     // Process another one and check that the user is now muted.
