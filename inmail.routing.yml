@@ -25,13 +25,13 @@ entity.inmail_handler.edit_form:
 entity.inmail_handler.enable:
   path: admin/config/system/inmail/handlers/{inmail_handler}/enable
   defaults:
-    _content: \Drupal\inmail\Controller\HandlerController::enable
+    _controller: \Drupal\inmail\Controller\HandlerController::enable
   requirements:
     _permission: 'administer inmail'
 
 entity.inmail_handler.disable:
   path: admin/config/system/inmail/handlers/{inmail_handler}/disable
   defaults:
-    _content: \Drupal\inmail\Controller\HandlerController::disable
+    _controller: \Drupal\inmail\Controller\HandlerController::disable
   requirements:
     _permission: 'administer inmail'
