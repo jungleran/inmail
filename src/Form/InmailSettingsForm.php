@@ -38,13 +38,6 @@ class InmailSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('return_path'),
     );
 
-    $form['verp'] = array(
-      '#title' => $this->t('Enable VERP'),
-      '#type' => 'checkbox',
-      '#description' => $this->t('Choose whether to use <dfn>Variable Envelope Return Path</dfn> (VERP) to reliably identify the intended recipient of bounce messages.'),
-      '#default_value' => $config->get('verp'),
-    );
-
     return parent::buildForm($form, $form_state);
   }
 
@@ -54,7 +47,6 @@ class InmailSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('inmail.settings')
       ->set('return_path', $form_state->getValue('return_path'))
-      ->set('verp', $form_state->getValue('verp'))
       ->save();
 
     parent::submitForm($form, $form_state);

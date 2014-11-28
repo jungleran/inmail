@@ -18,18 +18,18 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
 class MessageProcessor implements MessageProcessorInterface {
 
   /**
-   * A list of message analyzers to use.
+   * The storage for message analyzer configuration entities.
    *
-   * @var \Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface[]
+   * @var \Drupal\Core\Config\Entity\ConfigEntityStorage
    */
-  protected $analyzers = array();
+  protected $analyzerStorage;
 
   /**
-   * A list of handlers to invoke for an analyzed message.
+   * The plugin manager for analyzer plugins.
    *
-   * @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface[]
+   * @var \Drupal\inmail\AnalyzerManagerInterface
    */
-  protected $handlers = array();
+  protected $analyzerManager;
 
   /**
    * The storage for message handler configuration entities.
@@ -46,40 +46,13 @@ class MessageProcessor implements MessageProcessorInterface {
   protected $handlerManager;
 
   /**
-   * Adds an analyzer object to the list of analyzer.
-   *
-   * @param \Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface $analyzer
-   *   A message analyzer.
-   * @param string $id
-   *   The service id of the analyzer.
-   */
-  public function addAnalyzer(MessageAnalyzerInterface $analyzer, $id) {
-    $this->analyzers[$id] = $analyzer;
-  }
-
-  /**
    * Constructs a new message processor.
    */
-  public function __construct(EntityManagerInterface $entity_manager, HandlerManagerInterface $handler_manager) {
+  public function __construct(EntityManagerInterface $entity_manager, AnalyzerManagerInterface $analyzer_manager, HandlerManagerInterface $handler_manager) {
+    $this->analyzerStorage = $entity_manager->getStorage('inmail_analyzer');
+    $this->analyzerManager = $analyzer_manager;
     $this->handlerStorage = $entity_manager->getStorage('inmail_handler');
     $this->handlerManager = $handler_manager;
-  }
-
-  /**
-   * Removes an analyzer object from the list of analyzers.
-   *
-   * @param string $id
-   *   The service id of the analyzer.
-   */
-  public function removeAnalyzer($id) {
-    unset($this->analyzers[$id]);
-  }
-
-  // @todo Remove when analyzers are plugins.
-  public function getAnalyzers() {
-    return array_map(function($obj) {
-      return get_class($obj);
-    }, $this->analyzers);
   }
 
   /**
@@ -91,8 +64,12 @@ class MessageProcessor implements MessageProcessorInterface {
 
     // Analyze message.
     $result = new AnalyzerResult();
-    foreach ($this->analyzers as $analyzer) {
-      $analyzer->analyze($message, $result);
+    foreach ($this->analyzerStorage->loadMultiple() as $analyzer_config) {
+      /** @var \Drupal\inmail\Entity\AnalyzerConfig $analyzer_config */
+      if ($analyzer_config->status()) {
+        $analyzer = $this->analyzerManager->createInstance($analyzer_config->getPluginId(), $analyzer_config->getConfiguration());
+        $analyzer->analyze($message, $result);
+      }
     }
 
     // Handle message.

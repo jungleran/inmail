@@ -4,6 +4,7 @@
  * Drush commands for the Inmail module.
  */
 
+use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 
 /**
@@ -38,7 +39,7 @@ function inmail_drush_command() {
     'drupal dependencies' => array('inmail'),
   );
 
-  $items['inmail-services'] = array(
+  $items['inmail-plugins'] = array(
     'description' => 'Tell which service classes are being used for analysis and handling.',
     'drupal dependencies' => array('inmail'),
   );
@@ -68,29 +69,24 @@ function drush_inmail_process() {
 }
 
 /**
- * Output the class names of current analysis and handling services.
+ * Output the class names of current analyzers and handlers.
  */
-function drush_inmail_services() {
+function drush_inmail_plugins() {
   inmail_drush_setup();
 
-  $processor = \Drupal::service('inmail.processor');
-
-  if ($analyzers = $processor->getAnalyzers()) {
-    foreach ($analyzers as $class) {
-      echo "Analyzer: $class\n";
-    }
-  }
-  else {
-    echo "No analyzers registered.\n";
+  /** @var \Drupal\inmail\Entity\AnalyzerConfig[] $analyzer_configs */
+  $analyzer_configs = AnalyzerConfig::loadMultiple();
+  foreach ($analyzer_configs as $analyzer_config) {
+    // Creating plugin instances enables us to detect if a config references a
+    // missing plugin.
+    /** @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface $analyzer */
+    $analyzer = \Drupal::service('plugin.manager.inmail.analyzer')->createInstance($analyzer_config->getPluginId());
+    echo "Analyzer: {$analyzer_config->label()} ({$analyzer->getPluginId()})\n";
   }
 
   /** @var \Drupal\inmail\Entity\HandlerConfig[] $handler_configs */
-  if (!$handler_configs = HandlerConfig::loadMultiple()) {
-    echo "No handlers found.\n";
-  }
+  $handler_configs = HandlerConfig::loadMultiple();
   foreach ($handler_configs as $handler_config) {
-    // Creating an instance enables us to detect if a config references a
-    // missing plugin.
     /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
     $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId());
     echo "Handler: {$handler_config->label()} ({$handler->getPluginId()})\n";

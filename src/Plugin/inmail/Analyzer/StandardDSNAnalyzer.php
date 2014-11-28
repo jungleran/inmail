@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\MessageAnalyzer\StandardDSNAnalyzer.
+ * Contains \Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNAnalyzer.
  */
 
-namespace Drupal\inmail\MessageAnalyzer;
+namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Message;
@@ -26,8 +26,13 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
  * enabled to accomplish more reliable bounce message classification.
  *
  * @ingroup analyzer
+ *
+ * @Analyzer(
+ *   id = "dsn",
+ *   label = @Translation("Standard DSN Analyzer")
+ * )
  */
-class StandardDSNAnalyzer implements MessageAnalyzerInterface {
+class StandardDSNAnalyzer extends AnalyzerBase {
 
   /**
    * {@inheritdoc}

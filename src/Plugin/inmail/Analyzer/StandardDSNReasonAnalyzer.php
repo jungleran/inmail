@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\MessageAnalyzer\StandardDSNReasonAnalyzer.
+ * Contains \Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNReasonAnalyzer.
  */
 
-namespace Drupal\inmail\MessageAnalyzer;
+namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
@@ -13,8 +13,13 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
  * Extracts the human-readable message from a DSN message.
  *
  * @ingroup analyzer
+ *
+ * @Analyzer(
+ *   id = "dsn_reason",
+ *   label = @Translation("Standard DSN Reason Analyzer")
+ * )
  */
-class StandardDSNReasonAnalyzer implements MessageAnalyzerInterface {
+class StandardDSNReasonAnalyzer extends AnalyzerBase {
 
   /**
    * {@inheritdoc}

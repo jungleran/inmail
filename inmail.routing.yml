@@ -6,6 +6,36 @@ inmail.settings:
   requirements:
     _permission: 'administer inmail'
 
+inmail.analyzer_list:
+  path: admin/config/system/inmail/analyzers
+  defaults:
+    _entity_list: 'inmail_analyzer'
+    _title: 'Message analyzers'
+  requirements:
+    _permission: 'administer inmail'
+
+entity.inmail_analyzer.edit_form:
+  path: admin/config/system/inmail/analyzers/{inmail_analyzer}
+  defaults:
+    _entity_form: 'inmail_analyzer.default'
+    _title_callback: \Drupal\inmail\Controller\AnalyzerController::titleEdit
+  requirements:
+    _permission: 'administer inmail'
+
+entity.inmail_analyzer.enable:
+  path: admin/config/system/inmail/analyzers/{inmail_analyzer}/enable
+  defaults:
+    _controller: \Drupal\inmail\Controller\AnalyzerController::enable
+  requirements:
+    _permission: 'administer inmail'
+
+entity.inmail_analyzer.disable:
+  path: admin/config/system/inmail/analyzers/{inmail_analyzer}/disable
+  defaults:
+    _controller: \Drupal\inmail\Controller\AnalyzerController::disable
+  requirements:
+    _permission: 'administer inmail'
+
 inmail.handler_list:
   path: admin/config/system/inmail/handlers
   defaults:

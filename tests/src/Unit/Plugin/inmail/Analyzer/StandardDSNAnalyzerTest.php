@@ -1,18 +1,18 @@
 <?php
 /**
  * @file
- * Contains \Drupal\Tests\inmail\Unit\MessageAnalyzer\StandardDSNAnalyzerTest.
+ * Contains \Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer\StandardDSNAnalyzerTest.
  */
 
-namespace Drupal\Tests\inmail\Unit\MessageAnalyzer;
+namespace Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
-use Drupal\inmail\MessageAnalyzer\StandardDSNAnalyzer;
+use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNAnalyzer;
 use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 
 /**
- * Unit tests the DSN bounce message Analyzer.
+ * Unit tests the DSN bounce message analyzer.
  *
  * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\StandardDSNAnalyzer
  * @group inmail
@@ -29,7 +29,7 @@ class StandardDSNAnalyzerTest extends InmailUnitTestBase {
     $message = Message::parse($this->getRaw($filename));
 
     // Run the analyzer.
-    $analyzer = new StandardDSNAnalyzer();
+    $analyzer = new StandardDSNAnalyzer(array(), $this->randomMachineName(), array());
     $result = new AnalyzerResult();
     $analyzer->analyze($message, $result);
 

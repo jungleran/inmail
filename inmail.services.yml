@@ -1,21 +1,18 @@
 services:
   inmail.processor:
     class: Drupal\inmail\MessageProcessor
-    arguments: ['@entity.manager', '@plugin.manager.inmail.handler']
-    tags:
-      - { name: service_collector, tag: inmail.analyzer, call: addAnalyzer }
+    arguments: ['@entity.manager', '@plugin.manager.inmail.analyzer', '@plugin.manager.inmail.handler']
   inmail.analyzer.verp:
     class: Drupal\inmail\MessageAnalyzer\VERPAnalyzer
     tags:
       - { name: inmail.analyzer, priority: 55 }
-  inmail.analyzer.dsn:
-    class: Drupal\inmail\MessageAnalyzer\StandardDSNAnalyzer
-    tags:
-      - { name: inmail.analyzer, priority: 50 }
   inmail.analyzer.dsn_reason:
     class: Drupal\inmail\MessageAnalyzer\StandardDSNReasonAnalyzer
     tags:
       - { name: inmail.analyzer }
+  plugin.manager.inmail.analyzer:
+    class: Drupal\inmail\AnalyzerManager
+    parent: default_plugin_manager
   plugin.manager.inmail.handler:
     class: Drupal\inmail\HandlerManager
     parent: default_plugin_manager

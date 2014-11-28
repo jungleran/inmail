@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Entity\HandlerConfig.
+ * Contains \Drupal\inmail\Entity\AnalyzerConfig.
  */
 
 namespace Drupal\inmail\Entity;
@@ -9,21 +9,21 @@ namespace Drupal\inmail\Entity;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 
 /**
- * Message handler configuration entity.
+ * Message analyzer configuration entity.
  *
- * This entity type is for storing the configuration of a handler plugin.
+ * This entity type is for storing the configuration of an analyzer plugin.
  *
- * @ingroup handler
+ * @ingroup analyzer
  *
  * @ConfigEntityType(
- *   id = "inmail_handler",
- *   label = @Translation("Message handler"),
+ *   id = "inmail_analyzer",
+ *   label = @Translation("Message analyzer"),
  *   admin_permission = "administer inmail",
  *   handlers = {
  *     "form" = {
- *       "default" = "Drupal\inmail\Form\HandlerConfigurationForm",
+ *       "default" = "Drupal\inmail\Form\AnalyzerConfigurationForm",
  *     },
- *     "list_builder" = "Drupal\inmail\HandlerListBuilder"
+ *     "list_builder" = "Drupal\inmail\AnalyzerListBuilder"
  *   },
  *   entity_keys = {
  *     "id" = "id",
@@ -31,30 +31,30 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "status" = "status"
  *   },
  *   links = {
- *     "edit-form" = "entity.inmail_handler.edit_form",
- *     "enable" = "entity.inmail_handler.enable",
- *     "disable" = "entity.inmail_handler.disable"
+ *     "edit-form" = "entity.inmail_analyzer.edit_form",
+ *     "enable" = "entity.inmail_analyzer.enable",
+ *     "disable" = "entity.inmail_analyzer.disable"
  *   }
  * )
  */
-class HandlerConfig extends ConfigEntityBase {
+class AnalyzerConfig extends ConfigEntityBase {
 
   /**
-   * The machine name of the handler configuration.
+   * The machine name of the analyzer configuration.
    *
    * @var string
    */
   protected $id;
 
   /**
-   * The translatable, human-readable name of the handler configuration.
+   * The translatable, human-readable name of the analyzer configuration.
    *
    * @var string
    */
   protected $label;
 
   /**
-   * The ID of the handler plugin for this configuration.
+   * The ID of the analyzer plugin for this configuration.
    *
    * @var string
    */
@@ -68,17 +68,17 @@ class HandlerConfig extends ConfigEntityBase {
   protected $configuration = array();
 
   /**
-   * Returns the handler plugin ID.
+   * Returns the analyzer plugin ID.
    *
    * @return string
-   *   The machine name of the plugin for this handler.
+   *   The machine name of the plugin for this analyzer.
    */
   public function getPluginId() {
     return $this->plugin;
   }
 
   /**
-   * Returns the plugin configuration stored for this handler.
+   * Returns the plugin configuration stored for this analyzer.
    *
    * @return array
    *   The plugin configuration. Its properties are defined by the associated
@@ -89,7 +89,7 @@ class HandlerConfig extends ConfigEntityBase {
   }
 
   /**
-   * Replaces the configuration stored for this handler.
+   * Replaces the configuration stored for this analyzer.
    *
    * @param array $configuration
    *   New plugin configuraion. Should match the properties defined by the

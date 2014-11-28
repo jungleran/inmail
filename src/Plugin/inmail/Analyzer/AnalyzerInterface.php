@@ -1,11 +1,14 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface.
+ * Contains \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface.
  */
 
-namespace Drupal\inmail\MessageAnalyzer;
+namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Component\Plugin\PluginInspectionInterface;
+use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
 
@@ -14,7 +17,7 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
  *
  * @ingroup analyzer
  */
-interface MessageAnalyzerInterface {
+interface AnalyzerInterface extends ConfigurablePluginInterface, PluginFormInterface, PluginInspectionInterface {
 
   /**
    * Analyze the given message.

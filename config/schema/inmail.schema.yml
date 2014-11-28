@@ -1,3 +1,23 @@
+inmail.inmail_analyzer.*:
+  label: 'Message analyzer'
+  type: mapping
+  mapping:
+    id:
+      label: 'Machine-name'
+      type: string
+    label:
+      label: 'Label'
+      type: string
+    plugin:
+      label: 'Plugin'
+      type: string
+    configuration:
+      label: 'Configuration'
+      type: inmail.analyzer.[%parent.plugin]
+    status:
+      label: 'Enabled'
+      type: bool
+
 inmail.inmail_handler.*:
   label: 'Message handler'
   type: mapping

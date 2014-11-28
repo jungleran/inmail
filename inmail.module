@@ -5,6 +5,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\inmail\Entity\AnalyzerConfig;
 
 /**
  * @mainpage
@@ -150,7 +151,7 @@ function inmail_mail_alter(&$message) {
   }
 
   // Manipulate the Return-Path.
-  if (\Drupal::config('inmail.settings')->get('verp')) {
+  if (AnalyzerConfig::load('verp')->status()) {
     inmail_mail_alter_VERP($message);
   }
 }

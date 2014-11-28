@@ -1,14 +1,14 @@
 <?php
 /**
  * @file
- * Contains \Drupal\Tests\inmail\Unit\MessageAnalyzer\SimpleDSNReasonAnalyzerTest.
+ * Contains \Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer\StandardDSNReasonAnalyzerTest.
  */
 
-namespace Drupal\Tests\inmail\Unit\MessageAnalyzer;
+namespace Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
-use Drupal\inmail\MessageAnalyzer\StandardDSNReasonAnalyzer;
+use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNReasonAnalyzer;
 use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 
 /**
@@ -17,7 +17,7 @@ use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
  * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\StandardDSNReasonAnalyzer
  * @group inmail
  */
-class SimpleDSNReasonAnalyzerTest extends InmailUnitTestBase {
+class StandradDSNReasonAnalyzerTest extends InmailUnitTestBase {
 
   /**
    * Tests the analyze method.
@@ -27,7 +27,7 @@ class SimpleDSNReasonAnalyzerTest extends InmailUnitTestBase {
    */
   public function testAnalyze($filename, $expected_reason) {
     $message = Message::parse($this->getRaw($filename));
-    $analyzer = new StandardDSNReasonAnalyzer();
+    $analyzer = new StandardDSNReasonAnalyzer(array(), $this->randomMachineName(), array());
     $result = new AnalyzerResult();
     $analyzer->analyze($message, $result);
     $this->assertEquals($expected_reason, $result->getBounceReason());

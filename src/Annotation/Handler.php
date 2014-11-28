@@ -18,7 +18,7 @@ use Drupal\Component\Annotation\Plugin;
 class Handler extends Plugin {
 
   /**
-   * A short machine-name to uniquely identify the handler.
+   * The short machine-name to uniquely identify the handler.
    *
    * @var string
    */
@@ -32,7 +32,7 @@ class Handler extends Plugin {
   protected $label;
 
   /**
-   * A brief description of the purpose or functionality of the handler.
+   * The brief description of the purpose or functionality of the handler.
    *
    * A more detailed description should be given by implementing help().
    *

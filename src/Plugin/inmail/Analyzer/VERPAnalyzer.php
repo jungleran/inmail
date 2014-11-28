@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\MessageAnalyzer\VERPAnalyzer.
+ * Contains \Drupal\inmail\Plugin\inmail\Analyzer\VERPAnalyzer.
  */
 
-namespace Drupal\inmail\MessageAnalyzer;
+namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\Message;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
@@ -32,27 +32,32 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
  * @see inmail_mail_alter_VERP()
  *
  * @ingroup analyzer
+ *
+ * @Analyzer(
+ *   id = "verp",
+ *   label = @Translation("VERP Analyzer")
+ * )
  */
-class VERPAnalyzer implements MessageAnalyzerInterface {
+class VERPAnalyzer extends AnalyzerBase {
 
   /**
    * {@inheritdoc}
    */
   public function analyze(Message $message, AnalyzerResultWritableInterface $result) {
-    // Cancel if VERP is disabled.
-    if (!\Drupal::config('inmail.settings')->get('verp')) {
-      return;
-    }
-
     // Split the site address to facilitate matching.
     $return_path = \Drupal::config('inmail.settings')->get('return_path') ?: \Drupal::config('system.site')->get('mail');
-    $return_path = explode('@', $return_path);
+    $return_path_split = explode('@', $return_path);
+
+    if (count($return_path_split) != 2) {
+      \Drupal::logger('imail')->warning('VERP Analyzer found invalid Return-Path address "%return_path"', array('%return_path' => $return_path));
+      return;
+    }
 
     // Match the modified Return-Path (returnpath+alice=example.com@website.com)
     // and put the parts of the recipient address (alice, example.com) in
     // $matches.
     // @todo $return_path might break the regex? Consider alternative parsing.
-    if (preg_match(':^' . $return_path[0] . '\+(.*)=(.*)@' . $return_path[1] . '$:', $message->getHeader('To'), $matches)) {
+    if (preg_match(':^' . $return_path_split[0] . '\+(.*)=(.*)@' . $return_path_split[1] . '$:', $message->getHeader('To'), $matches)) {
       // Report the recipient address (alice@example.com).
       $result->setBounceRecipient($matches[1] . '@' . $matches[2]);
     }

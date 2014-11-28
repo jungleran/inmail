@@ -6,6 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\simpletest\KernelTestBase;
@@ -49,7 +50,7 @@ class VERPTest extends KernelTestBase {
     $path = drupal_get_path('module', 'inmail') . '/tests/modules/inmail_test/eml/full.eml';
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
     $processor = \Drupal::service('inmail.processor');
-    $processor->removeAnalyzer('inmail.analyzer.dsn');
+    AnalyzerConfig::load('dsn')->disable()->save();
     $processor->process($raw);
 
     $parsed_recipient = ResultKeeperHandler::$result->getBounceRecipient();

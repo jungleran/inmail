@@ -6,6 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\simpletest\WebTestBase;
 
@@ -38,7 +39,6 @@ class InmailWebTest extends WebTestBase {
     $this->drupalGet('admin/config');
     $this->clickLink('Inmail');
     $this->assertField('return_path');
-    $this->assertField('verp');
 
     // Check validation.
     $this->drupalPostForm(NULL, ['return_path' => 'not an address'], 'Save configuration');
@@ -50,9 +50,32 @@ class InmailWebTest extends WebTestBase {
     $this->drupalPostForm(NULL, ['return_path' => 'bounces@example.com'], 'Save configuration');
     $this->assertText('The configuration options have been saved.');
 
+    // Check Analyzer list.
+    $this->clickLink('Message analyzers');
+    $this->assertText('Standard DSN Analyzer');
+    $this->assertText('Standard bounce analyzer');
+    $this->assertText('Standard DSN Reason Analyzer');
+    $this->assertText('Bounce reason message');
+    $this->assertText('VERP Analyzer');
+    $this->assertText('VERP address verification');
+
+    $this->assertNoLink('Enable');
+    $this->clickLink('Disable');
+    $this->clickLink('Enable');
+
+    AnalyzerConfig::create(array(
+      'id' => 'unicorn',
+      'plugin_id' => 'unicorn',
+      'label' => 'Unicorn',
+    ))->save();
+    $this->drupalGet('admin/config/system/inmail/analyzers');
+    $this->assertText('Unicorn');
+    $this->assertText('Plugin missing');
+
     // Check Handler list and fallback plugin.
     $this->clickLink('Message handlers');
     $this->assertText('Forward unclassified bounces');
+
     $this->assertNoLink('Enable');
     $this->clickLink('Disable');
     $this->assertNoLink('Disable');

@@ -52,7 +52,7 @@ class InmailMailmuteTest extends KernelTestBase {
     $this->installSchema('system', ['sequences']);
     $this->installSchema('user', ['users_data']);
     $this->installEntitySchema('user');
-    $this->installConfig(['mailmute', 'inmail_mailmute', 'system']);
+    $this->installConfig(['inmail', 'mailmute', 'inmail_mailmute', 'system']);
   }
 
   /**

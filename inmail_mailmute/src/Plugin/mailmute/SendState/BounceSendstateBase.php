@@ -22,8 +22,7 @@ abstract class BounceSendstateBase extends SendStateBase {
    * @param string $reason
    *   The bounce reason.
    *
-   * @return static
-   *   $this
+   * @return $this
    */
   public function setReason($reason) {
     $this->configuration['reason'] = (string) $reason;
@@ -46,8 +45,7 @@ abstract class BounceSendstateBase extends SendStateBase {
    * @param \Drupal\inmail\DSNStatus $code
    *   The bounce status object.
    *
-   * @return static
-   *   $this
+   * @return $this
    */
   public function setStatus(DSNStatus $code) {
     $this->configuration['code'] = $code;
