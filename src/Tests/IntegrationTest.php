@@ -16,7 +16,7 @@ use Drupal\simpletest\WebTestBase;
 class IntegrationTest extends WebTestBase {
 
   /**
-   * Modules to enable
+   * Modules to enable.
    *
    * @var array
    */
@@ -51,7 +51,7 @@ class IntegrationTest extends WebTestBase {
     $admin = $this->drupalCreateUser(array(
       'administer users',
       'administer user display',
-      'administer send state',
+      'administer mailmute',
     ));
     $this->drupalLogin($admin);
     $approve_edit = array(
