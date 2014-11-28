@@ -171,7 +171,7 @@ function inmail_mail_alter_VERP(&$message) {
   $return_path = $message['headers']['Return-Path'];
 
   // Include recipient address in Return-Path value.
-  // @todo Handle multiple recipients and "Foo <a@b.c>" format.
+  // @todo Handle multiple recipients and "Foo <a@b.c>" format: https://www.drupal.org/node/2379801
   if ($return_path) {
     $message['headers']['Return-Path'] = inmail_generate_VERP($return_path, $message['to']);
   }

@@ -12,7 +12,7 @@ namespace Drupal\inmail\MessageAnalyzer\Result;
  * @ingroup analyzer
  */
 interface AnalyzerResultReadableInterface {
-  // @todo Add getters also for properties outside the bounce domain
+  // @todo Add getters also for properties outside the bounce domain: https://www.drupal.org/node/2381023
 
   /**
    * Returns the reported recipient for a bounce message.

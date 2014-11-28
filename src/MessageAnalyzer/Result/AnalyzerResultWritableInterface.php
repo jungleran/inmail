@@ -14,7 +14,7 @@ use Drupal\inmail\DSNStatus;
  * @ingroup analyzer
  */
 interface AnalyzerResultWritableInterface {
-  // @todo Add setters also for properties outside the bounce domain
+  // @todo Add setters also for properties outside the bounce domain: https://www.drupal.org/node/2381023
 
   /**
    * Report the intended recipient for a bounce message.

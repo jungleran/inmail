@@ -90,7 +90,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
 
     // Only handle bounces with an identifiable recipient.
     if (!$address = $result->getBounceRecipient()) {
-      // @todo Log the message body or place it in a moderation queue.
+      // @todo Log the message body or place it in a moderation queue: https://www.drupal.org/node/2379879
       $this->loggerChannel->info('Bounce with status %code received but no recipient identified.', $log_context);
       return;
     }

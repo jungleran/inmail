@@ -10,7 +10,7 @@ use Drupal\inmail\Message;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Class MessageTest
+ * Tests the Message class.
  *
  * @coversDefaultClass \Drupal\inmail\Message
  * @group inmail
@@ -25,8 +25,6 @@ class MessageTest extends UnitTestCase {
    * @covers ::getHeader
    * @covers ::getBody
    * @covers ::getRaw
-   *
-   * @todo This is not a unit test! Split it up.
    */
   public function testEverything() {
     $raw = <<<"EOF"

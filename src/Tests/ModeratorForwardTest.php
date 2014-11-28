@@ -65,14 +65,14 @@ class ModeratorForwardTest extends KernelTestBase {
     $bounce_no_status = str_replace('Status:', 'Foo:', $bounce);
     $processor->process($bounce_no_status);
     $this->assertMailCount(0);
-    // @todo Read log?
+    // @todo Read log? https://www.drupal.org/node/2381933
 
     // Do not handle, and log an error, if the custom X header is set.
     $handler_config->setConfiguration(array('moderator' => 'moderator@example.com'))->save();
     $regular_x = "X-Inmail-Forwarded: ModeratorForwardTest\n" . $regular;
     $processor->process($regular_x);
     $this->assertMailCount(0);
-    // @todo Read log?
+    // @todo Read log? https://www.drupal.org/node/2381933
 
     // Forward non-bounces if conditions are right.
     $processor->process($regular);

@@ -55,7 +55,7 @@ class PHPMailerBMHAnalyzer implements MessageAnalyzerInterface {
     'dns_unknown' => '5.0.0',
     // Mailbox is full.
     'full' => '4.2.2',
-    // @todo Cover all rule_cats...
+    // @todo Cover all rule_cats: https://www.drupal.org/node/2379769
     // Unknown user.
     'unknown' => '5.1.1',
     // Deliberately excluding 'unrecognized'.
@@ -67,8 +67,6 @@ class PHPMailerBMHAnalyzer implements MessageAnalyzerInterface {
   public function analyze(Message $message, AnalyzerResultWritableInterface $result) {
     // The analysis part of the library is in the bmhDSNRules and bmhBodyRules
     // functions.
-    // @todo Log an error about Composer Manager if file does not exist.
-    // @todo Check that file exists in hook_requirements()?
     require_once $this->getLibraryPath() . '/lib/BounceMailHandler/phpmailer-bmh_rules.php';
     if ($message->isDSN()) {
       // The bmhDSNRules function takes the two report parts (human-readable and

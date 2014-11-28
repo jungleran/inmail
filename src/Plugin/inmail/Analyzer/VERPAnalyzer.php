@@ -56,7 +56,6 @@ class VERPAnalyzer extends AnalyzerBase {
     // Match the modified Return-Path (returnpath+alice=example.com@website.com)
     // and put the parts of the recipient address (alice, example.com) in
     // $matches.
-    // @todo $return_path might break the regex? Consider alternative parsing.
     if (preg_match(':^' . $return_path_split[0] . '\+(.*)=(.*)@' . $return_path_split[1] . '$:', $message->getHeader('To'), $matches)) {
       // Report the recipient address (alice@example.com).
       $result->setBounceRecipient($matches[1] . '@' . $matches[2]);

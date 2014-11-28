@@ -104,7 +104,6 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
     // DirectMail is set as mail plugin on install.
     // Message is composed in inmail_mail().
     $params = array('original' => $message);
-    // @todo Include language in settings form.
     $this->mailManager->mail('inmail', 'handler_moderator_forward', $moderator, \Drupal::languageManager()->getDefaultLanguage(), $params);
   }
 
@@ -143,7 +142,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 
-    // @todo Validate email.
+    // @todo Validate email: https://www.drupal.org/node/2381855
     $form['moderator'] = array(
       '#type' => 'email',
       '#title' => $this->t('Moderator address'),
