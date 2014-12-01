@@ -7,6 +7,7 @@
 namespace Drupal\inmail\Tests;
 
 use Drupal\inmail\Entity\AnalyzerConfig;
+use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\simpletest\KernelTestBase;
@@ -46,11 +47,16 @@ class VERPTest extends KernelTestBase {
     $message = \Drupal::service('plugin.manager.mail')->mail('inmail_test', 'VERP', $recipient, LanguageInterface::LANGCODE_DEFAULT);
     $this->assertEqual($message['headers']['Return-Path'], $expected_returnpath);
 
+    // Enable ResultKeeperHandler.
+    HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
+    // Disable the StandardDSNAnalyzer because it also reports the correct
+    // recipient address.
+    AnalyzerConfig::load('dsn')->disable()->save();
+
     // Process a bounce message with a VERP-y 'To' header, check the parsing.
     $path = drupal_get_path('module', 'inmail') . '/tests/modules/inmail_test/eml/full.eml';
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
     $processor = \Drupal::service('inmail.processor');
-    AnalyzerConfig::load('dsn')->disable()->save();
     $processor->process($raw);
 
     $parsed_recipient = ResultKeeperHandler::$result->getBounceRecipient();

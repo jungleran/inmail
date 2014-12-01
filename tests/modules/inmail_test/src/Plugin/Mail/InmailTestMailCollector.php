@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_test\Plugin\InmailTestMailCollector.
+ * Contains \Drupal\inmail_test\Plugin\Mail\InmailTestMailCollector.
  */
 
 namespace Drupal\inmail_test\Plugin\Mail;
@@ -14,7 +14,9 @@ use Drupal\Core\Mail\Plugin\Mail\TestMailCollector;
  * @see \Drupal\Core\Mail\Plugin\Mail\TestMailCollector
  *
  * @Mail(
- *   id = "inmail_test_mail_collector"
+ *   id = "inmail_test_mail_collector",
+ *   label = @Translation("Inmail mail collector"),
+ *   description = @Translation("Does not send nor format the message, but stores it in Drupal within the state system. Used for testing.")
  * )
  */
 class InmailTestMailCollector extends TestMailCollector {
