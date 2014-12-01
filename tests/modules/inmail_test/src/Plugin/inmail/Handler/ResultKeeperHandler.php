@@ -14,7 +14,7 @@ use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
  * Stores analysis results to let them be easily evaluated by tests.
  *
  * @Handler(
- *   id = "result_keeper",
+ *   id = "result_keeper"
  * )
  */
 class ResultKeeperHandler extends HandlerBase {

@@ -21,7 +21,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *   admin_permission = "administer inmail",
  *   handlers = {
  *     "form" = {
- *       "default" = "Drupal\inmail\Form\HandlerConfigurationForm",
+ *       "default" = "Drupal\inmail\Form\HandlerConfigurationForm"
  *     },
  *     "list_builder" = "Drupal\inmail\HandlerListBuilder"
  *   },

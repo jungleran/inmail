@@ -17,7 +17,7 @@ namespace Drupal\inmail_mailmute\Plugin\mailmute\SendState;
  *   description = @Translation("Earlier messages to the address have resulted in hard bounces."),
  *   mute = true,
  *   admin = true,
- *   parent_id = "onhold",
+ *   parent_id = "onhold"
  * )
  */
 class InvalidAddress extends BounceSendstateBase {

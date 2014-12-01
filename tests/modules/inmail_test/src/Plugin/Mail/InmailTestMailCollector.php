@@ -14,7 +14,7 @@ use Drupal\Core\Mail\Plugin\Mail\TestMailCollector;
  * @see \Drupal\Core\Mail\Plugin\Mail\TestMailCollector
  *
  * @Mail(
- *   id = "inmail_test_mail_collector",
+ *   id = "inmail_test_mail_collector"
  * )
  */
 class InmailTestMailCollector extends TestMailCollector {
