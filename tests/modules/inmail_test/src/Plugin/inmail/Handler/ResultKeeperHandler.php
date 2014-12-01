@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_test\Handler\ResultKeeperHandler.
+ * Contains \Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler.
  */
 
 namespace Drupal\inmail_test\Plugin\inmail\Handler;

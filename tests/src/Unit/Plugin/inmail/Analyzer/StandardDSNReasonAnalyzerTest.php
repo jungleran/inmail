@@ -17,7 +17,7 @@ use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
  * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\StandardDSNReasonAnalyzer
  * @group inmail
  */
-class StandradDSNReasonAnalyzerTest extends InmailUnitTestBase {
+class StandardDSNReasonAnalyzerTest extends InmailUnitTestBase {
 
   /**
    * Tests the analyze method.
