@@ -116,7 +116,7 @@ class ModeratorForwardTest extends KernelTestBase {
    *   The contents of the file.
    */
   public function getMessageFileContents($filename) {
-    $path = drupal_get_path('module', 'inmail') . '/tests/modules/inmail_test/eml/' . $filename;
+    $path = drupal_get_path('module', 'inmail_test') . '/eml/' . $filename;
     return file_get_contents(DRUPAL_ROOT . '/' . $path);
   }
 

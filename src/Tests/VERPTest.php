@@ -54,12 +54,14 @@ class VERPTest extends KernelTestBase {
     AnalyzerConfig::load('dsn')->disable()->save();
 
     // Process a bounce message with a VERP-y 'To' header, check the parsing.
-    $path = drupal_get_path('module', 'inmail') . '/tests/modules/inmail_test/eml/full.eml';
+    $path = drupal_get_path('module', 'inmail_test') . '/eml/full.eml';
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
     $processor = \Drupal::service('inmail.processor');
     $processor->process($raw);
 
-    $parsed_recipient = ResultKeeperHandler::$result->getBounceRecipient();
+    /** @var \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface $result */
+    $result = ResultKeeperHandler::$result;
+    $parsed_recipient = $result->getBounceRecipient();
     $this->assertEqual($parsed_recipient, $recipient);
   }
 
