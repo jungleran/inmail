@@ -1,15 +1,15 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_phpmailerbmh\MessageAnalyzer\PHPMailerBMHAnalyzer.
+ * Contains \Drupal\inmail_phpmailerbmh\Plugin\inmail\Analyzer\PHPMailerBMHAnalyzer.
  */
 
-namespace Drupal\inmail_phpmailerbmh\MessageAnalyzer;
+namespace Drupal\inmail_phpmailerbmh\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
+use Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerBase;
 
 /**
  * Message Analyzer wrapper for the BounceMailHandler library.
@@ -25,8 +25,13 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
  * Anthon Pang on https://github.com/instaclick/PHPMailer-BMH
  *
  * @ingroup analyzer
+ *
+ * @Analyzer(
+ *   id = "phpmailerbmh",
+ *   label = @Translation("Wrapper for PHPMailer-BMH")
+ * )
  */
-class PHPMailerBMHAnalyzer implements MessageAnalyzerInterface {
+class PHPMailerBMHAnalyzer extends AnalyzerBase {
 
   /**
    * Maps results from the library to appropriate DSN status codes.

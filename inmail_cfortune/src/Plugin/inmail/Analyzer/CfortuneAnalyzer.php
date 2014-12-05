@@ -1,16 +1,16 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_cfortune\MessageAnalyzer\CfortuneAnalyzer.
+ * Contains \Drupal\inmail_cfortune\Plugin\inmail\Analyzer\CfortuneAnalyzer.
  */
 
-namespace Drupal\inmail_cfortune\MessageAnalyzer;
+namespace Drupal\inmail_cfortune\Plugin\inmail\Analyzer;
 
 use cfortune\PHPBounceHandler\BounceHandler;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Message;
-use Drupal\inmail\Messageanalyzer\MessageAnalyzerInterface;
 use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
+use Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerBase;
 
 /**
  * Message Analyzer wrapper for cfortune's BounceHandler class.
@@ -24,8 +24,13 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
  * PHP-Bounce-Handler project: https://github.com/Rambomst/PHP-Bounce-Handler
  *
  * @ingroup analyzer
+ *
+ * @Analyzer(
+ *   id = "cfortune",
+ *   label = @Translation("Wrapper for BounceHandler")
+ * )
  */
-class CfortuneAnalyzer implements MessageAnalyzerInterface {
+class CfortuneAnalyzer extends AnalyzerBase {
 
   /**
    * {@inheritdoc}

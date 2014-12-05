@@ -98,7 +98,7 @@ function drush_inmail_plugins() {
  */
 function inmail_drush_setup() {
   if (\Drupal::moduleHandler()->moduleExists('composer_manager')) {
-    \Drupal::service('composer_manager.manager')->registerAutolaoder();
+    \Drupal::service('composer_manager.manager')->registerAutoloader();
   }
 }
 
