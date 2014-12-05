@@ -61,14 +61,14 @@ class HandlerListBuilder extends ConfigEntityListBuilder {
     /** @var \Drupal\inmail\Entity\HandlerConfig $entity */
     $plugin_id = $entity->getPluginId();
     if ($this->handlerManager->hasDefinition($plugin_id)) {
-      $label = $this->handlerManager->getDefinition($plugin_id)['label'];
+      $plugin_label = $this->handlerManager->getDefinition($plugin_id)['label'];
     }
     else {
-      $label = $this->t('Plugin missing');
+      $plugin_label = $this->t('Plugin missing');
     }
 
-    $row['label'] = $entity->label();
-    $row['plugin'] = $label;
+    $row['label'] = $this->getLabel($entity);
+    $row['plugin'] = $plugin_label;
     return $row + parent::buildRow($entity);
   }
 

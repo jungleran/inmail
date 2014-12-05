@@ -63,6 +63,10 @@ class InmailWebTest extends WebTestBase {
     $this->clickLink('Disable');
     $this->clickLink('Enable');
 
+    $this->assertFieldByXPath('//table[@id="edit-entities"]/tbody/tr[1]/td/text()', 'VERP Analyzer');
+    $this->assertFieldByXPath('//table[@id="edit-entities"]/tbody/tr[2]/td/text()', 'Standard DSN Analyzer');
+    $this->assertFieldByXPath('//table[@id="edit-entities"]/tbody/tr[3]/td/text()', 'Standard DSN Reason Analyzer');
+
     AnalyzerConfig::create(array(
       'id' => 'unicorn',
       'plugin_id' => 'unicorn',

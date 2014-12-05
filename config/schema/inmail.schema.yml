@@ -17,6 +17,9 @@ inmail.inmail_analyzer.*:
     status:
       label: 'Enabled'
       type: bool
+    weight:
+      label: 'Weight'
+      type: int
 
 inmail.inmail_handler.*:
   label: 'Message handler'

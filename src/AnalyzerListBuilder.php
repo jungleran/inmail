@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail;
 
-use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
+use Drupal\Core\Config\Entity\DraggableListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup analyzer
  */
-class AnalyzerListBuilder extends ConfigEntityListBuilder {
+class AnalyzerListBuilder extends DraggableListBuilder {
 
   /**
    * The message analyzer plugin manager.
@@ -61,14 +61,14 @@ class AnalyzerListBuilder extends ConfigEntityListBuilder {
     /** @var \Drupal\inmail\Entity\AnalyzerConfig $entity */
     $plugin_id = $entity->getPluginId();
     if ($this->analyzerManager->hasDefinition($plugin_id)) {
-      $label = $this->analyzerManager->getDefinition($plugin_id)['label'];
+      $plugin_label = $this->analyzerManager->getDefinition($plugin_id)['label'];
     }
     else {
-      $label = $this->t('Plugin missing');
+      $plugin_label = $this->t('Plugin missing');
     }
 
-    $row['label'] = $entity->label();
-    $row['plugin'] = $label;
+    $row['label'] = $this->getLabel($entity);
+    $row['plugin'] = array('#markup' => $plugin_label);
     return $row + parent::buildRow($entity);
   }
 
@@ -79,5 +79,12 @@ class AnalyzerListBuilder extends ConfigEntityListBuilder {
     $operations = parent::getDefaultOperations($entity);
     $operations['edit']['title'] = $this->t('Configure');
     return $operations;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFormId() {
+    return 'inmail_analyzer_list';
   }
 }

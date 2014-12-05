@@ -1,3 +1,4 @@
 id: verp
 label: VERP address verification
 plugin: verp
+weight: -5

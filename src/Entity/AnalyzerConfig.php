@@ -28,7 +28,8 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",
- *     "status" = "status"
+ *     "status" = "status",
+ *     "weight" = "weight"
  *   },
  *   links = {
  *     "edit-form" = "entity.inmail_analyzer.edit_form",
@@ -66,6 +67,15 @@ class AnalyzerConfig extends ConfigEntityBase {
    * @var array
    */
   protected $configuration = array();
+
+  /**
+   * The weight of the analyzer configuration.
+   *
+   * Analyzers with lower weights are invoked before those with higher weights.
+   *
+   * @var int
+   */
+  protected $weight;
 
   /**
    * Returns the analyzer plugin ID.

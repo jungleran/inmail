@@ -1,3 +1,4 @@
 id: dsn_reason
 label: Bounce reason message
 plugin: dsn_reason
+weight: 10

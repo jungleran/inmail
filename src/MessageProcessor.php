@@ -64,7 +64,9 @@ class MessageProcessor implements MessageProcessorInterface {
 
     // Analyze message.
     $result = new AnalyzerResult();
-    foreach ($this->analyzerStorage->loadMultiple() as $analyzer_config) {
+    $analyzer_configs = $this->analyzerStorage->loadMultiple();
+    uasort($analyzer_configs, array($this->analyzerStorage->getEntityType()->getClass(), 'sort'));
+    foreach ($analyzer_configs as $analyzer_config) {
       /** @var \Drupal\inmail\Entity\AnalyzerConfig $analyzer_config */
       if ($analyzer_config->status()) {
         $analyzer = $this->analyzerManager->createInstance($analyzer_config->getPluginId(), $analyzer_config->getConfiguration());
