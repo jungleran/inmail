@@ -14,7 +14,8 @@ namespace Drupal\inmail;
  * header indicates that it is a MIME Multipart message, the body is also split
  * into parts.
  *
- * @todo Decode base64 parts/body: https://www.drupal.org/node/2381881
+ * @todo Decode base64 message body https://www.drupal.org/node/2381881
+ * @todo Extend multipart message parsing: https://www.drupal.org/node/2383639
  *
  * @ingroup processing
  */

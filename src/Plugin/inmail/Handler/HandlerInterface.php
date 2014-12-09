@@ -10,7 +10,7 @@ use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
+use Drupal\inmail\ProcessorResultInterface;
 
 /**
  * Provides a callback to execute for an analyzed message.
@@ -32,10 +32,10 @@ interface HandlerInterface extends ConfigurablePluginInterface, PluginFormInterf
    *
    * @param \Drupal\inmail\Message $message
    *   The incoming mail message.
-   * @param \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface $result
+   * @param \Drupal\inmail\ProcessorResultInterface $processor_result
    *   The analysis result returned by an analyzer. Will be NULL if no analyzer
    *   could provide a result.
    */
-  public function invoke(Message $message, AnalyzerResultReadableInterface $result);
+  public function invoke(Message $message, ProcessorResultInterface $processor_result);
 
 }

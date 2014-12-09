@@ -15,6 +15,8 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *
  * @ingroup analyzer
  *
+ * @todo Add config_prefix in https://www.drupal.org/node/2379773
+ *
  * @ConfigEntityType(
  *   id = "inmail_analyzer",
  *   label = @Translation("Message analyzer"),

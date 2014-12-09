@@ -15,6 +15,8 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *
  * @ingroup handler
  *
+ * @todo Add config_prefix in https://www.drupal.org/node/2379773
+ *
  * @ConfigEntityType(
  *   id = "inmail_handler",
  *   label = @Translation("Message handler"),
@@ -102,4 +104,5 @@ class HandlerConfig extends ConfigEntityBase {
     return $this;
   }
 
+  // @todo Implement HandlerConfig::calculateDependencies() https://www.drupal.org/node/2379929
 }

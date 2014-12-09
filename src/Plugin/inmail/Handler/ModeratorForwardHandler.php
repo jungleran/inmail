@@ -10,12 +10,16 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
+use Drupal\inmail\ProcessorResultInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Message handler that forwards unclassified bounces by email to a moderator.
+ *
+ * @todo Validate moderator email address https://www.drupal.org/node/2381855
+ * @todo Test logging https://www.drupal.org/node/2381933
  *
  * @Handler(
  *   id = "moderator_forward",
@@ -75,21 +79,25 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, AnalyzerResultReadableInterface $result) {
-    // Cancel if the message is successfully classified.
-    if ($result->getBounceStatusCode()) {
+  public function invoke(Message $message, ProcessorResultInterface $processor_result) {
+    // Cancel if the moderator email is not set.
+    if (!($moderator = $this->getModerator())) {
+      $this->logger->error('Moderator email address not set');
       return;
     }
 
-    // Cancel if the moderator email is not set.
-    if (!($moderator = $this->getModerator())) {
+    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+
+    // Cancel if the message is successfully classified.
+    if ($result->isBounce()) {
       return;
     }
 
     // Cancel and make noise if it was the moderator address that bounced!
-    // This is for the off chance that we identified the intended recipient but
-    // not a bounce status code.
-    if ($result->getBounceRecipient() == $moderator) {
+    // This is for the off chance that we identified the intended recipient
+    // but not a bounce status code.
+    if ($result->getRecipient() == $moderator) {
       $this->logger->error('Moderator %address is bouncing.', array('%address' => $moderator));
       return;
     }
@@ -111,7 +119,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
    * Returns the address that email is forwarded to.
    *
    * @return string
-   *   The email address that email is forwarded to.
+   *   Email address of moderator.
    */
   public function getModerator() {
     return $this->configuration['moderator'];
@@ -121,7 +129,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
    * Set the address that email should be forwarded to.
    *
    * @param string $moderator
-   *   Moderator's email address.
+   *   Email address of moderator.
    */
   public function setModerator($moderator) {
     $this->configuration['moderator'] = strval($moderator);

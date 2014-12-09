@@ -6,8 +6,9 @@
 
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
+use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
+use Drupal\inmail\ProcessorResultInterface;
 
 /**
  * Extracts a recipient address from a VERP 'To' header of a bounce.
@@ -27,7 +28,14 @@ use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
  * Appending with '+' is known as "subaddress extension" and is described in RFC
  * 5233. Commonly, messages to foo+anything@example.com are delivered directly
  * to foo@example.com. Note that support for subaddress extension is limited
- * among mail services.
+ * among mail services. Postfix MTA uses the term address extension.
+ * http://www.postfix.org/generic.5.html
+ *
+ * // @todo Warn about disabling VERP https://www.drupal.org/node/2382587
+ * // @todo Support bounce-exclusive Return-Path https://www.drupal.org/node/2382563
+ * // @todo issue Make subaddress extension separator configurable
+ *
+ * // http://www.postfix.org/generic.5.html
  *
  * @see inmail_mail_alter_VERP()
  *
@@ -43,7 +51,11 @@ class VERPAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(Message $message, AnalyzerResultWritableInterface $result) {
+  public function analyze(Message $message, ProcessorResultInterface $processor_result) {
+    $processor_result->addAnalyzerResult(BounceAnalyzerResult::TOPIC, new BounceAnalyzerResult());
+    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+
     // Split the site address to facilitate matching.
     $return_path = \Drupal::config('inmail.settings')->get('return_path') ?: \Drupal::config('system.site')->get('mail');
     $return_path_split = explode('@', $return_path);
@@ -58,7 +70,7 @@ class VERPAnalyzer extends AnalyzerBase {
     // $matches.
     if (preg_match(':^' . $return_path_split[0] . '\+(.*)=(.*)@' . $return_path_split[1] . '$:', $message->getHeader('To'), $matches)) {
       // Report the recipient address (alice@example.com).
-      $result->setBounceRecipient($matches[1] . '@' . $matches[2]);
+      $result->setRecipient($matches[1] . '@' . $matches[2]);
     }
   }
 

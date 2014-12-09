@@ -7,10 +7,11 @@
 namespace Drupal\inmail_mailmute\Tests;
 
 use Drupal\Component\Utility\String;
+use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
+use Drupal\inmail\ProcessorResult;
 use Drupal\simpletest\KernelTestBase;
 use Drupal\user\Entity\User;
 
@@ -62,6 +63,7 @@ class InmailMailmuteTest extends KernelTestBase {
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
 
+    // @todo Extend sample message collection https://www.drupal.org/node/2381029
     $cases = array(
       // Normal message should not trigger mute.
       'normal.eml' => 'send',
@@ -112,12 +114,15 @@ class InmailMailmuteTest extends KernelTestBase {
       $sendstate_manager->transition($this->user->getEmail(), 'persistent_send');
 
       // Invoke the handler.
-      $result = new AnalyzerResult();
-      $result->setBounceStatusCode($status);
-      /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
+      $processor_result = new ProcessorResult();
+      $result = new BounceAnalyzerResult();
+      $processor_result->addAnalyzerResult(BounceAnalyzerResult::TOPIC, $result);
+      $result->setStatusCode($status);
+      /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
       $handler_config = \Drupal::entityManager()->getStorage('inmail_handler')->load('mailmute');
+      /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
       $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
-      $handler->invoke(new Message(), $result);
+      $handler->invoke(new Message(), $processor_result);
 
       // Check that the state did not change.
       $new_state = $sendstate_manager->getState($this->user->getEmail());

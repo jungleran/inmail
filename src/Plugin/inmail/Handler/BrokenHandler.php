@@ -7,7 +7,7 @@
 namespace Drupal\inmail\Plugin\inmail\Handler;
 
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
+use Drupal\inmail\ProcessorResultInterface;
 
 /**
  * Fallback handler plugin.
@@ -37,7 +37,7 @@ class BrokenHandler extends HandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, AnalyzerResultReadableInterface $result) {
+  public function invoke(Message $message, ProcessorResultInterface $processor_result) {
     // Do nothing.
   }
 

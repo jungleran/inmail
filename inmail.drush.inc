@@ -27,6 +27,7 @@ use Drupal\inmail\Entity\HandlerConfig;
 function inmail_drush_command() {
   $items = array();
 
+  // @todo Drush command option to specify analyzers/handlers https://www.drupal.org/node/2379927
   $items['inmail-process'] = array(
     'description' => 'Process a mail message provided through STDIN, or one or more mail messages by filename.',
     'arguments' => array(
@@ -55,6 +56,7 @@ function drush_inmail_process() {
 
   $args = func_get_args();
 
+  // @todo Fetchers should identify themselves https://www.drupal.org/node/2379909
   if (count($args) > 0) {
     $raws = array();
     foreach ($args as $filename) {
@@ -97,6 +99,7 @@ function drush_inmail_plugins() {
  * Perform some preparation for interaction with the processing mechanism.
  */
 function inmail_drush_setup() {
+  // @todo Remove this when https://www.drupal.org/node/2208949 is fixed.
   if (\Drupal::moduleHandler()->moduleExists('composer_manager')) {
     \Drupal::service('composer_manager.manager')->registerAutoloader();
   }

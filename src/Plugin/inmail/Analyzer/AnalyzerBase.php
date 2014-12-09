@@ -42,6 +42,7 @@ abstract class AnalyzerBase extends PluginBase implements AnalyzerInterface {
    * {@inheritdoc}
    */
   public function calculateDependencies() {
+    // @todo Implement HandlerConfig::calculateDependencies() https://www.drupal.org/node/2379929
     return array();
   }
 

@@ -219,6 +219,9 @@ function inmail_mail($key, &$message, $params) {
       // here, and the same is expected by DirectMail.
       $headers = preg_replace('/\nTo: [^\n]*/', '', implode("\n", $original->getHeaders()));
       $headers = "X-Inmail-Forwarded: handler_moderator_forward\n" . $headers;
+      // @todo Handle multiple recipients wherever address is parsed https://www.drupal.org/node/2379801
+      //   In case some of the multiple recipients are suppressed, add header
+      //   so the remaining recipients can see this in the headers.
       $message['raw_headers'] = $headers;
       break;
   }

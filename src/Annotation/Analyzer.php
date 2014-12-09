@@ -23,9 +23,9 @@ class Analyzer extends Plugin {
   protected $id;
 
   /**
-   * The name of the analyzer.
+   * The display label of the analyzer.
    *
-   * @var \Drupal\Core\Annotation\Translation
+   * @var \Drupal\Core\StringTranslation\TranslationWrapper
    */
   protected $label;
 

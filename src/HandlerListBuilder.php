@@ -15,6 +15,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * List builder for message handler configurations.
  *
+ * @todo Improve "broken" items in handler list https://www.drupal.org/node/2379777
+ *
  * @ingroup handler
  */
 class HandlerListBuilder extends ConfigEntityListBuilder {

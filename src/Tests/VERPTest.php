@@ -6,6 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
@@ -59,9 +60,9 @@ class VERPTest extends KernelTestBase {
     $processor = \Drupal::service('inmail.processor');
     $processor->process($raw);
 
-    /** @var \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface $result */
-    $result = ResultKeeperHandler::$result;
-    $parsed_recipient = $result->getBounceRecipient();
+    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
+    $result = ResultKeeperHandler::$result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+    $parsed_recipient = $result->getRecipient();
     $this->assertEqual($parsed_recipient, $recipient);
   }
 

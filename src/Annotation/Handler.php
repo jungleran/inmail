@@ -25,7 +25,7 @@ class Handler extends Plugin {
   protected $id;
 
   /**
-   * The name of the handler.
+   * The display label of the handler.
    *
    * @var \Drupal\Core\StringTranslation\TranslationWrapper
    */

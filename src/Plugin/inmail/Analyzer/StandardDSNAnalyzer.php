@@ -6,9 +6,10 @@
 
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
+use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
+use Drupal\inmail\ProcessorResultInterface;
 
 /**
  * Identifies standard Delivery Status Notification (DSN) messages.
@@ -37,7 +38,11 @@ class StandardDSNAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(Message $message, AnalyzerResultWritableInterface $result) {
+  public function analyze(Message $message, ProcessorResultInterface $processor_result) {
+    $processor_result->addAnalyzerResult(BounceAnalyzerResult::TOPIC, new BounceAnalyzerResult());
+    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+
     // DSN's are declared with the 'Content-Type' header. Example:
     // Content-Type: multipart/report; report-type=delivery-status;
     // boundary="boundary_2634_73ab76f8"
@@ -54,15 +59,17 @@ class StandardDSNAnalyzer extends AnalyzerBase {
     }
     $machine_part = $parts[2];
 
-    // Parse the 'Status:' pseudo-header.
-    if (preg_match('/\nStatus\s*:\s*([245])\.(\d{1,3})\.(\d{1,3})/i', $machine_part, $matches)) {
-      $result->setBounceStatusCode(new DSNStatus($matches[1], $matches[2], $matches[3]));
-    }
-
     // Parse the 'Final-Recipient:' pseudo-header.
     if (preg_match('/\nFinal-Recipient\s*:[^;]*;\s*(\S*@\S*\.\S*)/i', $machine_part, $matches)) {
-      $result->setBounceRecipient($matches[1]);
+      $result->setRecipient($matches[1]);
     }
+
+    // Parse the 'Status:' pseudo-header.
+    if (preg_match('/\nStatus\s*:\s*([245])\.(\d{1,3})\.(\d{1,3})/i', $machine_part, $matches)) {
+      $result->setStatusCode(new DSNStatus($matches[1], $matches[2], $matches[3]));
+    }
+
+    // @todo Store date for bounces https://www.drupal.org/node/2379923
   }
 
 }

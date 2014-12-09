@@ -6,6 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\simpletest\KernelTestBase;
@@ -73,10 +74,11 @@ EOF;
     HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
     $processor->process($raw);
 
-    /** @var \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface $result */
-    $result = ResultKeeperHandler::$result;
+    $processor_result = ResultKeeperHandler::$result;
+    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
 
-    $this->assertEqual($result->getBounceRecipient(), 'verp-parsed@example.org');
+    $this->assertEqual($result->getRecipient(), 'verp-parsed@example.org');
   }
 
 }

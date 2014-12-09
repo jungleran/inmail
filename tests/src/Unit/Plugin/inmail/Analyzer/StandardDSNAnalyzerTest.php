@@ -6,9 +6,10 @@
 
 namespace Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer;
 
+use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
 use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNAnalyzer;
+use Drupal\inmail\ProcessorResult;
 use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 
 /**
@@ -30,23 +31,25 @@ class StandardDSNAnalyzerTest extends InmailUnitTestBase {
 
     // Run the analyzer.
     $analyzer = new StandardDSNAnalyzer(array(), $this->randomMachineName(), array());
-    $result = new AnalyzerResult();
-    $analyzer->analyze($message, $result);
+    $processor_result = new ProcessorResult();
+    $analyzer->analyze($message, $processor_result);
+    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
 
     // Test the reported code.
     if (isset($expected_code)) {
-      $this->assertEquals($expected_code, $result->getBounceStatusCode()->getCode());
+      $this->assertEquals($expected_code, $result->getStatusCode()->getCode());
     }
     else {
-      $this->assertNull($result->getBounceStatusCode());
+      $this->assertNull($result->getStatusCode());
     }
 
     // Test the reported target recipient.
     if (isset($expected_recipient)) {
-      $this->assertEquals($expected_recipient, $result->getBounceRecipient());
+      $this->assertEquals($expected_recipient, $result->getRecipient());
     }
     else {
-      $this->assertNull($result->getBounceRecipient());
+      $this->assertNull($result->getRecipient());
     }
   }
 

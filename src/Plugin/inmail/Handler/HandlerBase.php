@@ -45,6 +45,7 @@ abstract class HandlerBase extends PluginBase implements HandlerInterface {
    * {@inheritdoc}
    */
   public function calculateDependencies() {
+    // @todo Implement HandlerConfig::calculateDependencies() https://www.drupal.org/node/2379929
     return array();
   }
 

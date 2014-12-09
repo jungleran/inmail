@@ -7,11 +7,12 @@
 namespace Drupal\inmail;
 
 use Drupal\Core\Entity\EntityManagerInterface;
-use Drupal\inmail\MessageAnalyzer\MessageAnalyzerInterface;
-use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult;
 
 /**
  * Mail message processor using services to analyze and handle messages.
+ *
+ * @todo Fetch email by IMAP/POP3 https://www.drupal.org/node/2379889
+ * @todo Evaluate the analysis algorithms in D7 Bounce and CiviCRM https://www.drupal.org/node/2379845
  *
  * @ingroup processing
  */
@@ -59,11 +60,13 @@ class MessageProcessor implements MessageProcessorInterface {
    * {@inheritdoc}
    */
   public function process($raw) {
+    // @todo Fetchers should identify themselves https://www.drupal.org/node/2379909
+
     // Parse message.
     $message = Message::parse($raw);
 
     // Analyze message.
-    $result = new AnalyzerResult();
+    $result = new ProcessorResult();
     $analyzer_configs = $this->analyzerStorage->loadMultiple();
     uasort($analyzer_configs, array($this->analyzerStorage->getEntityType()->getClass(), 'sort'));
     foreach ($analyzer_configs as $analyzer_config) {
@@ -75,6 +78,7 @@ class MessageProcessor implements MessageProcessorInterface {
     }
 
     // Handle message.
+    // @todo Collect handler results https://www.drupal.org/node/2379941
     foreach ($this->handlerStorage->loadMultiple() as $handler_config) {
       /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
       if ($handler_config->status()) {
@@ -82,6 +86,10 @@ class MessageProcessor implements MessageProcessorInterface {
         $handler->invoke($message, $result);
       }
     }
+
+    // @todo Log incoming messages and actions taken https://www.drupal.org/node/2380965
+    //   Log all the messages in $result (and AnalyzerResult objects) in the
+    //   context of Message-Id.
   }
 
   /**

@@ -10,7 +10,7 @@ use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface;
+use Drupal\inmail\ProcessorResultInterface;
 
 /**
  * Performs some analysis on a message.
@@ -24,9 +24,9 @@ interface AnalyzerInterface extends ConfigurablePluginInterface, PluginFormInter
    *
    * @param \Drupal\inmail\Message $message
    *   A mail message to be analyzed.
-   * @param \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface $result
-   *   The result object where results should be reported.
+   * @param \Drupal\inmail\ProcessorResultInterface $processor_result
+   *   The processor result object for reporting results.
    */
-  public function analyze(Message $message, AnalyzerResultWritableInterface $result);
+  public function analyze(Message $message, ProcessorResultInterface $processor_result);
 
 }

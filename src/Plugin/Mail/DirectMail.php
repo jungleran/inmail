@@ -11,6 +11,16 @@ use Drupal\Core\Mail\MailInterface;
 /**
  * Sends a message with the native mail() function and without modification.
  *
+ * This allows forwarding of a message similar to MTA behaviour.
+ * @see Drupal\inmail\Plugin\inmail\Handler\ModeratorForwardHandler
+ *
+ * DirectMail is needed because PhpMail modifies header contents.
+ * When forwarding, mail headers need to be preserved in sequence and can
+ * contain the same key multiple times.
+ * @see Drupal\Core\Mail\Plugin\Mail\PhpMail
+ *
+ * @ingroup handler
+ *
  * @Mail(
  *   id = "inmail_direct",
  *   label = @Translation("Direct"),
@@ -35,6 +45,7 @@ class DirectMail implements MailInterface {
   public function mail(array $message) {
     // Headers are passed in $message['raw_headers'], see explanation in
     // inmail_mail().
+    // @todo Handle multiple recipients and "Foo <a@b.c>" format: https://www.drupal.org/node/2379801
     return (bool) mail(
       $message['to'],
       $message['subject'],

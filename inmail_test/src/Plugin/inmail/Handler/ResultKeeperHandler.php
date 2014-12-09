@@ -7,14 +7,16 @@
 namespace Drupal\inmail_test\Plugin\inmail\Handler;
 
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
+use Drupal\inmail\ProcessorResultInterface;
 
 /**
  * Stores analysis results to let them be easily evaluated by tests.
  *
  * @Handler(
- *   id = "result_keeper"
+ *   id = "result_keeper",
+ *   label = @Translation("Result keeper"),
+ *   description = @Translation("Stores analysis results to let them be easily evaluated by tests.")
  * )
  */
 class ResultKeeperHandler extends HandlerBase {
@@ -29,7 +31,7 @@ class ResultKeeperHandler extends HandlerBase {
   /**
    * The analysis result.
    *
-   * @var \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultWritableInterface
+   * @var \Drupal\inmail\ProcessorResultInterface
    */
   public static $result;
 
@@ -43,16 +45,9 @@ class ResultKeeperHandler extends HandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, AnalyzerResultReadableInterface $result) {
+  public function invoke(Message $message, ProcessorResultInterface $processor_result) {
     static::$message = $message;
-    static::$result = $result;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isEnabled() {
-    return TRUE;
+    static::$result = $processor_result;
   }
 
 }

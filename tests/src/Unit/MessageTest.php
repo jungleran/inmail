@@ -12,6 +12,13 @@ use Drupal\Tests\UnitTestCase;
 /**
  * Tests the Message class.
  *
+ * @todo Complete MessageTest https://www.drupal.org/node/2381889
+ * Methods not test covered:
+ * - getHeaders() could be compared to an exact value
+ * - isMultipart()
+ * - isDSN()
+ * - getParts()
+ *
  * @coversDefaultClass \Drupal\inmail\Message
  * @group inmail
  */

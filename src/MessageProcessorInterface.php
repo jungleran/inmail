@@ -28,6 +28,8 @@ interface MessageProcessorInterface {
   /**
    * Analyzes and executes callbacks for multiple messages.
    *
+   * @todo consider use of array keys and deal with return status.
+   *
    * @param string[] $messages
    *   A list of raw mail messages.
    *

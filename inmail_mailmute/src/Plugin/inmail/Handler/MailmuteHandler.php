@@ -9,9 +9,10 @@ namespace Drupal\inmail_mailmute\Plugin\inmail\Handler;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\Message;
-use Drupal\inmail\MessageAnalyzer\Result\AnalyzerResultReadableInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
+use Drupal\inmail\ProcessorResultInterface;
 use Drupal\inmail_mailmute\Plugin\mailmute\SendState\CountingBounces;
 use Drupal\inmail_mailmute\Plugin\mailmute\SendState\PersistentSend;
 use Drupal\mailmute\SendStateManagerInterface;
@@ -19,6 +20,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Reacts to bounce messages by managing the send state of the bouncing address.
+ *
+ * @todo Test logging https://www.drupal.org/node/2381933
  *
  * @ingroup mailmute
  *
@@ -77,19 +80,22 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, AnalyzerResultReadableInterface $result) {
-    // Only handle bounces.
-    if (empty($result) || !$status_code = $result->getBounceStatusCode()) {
-      return;
-    }
-    if ($status_code->isSuccess()) {
+  public function invoke(Message $message, ProcessorResultInterface $processor_result) {
+    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+    if (!$result instanceof BounceAnalyzerResult) {
       return;
     }
 
+    // Only handle bounces.
+    if (!$result->isBounce()) {
+      return;
+    }
+
+    $status_code = $result->getStatusCode();
     $log_context = ['%code' => $status_code->getCode()];
 
     // Only handle bounces with an identifiable recipient.
-    if (!$address = $result->getBounceRecipient()) {
+    if (!$address = $result->getRecipient()) {
       // @todo Log the message body or place it in a moderation queue: https://www.drupal.org/node/2379879
       $this->loggerChannel->info('Bounce with status %code received but no recipient identified.', $log_context);
       return;
@@ -112,8 +118,8 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
     }
 
     $state_configuration = array(
-      'code' => $result->getBounceStatusCode(),
-      'reason' => $result->getBounceReason(),
+      'code' => $result->getStatusCode(),
+      'reason' => $result->getReason(),
     );
 
     // In the case of a "hard bounce", set the send state to a muting state.
