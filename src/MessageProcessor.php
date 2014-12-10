@@ -7,6 +7,7 @@
 namespace Drupal\inmail;
 
 use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\inmail\MIME\Parser;
 
 /**
  * Mail message processor using services to analyze and handle messages.
@@ -63,7 +64,9 @@ class MessageProcessor implements MessageProcessorInterface {
     // @todo Fetchers should identify themselves https://www.drupal.org/node/2379909
 
     // Parse message.
-    $message = Message::parse($raw);
+    /** @var \Drupal\inmail\MIME\ParserInterface $parser */
+    $parser = \Drupal::service('inmail.mime_parser');
+    $message = $parser->parse($raw);
 
     // Analyze message.
     $result = new ProcessorResult();
@@ -72,6 +75,7 @@ class MessageProcessor implements MessageProcessorInterface {
     foreach ($analyzer_configs as $analyzer_config) {
       /** @var \Drupal\inmail\Entity\AnalyzerConfig $analyzer_config */
       if ($analyzer_config->status()) {
+        /** @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface $analyzer */
         $analyzer = $this->analyzerManager->createInstance($analyzer_config->getPluginId(), $analyzer_config->getConfiguration());
         $analyzer->analyze($message, $result);
       }
@@ -82,6 +86,7 @@ class MessageProcessor implements MessageProcessorInterface {
     foreach ($this->handlerStorage->loadMultiple() as $handler_config) {
       /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
       if ($handler_config->status()) {
+        /** @var \Drupal\inmail\Plugin\inmail\handler\HandlerInterface $handler */
         $handler = $this->handlerManager->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
         $handler->invoke($message, $result);
       }

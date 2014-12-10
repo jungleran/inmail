@@ -11,3 +11,5 @@ services:
   logger.channel.inmail:
     parent: logger.channel_base
     arguments: ['inmail']
+  inmail.mime_parser:
+    class: Drupal\inmail\MIME\Parser

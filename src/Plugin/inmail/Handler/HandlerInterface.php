@@ -9,7 +9,7 @@ namespace Drupal\inmail\Plugin\inmail\Handler;
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
-use Drupal\inmail\Message;
+use Drupal\inmail\MIME\EntityInterface;
 use Drupal\inmail\ProcessorResultInterface;
 
 /**
@@ -30,12 +30,12 @@ interface HandlerInterface extends ConfigurablePluginInterface, PluginFormInterf
   /**
    * Executes callbacks for an analyzed message.
    *
-   * @param \Drupal\inmail\Message $message
+   * @param \Drupal\inmail\MIME\EntityInterface $message
    *   The incoming mail message.
    * @param \Drupal\inmail\ProcessorResultInterface $processor_result
    *   The analysis result returned by an analyzer. Will be NULL if no analyzer
    *   could provide a result.
    */
-  public function invoke(Message $message, ProcessorResultInterface $processor_result);
+  public function invoke(EntityInterface $message, ProcessorResultInterface $processor_result);
 
 }

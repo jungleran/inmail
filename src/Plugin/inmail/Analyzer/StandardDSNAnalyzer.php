@@ -8,7 +8,8 @@ namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\DSNStatus;
-use Drupal\inmail\Message;
+use Drupal\inmail\MIME\DSNEntity;
+use Drupal\inmail\MIME\EntityInterface;
 use Drupal\inmail\ProcessorResultInterface;
 
 /**
@@ -38,38 +39,33 @@ class StandardDSNAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(Message $message, ProcessorResultInterface $processor_result) {
+  public function analyze(EntityInterface $message, ProcessorResultInterface $processor_result) {
+    if (!$message instanceof DSNEntity) {
+      return;
+    }
+
     $processor_result->addAnalyzerResult(BounceAnalyzerResult::TOPIC, new BounceAnalyzerResult());
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
 
-    // DSN's are declared with the 'Content-Type' header. Example:
-    // Content-Type: multipart/report; report-type=delivery-status;
-    // boundary="boundary_2634_73ab76f8"
-    if (strpos($message->getHeader('Content-Type'), 'report-type=delivery-status') === FALSE) {
-      // Ignore the message if it does not look like a DSN.
-      return;
-    }
-
-    // Get the third body part, which has an easy-to-parse, standardized format.
-    $parts = $message->getParts();
-    if (!isset($parts[2])) {
-      // Malformed message, give up.
-      return;
-    }
-    $machine_part = $parts[2];
-
-    // Parse the 'Final-Recipient:' pseudo-header.
-    if (preg_match('/\nFinal-Recipient\s*:[^;]*;\s*(\S*@\S*\.\S*)/i', $machine_part, $matches)) {
-      $result->setRecipient($matches[1]);
-    }
-
-    // Parse the 'Status:' pseudo-header.
-    if (preg_match('/\nStatus\s*:\s*([245])\.(\d{1,3})\.(\d{1,3})/i', $machine_part, $matches)) {
-      $result->setStatusCode(new DSNStatus($matches[1], $matches[2], $matches[3]));
-    }
-
     // @todo Store date for bounces https://www.drupal.org/node/2379923
+    // Iterate over per-recipient field groups in the DSN.
+    $index = 0;
+    while ($fields = $message->getPerRecipientFields($index++)) {
+      // Parse the 'Status:' field, having the format X.XXX.XXX.
+      $subcodes = explode('.', $fields->getFieldBody('Status'));
+      if (count($subcodes) == 3) {
+        $result->setStatusCode(new DSNStatus($subcodes[0], $subcodes[1], $subcodes[2]));
+      }
+
+      // Extract address from the 'Final-Recipient:' field, which has the format
+      // "type; address".
+      $field_parts = preg_split('/;\s*/', $fields->getFieldBody('Final-Recipient'));
+      if (count($field_parts) == 2) {
+        $result->setRecipient($field_parts[1]);
+      }
+    }
+
   }
 
 }

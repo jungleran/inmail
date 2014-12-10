@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail\Plugin\inmail\Handler;
 
-use Drupal\inmail\Message;
+use Drupal\inmail\MIME\EntityInterface;
 use Drupal\inmail\ProcessorResultInterface;
 
 /**
@@ -37,7 +37,7 @@ class BrokenHandler extends HandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, ProcessorResultInterface $processor_result) {
+  public function invoke(EntityInterface $message, ProcessorResultInterface $processor_result) {
     // Do nothing.
   }
 

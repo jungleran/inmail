@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail_test\Plugin\inmail\Handler;
 
-use Drupal\inmail\Message;
+use Drupal\inmail\MIME\EntityInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
 use Drupal\inmail\ProcessorResultInterface;
 
@@ -45,7 +45,7 @@ class ResultKeeperHandler extends HandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, ProcessorResultInterface $processor_result) {
+  public function invoke(EntityInterface $message, ProcessorResultInterface $processor_result) {
     static::$message = $message;
     static::$result = $processor_result;
   }

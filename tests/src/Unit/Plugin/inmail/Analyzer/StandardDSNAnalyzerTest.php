@@ -7,7 +7,7 @@
 namespace Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\BounceAnalyzerResult;
-use Drupal\inmail\Message;
+use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNAnalyzer;
 use Drupal\inmail\ProcessorResult;
 use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
@@ -27,7 +27,7 @@ class StandardDSNAnalyzerTest extends InmailUnitTestBase {
    * @dataProvider provideExpectedResults
    */
   public function testAnalyze($filename, $expected_code, $expected_recipient) {
-    $message = Message::parse($this->getRaw($filename));
+    $message = (new Parser())->parse($this->getRaw($filename));
 
     // Run the analyzer.
     $analyzer = new StandardDSNAnalyzer(array(), $this->randomMachineName(), array());
@@ -36,20 +36,19 @@ class StandardDSNAnalyzerTest extends InmailUnitTestBase {
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
 
+    // No result object if nothing to report.
+    if (!isset($expected_code) && !isset($expected_recipient)) {
+      $this->assertNull($result);
+    }
+
     // Test the reported code.
     if (isset($expected_code)) {
       $this->assertEquals($expected_code, $result->getStatusCode()->getCode());
-    }
-    else {
-      $this->assertNull($result->getStatusCode());
     }
 
     // Test the reported target recipient.
     if (isset($expected_recipient)) {
       $this->assertEquals($expected_recipient, $result->getRecipient());
-    }
-    else {
-      $this->assertNull($result->getRecipient());
     }
   }
 

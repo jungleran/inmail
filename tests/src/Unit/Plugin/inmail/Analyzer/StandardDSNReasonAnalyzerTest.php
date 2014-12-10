@@ -7,7 +7,7 @@
 namespace Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\BounceAnalyzerResult;
-use Drupal\inmail\Message;
+use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNReasonAnalyzer;
 use Drupal\inmail\ProcessorResult;
 use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
@@ -27,13 +27,18 @@ class StandardDSNReasonAnalyzerTest extends InmailUnitTestBase {
    * @dataProvider provideReasons
    */
   public function testAnalyze($filename, $expected_reason) {
-    $message = Message::parse($this->getRaw($filename));
+    $message = (new Parser())->parse($this->getRaw($filename));
     $analyzer = new StandardDSNReasonAnalyzer(array(), $this->randomMachineName(), array());
     $processor_result = new ProcessorResult();
     $analyzer->analyze($message, $processor_result);
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
-    $this->assertEquals($expected_reason, $result->getReason());
+    if (isset($expected_reason)) {
+      $this->assertEquals($expected_reason, $result->getReason());
+    }
+    else {
+      $this->assertNull($result);
+    }
   }
 
   /**

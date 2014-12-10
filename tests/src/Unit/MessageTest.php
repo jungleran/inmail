@@ -25,37 +25,6 @@ use Drupal\Tests\UnitTestCase;
 class MessageTest extends UnitTestCase {
 
   /**
-   * Tests some Message methods.
-   *
-   * @covers ::parse
-   * @covers ::getHeaders
-   * @covers ::getHeader
-   * @covers ::getBody
-   * @covers ::getRaw
-   */
-  public function testEverything() {
-    $raw = <<<"EOF"
-X-Single-Line-Header:  This should be trimmed
-X-Multi-Line-Header: This suit is black
- not!
-
-I'm a message body.
-
-I'm the same body.
-EOF;
-
-    $message = Message::parse($raw);
-
-    $this->assertCount(2, $message->getHeaders());
-    $this->assertEquals('This should be trimmed', $message->getHeader('x-single-line-header'));
-    $this->assertEquals("This suit is black\n not!", $message->getHeader('x-multi-line-header'));
-    $this->assertEquals("I'm a message body.\n\nI'm the same body.", $message->getBody());
-    $this->assertEquals($raw, $message->getRaw());
-    $this->assertFalse($message->isMultipart());
-    $this->assertNull($message->getParts());
-  }
-
-  /**
    * Test address parsing.
    *
    * @covers ::parseAddress

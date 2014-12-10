@@ -11,7 +11,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\inmail\BounceAnalyzerResult;
-use Drupal\inmail\Message;
+use Drupal\inmail\MIME\EntityInterface;
 use Drupal\inmail\ProcessorResultInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -79,7 +79,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
   /**
    * {@inheritdoc}
    */
-  public function invoke(Message $message, ProcessorResultInterface $processor_result) {
+  public function invoke(EntityInterface $message, ProcessorResultInterface $processor_result) {
     // Cancel if the moderator email is not set.
     if (!($moderator = $this->getModerator())) {
       $this->logger->error('Moderator email address not set');
@@ -103,8 +103,8 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
     }
 
     // Cancel and make noise if this message rings a bell.
-    if ($message->getHeader('X-Inmail-Forwarded')) {
-      $this->logger->error('Refused to forward the same email twice (%subject).', array('%subject' => $message->getHeader('Subject')));
+    if ($message->getHeader()->getFieldBody('X-Inmail-Forwarded')) {
+      $this->logger->error('Refused to forward the same email twice (%subject).', array('%subject' => $message->getHeader()->getFieldBody('Subject')));
       return;
     }
 

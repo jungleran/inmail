@@ -69,7 +69,7 @@ class IntegrationTest extends WebTestBase {
 
     // Check send state.
     $this->drupalGet('user/2');
-    $this->assertText('Invalid address', $this->getTextContent());
+    $this->assertText('Invalid address');
     $this->assertText('5.1.1');
     $this->assertText('Permanent Failure: Bad destination mailbox address');
     $this->assertText('This didn\'t go too well.');
@@ -102,7 +102,9 @@ class IntegrationTest extends WebTestBase {
       'To' => $to,
       'Subject' => $subject,
     );
-    array_walk($headers, function($val, $key) { return "$key: $val"; });
+    foreach ($headers as $name => $body) {
+      $headers[$name] = "$name: $body";
+    }
     $headers = implode("\n", $headers);
 
     // Return a fake bounce with values inserted.

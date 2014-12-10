@@ -7,7 +7,8 @@
 namespace Drupal\inmail\Tests;
 
 use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\inmail\Message;
+
+use Drupal\inmail\MIME\Parser;
 use Drupal\simpletest\KernelTestBase;
 
 /**
@@ -85,7 +86,9 @@ class ModeratorForwardTest extends KernelTestBase {
   public function testModeratorForwardMessage() {
     // Get an original.
     $original = $this->getMessageFileContents('normal.eml');
-    $original_parsed = Message::parse($original);
+    /** @var \Drupal\inmail\MIME\ParserInterface $parser */
+    $parser = \Drupal::service('inmail.mime_parser');
+    $original_parsed = $parser->parse($original);
 
     // Conceive a forward.
     HandlerConfig::load('moderator_forward')
@@ -100,7 +103,7 @@ class ModeratorForwardTest extends KernelTestBase {
 
     // Headers should have the correct changes.
     $headers_prefix = "X-Inmail-Forwarded: handler_moderator_forward\n";
-    $expected_headers = implode("\n", $original_parsed->getHeaders());
+    $expected_headers = $original_parsed->getHeader()->toString();
     $expected_headers = str_replace("To: Arild Matsson <inmail_test@example.com>\n", '', $expected_headers);
     $expected_headers = $headers_prefix . $expected_headers;
     $this->assertEqual($forward['raw_headers'], $expected_headers, 'Forwarded message headers have the correct changes.');
