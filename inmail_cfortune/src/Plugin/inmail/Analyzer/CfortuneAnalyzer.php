@@ -9,7 +9,7 @@ namespace Drupal\inmail_cfortune\Plugin\inmail\Analyzer;
 use cfortune\PHPBounceHandler\BounceHandler;
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\DSNStatus;
-use Drupal\inmail\Message;
+use Drupal\inmail\MIME\EntityInterface;
 use Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerBase;
 use Drupal\inmail\ProcessorResultInterface;
 
@@ -36,7 +36,7 @@ class CfortuneAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(Message $message, ProcessorResultInterface $processor_result) {
+  public function analyze(EntityInterface $message, ProcessorResultInterface $processor_result) {
     $processor_result->addAnalyzerResult(BounceAnalyzerResult::TOPIC, new BounceAnalyzerResult());
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
@@ -45,7 +45,7 @@ class CfortuneAnalyzer extends AnalyzerBase {
     $handler = new BounceHandler();
 
     // Perform the analysis.
-    $handler->parse_email($message->getRaw());
+    $handler->parse_email($message->toString());
 
     // The recipient property possibly contains the target recipient of the
     // message that bounced.

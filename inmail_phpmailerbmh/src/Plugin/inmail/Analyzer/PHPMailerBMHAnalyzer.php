@@ -8,7 +8,8 @@ namespace Drupal\inmail_phpmailerbmh\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\DSNStatus;
-use Drupal\inmail\Message;
+use Drupal\inmail\MIME\DSNEntity;
+use Drupal\inmail\MIME\EntityInterface;
 use Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerBase;
 use Drupal\inmail\ProcessorResultInterface;
 
@@ -70,7 +71,7 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(Message $message, ProcessorResultInterface $processor_result) {
+  public function analyze(EntityInterface $message, ProcessorResultInterface $processor_result) {
     $processor_result->addAnalyzerResult(BounceAnalyzerResult::TOPIC, new BounceAnalyzerResult());
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
@@ -78,14 +79,14 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
     // The analysis part of the library is in the bmhDSNRules and bmhBodyRules
     // functions.
     require_once $this->getLibraryPath() . '/lib/BounceMailHandler/phpmailer-bmh_rules.php';
-    if ($message->isDSN()) {
-      // The bmhDSNRules function takes the two report parts (human-readable and
-      // computer-readable) as arguments.
-      $bmh_result = bmhDSNRules($message->getParts()[1], $message->getParts()[2]);
+    if ($message instanceof DSNEntity) {
+      // The bmhDSNRules function takes the two report parts as arguments.
+      $bmh_result = bmhDSNRules($message->getHumanPart()->toString(), $message->getStatusPart()->toString());
     }
     else {
       $bmh_result = bmhBodyRules($message->getBody(), NULL, TRUE);
     }
+
     // The analysis returns an associative array designed for the library to
     // handle. It contains the following keys, of which rule_cat is the most
     // specific and usable:
@@ -94,10 +95,12 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
     //   - rule_cat: a string identifier for the reason for the bounce.
     //   - rule_no: references a single match condition in the code.
     //   - email: the recipient causing the bounce, if identifiable.
+    if (isset($bmh_result['email'])) {
+      $result->setRecipient($bmh_result['email']);
+    }
     if (isset(static::$rulecatStatusMap[$bmh_result['rule_cat']])) {
       $code = static::$rulecatStatusMap[$bmh_result['rule_cat']];
       if ($code) {
-        $result->setRecipient($bmh_result['email']);
         $result->setStatusCode(DSNStatus::parse($code));
       }
     }
@@ -111,7 +114,7 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
    */
   protected function getLibraryPath() {
     $composer_manager_vendor_path = \Drupal::config('composer_manager.settings')->get('vendor_dir');
-    return DRUPAL_ROOT . '/' . $composer_manager_vendor_path . '/' . 'instaclick/bounce-mail-handler';
+    return \Drupal::root() . '/' . $composer_manager_vendor_path . '/' . 'instaclick/bounce-mail-handler';
   }
 
 }
