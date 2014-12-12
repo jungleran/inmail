@@ -31,7 +31,10 @@ interface ParserInterface {
    *   A string entity.
    *
    * @return \Drupal\inmail\MIME\EntityInterface
-   *   The resulting Entity object abstraction, or NULL if parsing failed.
+   *   The resulting Entity object abstraction.
+   *
+   * @throws \Drupal\inmail\MIME\ParseException
+   *   If parsing fails.
    */
   public function parse($raw);
 

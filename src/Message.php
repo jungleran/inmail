@@ -8,7 +8,6 @@ namespace Drupal\inmail;
 
 /**
  *
- * @todo Decode base64 message body https://www.drupal.org/node/2381881
  *
  * @ingroup processing
  */

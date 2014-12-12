@@ -6,6 +6,7 @@
 
 namespace Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer;
 
+use Drupal\Core\Logger\LoggerChannel;
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNReasonAnalyzer;
@@ -27,7 +28,7 @@ class StandardDSNReasonAnalyzerTest extends InmailUnitTestBase {
    * @dataProvider provideReasons
    */
   public function testAnalyze($filename, $expected_reason) {
-    $message = (new Parser())->parse($this->getRaw($filename));
+    $message = (new Parser(new LoggerChannel('test')))->parse($this->getRaw($filename));
     $analyzer = new StandardDSNReasonAnalyzer(array(), $this->randomMachineName(), array());
     $processor_result = new ProcessorResult();
     $analyzer->analyze($message, $processor_result);

@@ -6,6 +6,7 @@
 
 namespace Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer;
 
+use Drupal\Core\Logger\LoggerChannel;
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNAnalyzer;
@@ -27,7 +28,7 @@ class StandardDSNAnalyzerTest extends InmailUnitTestBase {
    * @dataProvider provideExpectedResults
    */
   public function testAnalyze($filename, $expected_code, $expected_recipient) {
-    $message = (new Parser())->parse($this->getRaw($filename));
+    $message = (new Parser(new LoggerChannel('test')))->parse($this->getRaw($filename));
 
     // Run the analyzer.
     $analyzer = new StandardDSNAnalyzer(array(), $this->randomMachineName(), array());

@@ -7,6 +7,7 @@
 
 namespace Drupal\Tests\inmail\Unit\MIME;
 
+use Drupal\Core\Logger\LoggerChannel;
 use Drupal\inmail\MIME\Entity;
 use Drupal\inmail\MIME\Header;
 use Drupal\inmail\MIME\Parser;
@@ -57,7 +58,7 @@ EOF;
    */
   public function testParse() {
     // Parse and compare.
-    $parsed_message = (new Parser())->parse(static::MSG_DSN);
+    $parsed_message = (new Parser(new LoggerChannel('test')))->parse(static::MSG_DSN);
     $this->assertEquals(static::getMessage(), $parsed_message);
   }
 

@@ -7,7 +7,8 @@
 namespace Drupal\inmail;
 
 use Drupal\Core\Entity\EntityManagerInterface;
-use Drupal\inmail\MIME\Parser;
+use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\inmail\MIME\ParseException;
 
 /**
  * Mail message processor using services to analyze and handle messages.
@@ -48,13 +49,21 @@ class MessageProcessor implements MessageProcessorInterface {
   protected $handlerManager;
 
   /**
+   * The injected logger channel.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  protected $loggerChannel;
+
+  /**
    * Constructs a new message processor.
    */
-  public function __construct(EntityManagerInterface $entity_manager, AnalyzerManagerInterface $analyzer_manager, HandlerManagerInterface $handler_manager) {
+  public function __construct(EntityManagerInterface $entity_manager, AnalyzerManagerInterface $analyzer_manager, HandlerManagerInterface $handler_manager, LoggerChannelInterface $logger_channel) {
     $this->analyzerStorage = $entity_manager->getStorage('inmail_analyzer');
     $this->analyzerManager = $analyzer_manager;
     $this->handlerStorage = $entity_manager->getStorage('inmail_handler');
     $this->handlerManager = $handler_manager;
+    $this->loggerChannel = $logger_channel;
   }
 
   /**
@@ -66,7 +75,13 @@ class MessageProcessor implements MessageProcessorInterface {
     // Parse message.
     /** @var \Drupal\inmail\MIME\ParserInterface $parser */
     $parser = \Drupal::service('inmail.mime_parser');
-    $message = $parser->parse($raw);
+    try {
+      $message = $parser->parse($raw);
+    }
+    catch (ParseException $e) {
+      $this->loggerChannel->info('Unable to process message, parser failed with message "@message"', array('@message' => $e->getMessage()));
+      return;
+    }
 
     // Analyze message.
     $result = new ProcessorResult();

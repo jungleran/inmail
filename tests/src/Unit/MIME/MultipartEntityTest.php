@@ -7,6 +7,7 @@
 
 namespace Drupal\Tests\inmail\Unit\MIME;
 
+use Drupal\Core\Logger\LoggerChannel;
 use Drupal\inmail\MIME\Entity;
 use Drupal\inmail\MIME\Header;
 use Drupal\inmail\MIME\Parser;
@@ -62,7 +63,7 @@ EOF;
    */
   public function testParse() {
     // Parse and compare.
-    $parsed_message = (new Parser())->parse(static::MSG_MULTIPART);
+    $parsed_message = (new Parser(new LoggerChannel('test')))->parse(static::MSG_MULTIPART);
     $this->assertEquals(static::getMessage(), $parsed_message);
   }
 
@@ -113,7 +114,7 @@ EOF;
    * Just to make it obvious, test that toString() inverts parse().
    */
   public function testParseToString() {
-    $parser = new Parser();
+    $parser = new Parser(new LoggerChannel('test'));
 
     // Parse and back again.
     $parsed = $parser->parse(static::MSG_MULTIPART);

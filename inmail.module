@@ -78,6 +78,9 @@ use Drupal\inmail\Entity\AnalyzerConfig;
  * \Drupal\inmail\MIME\MultipartEntity or even more specifically to a
  * \Drupal\inmail\MIME\DSNEntity.
  *
+ * The Parser class is registered as a service under the name
+ * "inmail.mime_parser".
+ *
  * Header fields are grouped and modeled as a \Drupal\inmail\MIME\Header. (Note
  * that the term "header" is often more or less informally used for a single
  * header field; the naming here tries to adhere to the standardized
