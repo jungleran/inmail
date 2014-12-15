@@ -123,19 +123,20 @@ class AnalyzerConfigurationForm extends EntityForm {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
+
+    // Let the plugin update its configuration from the form.
     /** @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface $plugin */
     $plugin = $form_state->get('plugin');
     $plugin->submitConfigurationForm($form, $form_state);
-    $form_state->setRedirect('inmail.analyzer_list');
-  }
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function copyFormValuesToEntity(EntityInterface $entity, array $form, FormStateInterface $form_state) {
+    // Copy plugin configuration to the entity for persistence. The reason for
+    // not doing this by overriding copyFormValuesToEntity is that the plugin
+    // submit handler has to happen first.
     /** @var \Drupal\inmail\Entity\AnalyzerConfig $entity */
-    parent::copyFormValuesToEntity($entity, $form, $form_state);
-    $entity->setConfiguration($form_state->get('plugin')->getConfiguration());
+    $entity = $this->getEntity();
+    $entity->setConfiguration($plugin->getConfiguration());
+
+    $form_state->setRedirect('inmail.analyzer_list');
   }
 
 }

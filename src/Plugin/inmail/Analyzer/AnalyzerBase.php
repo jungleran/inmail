@@ -60,8 +60,17 @@ abstract class AnalyzerBase extends PluginBase implements AnalyzerInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * Form submission handler.
+   *
+   * Override this method to update $this->configuration with form input, so
+   * that AnalyzerForm can use it to update and save the config entity.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
   }
+
 }

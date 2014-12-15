@@ -98,6 +98,12 @@ class InmailWebTest extends WebTestBase {
     $this->drupalGet('admin/config/system/inmail/handlers');
     $this->assertText('Unicorn');
     $this->assertText('Plugin missing');
+
+    // Configure a handler.
+    $this->clickLink('Configure');
+    $this->drupalPostForm(NULL, ['moderator' => 'moderator@example.com'], 'Save');
+    $this->clickLink('Configure');
+    $this->assertFieldByName('moderator', 'moderator@example.com');
   }
 
 }
