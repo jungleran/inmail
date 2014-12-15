@@ -52,9 +52,8 @@ class VERPAnalyzer extends AnalyzerBase {
    * {@inheritdoc}
    */
   public function analyze(EntityInterface $message, ProcessorResultInterface $processor_result) {
-    $processor_result->addAnalyzerResult(BounceAnalyzerResult::TOPIC, new BounceAnalyzerResult());
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+    $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
 
     // Split the site address to facilitate matching.
     $return_path = \Drupal::config('inmail.settings')->get('return_path') ?: \Drupal::config('system.site')->get('mail');

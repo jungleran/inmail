@@ -14,19 +14,24 @@ namespace Drupal\inmail;
 interface ProcessorResultInterface {
 
   /**
-   * Adds another analyzer result.
+   * Returns an analyzer result instance, after first creating it if needed.
    *
-   * The added analyzer result must be new and unmodified. If an analyzer result
-   * has already been added for the same topic, nothing happens.
+   * If a result object has already been created with the given topic name, that
+   * object will be used.
    *
    * @param string $topic
-   *   An identifier for the new analyzer result object.
-   * @param \Drupal\inmail\AnalyzerResultInterface $analyzer_result
-   *   The new analyzer result object.
+   *   An identifier for the analyzer result object.
+   * @param callable $factory
+   *   A function that returns an analyzer result object. This will be called if
+   *   there is no object previously created for the given topic name.
    *
-   * @todo Change to ensureAnalyzerResult($topic, callable $factory), https://www.drupal.org/node/2389875
+   * @return \Drupal\inmail\AnalyzerResultInterface
+   *   The analyzer result object.
+   *
+   * @throws \InvalidArgumentException
+   *   If the callable returns something else than an analyzer result object.
    */
-  public function addAnalyzerResult($topic, AnalyzerResultInterface $analyzer_result);
+  public function ensureAnalyzerResult($topic, callable $factory);
 
   /**
    * Returns an analyzer result instance.

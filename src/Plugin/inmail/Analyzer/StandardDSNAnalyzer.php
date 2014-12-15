@@ -44,9 +44,8 @@ class StandardDSNAnalyzer extends AnalyzerBase {
       return;
     }
 
-    $processor_result->addAnalyzerResult(BounceAnalyzerResult::TOPIC, new BounceAnalyzerResult());
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+    $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
 
     // @todo Store date for bounces https://www.drupal.org/node/2379923
     // Iterate over per-recipient field groups in the DSN.

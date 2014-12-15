@@ -47,6 +47,19 @@ class BounceAnalyzerResult implements AnalyzerResultInterface {
   protected $reason;
 
   /**
+   * Returns a function closure that in turn returns a new class instance.
+   *
+   * @return callable
+   *   A factory closure that returns a new BounceAnalyzerResult object when
+   *   called.
+   */
+  public static function createFactory() {
+    return function() {
+      return new static();
+    };
+  }
+
+  /**
    * Report the intended recipient for a bounce message.
    *
    * @param string $recipient

@@ -121,8 +121,8 @@ class InmailMailmuteTest extends KernelTestBase {
 
       // Invoke the handler.
       $processor_result = new ProcessorResult();
-      $result = new BounceAnalyzerResult();
-      $processor_result->addAnalyzerResult(BounceAnalyzerResult::TOPIC, $result);
+      /** @var \Drupal\inmail\BounceAnalyzerResult $result */
+      $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
       $result->setStatusCode($status);
       /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
       $handler_config = \Drupal::entityManager()->getStorage('inmail_handler')->load('mailmute');

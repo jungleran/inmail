@@ -72,9 +72,8 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
    * {@inheritdoc}
    */
   public function analyze(EntityInterface $message, ProcessorResultInterface $processor_result) {
-    $processor_result->addAnalyzerResult(BounceAnalyzerResult::TOPIC, new BounceAnalyzerResult());
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+    $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
 
     // The analysis part of the library is in the bmhDSNRules and bmhBodyRules
     // functions.

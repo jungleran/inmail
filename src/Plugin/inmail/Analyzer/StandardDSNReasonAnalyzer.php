@@ -34,9 +34,8 @@ class StandardDSNReasonAnalyzer extends AnalyzerBase {
       return;
     }
 
-    $processor_result->addAnalyzerResult(BounceAnalyzerResult::TOPIC, new BounceAnalyzerResult());
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+    $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
 
     // Save the human-readable bounce reason.
     $result->setReason(trim($message->getHumanPart()->getBody()));
