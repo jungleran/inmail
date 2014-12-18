@@ -6,3 +6,7 @@ description: >
 package: Mail
 version: 8.x-1.x
 core: 8.x
+
+# Temporary addition for Testbot, remove in https://www.drupal.org/node/2393555
+dependencies:
+  - collect
