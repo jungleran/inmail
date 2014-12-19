@@ -47,12 +47,15 @@ class InmailWebTest extends WebTestBase {
 
     // Check validation.
     $this->drupalPostForm(NULL, ['return_path' => 'not an address'], 'Save configuration');
-    $this->assertText('This is not a valid email address.');
+    $this->assertText('The email address not an address is not valid.');
 
     $this->drupalPostForm(NULL, ['return_path' => 'not+allowed@example.com'], 'Save configuration');
     $this->assertText('The address may not contain a + character.');
 
     $this->drupalPostForm(NULL, ['return_path' => 'bounces@example.com'], 'Save configuration');
+    $this->assertText('The configuration options have been saved.');
+
+    $this->drupalPostForm(NULL, ['return_path' => ''], 'Save configuration');
     $this->assertText('The configuration options have been saved.');
 
     // Check Analyzer list.

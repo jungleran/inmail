@@ -31,10 +31,12 @@ class InmailSettingsForm extends ConfigFormBase {
 
     $form['return_path'] = array(
       '#title' => $this->t('Return-Path address'),
-      '#type' => 'textfield',
+      '#type' => 'email',
       '#description' => $this->t('Normally the site email address (%site_mail) is used for the <code>Return-Path</code> header in outgoing messages. You can use this field to set another, dedicated address, or leave it empty to use the site email address.',
           ['%site_mail' => \Drupal::config('system.site')->get('mail')]),
-      '#element_validate' => ['::validateReturnPath'],
+      // Setting #element_validate breaks merging with defaults, so specify the
+      // standard email validation explicitly.
+      '#element_validate' => ['::validateReturnPath', ['\Drupal\Core\Render\Element\Email', 'validateEmail']],
       '#default_value' => $config->get('return_path'),
     );
 
@@ -57,11 +59,6 @@ class InmailSettingsForm extends ConfigFormBase {
    */
   public function validateReturnPath(array &$element, FormStateInterface $form_state, array &$complete_form) {
     $address = $element['#value'];
-
-    // Check email format.
-    if (!valid_email_address($address)) {
-      $form_state->setError($element, $this->t('This is not a valid email address.'));
-    }
 
     // Make sure the given address works with the VERP parse rules.
     if (preg_match('/\+.*@/', $address)) {
