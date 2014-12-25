@@ -6,9 +6,11 @@
 
 namespace Drupal\inmail;
 
+use Drupal\Component\Utility\String;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\inmail\MIME\ParseException;
+use Drupal\monitoring\Plugin\monitoring\SensorPlugin\EnabledModulesSensorPlugin;
 
 /**
  * Mail message processor using services to analyze and handle messages.
@@ -83,6 +85,12 @@ class MessageProcessor implements MessageProcessorInterface {
       return;
     }
 
+    // Create log event.
+    $event = NULL;
+    if (\Drupal::moduleHandler()->moduleExists('past')) {
+      $event = past_event_create('inmail', 'process', $message->getMessageId());
+    }
+
     // Analyze message.
     $result = new ProcessorResult();
     $analyzer_configs = $this->analyzerStorage->loadMultiple();
@@ -96,6 +104,10 @@ class MessageProcessor implements MessageProcessorInterface {
       }
     }
 
+    foreach ($result->getAnalyzerResults() as $analyzer_result) {
+      $event and $event->addArgument(get_class($analyzer_result), $analyzer_result->summarize());
+    }
+
     // Handle message.
     // @todo Collect handler results https://www.drupal.org/node/2379941
     foreach ($this->handlerStorage->loadMultiple() as $handler_config) {
@@ -107,9 +119,21 @@ class MessageProcessor implements MessageProcessorInterface {
       }
     }
 
-    // @todo Log incoming messages and actions taken https://www.drupal.org/node/2380965
-    //   Log all the messages in $result (and AnalyzerResult objects) in the
-    //   context of Message-Id.
+    if ($event) {
+      // Dump all log items into a past argument per source.
+      foreach ($result->readLog() as $source => $log) {
+        $messages = [];
+        foreach ($log as $item) {
+          // Apply placeholders.
+          $messages[] = String::format($item['message'], $item['placeholders']);
+        }
+        $event->addArgument($source, $messages);
+      }
+
+      // Save the log event.
+      $event->save();
+    }
+
   }
 
   /**

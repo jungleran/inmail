@@ -18,7 +18,14 @@ class ProcessorResult implements ProcessorResultInterface {
    *
    * @var \Drupal\inmail\AnalyzerResultInterface[]
    */
-  protected $analyzerResults;
+  protected $analyzerResults = array();
+
+  /**
+   * Logged messages.
+   *
+   * @var array[][]
+   */
+  protected $log = array();
 
   /**
    * {@inheritdoc}
@@ -45,6 +52,30 @@ class ProcessorResult implements ProcessorResultInterface {
       return $this->analyzerResults[$topic];
     }
     return NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getAnalyzerResults() {
+    return $this->analyzerResults;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function log($source, $message, array $placeholders = array()) {
+    $this->log[$source][] = [
+      'message' => $message,
+      'placeholders' => $placeholders,
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function readLog() {
+    return $this->log;
   }
 
 }

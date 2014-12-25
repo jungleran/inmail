@@ -45,4 +45,38 @@ interface ProcessorResultInterface {
    */
   public function getAnalyzerResult($topic);
 
+  /**
+   * Returns all analyzer results.
+   *
+   * @return \Drupal\inmail\AnalyzerResultInterface[]
+   *   A list of analyzer results.
+   */
+  public function getAnalyzerResults();
+
+  /**
+   * Add a log message to the processing logger.
+   *
+   * @param string $source
+   *   The name of the analyzer or handler that produced the message.
+   * @param string $message
+   *   The log message.
+   * @param array $placeholders
+   *   Placeholder substitution map.
+   */
+  public function log($source, $message, array $placeholders = array());
+
+  /**
+   * Returns the log messages.
+   *
+   * This method must not be used by analyzers nor handlers. To make handlers
+   * dependent on analyzer result types, use a dedicated class that implements
+   * \Drupal\inmail\AnalyzerResultInterface.
+   *
+   * @return array
+   *   A list of log items, each an associative array containing:
+   *     - message: The log message.
+   *     - placeholders: Placeholder substitution map.
+   */
+  public function readLog();
+
 }

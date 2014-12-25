@@ -7,7 +7,6 @@
 namespace Drupal\inmail\Plugin\inmail\Handler;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\inmail\BounceAnalyzerResult;
@@ -37,19 +36,11 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
   protected $mailManager;
 
   /**
-   * The Inmail logger channel.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
-   */
-  protected $logger;
-
-  /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, MailManagerInterface $mail_manager, LoggerChannelInterface $logger) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, MailManagerInterface $mail_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->mailManager = $mail_manager;
-    $this->logger = $logger;
   }
 
   /**
@@ -61,7 +52,6 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
       $plugin_id,
       $plugin_definition,
       $container->get('plugin.manager.mail'),
-      $container->get('logger.factory')->get('inmail'),
       $container->get('config.factory')->get('system.mail')
     );
   }
@@ -82,7 +72,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
   public function invoke(EntityInterface $message, ProcessorResultInterface $processor_result) {
     // Cancel if the moderator email is not set.
     if (!($moderator = $this->getModerator())) {
-      $this->logger->error('Moderator email address not set');
+      $processor_result->log('ModeratorForwardHandler', 'Moderator email address not set');
       return;
     }
 
@@ -98,13 +88,13 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
     // This is for the off chance that we identified the intended recipient
     // but not a bounce status code.
     if ($result->getRecipient() == $moderator) {
-      $this->logger->error('Moderator %address is bouncing.', array('%address' => $moderator));
+      $processor_result->log('ModeratorForwardHandler', 'Moderator %address is bouncing.', array('%address' => $moderator));
       return;
     }
 
     // Cancel and make noise if this message rings a bell.
     if ($message->getHeader()->getFieldBody('X-Inmail-Forwarded')) {
-      $this->logger->error('Refused to forward the same email twice (%subject).', array('%subject' => $message->getHeader()->getFieldBody('Subject')));
+      $processor_result->log('ModeratorForwardHandler', 'Refused to forward the same email twice (%subject).', array('%subject' => $message->getHeader()->getFieldBody('Subject')));
       return;
     }
 

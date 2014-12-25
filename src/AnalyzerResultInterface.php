@@ -19,8 +19,8 @@ interface AnalyzerResultInterface {
   /**
    * Gives a summary of the analysis results.
    *
-   * @return string
-   *   A translated summary of analysis results.
+   * @return array
+   *   An associated array of analysis results.
    */
   public function summarize();
 

@@ -58,6 +58,19 @@ interface EntityInterface {
   public function getContentTransferEncoding();
 
   /**
+   * Returns the Message-Id.
+   *
+   * The RFC declares that the Message-Id field "should" be set, but it is not
+   * required. The value has the format "<id-left@id-right>"
+   *
+   * @see http://tools.ietf.org/html/rfc5322#section-3.6.4
+   *
+   * @return string|null
+   *   The body of the Message-Id field, or NULL if it is not set.
+   */
+  public function getMessageId();
+
+  /**
    * Returns the body.
    *
    * @todo Decode body (base64 etc), https://www.drupal.org/node/2381881

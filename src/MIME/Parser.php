@@ -60,8 +60,8 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
       catch (ParseException $e) {
         // Parsing as multipart failed, log it and continue with the Entity
         // object.
-        // @todo Log to ProcessorResult in https://www.drupal.org/node/2380965
         $this->loggerChannel->info('Message %message_id was identified as multipart but could not be parsed as such.', ['%message_id' => $entity->getHeader()->getFieldBody('Message-Id')]);
+        // @todo Notify caller is about this problem.
       }
     }
 
@@ -120,8 +120,8 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
       catch (ParseException $e) {
         // Parsing as DSN failed, log it and continue with the MultipartEntity
         // object.
-        // @todo Log to ProcessorResult in https://www.drupal.org/node/2380965
         $this->loggerChannel->info('Message %message_id was identified as DSN but could not be parsed as such.', ['%message_id' => $multipart_entity->getHeader()->getFieldBody('Message-Id')]);
+        // @todo Notify caller is about this problem.
       }
     }
 

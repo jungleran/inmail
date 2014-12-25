@@ -41,19 +41,11 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
   protected $sendstateManager;
 
   /**
-   * The Inmail logger channel.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
-   */
-  protected $loggerChannel;
-
-  /**
    * Constructs a new MailmuteHandler.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, SendStateManagerInterface $sendstate_manager, LoggerChannelInterface $logger_channel) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, SendStateManagerInterface $sendstate_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->sendstateManager = $sendstate_manager;
-    $this->loggerChannel = $logger_channel;
     $this->setConfiguration($configuration);
   }
 
@@ -62,8 +54,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static($configuration, $plugin_id, $plugin_definition,
-      $container->get('plugin.manager.sendstate'),
-      $container->get('logger.factory')->get('inmail')
+      $container->get('plugin.manager.sendstate')
     );
   }
 
@@ -97,7 +88,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
     // Only handle bounces with an identifiable recipient.
     if (!$address = $result->getRecipient()) {
       // @todo Log the message body or place it in a moderation queue: https://www.drupal.org/node/2379879
-      $this->loggerChannel->info('Bounce with status %code received but no recipient identified.', $log_context);
+      $processor_result->log('MailmuteHandler', 'Bounce with status %code received but no recipient identified.', $log_context);
       return;
     }
 
@@ -105,7 +96,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
 
     // Only handle bounces with an identifiable recipient that we care about.
     if (!$this->sendstateManager->isManaged($address)) {
-      $this->loggerChannel->info('Bounce with status %code received but recipient %address is not managed here.', $log_context);
+      $processor_result->log('MailmuteHandler', 'Bounce with status %code received but recipient %address is not managed here.', $log_context);
       return;
     }
 
@@ -113,7 +104,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
 
     // Block transition if current state is "Persistent send".
     if ($state instanceof PersistentSend) {
-      $this->loggerChannel->info('Send state not transitioned for %address because state was %old_state', $log_context + ['%old_state' => 'persistent_send']);
+      $processor_result->log('MailmuteHandler', 'Send state not transitioned for %address because state was %old_state', $log_context + ['%old_state' => 'persistent_send']);
       return;
     }
 
@@ -125,7 +116,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
     // In the case of a "hard bounce", set the send state to a muting state.
     if ($status_code->isPermanentFailure()) {
       $this->sendstateManager->transition($address, 'inmail_invalid_address', $state_configuration);
-      $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_invalid_address']);
+      $processor_result->log('MailmuteHandler', 'Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_invalid_address']);
       return;
     }
 
@@ -137,11 +128,11 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
       // If the threshold is reached, start muting.
       if ($state->getThreshold() && $state->getCount() >= $state->getThreshold()) {
         $this->sendstateManager->transition($address, 'inmail_temporarily_unreachable', $state_configuration);
-        $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_temporarily_unreachable']);
+        $processor_result->log('MailmuteHandler', 'Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_temporarily_unreachable']);
       }
       else {
         $this->sendstateManager->save($address);
-        $this->loggerChannel->info('Bounce with status %code triggered soft bounce count increment for %address', $log_context);
+        $processor_result->log('MailmuteHandler', 'Bounce with status %code triggered soft bounce count increment for %address', $log_context);
       }
       return;
     }
@@ -149,7 +140,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
     // If still sending, start counting bounces.
     if (!$state->isMute()) {
       $this->sendstateManager->transition($address, 'inmail_counting', array('count' => 1, 'threshold' => $this->configuration['soft_threshold']) + $state_configuration);
-      $this->loggerChannel->info('Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_counting']);
+      $processor_result->log('MailmuteHandler', 'Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_counting']);
       return;
     }
   }
