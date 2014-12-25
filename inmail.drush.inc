@@ -53,6 +53,9 @@ function inmail_drush_command() {
  */
 function drush_inmail_process() {
   inmail_drush_setup();
+  if (!inmail_drush_assert_uri()) {
+    return;
+  }
 
   $args = func_get_args();
 
@@ -105,6 +108,20 @@ function inmail_drush_setup() {
   }
 }
 
+/**
+ * Checks that the site URI is set, and sets an error message otherwise.
+ *
+ * @return bool
+ *   TRUE if the URI is set, otherwise FALSE.
+ */
+function inmail_drush_assert_uri() {
+  $host = \Drupal::request()->getHost();
+  if ($host == 'default') {
+    drush_set_error(dt('Site URI not specified. Please use the --uri option.'));
+    return FALSE;
+  }
+  return TRUE;
+}
 
 /**
  * Check for piped input.
