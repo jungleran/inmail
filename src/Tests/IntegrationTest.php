@@ -23,11 +23,6 @@ class IntegrationTest extends WebTestBase {
   public static $modules = array('inmail_mailmute', 'field_ui');
 
   /**
-   * Disable strict schema checking until schema is updated, https://www.drupal.org/node/2392365
-   */
-  protected $strictConfigSchema = FALSE;
-
-  /**
    * {@inheritdoc}
    */
   public function setUp() {

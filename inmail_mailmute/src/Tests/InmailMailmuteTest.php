@@ -39,11 +39,6 @@ class InmailMailmuteTest extends KernelTestBase {
   ];
 
   /**
-   * Disable strict schema checking until schema is updated, https://www.drupal.org/node/2392365
-   */
-  protected $strictConfigSchema = FALSE;
-
-  /**
    * A user matching the recipient in the test messages.
    *
    * @var \Drupal\user\UserInterface

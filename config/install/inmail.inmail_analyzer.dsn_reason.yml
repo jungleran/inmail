@@ -1,3 +1,4 @@
+langcode: en
 id: dsn_reason
 label: Bounce reason message
 plugin: dsn_reason

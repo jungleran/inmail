@@ -1,42 +1,64 @@
+# Module settings
+inmail.settings:
+  label: 'Inmail settings'
+  type: mapping
+  mapping:
+    return_path:
+      label: 'Return-Path address'
+      type: email
+
+# Config entities
 inmail.inmail_analyzer.*:
   label: 'Message analyzer'
-  type: mapping
+  type: config_entity
   mapping:
     id:
       label: 'Machine-name'
       type: string
     label:
       label: 'Label'
-      type: string
+      type: label
     plugin:
       label: 'Plugin'
       type: string
     configuration:
       label: 'Configuration'
       type: inmail.analyzer.[%parent.plugin]
-    status:
-      label: 'Enabled'
-      type: bool
     weight:
       label: 'Weight'
-      type: int
+      type: integer
 
 inmail.inmail_handler.*:
   label: 'Message handler'
-  type: mapping
+  type: config_entity
   mapping:
     id:
       label: 'Machine-name'
       type: string
     label:
       label: 'Label'
-      type: string
+      type: label
     plugin:
       label: 'Plugin'
       type: string
     configuration:
       label: 'Configuration'
       type: inmail.handler.[%parent.plugin]
-    status:
-      label: 'Enabled'
-      type: bool
+
+# Empty default configuration schema
+inmail.analyzer.*:
+  label: 'Analyzer configuration'
+  type: mapping
+
+inmail.handler.*:
+  label: 'Handler configuration'
+  type: mapping
+
+# Specific analyzer/handler configuration
+inmail.handler.moderator_forward:
+  label: 'Moderator Forward handler configuration'
+  type: mapping
+  mapping:
+    moderator:
+      label: 'Moderator address'
+      type: email

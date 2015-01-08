@@ -26,11 +26,6 @@ class AnalyzerTest extends KernelTestBase {
   public static $modules = array('inmail', 'inmail_test');
 
   /**
-   * Disable strict schema checking until schema is updated, https://www.drupal.org/node/2392365
-   */
-  protected $strictConfigSchema = FALSE;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp() {

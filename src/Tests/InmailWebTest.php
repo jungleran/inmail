@@ -25,11 +25,6 @@ class InmailWebTest extends WebTestBase {
   public static $modules = array('inmail');
 
   /**
-   * Disable strict schema checking until schema is updated, https://www.drupal.org/node/2392365
-   */
-  protected $strictConfigSchema = FALSE;
-
-  /**
    * Tests the admin UI.
    */
   public function testAdminUI() {

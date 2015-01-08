@@ -4,4 +4,4 @@ inmail.handler.mailmute:
   mapping:
     soft_threshold:
       label: 'Soft bounce tolerance'
-      type: int
+      type: integer

@@ -1,3 +1,4 @@
+langcode: en
 id: verp
 label: VERP address verification
 plugin: verp
