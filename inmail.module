@@ -17,6 +17,7 @@ use Drupal\inmail\Entity\AnalyzerConfig;
  * You can read more under the following chapters:
  *   - @link processing The general message processing flow @endlink
  *   - @link mime Message parsing @endlink
+ *   - @link deliverer Fetching email over IMAP @endlink
  *   - @link analyzer Analysis of new messages @endlink
  *   - @link handler Handling analyzed messages @endlink
  *   - @link mailmute Integration with the Mailmute module @enlink
@@ -88,6 +89,16 @@ use Drupal\inmail\Entity\AnalyzerConfig;
  * well, notably for declaring status fields in a DSN message, in which case the
  * Header class is preferrably re-used although not technically representing an
  * actual header.
+ * @}
+ */
+
+/**
+ * @defgroup deliverer Fetching email over IMAP
+ * @{
+ * To process messages from an IMAP account, visit the "Mail deliverers" list
+ * (admin/config/inmail/deliverers) and configure a new deliverer, entering
+ * server details and credentials in the form. Messages are delivered and
+ * processed during Cron runs.
  * @}
  */
 
@@ -253,5 +264,26 @@ function inmail_mail($key, &$message, $params) {
       $header->addField('X-Inmail-Forwarded', 'handler_moderator_forward');
       $message['raw_headers'] = $header->toString();
       break;
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function inmail_cron() {
+  /** @var \Drupal\inmail\Entity\DelivererConfig[] $deliverers */
+  $deliverers = \Drupal::entityManager()->getStorage('inmail_deliverer')->loadMultiple();
+  /** @var \Drupal\Component\Plugin\PluginManagerInterface $deliverer_manager */
+  $deliverer_manager = \Drupal::service('plugin.manager.inmail.deliverer');
+  /** @var \Drupal\inmail\MessageProcessorInterface $processor */
+  $processor = \Drupal::service('inmail.processor');
+
+  // Fetch and process new mail.
+  // @todo Test cron deliverer invocation.
+  foreach ($deliverers as $deliverer) {
+    /** @var \Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface $plugin */
+    $plugin = $deliverer_manager->createInstance($deliverer->id(), $deliverer->getConfiguration());
+    $raws = $plugin->deliver();
+    $processor->processMultiple($raws);
   }
 }

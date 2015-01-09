@@ -71,7 +71,7 @@ class CollectHandler extends HandlerBase {
       'header-from' => $message->getHeader()->getFieldBody('From'),
       'header-message-id' => $message->getHeader()->getFieldBody('Message-Id'),
       'raw' => $message->toString(),
-      // @todo Add fetcher reference here. Relevant if multiple present.
+      // @todo Add deliverer reference here. Relevant if multiple present.
     );
 
     Container::create(array(

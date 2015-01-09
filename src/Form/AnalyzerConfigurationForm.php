@@ -6,11 +6,7 @@
 
 namespace Drupal\inmail\Form;
 
-use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
-use Drupal\Core\Entity\EntityForm;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\inmail\AnalyzerManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -22,29 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup analyzer
  */
-class AnalyzerConfigurationForm extends EntityForm {
-
-  /**
-   * The message analyzer plugin manager.
-   *
-   * @var \Drupal\inmail\AnalyzerManagerInterface
-   */
-  protected $analyzerManager;
-
-  /**
-   * The entity storage for analyzer configurations.
-   *
-   * @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface
-   */
-  protected $storage;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct(AnalyzerManagerInterface $analyzer_manager, ConfigEntityStorageInterface $storage) {
-    $this->analyzerManager = $analyzer_manager;
-    $this->storage = $storage;
-  }
+class AnalyzerConfigurationForm extends PluginConfigurationForm {
 
   /**
    * {@inheritdoc}
@@ -59,82 +33,8 @@ class AnalyzerConfigurationForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
-    $form = parent::buildForm($form, $form_state);
-    /** @var \Drupal\inmail\Entity\AnalyzerConfig $entity */
-    $entity = $this->getEntity();
-
-    // Load plugin instance.
-    /** @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface $plugin */
-    $plugin = $this->analyzerManager->createInstance($entity->getPluginId(), $entity->getConfiguration());
-    $form_state->set('plugin', $plugin);
-
-    $form['label'] = array(
-      '#title' => $this->t('Label'),
-      '#type' => 'textfield',
-      '#default_value' => $entity->label(),
-    );
-
-    $form['id'] = array(
-      '#type' => 'machine_name',
-      '#default_value' => $entity->id(),
-      '#disabled' => !$entity->isNew(),
-      '#machine_name' => array(
-        'exists' => array($this, 'exists'),
-      ),
-    );
-
-    $form['status'] = array(
-      '#title' => $this->t('Enabled'),
-      '#type' => 'checkbox',
-      '#default_value' => TRUE,
-    );
-
-    $form['configuration'] = $plugin->buildConfigurationForm(array(), $form_state);
-
-    return $form;
-  }
-
-  /**
-   * Determines if the analyzer already exists.
-   *
-   * @param string $id
-   *   The analyzer configuration ID.
-   *
-   * @return bool
-   *   TRUE if the analyzer exists, FALSE otherwise.
-   */
-  public function exists($id) {
-    return (!is_null($this->storage->load($id)));
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
-    /** @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface $plugin */
-    $plugin = $form_state->get('plugin');
-    $plugin->validateConfigurationForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-
-    // Let the plugin update its configuration from the form.
-    /** @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface $plugin */
-    $plugin = $form_state->get('plugin');
-    $plugin->submitConfigurationForm($form, $form_state);
-
-    // Copy plugin configuration to the entity for persistence. The reason for
-    // not doing this by overriding copyFormValuesToEntity is that the plugin
-    // submit handler has to happen first.
-    /** @var \Drupal\inmail\Entity\AnalyzerConfig $entity */
-    $entity = $this->getEntity();
-    $entity->setConfiguration($plugin->getConfiguration());
 
     $form_state->setRedirect('inmail.analyzer_list');
   }

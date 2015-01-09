@@ -47,11 +47,11 @@ class InmailSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    parent::submitForm($form, $form_state);
+
     $this->config('inmail.settings')
       ->set('return_path', $form_state->getValue('return_path'))
       ->save();
-
-    parent::submitForm($form, $form_state);
   }
 
   /**

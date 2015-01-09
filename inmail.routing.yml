@@ -65,3 +65,41 @@ entity.inmail_handler.disable:
     _controller: \Drupal\inmail\Controller\HandlerController::disable
   requirements:
     _permission: 'administer inmail'
+
+inmail.deliverer_list:
+  path: admin/config/system/inmail/deliverers
+  defaults:
+    _entity_list: 'inmail_deliverer'
+    _title: 'Mail deliverers'
+  requirements:
+    _permission: 'administer inmail'
+
+inmail.deliverer_add:
+  path: admin/config/system/inmail/deliverers/add
+  defaults:
+    _entity_form: 'inmail_deliverer.add'
+    _title: 'Add deliverer'
+  requirements:
+    _permission: 'administer inmail'
+
+entity.inmail_deliverer.edit_form:
+  path: admin/config/system/inmail/deliverers/{inmail_deliverer}
+  defaults:
+    _entity_form: 'inmail_deliverer.default'
+    _title_callback: \Drupal\inmail\Controller\DelivererController::titleEdit
+  requirements:
+    _permission: 'administer inmail'
+
+entity.inmail_deliverer.enable:
+  path: admin/config/system/inmail/deliverers/{inmail_deliverer}/enable
+  defaults:
+    _controller: \Drupal\inmail\Controller\DelivererController::enable
+  requirements:
+    _permission: 'administer inmail'
+
+entity.inmail_deliverer.disable:
+  path: admin/config/system/inmail/deliverers/{inmail_deliverer}/disable
+  defaults:
+    _controller: \Drupal\inmail\Controller\DelivererController::disable
+  requirements:
+    _permission: 'administer inmail'

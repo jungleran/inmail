@@ -15,7 +15,6 @@ use Drupal\monitoring\Plugin\monitoring\SensorPlugin\EnabledModulesSensorPlugin;
 /**
  * Mail message processor using services to analyze and handle messages.
  *
- * @todo Fetch email by IMAP/POP3 https://www.drupal.org/node/2379889
  * @todo Evaluate the analysis algorithms in D7 Bounce and CiviCRM https://www.drupal.org/node/2379845
  *
  * @ingroup processing

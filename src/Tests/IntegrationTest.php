@@ -64,7 +64,7 @@ class IntegrationTest extends WebTestBase {
     $sent_mails = $this->drupalGetMails();
     $raw = static::generateBounceMessage(array_pop($sent_mails));
     // In reality the message would be passed to the processor through a drush
-    // script or a mail fetcher.
+    // script or a mail deliverer.
     \Drupal::service('inmail.processor')->process($raw);
 
     // Check send state.

@@ -2,6 +2,14 @@ services:
   inmail.processor:
     class: Drupal\inmail\MessageProcessor
     arguments: ['@entity.manager', '@plugin.manager.inmail.analyzer', '@plugin.manager.inmail.handler', '@logger.channel.inmail']
+  plugin.manager.inmail.deliverer:
+    class: Drupal\Core\Plugin\DefaultPluginManager
+    arguments:
+      - 'Plugin/inmail/Deliverer'
+      - '@container.namespaces'
+      - '@module_handler'
+      - 'Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface'
+      - 'Drupal\inmail\Annotation\Deliverer'
   plugin.manager.inmail.analyzer:
     class: Drupal\inmail\AnalyzerManager
     parent: default_plugin_manager

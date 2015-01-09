@@ -45,6 +45,23 @@ inmail.inmail_handler.*:
       label: 'Configuration'
       type: inmail.handler.[%parent.plugin]
 
+inmail.deliverer.*:
+  label: 'Mail deliverer'
+  type: config_entity
+  mapping:
+    id:
+      label: 'Machine-name'
+      type: string
+    label:
+      label: 'Label'
+      type: label
+    plugin:
+      label: 'Plugin'
+      type: string
+    configuration:
+      label: 'Configuration'
+      type: inmail.plugin.deliverer.[%parent.plugin]
+
 # Empty default configuration schema
 inmail.analyzer.*:
   label: 'Analyzer configuration'
@@ -54,7 +71,7 @@ inmail.handler.*:
   label: 'Handler configuration'
   type: mapping
 
-# Specific analyzer/handler configuration
+# Specific plugin configuration
 inmail.handler.moderator_forward:
   label: 'Moderator Forward handler configuration'
   type: mapping
@@ -62,3 +79,26 @@ inmail.handler.moderator_forward:
     moderator:
       label: 'Moderator address'
       type: email
+
+inmail.plugin.deliverer.imap:
+  label: 'IMAP Deliverer'
+  type: mapping
+  mapping:
+    host:
+      label: 'Host'
+      type: string
+    ssl:
+      label: 'SSL'
+      type: boolean
+    port:
+      label: 'Port'
+      type: integer
+    username:
+      label: 'Username'
+      type: string
+    password:
+      label: 'Password'
+      type: string
+    batch_size:
+      label: 'Batch size'
+      type: integer

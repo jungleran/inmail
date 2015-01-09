@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Form\HandlerConfigurationForm.
+ * Contains \Drupal\inmail\Form\DelivererConfigurationForm.
  */
 
 namespace Drupal\inmail\Form;
@@ -10,23 +10,23 @@ use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Configuration form for handlers.
+ * Configuration form for deliverers.
  *
- * Handler plugins that inherit
+ * Deliverer plugins that inherit
  * \Drupal\Component\Plugin\ConfigurablePluginInterface may specify
  * plugin-specific configuration.
  *
- * @ingroup handler
+ * @ingroup deliverer
  */
-class HandlerConfigurationForm extends PluginConfigurationForm {
+class DelivererConfigurationForm extends PluginConfigurationForm {
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.inmail.handler'),
-      $container->get('entity.manager')->getStorage('inmail_handler')
+      $container->get('plugin.manager.inmail.deliverer'),
+      $container->get('entity.manager')->getStorage('inmail_deliverer')
     );
   }
 
@@ -36,7 +36,7 @@ class HandlerConfigurationForm extends PluginConfigurationForm {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    $form_state->setRedirect('inmail.handler_list');
+    $form_state->setRedirect('inmail.deliverer_list');
   }
 
 }
