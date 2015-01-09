@@ -1,4 +1,4 @@
-inmail.handler.mailmute:
+inmail.plugin.handler.mailmute:
   label: 'Mailmute handler configuration'
   type: mapping
   mapping:

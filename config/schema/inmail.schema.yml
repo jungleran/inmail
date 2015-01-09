@@ -8,7 +8,7 @@ inmail.settings:
       type: email
 
 # Config entities
-inmail.inmail_analyzer.*:
+inmail.analyzer.*:
   label: 'Message analyzer'
   type: config_entity
   mapping:
@@ -23,12 +23,12 @@ inmail.inmail_analyzer.*:
       type: string
     configuration:
       label: 'Configuration'
-      type: inmail.analyzer.[%parent.plugin]
+      type: inmail.plugin.analyzer.[%parent.plugin]
     weight:
       label: 'Weight'
       type: integer
 
-inmail.inmail_handler.*:
+inmail.handler.*:
   label: 'Message handler'
   type: config_entity
   mapping:
@@ -43,7 +43,7 @@ inmail.inmail_handler.*:
       type: string
     configuration:
       label: 'Configuration'
-      type: inmail.handler.[%parent.plugin]
+      type: inmail.plugin.handler.[%parent.plugin]
 
 inmail.deliverer.*:
   label: 'Mail deliverer'
@@ -63,16 +63,16 @@ inmail.deliverer.*:
       type: inmail.plugin.deliverer.[%parent.plugin]
 
 # Empty default configuration schema
-inmail.analyzer.*:
+inmail.plugin.analyzer.*:
   label: 'Analyzer configuration'
   type: mapping
 
-inmail.handler.*:
+inmail.plugin.handler.*:
   label: 'Handler configuration'
   type: mapping
 
-# Specific plugin configuration
-inmail.handler.moderator_forward:
+# Specific analyzer/handler configuration
+inmail.plugin.handler.moderator_forward:
   label: 'Moderator Forward handler configuration'
   type: mapping
   mapping:

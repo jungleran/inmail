@@ -19,6 +19,7 @@ namespace Drupal\inmail\Entity;
  *   id = "inmail_analyzer",
  *   label = @Translation("Message analyzer"),
  *   admin_permission = "administer inmail",
+ *   config_prefix = "analyzer",
  *   handlers = {
  *     "form" = {
  *       "default" = "Drupal\inmail\Form\AnalyzerConfigurationForm"

@@ -19,6 +19,7 @@ namespace Drupal\inmail\Entity;
  *   id = "inmail_handler",
  *   label = @Translation("Message handler"),
  *   admin_permission = "administer inmail",
+ *   config_prefix = "handler",
  *   handlers = {
  *     "form" = {
  *       "default" = "Drupal\inmail\Form\HandlerConfigurationForm"
