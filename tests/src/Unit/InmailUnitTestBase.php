@@ -23,7 +23,7 @@ class InmailUnitTestBase extends UnitTestCase {
    *   The message content.
    */
   protected function getRaw($filename) {
-    $path = __DIR__ . '/../../../inmail_test/eml/' . $filename;
+    $path = __DIR__ . '/../../modules/inmail_test/eml/' . $filename;
     return file_get_contents($path);
   }
 
