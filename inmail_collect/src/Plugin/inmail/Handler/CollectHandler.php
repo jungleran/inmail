@@ -71,7 +71,7 @@ class CollectHandler extends HandlerBase {
       'header-from' => $message->getHeader()->getFieldBody('From'),
       'header-message-id' => $message->getHeader()->getFieldBody('Message-Id'),
       'raw' => $message->toString(),
-      // @todo Add deliverer reference here. Relevant if multiple present.
+      // @todo Add deliverer reference here, relevant if multiple present, https://www.drupal.org/node/2379909
     );
 
     Container::create(array(

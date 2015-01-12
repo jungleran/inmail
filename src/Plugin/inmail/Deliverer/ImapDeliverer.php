@@ -65,19 +65,19 @@ class ImapDeliverer extends DelivererBase implements ContainerFactoryPluginInter
    */
   public function deliver() {
     // Get details from config and connect.
-    // @todo Return noisily if misconfigured or imap missing. Possibly stop retrying.
+    // @todo Return noisily if misconfigured or imap missing. Possibly stop retrying, https://www.drupal.org/node/2405757
     $mailbox_flags = $this->configuration['ssl'] ? '/ssl' : '';
     $mailbox = '{' . $this->configuration['host'] . ':' . $this->configuration['port'] . $mailbox_flags . '}';
     $imap_res = imap_open($mailbox, $this->configuration['username'], $this->configuration['password']);
 
     if (!$imap_res) {
-      // @todo Consider throwing an exception.
+      // @todo Consider throwing an exception, https://www.drupal.org/node/2405757
       $this->loggerChannel->error('Deliverer connection failed: @error', ['@error' => implode("\n", imap_errors())]);
       return array();
     }
 
     // Find IDs of unread messages.
-    // @todo Introduce options for message selection:
+    // @todo Introduce options for message selection, https://www.drupal.org/node/2405767
     //   - only read UNSEEN and mark unread
     //   - read all and delete (and optionally expunge)
     //   - keep track of current UID, read all with higher UID
@@ -93,7 +93,7 @@ class ImapDeliverer extends DelivererBase implements ContainerFactoryPluginInter
     }
 
     // Save number of unread messages.
-    // @todo Create a Monitoring sensor for this state key.
+    // @todo Create a Monitoring sensor for this state key, https://www.drupal.org/node/2399779
     $this->state->set('inmail.deliverer.imap.remaining', count($unread_ids));
 
     // Close resource and return messages.

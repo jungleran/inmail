@@ -77,7 +77,7 @@ class DelivererListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function getDefaultOperations(EntityInterface $entity) {
-    // @todo Enable deleting deliverers.
+    // @todo Enable deleting deliverers, https://www.drupal.org/node/2405751
     $operations = parent::getDefaultOperations($entity);
     $operations['edit']['title'] = $this->t('Configure');
     return $operations;
