@@ -19,7 +19,8 @@ namespace Drupal\inmail\Entity;
  *   handlers = {
  *     "form" = {
  *       "default" = "Drupal\inmail\Form\DelivererConfigurationForm",
- *       "add" = "Drupal\inmail\Form\DelivererConfigurationForm"
+ *       "add" = "Drupal\inmail\Form\DelivererConfigurationForm",
+ *       "delete" = "Drupal\inmail\Form\DelivererDeleteForm"
  *     },
  *     "list_builder" = "Drupal\inmail\DelivererListBuilder"
  *   },
@@ -30,6 +31,7 @@ namespace Drupal\inmail\Entity;
  *   },
  *   links = {
  *     "edit-form" = "entity.inmail_deliverer.edit_form",
+ *     "delete-form" = "entity.inmail_deliverer.delete_form",
  *     "enable" = "entity.inmail_deliverer.enable",
  *     "disable" = "entity.inmail_deliverer.disable"
  *   }

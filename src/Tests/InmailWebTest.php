@@ -92,13 +92,20 @@ class InmailWebTest extends WebTestBase {
     $this->assertUrl('admin/config/system/inmail/deliverers');
     $this->assertText('Test IMAP Deliverer');
 
-    // Status operations and configuration link should be present.
+    // Operation links should be present.
     $this->clickLink('Disable');
     $this->clickLink('Enable');
+    $this->assertLink('Delete');
     $this->clickLink('Configure');
     $this->assertUrl('admin/config/system/inmail/deliverers/test_imap');
-    $this->drupalPostForm(NULL, array(), 'Save');
+
+    // Test 'Delete' link.
+    $this->clickLink('Delete');
+    $this->assertText('Are you sure you want to delete the deliverer configuration Test IMAP Deliverer?');
+    $this->drupalPostForm(NULL, array(), 'Delete');
+    $this->assertText('The Test IMAP Deliverer deliverer has been deleted.');
     $this->assertUrl('admin/config/system/inmail/deliverers');
+    $this->assertText('There is no Mail deliverer yet.');
   }
 
   /**

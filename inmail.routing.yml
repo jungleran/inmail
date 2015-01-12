@@ -90,6 +90,13 @@ entity.inmail_deliverer.edit_form:
   requirements:
     _permission: 'administer inmail'
 
+entity.inmail_deliverer.delete_form:
+  path: admin/config/system/inmail/deliverers/{inmail_deliverer}/delete
+  defaults:
+    _entity_form: 'inmail_deliverer.delete'
+  requirements:
+    _permission: 'administer inmail'
+
 entity.inmail_deliverer.enable:
   path: admin/config/system/inmail/deliverers/{inmail_deliverer}/enable
   defaults:
