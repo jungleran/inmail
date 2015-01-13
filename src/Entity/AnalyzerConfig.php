@@ -13,8 +13,6 @@ namespace Drupal\inmail\Entity;
  *
  * @ingroup analyzer
  *
- * @todo Add config_prefix in https://www.drupal.org/node/2379773
- *
  * @ConfigEntityType(
  *   id = "inmail_analyzer",
  *   label = @Translation("Message analyzer"),
@@ -33,9 +31,9 @@ namespace Drupal\inmail\Entity;
  *     "weight" = "weight"
  *   },
  *   links = {
- *     "edit-form" = "entity.inmail_analyzer.edit_form",
- *     "enable" = "entity.inmail_analyzer.enable",
- *     "disable" = "entity.inmail_analyzer.disable"
+ *     "edit-form" = "admin/config/system/inmail/analyzers/{inmail_analyzer}",
+ *     "enable" = "admin/config/system/inmail/analyzers/{inmail_analyzer}/enable",
+ *     "disable" = "admin/config/system/inmail/analyzers/{inmail_analyzer}/disable"
  *   }
  * )
  */

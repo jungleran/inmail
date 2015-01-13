@@ -13,8 +13,6 @@ namespace Drupal\inmail\Entity;
  *
  * @ingroup handler
  *
- * @todo Add config_prefix in https://www.drupal.org/node/2379773
- *
  * @ConfigEntityType(
  *   id = "inmail_handler",
  *   label = @Translation("Message handler"),
@@ -32,9 +30,9 @@ namespace Drupal\inmail\Entity;
  *     "status" = "status"
  *   },
  *   links = {
- *     "edit-form" = "entity.inmail_handler.edit_form",
- *     "enable" = "entity.inmail_handler.enable",
- *     "disable" = "entity.inmail_handler.disable"
+ *     "edit-form" = "admin/config/system/inmail/analyzers/{inmail_handler}",
+ *     "enable" = "admin/config/system/inmail/analyzers/{inmail_handler}/enable",
+ *     "disable" = "admin/config/system/inmail/analyzers/{inmail_handler}/disable"
  *   }
  * )
  */

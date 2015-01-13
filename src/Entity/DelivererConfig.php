@@ -30,10 +30,10 @@ namespace Drupal\inmail\Entity;
  *     "status" = "status"
  *   },
  *   links = {
- *     "edit-form" = "entity.inmail_deliverer.edit_form",
- *     "delete-form" = "entity.inmail_deliverer.delete_form",
- *     "enable" = "entity.inmail_deliverer.enable",
- *     "disable" = "entity.inmail_deliverer.disable"
+ *     "edit-form" = "admin/config/system/inmail/analyzers/{inmail_deliverer}",
+ *     "delete-form" = "admin/config/system/inmail/analyzers/{inmail_deliverer}/delete",
+ *     "enable" = "admin/config/system/inmail/analyzers/{inmail_deliverer}/enable",
+ *     "disable" = "admin/config/system/inmail/analyzers/{inmail_deliverer}/disable"
  *   }
  * )
  */
