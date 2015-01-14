@@ -108,7 +108,6 @@ class MessageProcessor implements MessageProcessorInterface {
     }
 
     // Handle message.
-    // @todo Collect handler results https://www.drupal.org/node/2379941
     foreach ($this->handlerStorage->loadMultiple() as $handler_config) {
       /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
       if ($handler_config->status()) {
