@@ -71,6 +71,10 @@ inmail.plugin.handler.*:
   label: 'Handler configuration'
   type: mapping
 
+inmail.plugin.deliverer.*:
+  label: 'Deliverer configuration'
+  type: mapping
+
 # Specific analyzer/handler configuration
 inmail.plugin.handler.moderator_forward:
   label: 'Moderator Forward handler configuration'
