@@ -6,6 +6,8 @@
 
 namespace Drupal\inmail\MIME;
 
+use Drupal\Component\Utility\Unicode;
+
 /**
  * An abstraction of an email header.
  *
@@ -167,10 +169,60 @@ class Header {
    *   The header as a string, terminated by a newline.
    */
   public function toString() {
-    // @todo Manage line length and inline encoding, https://www.drupal.org/node/2389327
-    return implode("\n", array_map(function($field) {
-      return "{$field['name']}: {$field['body']}";
-    }, $this->fields)) . "\n";
+    $header = array();
+    foreach ($this->fields as $field) {
+      // Encode non-7bit body. If body is 7bit, mimeHeaderEncode() does nothing.
+      $body = static::mimeHeaderEncode($field['body'], strlen($field['name']));
+      $encoded = $body != $field['body'];
+
+      $field_string = "{$field['name']}: $body";
+      // Fold to match 78 char length limit, and append. The encoding includes
+      // folding, so only do it for unencoded body. The \h matches whitespace
+      // except newline.
+      // @todo Prefer breaking at "higher-level syntactic breaks" like ";"
+      $field_string = !$encoded ? preg_replace('/(.{0,78})(\h|$)/', "\\1\n\\2", $field_string) : $field_string;
+      $header[] = trim($field_string);
+    }
+    return implode("\n", $header);
+  }
+
+  /**
+   * Modification of Unicode::mimeHeaderEncode().
+   *
+   * This version respects the header field name when calculating the line
+   * length limit.
+   *
+   * @see \Drupal\Component\Utility\Unicode::mimeHeaderEncode()
+   *
+   * @todo Remove if this is fixed in core, https://www.drupal.org/node/2407117
+   *
+   * @param string $string
+   *   The field body to encode.
+   * @param int $field_name_length
+   *   (optional) Length of the name of the field whose body is to be encoded.
+   *
+   * @return string
+   *   The MIME-encoded field body.
+   */
+  public static function mimeHeaderEncode($string, $field_name_length = 0) {
+    if (preg_match('/[^\x20-\x7E]/', $string)) {
+      $chunk_size_full = 47; // floor((75 - strlen("=?UTF-8?B??=")) * 0.75);
+      // Adapt chunk size to field name.
+      $chunk_size = max(0, $chunk_size_full - $field_name_length);
+      $len = strlen($string);
+      $output = '';
+      while ($len > 0) {
+        $chunk = Unicode::truncateBytes($string, $chunk_size);
+        $output .= ' =?UTF-8?B?' . base64_encode($chunk) . "?=\n";
+        $c = strlen($chunk);
+        $string = substr($string, $c);
+        $len -= $c;
+        // For subsequent folding, ignore field name length.
+        $chunk_size = $chunk_size_full;
+      }
+      return trim($output);
+    }
+    return $string;
   }
 
 }

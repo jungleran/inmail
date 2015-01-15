@@ -50,7 +50,7 @@ class InmailCollectWebTest extends WebTestBase {
 
     // View details.
     $this->clickLink('View');
-    $this->assertText('"header-subject": "DELIVERY FAILURE: User environment (user@example.org) not listed in\n Domino Directory"');
+    $this->assertText('"header-subject": "DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory"');
     $this->assertText('"header-to": "bounces+user=example.org@example.com"');
     $this->assertText('"header-from": "Postmaster@acacia.example.org"');
     // '<' and '>' are converted to &lt; and &gt; entities by the formatter.

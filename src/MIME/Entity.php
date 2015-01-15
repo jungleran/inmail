@@ -105,7 +105,7 @@ class Entity implements EntityInterface {
    */
   public function toString() {
     // A blank line terminates the header section and begins the body.
-    return $this->getHeader()->toString() . "\n" . $this->getBody();
+    return $this->getHeader()->toString() . "\n\n" . $this->getBody();
   }
 
 }

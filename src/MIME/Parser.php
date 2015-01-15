@@ -5,12 +5,20 @@
  */
 
 namespace Drupal\inmail\MIME;
+
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Parser for MIME (email) messages.
+ *
+ * Parser::parse() and Entity::toString() do not exactly invert each other.
+ * Entity::toString() aims to produce results closely adhering to the MIME
+ * standards, while the parser does not require full compliance to all its
+ * recommendations. Notably, the length of folded lines may differ between raw
+ * input and serialized output.
  *
  * The newline sequence used in MIME is CRLF ('\r\n'). To simplify processing,
  * however, the raw input is immediately converted to LF ('\n'). For example,
@@ -274,7 +282,7 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
    *
    * @see https://tools.ietf.org/html/rfc2822#section-2.2
    */
-  protected function parseHeaderFields($raw_header) {
+  public function parseHeaderFields($raw_header) {
     $header = new Header();
 
     // In some entities, headers are optional.
@@ -285,14 +293,15 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
     // Header fields are separated by CRLF followed by non-whitespace.
     $fields = preg_split('/\n(?!\s)/', $raw_header);
     foreach ($fields as $field) {
-
       $name_body = explode(':', $field, 2);
       if (count($name_body) != 2) {
         throw new ParseException("Missing ':' in header field: $field");
       }
       list($name, $body) = $name_body;
-      // @todo Manage inline encoding, https://www.drupal.org/node/2389327
-      $header->addField(trim($name), trim($body), FALSE);
+
+      // Decode and unfold lines.
+      $decoded_body = str_replace("\n", '', Unicode::mimeHeaderDecode(trim($body)));
+      $header->addField(trim($name), $decoded_body, FALSE);
     }
     return $header;
   }
