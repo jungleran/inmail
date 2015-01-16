@@ -25,7 +25,8 @@ interface AnalyzerInterface extends ConfigurablePluginInterface, PluginFormInter
    * @param \Drupal\inmail\MIME\EntityInterface $message
    *   A mail message to be analyzed.
    * @param \Drupal\inmail\ProcessorResultInterface $processor_result
-   *   The processor result object for reporting results.
+   *   The processor result object for logging and reporting results. Contains
+   *   the message deliverer.
    */
   public function analyze(EntityInterface $message, ProcessorResultInterface $processor_result);
 

@@ -8,6 +8,7 @@
 namespace Drupal\inmail_collect\Tests;
 
 use Drupal\Core\Url;
+use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -37,7 +38,7 @@ class InmailCollectWebTest extends WebTestBase {
     /** @var \Drupal\inmail\MessageProcessor $processor */
     $processor = \Drupal::service('inmail.processor');
     $raw = file_get_contents(\Drupal::root() . '/' . drupal_get_path('module', 'inmail_test') . '/eml/nouser.eml');
-    $processor->process($raw);
+    $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
     // Log in and view the list.
     $user = $this->drupalCreateUser(array('administer collect'));
@@ -55,6 +56,7 @@ class InmailCollectWebTest extends WebTestBase {
     $this->assertText('"header-from": "Postmaster@acacia.example.org"');
     // '<' and '>' are converted to &lt; and &gt; entities by the formatter.
     $this->assertText('"header-message-id": "&lt;21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031EC2C@acacia.example.org&gt;"');
+    $this->assertText('"deliverer": "test"');
     // Last line of the raw message.
     $this->assertText('--==IFJRGLKFGIR25201654UHRUHIHD--');
   }

@@ -6,6 +6,7 @@
 
 namespace Drupal\inmail_test\Plugin\inmail\Handler;
 
+use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\MIME\EntityInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
 use Drupal\inmail\ProcessorResultInterface;

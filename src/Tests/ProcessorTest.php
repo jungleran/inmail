@@ -6,6 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\simpletest\KernelTestBase;
 
 /**
@@ -31,7 +32,7 @@ class ProcessorTest extends KernelTestBase {
     $processor = \Drupal::service('inmail.processor');
     $path = drupal_get_path('module', 'inmail_test') . '/eml/malformed/headerbody.eml';
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
-    $processor->process($raw);
+    $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
     // Check last DbLog message.
     $dblog_statement = \Drupal::database()->select('watchdog', 'w')

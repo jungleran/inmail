@@ -6,12 +6,30 @@
 
 namespace Drupal\inmail;
 
+use Drupal\inmail\Entity\DelivererConfig;
+
 /**
  * The processor result collects outcomes of a single mail processing pass.
  *
  * @ingroup processing
  */
 interface ProcessorResultInterface {
+
+  /**
+   * Set the deliverer of the message to which this result applies.
+   *
+   * @param \Drupal\inmail\Entity\DelivererConfig $deliverer
+   *   The deliverer config entity.
+   */
+  public function setDeliverer(DelivererConfig $deliverer);
+
+  /**
+   * Get the deliverer of the message to which this result applies.
+   *
+   * @return \Drupal\inmail\Entity\DelivererConfig
+   *   The deliverer config entity.
+   */
+  public function getDeliverer();
 
   /**
    * Returns an analyzer result instance, after first creating it if needed.

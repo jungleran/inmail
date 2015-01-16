@@ -6,12 +6,21 @@
 
 namespace Drupal\inmail;
 
+use Drupal\inmail\Entity\DelivererConfig;
+
 /**
  * The processor result collects outcomes of a single mail processing pass.
  *
  * @ingroup processing
  */
 class ProcessorResult implements ProcessorResultInterface {
+
+  /**
+   * The deliverer of the message to which this result applies.
+   *
+   * @var \Drupal\inmail\Entity\DelivererConfig
+   */
+  protected $deliverer;
 
   /**
    * Instantiated analyzer result objects, keyed by topic.
@@ -26,6 +35,20 @@ class ProcessorResult implements ProcessorResultInterface {
    * @var array[][]
    */
   protected $log = array();
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setDeliverer(DelivererConfig $deliverer) {
+    $this->deliverer = $deliverer;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDeliverer() {
+    return $this->deliverer;
+  }
 
   /**
    * {@inheritdoc}

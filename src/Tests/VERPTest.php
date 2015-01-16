@@ -8,6 +8,7 @@ namespace Drupal\inmail\Tests;
 
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\Entity\AnalyzerConfig;
+use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\Core\Language\LanguageInterface;
@@ -57,8 +58,9 @@ class VERPTest extends KernelTestBase {
     // Process a bounce message with a VERP-y 'To' header, check the parsing.
     $path = drupal_get_path('module', 'inmail_test') . '/eml/full.eml';
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
+    /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
-    $processor->process($raw);
+    $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
     $result = ResultKeeperHandler::$result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);

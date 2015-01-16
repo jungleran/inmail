@@ -9,6 +9,7 @@ namespace Drupal\inmail_mailmute\Tests;
 use Drupal\Component\Utility\String;
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\DSNStatus;
+use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\MIME\Entity;
 use Drupal\inmail\MIME\Header;
@@ -81,7 +82,7 @@ class InmailMailmuteTest extends KernelTestBase {
       $raw = $this->getMessageFileContents($filename);
 
       // Let magic happen.
-      $processor->process($raw);
+      $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
       // Reload user.
       $this->user = User::load($this->user->id());
@@ -123,7 +124,7 @@ class InmailMailmuteTest extends KernelTestBase {
       $handler_config = \Drupal::entityManager()->getStorage('inmail_handler')->load('mailmute');
       /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
       $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
-      $handler->invoke(new Entity(new Header(), ''), $processor_result);
+      $handler->invoke(new Entity(new Header(), ''), $processor_result, 'test');
 
       // Check that the state did not change.
       $new_state = $sendstate_manager->getState($this->user->getEmail());
@@ -152,7 +153,7 @@ class InmailMailmuteTest extends KernelTestBase {
     for ($count = 1; $count < 3; $count++) {
       // Process a soft bounce from the user.
       $raw = $this->getMessageFileContents('full.eml');
-      $processor->process($raw);
+      $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
       // Reload user and check the count.
       $this->user = User::load($this->user->id());
@@ -162,7 +163,7 @@ class InmailMailmuteTest extends KernelTestBase {
 
     // Process another one and check that the user is now muted.
     $raw = $this->getMessageFileContents('full.eml');
-    $processor->process($raw);
+    $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
     $this->user = User::load($this->user->id());
     $this->assertEqual($this->user->sendstate->plugin_id, 'inmail_temporarily_unreachable');
   }

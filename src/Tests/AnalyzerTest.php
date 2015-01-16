@@ -7,6 +7,7 @@
 namespace Drupal\inmail\Tests;
 
 use Drupal\inmail\BounceAnalyzerResult;
+use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\simpletest\KernelTestBase;
@@ -72,7 +73,7 @@ EOF;
     $processor = \Drupal::service('inmail.processor');
 
     HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
-    $processor->process($raw);
+    $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
     $processor_result = ResultKeeperHandler::$result;
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */

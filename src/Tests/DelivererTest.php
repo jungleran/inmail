@@ -24,13 +24,6 @@ class DelivererTest extends KernelTestBase {
   public static $modules = ['inmail', 'inmail_test'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-  }
-
-  /**
    * Test that Cron runs trigger active deliverers.
    *
    * @see inmail_cron()

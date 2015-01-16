@@ -8,6 +8,7 @@ namespace Drupal\inmail_collect\Plugin\inmail\Handler;
 
 use Drupal\collect\Entity\Container;
 use Drupal\Core\Url;
+use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\MIME\EntityInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
 use Drupal\inmail\ProcessorResultInterface;
@@ -70,8 +71,8 @@ class CollectHandler extends HandlerBase {
       'header-to' => $message->getHeader()->getFieldBody('To'),
       'header-from' => $message->getHeader()->getFieldBody('From'),
       'header-message-id' => $message->getHeader()->getFieldBody('Message-Id'),
+      'deliverer' => $processor_result->getDeliverer()->id(),
       'raw' => $message->toString(),
-      // @todo Add deliverer reference here, relevant if multiple present, https://www.drupal.org/node/2379909
     );
 
     Container::create(array(

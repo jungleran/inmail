@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Deliverer\ImapDeliverer.
+ * Contains \Drupal\inmail\Deliverer\ImapFetcher.
  */
 
 namespace Drupal\inmail\Plugin\inmail\Deliverer;
@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   label = @Translation("IMAP")
  * )
  */
-class ImapDeliverer extends DelivererBase implements ContainerFactoryPluginInterface {
+class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface {
 
   /**
    * Injected Inmail logger channel.
@@ -63,7 +63,7 @@ class ImapDeliverer extends DelivererBase implements ContainerFactoryPluginInter
   /**
    * {@inheritdoc}
    */
-  public function deliver() {
+  public function fetch() {
     // Get details from config and connect.
     // @todo Return noisily if misconfigured or imap missing. Possibly stop retrying, https://www.drupal.org/node/2405757
     $mailbox_flags = $this->configuration['ssl'] ? '/ssl' : '';

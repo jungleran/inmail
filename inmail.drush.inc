@@ -31,11 +31,12 @@ function inmail_drush_command() {
   $items['inmail-process'] = array(
     'description' => 'Process a mail message provided through STDIN, or one or more mail messages by filename.',
     'arguments' => array(
+      'plugin' => 'The ID of a Drush Deliverer plugin configuration.',
       'file [file2 ...]' => 'One or more file names to parse as messages. If no filenames are given, a message is read from STDIN.',
     ),
     'examples' => array(
-      'cat 1.eml | drush inmail-process' => 'Process a message through STDIN',
-      'drush inmail-process 1.eml 2.eml 3.eml' => 'Process each of the messages contained by the three files',
+      'cat 1.eml | drush inmail-process drush_deliverer' => 'Process a message through STDIN',
+      'drush inmail-process drush_deliverer 1.eml 2.eml 3.eml' => 'Process each of the messages contained by the three files',
     ),
     'drupal dependencies' => array('inmail'),
   );
@@ -57,19 +58,29 @@ function drush_inmail_process() {
     return;
   }
 
+  /** @var \Drupal\inmail\MessageProcessorInterface $processor */
+  $processor = \Drupal::service('inmail.processor');
+
   $args = func_get_args();
 
-  // @todo Fetchers should identify themselves https://www.drupal.org/node/2379909
+  // Identify deliverer.
+  $deliverer_config_id = array_shift($args);
+  $deliverer = \Drupal::entityManager()->getStorage('inmail_deliverer')->load($deliverer_config_id);
+  if (empty($deliverer)) {
+    drush_set_error(dt('Deliverer "@deliverer_id" not found', ['@deliverer_id' => $deliverer_config_id]));
+    return;
+  }
+
   if (count($args) > 0) {
     $raws = array();
     foreach ($args as $filename) {
       $raws[] = file_get_contents($filename[0] == '/' ? $filename : __DIR__ . '/' . $filename);
     }
-    \Drupal::service('inmail.processor')->processMultiple($raws);
+    $processor->processMultiple($raws, $deliverer);
   }
   else {
     $raw = _inmail_get_piped_input();
-    \Drupal::service('inmail.processor')->process($raw);
+    $processor->process($raw, $deliverer);
   }
 }
 

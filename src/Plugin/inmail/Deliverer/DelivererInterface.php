@@ -1,21 +1,21 @@
 <?php
 /**
  * @file
- * Contains \Plugin\inmail\Deliverer\DelivererInterface.
+ * Contains \Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface.
  */
 
 namespace Drupal\inmail\Plugin\inmail\Deliverer;
 
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
-use Drupal\Core\Plugin\PluginFormInterface;
 
 /**
  * Defines methods for deliverers.
  *
+ * Deliverers provide new messages from a specific source to Inmail.
+ *
  * @ingroup deliverer
  */
-interface DelivererInterface extends ConfigurablePluginInterface, PluginFormInterface, PluginInspectionInterface {
+interface DelivererInterface extends PluginInspectionInterface {
 
   /**
    * Returns the deliverer label.
@@ -24,13 +24,5 @@ interface DelivererInterface extends ConfigurablePluginInterface, PluginFormInte
    *   The deliverer label.
    */
   public function getLabel();
-
-  /**
-   * Connects to the configured mailbox and delivers new mail.
-   *
-   * @return string[]
-   *   The delivered messages, in complete raw form.
-   */
-  public function deliver();
 
 }

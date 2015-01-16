@@ -6,10 +6,12 @@
 
 namespace Drupal\inmail\Form;
 
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\PluginFormInterface;
 
 /**
  * Configuration form for configurable plugins.
@@ -101,12 +103,15 @@ class PluginConfigurationForm extends EntityForm {
       );
     }
 
-    // Load plugin instance and form.
-    /** @var \Drupal\Core\Plugin\PluginFormInterface $plugin */
+    // Load plugin instance.
     if ($entity->getPluginId()) {
       $plugin = $this->pluginManager->createInstance($entity->getPluginId(), $entity->getConfiguration());
       $form_state->set('plugin', $plugin);
-      $form['plugin_container']['configuration'] = $plugin->buildConfigurationForm(array(), $form_state);
+
+      // Load plugin form if it has one.
+      if ($plugin instanceof PluginFormInterface) {
+        $form['plugin_container']['configuration'] = $plugin->buildConfigurationForm(array(), $form_state);
+      }
     }
 
     return $form;
@@ -159,8 +164,11 @@ class PluginConfigurationForm extends EntityForm {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
 
+    // The 'plugin' property is definitely set, because it is #required.
+    $plugin = $form_state->get('plugin');
+
     /** @var \Drupal\Core\Plugin\PluginFormInterface $plugin */
-    if ($plugin = $form_state->get('plugin')) {
+    if ($plugin instanceof PluginFormInterface) {
       $plugin->validateConfigurationForm($form, $form_state);
     }
   }
@@ -171,18 +179,23 @@ class PluginConfigurationForm extends EntityForm {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    // Let the plugin update its configuration from the form.
-    /** @var \Drupal\Core\Plugin\PluginFormInterface|\Drupal\Component\Plugin\ConfigurablePluginInterface $plugin */
-    if ($plugin = $form_state->get('plugin')) {
+    // The 'plugin' property is definitely set, because it is #required.
+    $plugin = $form_state->get('plugin');
+
+    // Trigger plugin-specific submit handler. Typically, it should update the
+    // plugin configuration from the form.
+    if ($plugin instanceof PluginFormInterface) {
       $plugin->submitConfigurationForm($form, $form_state);
     }
 
     // Copy plugin configuration to the entity for persistence. The reason for
     // not doing this by overriding copyFormValuesToEntity is that the plugin
     // submit handler has to happen first.
-    /** @var \Drupal\inmail\Entity\PluginConfigEntity $entity */
-    $entity = $this->getEntity();
-    $entity->setConfiguration($plugin->getConfiguration());
+    if ($plugin instanceof ConfigurablePluginInterface) {
+      /** @var \Drupal\inmail\Entity\PluginConfigEntity $entity */
+      $entity = $this->getEntity();
+      $entity->setConfiguration($plugin->getConfiguration());
+    }
   }
 
 }

@@ -9,6 +9,7 @@ namespace Drupal\inmail;
 use Drupal\Component\Utility\String;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\MIME\ParseException;
 use Drupal\monitoring\Plugin\monitoring\SensorPlugin\EnabledModulesSensorPlugin;
 
@@ -70,9 +71,7 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * {@inheritdoc}
    */
-  public function process($raw) {
-    // @todo Fetchers should identify themselves https://www.drupal.org/node/2379909
-
+  public function process($raw, DelivererConfig $deliverer) {
     // Parse message.
     /** @var \Drupal\inmail\MIME\ParserInterface $parser */
     $parser = \Drupal::service('inmail.mime_parser');
@@ -88,10 +87,12 @@ class MessageProcessor implements MessageProcessorInterface {
     $event = NULL;
     if (\Drupal::moduleHandler()->moduleExists('past')) {
       $event = past_event_create('inmail', 'process', $message->getMessageId());
+      $event->addArgument('deliverer', $deliverer);
     }
 
     // Analyze message.
     $result = new ProcessorResult();
+    $result->setDeliverer($deliverer);
     $analyzer_configs = $this->analyzerStorage->loadMultiple();
     uasort($analyzer_configs, array($this->analyzerStorage->getEntityType()->getClass(), 'sort'));
     foreach ($analyzer_configs as $analyzer_config) {
@@ -137,9 +138,9 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * {@inheritdoc}
    */
-  public function processMultiple(array $messages) {
+  public function processMultiple(array $messages, DelivererConfig $deliverer) {
     foreach ($messages as $message) {
-      $this->process($message);
+      $this->process($message, $deliverer);
     }
   }
 }

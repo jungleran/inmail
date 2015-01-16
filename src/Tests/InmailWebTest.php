@@ -73,12 +73,12 @@ class InmailWebTest extends WebTestBase {
     $this->assertUrl('admin/config/system/inmail/deliverers');
     $this->assertText('There is no Mail deliverer yet.');
 
-    // Add an IMAP deliverer.
+    // Add an IMAP fetcher.
     $this->clickLink('Add deliverer');
     $this->assertUrl('admin/config/system/inmail/deliverers/add');
     // Select the IMAP plugin.
     $edit = array(
-      'label' => 'Test IMAP Deliverer',
+      'label' => 'Test IMAP Fetcher',
       'id' => 'test_imap',
       'plugin' => 'imap',
     );
@@ -90,21 +90,40 @@ class InmailWebTest extends WebTestBase {
     );
     $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertUrl('admin/config/system/inmail/deliverers');
-    $this->assertText('Test IMAP Deliverer');
+    $this->assertText('Test IMAP Fetcher');
+
+    // Add a Drush deliverer. It implements different interfaces and
+    // PluginConfigurationForm has to support that.
+    $this->drupalGet('admin/config/system/inmail/deliverers/add');
+    $edit = array(
+      'label' => 'Test Drush Deliverer',
+      'id' => 'test_drush',
+      'plugin' => 'drush',
+    );
+    $this->drupalPostAjaxForm(NULL, $edit, 'plugin');
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->assertText('Test Drush Deliverer');
 
     // Operation links should be present.
     $this->clickLink('Disable');
     $this->clickLink('Enable');
     $this->assertLink('Delete');
     $this->clickLink('Configure');
-    $this->assertUrl('admin/config/system/inmail/deliverers/test_imap');
+    $this->assertUrl('admin/config/system/inmail/deliverers/test_drush');
 
     // Test 'Delete' link.
     $this->clickLink('Delete');
-    $this->assertText('Are you sure you want to delete the deliverer configuration Test IMAP Deliverer?');
+    $this->assertText('Are you sure you want to delete the deliverer configuration Test Drush Deliverer?');
     $this->drupalPostForm(NULL, array(), 'Delete');
-    $this->assertText('The Test IMAP Deliverer deliverer has been deleted.');
+    $this->assertText('The Test Drush Deliverer deliverer has been deleted.');
     $this->assertUrl('admin/config/system/inmail/deliverers');
+    // Drush item should be removed. Cannot check for config label because it is
+    // in the removal message, instead check for plugin label.
+    $this->assertNoText('Drush inmail-process');
+    // Also test deleting fetcher, may be significant because its interface is
+    // different.
+    $this->clickLink('Delete');
+    $this->drupalPostForm(NULL, array(), 'Delete');
     $this->assertText('There is no Mail deliverer yet.');
   }
 

@@ -6,6 +6,7 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\inmail\Entity\AnalyzerConfig;
+use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 
 /**
  * @mainpage
@@ -282,9 +283,12 @@ function inmail_cron() {
 
   // Fetch and process new mail.
   foreach ($deliverers as $deliverer) {
-    /** @var \Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface $plugin */
     $plugin = $deliverer_manager->createInstance($deliverer->getPluginId(), $deliverer->getConfiguration());
-    $raws = $plugin->deliver();
-    $processor->processMultiple($raws);
+
+    // Only run active deliverers.
+    if ($plugin instanceof FetcherInterface) {
+      $raws = $plugin->fetch();
+      $processor->processMultiple($raws, $deliverer);
+    }
   }
 }

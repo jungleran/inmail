@@ -6,6 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 
 use Drupal\inmail\MIME\Parser;
@@ -44,19 +45,20 @@ class ModeratorForwardTest extends KernelTestBase {
    * Tests the rules for when forwarding should be done.
    */
   public function testModeratorForwardRules() {
+    /** @var \Drupal\inmail\MessageProcessor $processor */
     $processor = \Drupal::service('inmail.processor');
     $bounce = $this->getMessageFileContents('nouser.eml');
     $regular = $this->getMessageFileContents('normal.eml');
 
     // Do not handle if message is bounce.
-    $processor->process($bounce);
+    $processor->process($bounce, DelivererConfig::create(array('id' => 'test')));
     $this->assertMailCount(0);
 
     // Do not handle if moderator address is unset.
     /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
     $handler_config = HandlerConfig::load('moderator_forward');
     $this->assertEqual($handler_config->getConfiguration()['moderator'], '');
-    $processor->process($regular);
+    $processor->process($regular, DelivererConfig::create(array('id' => 'test')));
     $this->assertMailCount(0);
 
     // Do not handle, and log an error, if moderator address is same as intended
@@ -64,19 +66,19 @@ class ModeratorForwardTest extends KernelTestBase {
     $handler_config->setConfiguration(array('moderator' => 'user@example.org'))->save();
     // Forge a mail where we recognize recipient but not status.
     $bounce_no_status = str_replace('Status:', 'Foo:', $bounce);
-    $processor->process($bounce_no_status);
+    $processor->process($bounce_no_status, DelivererConfig::create(array('id' => 'test')));
     $this->assertMailCount(0);
     // @todo Read log? https://www.drupal.org/node/2381933
 
     // Do not handle, and log an error, if the custom X header is set.
     $handler_config->setConfiguration(array('moderator' => 'moderator@example.com'))->save();
     $regular_x = "X-Inmail-Forwarded: ModeratorForwardTest\n" . $regular;
-    $processor->process($regular_x);
+    $processor->process($regular_x, DelivererConfig::create(array('id' => 'test')));
     $this->assertMailCount(0);
     // @todo Read log? https://www.drupal.org/node/2381933
 
     // Forward non-bounces if conditions are right.
-    $processor->process($regular);
+    $processor->process($regular, DelivererConfig::create(array('id' => 'test')));
     $this->assertMailCount(1);
   }
 
@@ -94,7 +96,9 @@ class ModeratorForwardTest extends KernelTestBase {
     HandlerConfig::load('moderator_forward')
       ->set('configuration', array('moderator' => 'moderator@example.com'))
       ->save();
-    \Drupal::service('inmail.processor')->process($original);
+    /** @var \Drupal\inmail\MessageProcessorInterface $processor */
+    $processor = \Drupal::service('inmail.processor');
+    $processor->process($original, DelivererConfig::create(array('id' => 'test')));
     $messages = \Drupal::state()->get('system.test_mail_collector');
     $forward = array_pop($messages);
 

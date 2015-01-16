@@ -10,6 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\inmail\Plugin\inmail\Deliverer\DelivererBase;
+use Drupal\inmail\Plugin\inmail\Deliverer\FetcherBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -20,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   label = @Translation("Test")
  * )
  */
-class TestDeliverer extends DelivererBase implements ContainerFactoryPluginInterface {
+class TestDeliverer extends FetcherBase implements ContainerFactoryPluginInterface {
 
   /**
    * Injected site state.
@@ -47,7 +48,7 @@ class TestDeliverer extends DelivererBase implements ContainerFactoryPluginInter
   /**
    * {@inheritdoc}
    */
-  public function deliver() {
+  public function fetch() {
     // Increment invocation count.
     $count = $this->state->get('inmail.test.deliver_count') + 1;
     $this->state->set('inmail.test.deliver_count', $count);

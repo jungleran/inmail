@@ -6,6 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -65,7 +66,9 @@ class IntegrationTest extends WebTestBase {
     $raw = static::generateBounceMessage(array_pop($sent_mails));
     // In reality the message would be passed to the processor through a drush
     // script or a mail deliverer.
-    \Drupal::service('inmail.processor')->process($raw);
+    /** @var \Drupal\inmail\MessageProcessorInterface $processor */
+    $processor = \Drupal::service('inmail.processor');
+    $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
     // Check send state.
     $this->drupalGet('user/2');
