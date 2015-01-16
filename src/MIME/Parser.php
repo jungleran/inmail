@@ -99,7 +99,6 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
     // Parse raw header into Header object.
     $header = $this->parseHeaderFields($header_raw);
 
-    // @todo Decode base64 body, https://www.drupal.org/node/2381881
     return new Entity($header, $body);
   }
 

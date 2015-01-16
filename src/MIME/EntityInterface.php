@@ -73,13 +73,22 @@ interface EntityInterface {
   /**
    * Returns the body.
    *
-   * @todo Decode body (base64 etc), https://www.drupal.org/node/2381881
-   * @todo Convert body unless content-type charset is UTF-8 or 7bit.
+   * The body may be encoded as indicated by the Content-Type and
+   * Content-Transfer-Encoding header fields. Use ::getDecodedBody() to access
+   * the payload.
    *
    * @return string
    *   The entity body.
    */
   public function getBody();
+
+  /**
+   * Decodes and returns the body.
+   *
+   * @return string|null
+   *   The entity body as a normal UTF-8 string, or NULL if decoding failed.
+   */
+  public function getDecodedBody();
 
   /**
    * Joins the header with the body to produce a string.

@@ -6,6 +6,8 @@
 
 namespace Drupal\inmail\MIME;
 
+use Drupal\Component\Utility\Unicode;
+
 /**
  * A MIME entity is typically an email message or a part of a multipart message.
  *
@@ -21,7 +23,7 @@ class Entity implements EntityInterface {
   protected $header;
 
   /**
-   * The entity body.
+   * The entity body in 7-bit ASCII.
    *
    * @var string
    */
@@ -33,7 +35,9 @@ class Entity implements EntityInterface {
    * @param \Drupal\inmail\MIME\Header $header
    *   The entity header.
    * @param string $body
-   *   The entity body.
+   *   The entity body. The charset and any encoding of the body must be 7-bit
+   *   ASCII and match the Content-Transfer-Encoding and Content-Type fields in
+   *   the given header.
    */
   public function __construct(Header $header, $body) {
     $this->header = $header;
@@ -98,6 +102,36 @@ class Entity implements EntityInterface {
    */
   public function getBody() {
     return $this->body;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDecodedBody() {
+    $body = $this->getBody();
+
+    // Decode base64/quoted-printable.
+    $body = Encodings::decode($body, $this->getContentTransferEncoding());
+    if ($body === NULL || $body === FALSE) {
+      // Unrecognized encoding.
+      return NULL;
+    }
+
+    // Convert to UTF-8.
+    $content_type = $this->getContentType();
+    // Default to US-ASCII.
+    $charset = isset($content_type['parameters']['charset']) ? $content_type['parameters']['charset'] : 'us-ascii';
+    if (in_array(strtolower($charset), ['utf-8', 'us-ascii'])) {
+      // No need to convert, but validate UTF-8.
+      return Unicode::validateUtf8($body) ? $body : NULL;
+    }
+    // convertToUtf8 may return FALSE.
+    $body = Unicode::convertToUtf8($body, $charset);
+    if ($body === FALSE) {
+      return NULL;
+    }
+    // Return decoded, converted, valid UTF-8 body.
+    return $body;
   }
 
   /**

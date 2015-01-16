@@ -38,6 +38,6 @@ class StandardDSNReasonAnalyzer extends AnalyzerBase {
     $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
 
     // Save the human-readable bounce reason.
-    $result->setReason(trim($message->getHumanPart()->getBody()));
+    $result->setReason(trim($message->getHumanPart()->getDecodedBody()));
   }
 }

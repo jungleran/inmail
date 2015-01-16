@@ -10,8 +10,8 @@ namespace Drupal\Tests\inmail\Unit\MIME;
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\inmail\MIME\Entity;
 use Drupal\inmail\MIME\Header;
-use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\MIME\MultipartEntity;
+use Drupal\inmail\MIME\Parser;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -99,6 +99,20 @@ EOF;
     $this->assertEquals("This is implicitly typed plain US-ASCII text.\nIt does NOT end with a linebreak.", static::getFirstPart()->getBody());
     $this->assertEquals("This is explicitly typed plain US-ASCII text.\nIt DOES end with a linebreak.\n", static::getSecondPart()->getBody());
     $this->assertEquals(static::getBody(), static::getMessage()->getBody());
+  }
+
+  /**
+   * Tests the body accessors in the context of decoding.
+   *
+   * @covers \Drupal\inmail\MIME\Entity::getBody
+   * @covers \Drupal\inmail\MIME\Entity::getDecodedBody
+   *
+   * @dataProvider ::provideEncodedEntities
+   */
+  public function testGetBodyUndecoded(Header $header, $body, $decoded_body) {
+    $entity = new Entity($header, $body);
+    $this->assertEquals($body, $entity->getBody());
+    $this->assertEquals($decoded_body, $entity->getDecodedBody());
   }
 
   /**
@@ -197,6 +211,26 @@ This is the epilogue.  It is also to be ignored.';
     return new Header([
       ['name' => 'Content-type', 'body' => 'text/plain; charset=us-ascii'],
     ]);
+  }
+
+  /**
+   * Provides entities with encoded bodies.
+   *
+   * @return array
+   *   A list of triplets containing a header with encoding/charset fields, a
+   *   body encoded accordingly, and the body unencoded.
+   */
+  public static function provideEncodedEntities() {
+    return [
+      [
+        new Header([
+          ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
+          ['name' => 'Content-Transfer-Encoding', 'body' => 'quoted-printable'],
+        ]),
+        '=E6=97=A5=E6=9C=AC=E5=9B=BD',
+        '日本国',
+      ],
+    ];
   }
 
 }
