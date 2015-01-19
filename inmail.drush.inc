@@ -31,7 +31,7 @@ function inmail_drush_command() {
   $items['inmail-process'] = array(
     'description' => 'Process a mail message provided through STDIN, or one or more mail messages by filename.',
     'arguments' => array(
-      'plugin' => 'The ID of a Drush Deliverer plugin configuration.',
+      'deliverer_id' => 'The ID of a Drush Deliverer plugin configuration.',
       'file [file2 ...]' => 'One or more file names to parse as messages. If no filenames are given, a message is read from STDIN.',
     ),
     'examples' => array(
