@@ -30,7 +30,7 @@ class IntegrationTest extends WebTestBase {
     parent::setUp();
 
     // Make sure new users are blocked until approved by admin.
-    \Drupal::config('user.settings')
+    \Drupal::configFactory()->getEditable('user.settings')
       ->set('register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL)
       ->save();
   }

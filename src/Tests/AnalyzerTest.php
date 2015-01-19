@@ -32,7 +32,9 @@ class AnalyzerTest extends KernelTestBase {
   protected function setUp() {
     parent::setUp();
     $this->installConfig(['inmail']);
-    \Drupal::config('inmail.settings')->set('return_path', 'bounces@example.com')->save();
+    \Drupal::configFactory()->getEditable('inmail.settings')
+      ->set('return_path', 'bounces@example.com')
+      ->save();
   }
 
   /**

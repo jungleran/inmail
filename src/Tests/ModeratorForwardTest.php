@@ -33,10 +33,10 @@ class ModeratorForwardTest extends KernelTestBase {
     parent::setUp();
     $this->installConfig(array('inmail'));
     $this->installEntitySchema('inmail_handler');
-    \Drupal::config('system.mail')
+    \Drupal::configFactory()->getEditable('system.mail')
       ->set('interface.default', 'inmail_test_mail_collector')
       ->save();
-    \Drupal::config('system.site')
+    \Drupal::configFactory()->getEditable('system.site')
       ->set('mail', 'bounces@example.com')
       ->save();
   }

@@ -40,7 +40,6 @@ class ProcessorTest extends KernelTestBase {
       ->fields('w', ['message'])
       ->execute();
     $dblog_entry = $dblog_statement->fetchAssoc();
-    debug($dblog_entry);
     $this->assertEqual('Unable to process message, parser failed with message "@message"', $dblog_entry['message']);
   }
 

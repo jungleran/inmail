@@ -34,8 +34,12 @@ class VERPTest extends KernelTestBase {
   public function setUp() {
     parent::setUp();
     $this->installConfig(['inmail', 'system']);
-    \Drupal::config('system.site')->set('mail', 'bounces@example.com');
-    \Drupal::config('system.mail')->set('interface', ['default' => 'test_mail_collector']);
+    \Drupal::configFactory()->getEditable('system.site')
+      ->set('mail', 'bounces@example.com')
+      ->save();
+    \Drupal::configFactory()->getEditable('system.mail')
+      ->set('interface', ['default' => 'test_mail_collector'])
+      ->save();
   }
 
   /**
