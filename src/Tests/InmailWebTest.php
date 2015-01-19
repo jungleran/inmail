@@ -22,7 +22,7 @@ class InmailWebTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail');
+  public static $modules = array('inmail', 'inmail_test');
 
   /**
    * Tests the admin UI.
@@ -125,6 +125,20 @@ class InmailWebTest extends WebTestBase {
     $this->clickLink('Delete');
     $this->drupalPostForm(NULL, array(), 'Delete');
     $this->assertText('There is no Mail deliverer yet.');
+
+    // Add test fetcher.
+    $edit = array(
+      'label' => 'Test Test Fetcher',
+      'id' => 'test_test',
+      'plugin' => 'test_fetcher',
+    );
+    $this->drupalPostAjaxForm('admin/config/system/inmail/deliverers/add', $edit, 'plugin');
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $overview_count_xpath = '//td[text()="100"]';
+    $this->assertNoFieldByXPath($overview_count_xpath);
+    $this->drupalPostForm(NULL, array(), 'Check fetcher status');
+    $this->assertText('Fetcher state info has been updated.');
+    $this->assertFieldByXPath($overview_count_xpath);
   }
 
   /**

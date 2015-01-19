@@ -11,7 +11,6 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\MIME\ParseException;
-use Drupal\monitoring\Plugin\monitoring\SensorPlugin\EnabledModulesSensorPlugin;
 
 /**
  * Mail message processor using services to analyze and handle messages.

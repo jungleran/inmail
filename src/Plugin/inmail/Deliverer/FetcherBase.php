@@ -27,10 +27,50 @@ abstract class FetcherBase extends DelivererBase implements FetcherInterface {
   }
 
   /**
+   * Update the number of remaining messages to fetch.
+   *
+   * @param int $count
+   *   The number of remaining messages.
+   */
+  protected function setCount($count) {
+    \Drupal::state()->set($this->makeStateKey('remaining'), $count);
+  }
+
+  /**
    * {@inheritdoc}
    */
-  public function isActive() {
-    return $this->pluginDefinition['active'];
+  public function getCount() {
+    return \Drupal::state()->get($this->makeStateKey('remaining'));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setLastCheckedTime($timestamp) {
+    \Drupal::state()->set($this->makeStateKey('last_checked'), $timestamp);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getLastCheckedTime() {
+    $config_id = $this->getConfiguration()['config_id'];
+    return \Drupal::state()->get($this->makeStateKey('last_checked'));
+  }
+
+  /**
+   * Returns a state key appropriate for the given state property.
+   *
+   * @param string $key
+   *   Name of key.
+   *
+   * @return string
+   *   An appropriate name for a state property of the deliverer config
+   *   associated with this fetcher.
+   */
+  protected function makeStateKey($key) {
+    $config_id = $this->getConfiguration()['config_id'];
+    return "inmail.deliverer.$config_id.$key";
   }
 
   /**
@@ -60,6 +100,19 @@ abstract class FetcherBase extends DelivererBase implements FetcherInterface {
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
     // No validation by default.
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    /** @var \Drupal\Core\Entity\EntityForm $form_object */
+    $form_object = $form_state->getFormObject();
+    $this->configuration['config_id'] = $form_object->getEntity()->id();
+
+    // Reset state.
+    $this->setLastCheckedTime(NULL);
+    $this->setCount(NULL);
   }
 
 }

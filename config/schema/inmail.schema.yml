@@ -74,6 +74,10 @@ inmail.plugin.handler.*:
 inmail.plugin.deliverer.*:
   label: 'Deliverer configuration'
   type: mapping
+  mapping:
+    config_id:
+      label: 'Config ID'
+      type: string
 
 # Specific analyzer/handler configuration
 inmail.plugin.handler.moderator_forward:
@@ -86,7 +90,7 @@ inmail.plugin.handler.moderator_forward:
 
 inmail.plugin.deliverer.imap:
   label: 'IMAP Deliverer'
-  type: mapping
+  type: inmail.plugin.deliverer.*
   mapping:
     host:
       label: 'Host'

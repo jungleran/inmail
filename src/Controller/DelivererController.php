@@ -6,8 +6,12 @@
 
 namespace Drupal\inmail\Controller;
 
+use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\inmail\Entity\DelivererConfig;
+use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -16,13 +20,29 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  *
  * @ingroup deliverer
  */
-class DelivererController extends ControllerBase {
+class DelivererController extends ControllerBase implements ContainerInjectionInterface {
+
+  /**
+   * The injected deliverer plugin manager.
+   *
+   * @var \Drupal\Component\Plugin\PluginManagerInterface
+   */
+  protected $delivererManager;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(PluginManagerInterface $deliverer_manager) {
+    $this->delivererManager = $deliverer_manager;
+  }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('plugin.manager.inmail.deliverer'));
+    return new static(
+      $container->get('plugin.manager.inmail.deliverer')
+    );
   }
 
   /**

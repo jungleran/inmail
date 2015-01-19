@@ -69,7 +69,7 @@ entity.inmail_handler.disable:
 inmail.deliverer_list:
   path: admin/config/system/inmail/deliverers
   defaults:
-    _entity_list: 'inmail_deliverer'
+    _form: \Drupal\inmail\Form\DelivererListForm
     _title: 'Mail deliverers'
   requirements:
     _permission: 'administer inmail'

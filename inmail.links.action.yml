@@ -2,4 +2,4 @@ inmail.deliverer_add:
   route_name: inmail.deliverer_add
   title: 'Add deliverer'
   appears_on:
-    - 'inmail.deliverer_list'
+    - inmail.deliverer_list

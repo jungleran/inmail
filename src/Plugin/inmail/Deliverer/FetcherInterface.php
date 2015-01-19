@@ -12,6 +12,8 @@ use Drupal\Core\Plugin\PluginFormInterface;
 /**
  * A Fetcher is a Deliverer that can be executed.
  *
+ * @todo Create Monitoring sensor for remaining count, https://www.drupal.org/node/2399779
+ *
  * @ingroup deliverer
  */
 interface FetcherInterface extends DelivererInterface, ConfigurablePluginInterface, PluginFormInterface {
@@ -24,5 +26,36 @@ interface FetcherInterface extends DelivererInterface, ConfigurablePluginInterfa
    */
   public function fetch();
 
-  // @todo Add count() in https://www.drupal.org/node/2405047 or https://www.drupal.org/node/2399779
+  /**
+   * Returns the number of remaining messages to fetch.
+   *
+   * @return int
+   *   Number of remaining messages.
+   */
+  public function getCount();
+
+  /**
+   * Updates the remaining messages count.
+   *
+   * This may connect to a remote mail server.
+   */
+  public function update();
+
+  /**
+   * Update the timestamp of the last status check made.
+   *
+   * @param int|null $timestamp
+   *   The Unix timestamp of the last update. Use NULL to specify that the
+   *   status has never been checked.
+   */
+  public function setLastCheckedTime($timestamp);
+
+  /**
+   * Returns the timestamp for the last status check made.
+   *
+   * @return int
+   *   The Unix timestamp of the last update.
+   */
+  public function getLastCheckedTime();
+
 }

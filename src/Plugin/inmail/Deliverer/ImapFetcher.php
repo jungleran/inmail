@@ -64,41 +64,70 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function fetch() {
-    // Get details from config and connect.
-    // @todo Return noisily if misconfigured or imap missing. Possibly stop retrying, https://www.drupal.org/node/2405757
+    return $this->doImap(function($imap_stream) {
+      // Find IDs of unread messages.
+      // @todo Introduce options for message selection, https://www.drupal.org/node/2405767
+      $unread_ids = imap_search($imap_stream, 'UNSEEN') ?: array();
+      $batch_ids = array_splice($unread_ids, 0, $this->configuration['batch_size']);
+
+      // Get the header + body of each message.
+      $raws = array();
+      foreach ($batch_ids as $unread_id) {
+        $raws[] = imap_fetchheader($imap_stream, $unread_id) . imap_body($imap_stream, $unread_id);
+      }
+
+      // Save number of unread messages.
+      $this->setCount(count($unread_ids));
+      $this->setLastCheckedTime(REQUEST_TIME);
+
+      return $raws;
+    }) ?: array();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function update() {
+    $this->doImap(function($imap_stream) {
+      $unread_ids = imap_search($imap_stream, 'UNSEEN') ?: array();
+      $this->setCount(count($unread_ids));
+      $this->setLastCheckedTime(REQUEST_TIME);
+    });
+  }
+
+  /**
+   * Connect to IMAP server and perform arbitrary operations.
+   *
+   * If connection fails, an exception is thrown and the callback is never
+   * invoked.
+   *
+   * @param callable $callback
+   *   A callable that takes an IMAP stream as argument.
+   *
+   * @return mixed
+   *   The return value of the callback.
+   *
+   * @throws \Exception
+   *   If connection fails.
+   */
+  protected function doImap(callable $callback) {
+    // Connect to IMAP with details from configuration.
     $mailbox_flags = $this->configuration['ssl'] ? '/ssl' : '';
     $mailbox = '{' . $this->configuration['host'] . ':' . $this->configuration['port'] . $mailbox_flags . '}';
     $imap_res = imap_open($mailbox, $this->configuration['username'], $this->configuration['password']);
 
-    if (!$imap_res) {
-      // @todo Consider throwing an exception, https://www.drupal.org/node/2405757
+    if (empty($imap_res)) {
+      // @todo Return noisily if misconfigured or imap missing. Possibly stop retrying, https://www.drupal.org/node/2405757
       $this->loggerChannel->error('Deliverer connection failed: @error', ['@error' => implode("\n", imap_errors())]);
-      return array();
+      return NULL;
     }
 
-    // Find IDs of unread messages.
-    // @todo Introduce options for message selection, https://www.drupal.org/node/2405767
-    //   - only read UNSEEN and mark unread
-    //   - read all and delete (and optionally expunge)
-    //   - keep track of current UID, read all with higher UID
-    //   In the UI, warn about possible interference with other IMAP connections
-    //   marking messages as read.
-    $unread_ids = imap_search($imap_res, 'UNSEEN') ?: array();
-    $batch_ids = array_splice($unread_ids, 0, $this->configuration['batch_size']);
+    // Call callback.
+    $return = $callback($imap_res);
 
-    // Get the header + body of each message.
-    $raws = array();
-    foreach ($batch_ids as $unread_id) {
-      $raws[] = imap_fetchheader($imap_res, $unread_id) . imap_body($imap_res, $unread_id);
-    }
-
-    // Save number of unread messages.
-    // @todo Create a Monitoring sensor for this state key, https://www.drupal.org/node/2399779
-    $this->state->set('inmail.deliverer.imap.remaining', count($unread_ids));
-
-    // Close resource and return messages.
+    // Close connection.
     imap_close($imap_res);
-    return $raws;
+    return $return;
   }
 
   /**
@@ -188,6 +217,8 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
+
     $configuration = array(
       'host' => $form_state->getValue('host'),
       'port' => $form_state->getValue('port'),

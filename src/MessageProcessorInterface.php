@@ -5,6 +5,7 @@
  */
 
 namespace Drupal\inmail;
+
 use Drupal\inmail\Entity\DelivererConfig;
 
 /**

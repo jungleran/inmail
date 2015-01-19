@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer.
+ * Contains \Drupal\inmail_test\Plugin\inmail\Deliverer\TestFetcher.
  */
 
 namespace Drupal\inmail_test\Plugin\inmail\Deliverer;
@@ -17,21 +17,43 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Delivers a dummy message and counts invocations.
  *
  * @Deliverer(
- *   id = "test_deliverer",
+ *   id = "test_fetcher",
  *   label = @Translation("Test")
  * )
  */
-class TestDeliverer extends FetcherBase implements ContainerFactoryPluginInterface {
+class TestFetcher extends FetcherBase implements ContainerFactoryPluginInterface {
 
   /**
    * Injected site state.
+   *
+   * The following state keys are used with the test deliverer:
+   *   - inmail.test.deliver_count: Number of times that fetch() has been
+   *     invoked.
+   *   - inmail.test.deliver_remaining: Cached number of remaining messages.
    *
    * @var \Drupal\Core\State\StateInterface
    */
   protected $state;
 
   /**
-   * Constructs a TestDeliverer.
+   * The number of remaining messages.
+   *
+   * Unlike the state variable inmail.test.deliver_remaining, this static
+   * property models the actual number at a remote location.
+   *
+   * @var int
+   */
+  protected static $remaining = 100;
+
+  /**
+   * The Unix timestamp of the last check.
+   *
+   * @var int
+   */
+  protected static $last_checked;
+
+  /**
+   * Constructs a TestFetcher.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, StateInterface $state) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -53,8 +75,40 @@ class TestDeliverer extends FetcherBase implements ContainerFactoryPluginInterfa
     $count = $this->state->get('inmail.test.deliver_count') + 1;
     $this->state->set('inmail.test.deliver_count', $count);
 
+    // Decrement the remaining counter.
+    static::$remaining--;
+
     // Return one minimal message.
     return array("Subject: Dummy message $count\n\nFoo");
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCount() {
+    return $this->state->get('inmail.test.deliver_remaining');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function update() {
+    $this->state->set('inmail.test.deliver_remaining', static::$remaining);
+    $this->setLastCheckedTime(REQUEST_TIME);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setLastCheckedTime($timestamp) {
+    static::$last_checked = $timestamp;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getLastCheckedTime() {
+    return static::$last_checked;
   }
 
   /**
