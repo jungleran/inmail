@@ -6,7 +6,9 @@
 
 namespace Drupal\inmail_collect\Plugin\collect\Schema;
 
-use Drupal\collect\Plugin\collect\Schema\SchemaBase;
+use Drupal\collect\Plugin\Field\FieldType\CollectDataItem;
+use Drupal\collect\Schema\SchemaBase;
+use Drupal\collect\Schema\SchemaTypedDataInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\Core\TypedData\DataDefinition;
@@ -23,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   label = @Translation("Email message")
  * )
  */
-class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginInterface {
+class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginInterface, SchemaTypedDataInterface {
 
   /**
    * The injected MIME parser.
@@ -64,9 +66,9 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
   /**
    * {@inheritdoc}
    */
-  public function render($data) {
+  public function build(CollectDataItem $data_field) {
     try {
-      $message = $this->parse($data);
+      $message = $this->parse($data_field->data);
       return $this->renderer->renderEntity($message);
     }
     catch (ParseException $exception) {

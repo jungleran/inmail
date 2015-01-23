@@ -72,7 +72,7 @@ class Renderer {
   public function renderHeaderFields(EntityInterface $entity, array $field_names) {
     $headers = array();
     foreach ($field_names as $field_name) {
-      if ($entity->getHeader()->getFieldBody($field_name)) {
+      if ($entity->getHeader()->getFieldBodyUnfiltered($field_name)) {
         $field_name_clean = str_replace('-', '_', strtolower($field_name));
         $headers[$field_name_clean] = $this->renderHeaderField($entity, $field_name);
       }
