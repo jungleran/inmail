@@ -8,11 +8,9 @@ namespace Drupal\inmail_collect\Plugin\collect\Schema;
 
 use Drupal\collect\Plugin\Field\FieldType\CollectDataItem;
 use Drupal\collect\Schema\SchemaBase;
-use Drupal\collect\Schema\SchemaTypedDataInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\Core\TypedData\DataDefinition;
-use Drupal\inmail\MIME\ParseException;
 use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\MIME\Renderer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -25,7 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   label = @Translation("Email message")
  * )
  */
-class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginInterface, SchemaTypedDataInterface {
+class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginInterface {
 
   /**
    * The injected MIME parser.
@@ -66,22 +64,43 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
   /**
    * {@inheritdoc}
    */
-  public function build(CollectDataItem $data_field) {
-    try {
-      $message = $this->parse($data_field->data);
-      return $this->renderer->renderEntity($message);
-    }
-    catch (ParseException $exception) {
-      return array('#markup' => $this->t('Message could not be parsed.'));
-    }
+  public function parse(CollectDataItem $data_field) {
+    $raw = json_decode($data_field->data)->raw;
+    return $this->parser->parse($raw);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function parse($data) {
-    $raw = json_decode($data)->raw;
-    return $this->parser->parse($raw);
+  public function build($data) {
+    /** @var \Drupal\inmail\MIME\EntityInterface $data */
+    return $this->renderer->renderEntity($data);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildTeaser($data) {
+    /** @var \Drupal\inmail\MIME\EntityInterface $data */
+    $output = array();
+
+    $output['subject'] = array(
+      '#type' => 'item',
+      '#title' => $this->t('Subject'),
+      '#markup' => htmlentities($data->getHeader()->getFieldBody('Subject')),
+    );
+    $output['from'] = array(
+      '#type' => 'item',
+      '#title' => $this->t('From'),
+      '#markup' => htmlentities($data->getHeader()->getFieldBody('From')),
+    );
+    $output['to'] = array(
+      '#type' => 'item',
+      '#title' => $this->t('To'),
+      '#markup' => htmlentities($data->getHeader()->getFieldBody('To')),
+    );
+
+    return $output;
   }
 
   /**
