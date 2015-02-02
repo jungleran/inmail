@@ -112,6 +112,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
     $state_configuration = array(
       'code' => $result->getStatusCode(),
       'reason' => $result->getReason(),
+      'date' => $message->getReceivedDate(),
     );
 
     // In the case of a "hard bounce", set the send state to a muting state.

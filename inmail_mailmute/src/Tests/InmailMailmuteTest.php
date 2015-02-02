@@ -89,6 +89,7 @@ class InmailMailmuteTest extends KernelTestBase {
 
       // Check the outcome.
       $this->assertEqual($this->user->sendstate->plugin_id, $expected);
+      // @todo Test more than plugin ID: status code, reason, date.
     }
   }
 

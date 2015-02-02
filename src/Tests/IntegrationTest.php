@@ -70,11 +70,13 @@ class IntegrationTest extends WebTestBase {
     $processor = \Drupal::service('inmail.processor');
     $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
-    // Check send state.
+    // Check send state. Status code, date and reason are parsed from the
+    // generated bounce message.
     $this->drupalGet('user/2');
     $this->assertText('Invalid address');
     $this->assertText('5.1.1');
     $this->assertText('Permanent Failure: Bad destination mailbox address');
+    $this->assertText('2015-01-29 15:43:04 +01:00');
     $this->assertText('This didn\'t go too well.');
   }
 
@@ -114,6 +116,8 @@ class IntegrationTest extends WebTestBase {
     return <<<EOF
 Return-Path: <>
 Delivered-To: $return_path
+Received: some info;
+  Thu, 29 Jan 2015 15:43:04 +0100
 From: mta@$to_domain
 To: $return_path
 Subject: Mailbox $to does not exist

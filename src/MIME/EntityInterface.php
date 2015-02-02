@@ -91,6 +91,14 @@ interface EntityInterface {
   public function getDecodedBody();
 
   /**
+   * Returns the date when the message was received by the recipient.
+   *
+   * @return \Drupal\Component\DateTime\DateTimePlus
+   *   The date from the header.
+   */
+  public function getReceivedDate();
+
+  /**
    * Joins the header with the body to produce a string.
    *
    * A blank line terminates the header section and begins the body.

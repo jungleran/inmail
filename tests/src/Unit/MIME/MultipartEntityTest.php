@@ -107,7 +107,7 @@ EOF;
    * @covers \Drupal\inmail\MIME\Entity::getBody
    * @covers \Drupal\inmail\MIME\Entity::getDecodedBody
    *
-   * @dataProvider ::provideEncodedEntities
+   * @dataProvider provideEncodedEntities
    */
   public function testGetBodyUndecoded(Header $header, $body, $decoded_body) {
     $entity = new Entity($header, $body);
