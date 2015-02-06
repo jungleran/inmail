@@ -50,7 +50,7 @@ class CollectHandler extends HandlerBase {
     // also outside the domains of Inmail and Collect.
 
     // Remove brackets from RFC822 message-id format "<" addr-spec ">"
-    $message_id = trim($message->getHeader()->getFieldBody('Message-Id'), '<>');
+    $message_id = trim($message->getMessageId(), '<>');
 
     if (!empty($message_id)) {
       // @todo Formally document this uri pattern.
@@ -67,10 +67,10 @@ class CollectHandler extends HandlerBase {
     // and a few regular and useful header fields.
     $data = array(
       // Note the Subject field is optional by RFC882.
-      'header-subject' => $message->getHeader()->getFieldBodyUnfiltered('Subject'),
-      'header-to' => $message->getHeader()->getFieldBody('To'),
-      'header-from' => $message->getHeader()->getFieldBody('From'),
-      'header-message-id' => $message->getHeader()->getFieldBody('Message-Id'),
+      'header-subject' => $message->getSubject(),
+      'header-to' => $message->getTo(),
+      'header-from' => $message->getFrom(),
+      'header-message-id' => $message->getMessageId(),
       'deliverer' => $processor_result->getDeliverer()->id(),
       'raw' => $message->toString(),
     );

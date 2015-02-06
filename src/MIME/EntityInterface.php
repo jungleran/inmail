@@ -71,6 +71,41 @@ interface EntityInterface {
   public function getMessageId();
 
   /**
+   * Returns the message subject.
+   *
+   * @return string|null
+   *   The content of the 'Subject' header field, or null if that field does not
+   *   exist.
+   */
+  public function getSubject();
+
+  /**
+   * Returns the message recipient.
+   *
+   * @return string|null
+   *   The content of the 'To' header field, or null if that field does not
+   *   exist.
+   */
+  public function getTo();
+
+  /**
+   * Returns the message sender.
+   *
+   * @return string|null
+   *   The content of the 'From' header field, or null if that field does not
+   *   exist.
+   */
+  public function getFrom();
+
+  /**
+   * Returns the date when the message was received by the recipient.
+   *
+   * @return \Drupal\Component\DateTime\DateTimePlus
+   *   The date from the header.
+   */
+  public function getReceivedDate();
+
+  /**
    * Returns the body.
    *
    * The body may be encoded as indicated by the Content-Type and
@@ -89,14 +124,6 @@ interface EntityInterface {
    *   The entity body as a normal UTF-8 string, or NULL if decoding failed.
    */
   public function getDecodedBody();
-
-  /**
-   * Returns the date when the message was received by the recipient.
-   *
-   * @return \Drupal\Component\DateTime\DateTimePlus
-   *   The date from the header.
-   */
-  public function getReceivedDate();
 
   /**
    * Joins the header with the body to produce a string.

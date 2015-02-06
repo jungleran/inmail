@@ -67,7 +67,7 @@ class VERPAnalyzer extends AnalyzerBase {
     // Match the modified Return-Path (returnpath+alice=example.com@website.com)
     // and put the parts of the recipient address (alice, example.com) in
     // $matches.
-    if (preg_match(':^' . $return_path_split[0] . '\+(.*)=(.*)@' . $return_path_split[1] . '$:', $message->getHeader()->getFieldBody('To'), $matches)) {
+    if (preg_match(':^' . $return_path_split[0] . '\+(.*)=(.*)@' . $return_path_split[1] . '$:', $message->getTo(), $matches)) {
       // Report the recipient address (alice@example.com).
       $result->setRecipient($matches[1] . '@' . $matches[2]);
     }

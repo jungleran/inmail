@@ -249,7 +249,7 @@ function inmail_mail($key, &$message, $params) {
       $original = $params['original'];
 
       // Set subject.
-      $message['subject'] = $original->getHeader()->getFieldBody('Subject');
+      $message['subject'] = $original->getSubject();
 
       // Set body.
       $message['body'][] = $original->getBody();

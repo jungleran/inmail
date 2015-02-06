@@ -95,7 +95,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
 
     // Cancel and make noise if this message rings a bell.
     if ($message->getHeader()->getFieldBody('X-Inmail-Forwarded')) {
-      $processor_result->log('ModeratorForwardHandler', 'Refused to forward the same email twice (%subject).', array('%subject' => $message->getHeader()->getFieldBody('Subject')));
+      $processor_result->log('ModeratorForwardHandler', 'Refused to forward the same email twice (%subject).', array('%subject' => $message->getSubject()));
       return;
     }
 

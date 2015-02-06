@@ -21,6 +21,36 @@ use Drupal\Tests\UnitTestCase;
 class EntityTest extends UnitTestCase {
 
   /**
+   * Tests the subject getter.
+   *
+   * @covers ::getSubject
+   */
+  public function testGetSubject() {
+    $entity = new Entity(new Header([['name' => 'Subject', 'body' => 'Foo']]), 'Bar');
+    $this->assertEquals('Foo', $entity->getSubject());
+  }
+
+  /**
+   * Tests the recipient getter.
+   *
+   * @covers ::getTo
+   */
+  public function testGetTo() {
+    $entity = new Entity(new Header([['name' => 'To', 'body' => 'Foo']]), 'Bar');
+    $this->assertEquals('Foo', $entity->getTo());
+  }
+
+  /**
+   * Tests the sender getter.
+   *
+   * @covers ::getFrom
+   */
+  public function testGetFrom() {
+    $entity = new Entity(new Header([['name' => 'From', 'body' => 'Foo']]), 'Bar');
+    $this->assertEquals('Foo', $entity->getFrom());
+  }
+
+  /**
    * Tests the 'Received' date getter.
    *
    * @covers ::getReceivedDate

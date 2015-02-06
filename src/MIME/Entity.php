@@ -101,6 +101,39 @@ class Entity implements EntityInterface {
   /**
    * {@inheritdoc}
    */
+  public function getSubject() {
+    return $this->getHeader()->getFieldBody('Subject');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTo() {
+    return $this->getHeader()->getFieldBody('To');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFrom() {
+    return $this->getHeader()->getFieldBody('From');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getReceivedDate() {
+    // A message has one or more Received header fields. The first occurring is
+    // the latest added. Its body has two parts separated by ';', the second
+    // part being a date.
+    $received_body = $this->getHeader()->getFieldBody('Received');
+    list($info, $date_string) = explode(';', $received_body, 2);
+    return new DateTimePlus($date_string);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getBody() {
     return $this->body;
   }
@@ -133,18 +166,6 @@ class Entity implements EntityInterface {
     }
     // Return decoded, converted, valid UTF-8 body.
     return $body;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getReceivedDate() {
-    // A message has one or more Received header fields. The first occurring is
-    // the latest added. Its body has two parts separated by ';', the second
-    // part being a date.
-    $received_body = $this->getHeader()->getFieldBody('Received');
-    list($info, $date_string) = explode(';', $received_body, 2);
-    return new DateTimePlus($date_string);
   }
 
   /**
