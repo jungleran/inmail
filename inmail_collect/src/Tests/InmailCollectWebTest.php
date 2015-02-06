@@ -51,12 +51,12 @@ class InmailCollectWebTest extends WebTestBase {
 
     // View details.
     $this->clickLink('View');
-    $this->assertText('"header-subject": "DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory"');
-    $this->assertText('"header-to": "bounces+user=example.org@example.com"');
-    $this->assertText('"header-from": "Postmaster@acacia.example.org"');
+    $this->assertText('&quot;header-subject&quot;: &quot;DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory&quot;');
+    $this->assertText('&quot;header-to&quot;: &quot;bounces+user=example.org@example.com&quot;');
+    $this->assertText('&quot;header-from&quot;: &quot;Postmaster@acacia.example.org&quot;');
     // '<' and '>' are converted to &lt; and &gt; entities by the formatter.
-    $this->assertText('"header-message-id": "&lt;21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031EC2C@acacia.example.org&gt;"');
-    $this->assertText('"deliverer": "test"');
+    $this->assertText('&quot;header-message-id&quot;: &quot;&lt;21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031EC2C@acacia.example.org&gt;&quot;');
+    $this->assertText('&quot;deliverer&quot;: &quot;test&quot;');
     // Last line of the raw message.
     $this->assertText('--==IFJRGLKFGIR25201654UHRUHIHD--');
   }
