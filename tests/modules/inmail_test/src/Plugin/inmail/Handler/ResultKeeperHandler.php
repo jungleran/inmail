@@ -25,7 +25,7 @@ class ResultKeeperHandler extends HandlerBase {
   /**
    * The processed message.
    *
-   * @var \Drupal\inmail\Message
+   * @var \Drupal\inmail\MIME\EntityInterface
    */
   public static $message;
 

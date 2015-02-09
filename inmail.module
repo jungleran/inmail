@@ -53,13 +53,13 @@ use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
  * which serves to perform various actions depending on the content of the
  * message.
  *
- * First the plain-text message is parsed into a \Drupal\inmail\Message object,
- * which is then passed through a series of analyzers, along with a
- * \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult object. Each analyzer
- * evaluates some aspect of the message and possibly adds collected information
- * to the result. Finally the message and the result are sent through a series
- * of handlers, in order for them to perform useful actions based on the
- * analysis results.
+ * First the plain-text message is parsed into a
+ * \Drupal\inmail\MIME\EntityInterface object, which is then passed through a
+ * series of analyzers, along with a \Drupal\inmail\ProcessorResult object. Each
+ * analyzer evaluates some aspect of the message and possibly adds collected
+ * information to the result. Finally the message and the result are sent
+ * through a series of handlers, in order for them to perform useful actions
+ * based on the analysis results.
  * @}
  */
 
