@@ -9,7 +9,7 @@ namespace Drupal\inmail_cfortune\Plugin\inmail\Analyzer;
 use cfortune\PHPBounceHandler\BounceHandler;
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\DSNStatus;
-use Drupal\inmail\MIME\EntityInterface;
+use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerBase;
 use Drupal\inmail\ProcessorResultInterface;
 
@@ -36,7 +36,7 @@ class CfortuneAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(EntityInterface $message, ProcessorResultInterface $processor_result) {
+  public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
     $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
 

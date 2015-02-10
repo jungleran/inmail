@@ -29,7 +29,7 @@ class ParserTest extends InmailUnitTestBase {
    * @expectedException \Drupal\inmail\MIME\ParseException
    */
   public function testParseException($raw) {
-    (new Parser(new LoggerChannel('test')))->parse($raw);
+    (new Parser(new LoggerChannel('test')))->parseMessage($raw);
   }
 
   /**

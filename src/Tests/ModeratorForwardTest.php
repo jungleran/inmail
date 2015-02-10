@@ -90,7 +90,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $original = $this->getMessageFileContents('normal.eml');
     /** @var \Drupal\inmail\MIME\ParserInterface $parser */
     $parser = \Drupal::service('inmail.mime_parser');
-    $original_parsed = $parser->parse($original);
+    $original_parsed = $parser->parseMessage($original);
 
     // Conceive a forward.
     HandlerConfig::load('moderator_forward')

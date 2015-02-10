@@ -75,7 +75,7 @@ class MessageProcessor implements MessageProcessorInterface {
     /** @var \Drupal\inmail\MIME\ParserInterface $parser */
     $parser = \Drupal::service('inmail.mime_parser');
     try {
-      $message = $parser->parse($raw);
+      $message = $parser->parseMessage($raw);
     }
     catch (ParseException $e) {
       $this->loggerChannel->info('Unable to process message, parser failed with message "@message"', array('@message' => $e->getMessage()));

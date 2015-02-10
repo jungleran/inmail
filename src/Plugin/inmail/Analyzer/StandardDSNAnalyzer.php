@@ -9,7 +9,7 @@ namespace Drupal\inmail\Plugin\inmail\Analyzer;
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\MIME\DSNEntity;
-use Drupal\inmail\MIME\EntityInterface;
+use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\ProcessorResultInterface;
 
 /**
@@ -39,7 +39,7 @@ class StandardDSNAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(EntityInterface $message, ProcessorResultInterface $processor_result) {
+  public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
     if (!$message instanceof DSNEntity) {
       return;
     }

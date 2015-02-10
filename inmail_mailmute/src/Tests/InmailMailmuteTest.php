@@ -11,8 +11,8 @@ use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\inmail\MIME\Entity;
 use Drupal\inmail\MIME\Header;
+use Drupal\inmail\MIME\Message;
 use Drupal\inmail\ProcessorResult;
 use Drupal\simpletest\KernelTestBase;
 use Drupal\user\Entity\User;
@@ -125,7 +125,7 @@ class InmailMailmuteTest extends KernelTestBase {
       $handler_config = \Drupal::entityManager()->getStorage('inmail_handler')->load('mailmute');
       /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
       $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
-      $handler->invoke(new Entity(new Header(), ''), $processor_result, 'test');
+      $handler->invoke(new Message(new Header(), ''), $processor_result, 'test');
 
       // Check that the state did not change.
       $new_state = $sendstate_manager->getState($this->user->getEmail());

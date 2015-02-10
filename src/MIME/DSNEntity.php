@@ -23,7 +23,7 @@ namespace Drupal\inmail\MIME;
  *
  * @ingroup mime
  */
-class DSNEntity extends MultipartEntity {
+class DSNEntity extends MultipartMessage {
 
   /**
    * Groups of DSN fields.

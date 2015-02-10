@@ -19,23 +19,16 @@ namespace Drupal\inmail\MIME;
 interface ParserInterface {
 
   /**
-   * Parses a string entity (message) into an Entity object.
-   *
-   * The input can be a message or more generally a MIME entity.
-   *
-   * While the header section is required in a message, it is optional for
-   * multipart parts, in which case the entity contains only the body, preceded
-   * by a double CRLF.
+   * Parses a string message into a Message object.
    *
    * @param string $raw
-   *   A string entity.
    *
-   * @return \Drupal\inmail\MIME\EntityInterface
-   *   The resulting Entity object abstraction.
+   * @return \Drupal\inmail\MIME\MessageInterface
+   *   The resulting Message object abstraction.
    *
    * @throws \Drupal\inmail\MIME\ParseException
    *   If parsing fails.
    */
-  public function parse($raw);
+  public function parseMessage($raw);
 
 }

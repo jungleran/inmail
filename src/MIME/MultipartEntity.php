@@ -51,4 +51,14 @@ class MultipartEntity extends Entity {
     return isset($this->parts[$index]) ? $this->parts[$index] : NULL;
   }
 
+  /**
+   * Returns all contained parts.
+   *
+   * @return EntityInterface[]
+   *   A list of the parts.
+   */
+  public function getParts() {
+    return $this->parts;
+  }
+
 }

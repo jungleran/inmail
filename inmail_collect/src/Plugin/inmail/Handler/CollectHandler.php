@@ -8,8 +8,7 @@ namespace Drupal\inmail_collect\Plugin\inmail\Handler;
 
 use Drupal\collect\Entity\Container;
 use Drupal\Core\Url;
-use Drupal\inmail\Entity\DelivererConfig;
-use Drupal\inmail\MIME\EntityInterface;
+use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
 use Drupal\inmail\ProcessorResultInterface;
 
@@ -39,7 +38,7 @@ class CollectHandler extends HandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function invoke(EntityInterface $message, ProcessorResultInterface $processor_result) {
+  public function invoke(MessageInterface $message, ProcessorResultInterface $processor_result) {
     // For successful processing, a message needs to follow the standards.
     // Some aspects are critical. Check them and cancel otherwise and log.
     // @todo Check for present fields Date, From, To
