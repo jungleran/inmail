@@ -28,7 +28,7 @@ class StandardDSNReasonAnalyzerTest extends InmailUnitTestBase {
    * @dataProvider provideReasons
    */
   public function testAnalyze($filename, $expected_reason) {
-    $message = (new Parser(new LoggerChannel('test')))->parse($this->getRaw($filename));
+    $message = (new Parser(new LoggerChannel('test')))->parseMessage($this->getRaw($filename));
     $analyzer = new StandardDSNReasonAnalyzer(array(), $this->randomMachineName(), array());
     $processor_result = new ProcessorResult();
     $analyzer->analyze($message, $processor_result);

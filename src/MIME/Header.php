@@ -51,7 +51,7 @@ class Header {
   }
 
   /**
-   * Returns the literal body of the first field with the given name.
+   * Returns the body of the first field with the given name.
    *
    * Some field names are allowed by the standards to occur more than once. This
    * accessor is however designed to only return the first occurrence (newest,
@@ -59,42 +59,20 @@ class Header {
    *
    * @param string $name
    *   The name of a header field.
+   * @param bool $filter
+   *   Whether '(comments)' should be filtered from the content.
    *
    * @return null|string
-   *   The literal body of the field, or NULL if the field is not present.
+   *   The body of the field or NULL if the field is not present.
    */
-  public function getFieldBodyUnfiltered($name) {
+  public function getFieldBody($name, $filter = FALSE) {
     $key = $this->findFirstField($name);
-    if ($key !== FALSE) {
-      return trim($this->fields[$key]['body']);
-    }
-    return NULL;
-  }
-
-  /**
-   * Returns the body of the first field with the given name, without comments.
-   *
-   * Header bodies may contain comments in parentheses. This method works like
-   * ::getFieldBodyUnfiltered(), but strips off such comments from the field
-   * body before returning it.
-   *
-   * @param string $name
-   *   The name of a header field.
-   *
-   * @return null|string
-   *   The body of the field, without comments, or NULL if the field is not
-   *   present.
-   *
-   * @see Header::getFieldBodyUnfiltered()
-   */
-  public function getFieldBody($name) {
-    $body = $this->getFieldBodyUnfiltered($name);
-    if (empty($body)) {
+    if ($key === FALSE) {
       return NULL;
     }
-    // Filter out comments.
-    $body = preg_replace('/\([^)]*\)/', '', $body);
-    return $body;
+    $body = trim($this->fields[$key]['body']);
+
+    return $filter ? preg_replace('/\([^)]*\)/', '', $body) : $body;
   }
 
   /**
@@ -130,7 +108,7 @@ class Header {
    *   The name of a field to remove. If no field with that name is present,
    *   nothing happens.
    *
-   * @see Header::getFieldbodyUnfiltered()
+   * @see Header::getFieldbody()
    */
   public function removeField($name) {
     $key = $this->findFirstField($name);

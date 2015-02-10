@@ -8,8 +8,7 @@ namespace Drupal\inmail_collect\Plugin\inmail\Handler;
 
 use Drupal\collect\Entity\Container;
 use Drupal\Core\Url;
-use Drupal\inmail\Entity\DelivererConfig;
-use Drupal\inmail\MIME\EntityInterface;
+use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
 use Drupal\inmail\ProcessorResultInterface;
 
@@ -39,7 +38,7 @@ class CollectHandler extends HandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function invoke(EntityInterface $message, ProcessorResultInterface $processor_result) {
+  public function invoke(MessageInterface $message, ProcessorResultInterface $processor_result) {
     // For successful processing, a message needs to follow the standards.
     // Some aspects are critical. Check them and cancel otherwise and log.
     // @todo Check for present fields Date, From, To
@@ -50,7 +49,7 @@ class CollectHandler extends HandlerBase {
     // also outside the domains of Inmail and Collect.
 
     // Remove brackets from RFC822 message-id format "<" addr-spec ">"
-    $message_id = trim($message->getHeader()->getFieldBody('Message-Id'), '<>');
+    $message_id = trim($message->getMessageId(), '<>');
 
     if (!empty($message_id)) {
       // @todo Formally document this uri pattern.
@@ -67,10 +66,10 @@ class CollectHandler extends HandlerBase {
     // and a few regular and useful header fields.
     $data = array(
       // Note the Subject field is optional by RFC882.
-      'header-subject' => $message->getHeader()->getFieldBodyUnfiltered('Subject'),
-      'header-to' => $message->getHeader()->getFieldBody('To'),
-      'header-from' => $message->getHeader()->getFieldBody('From'),
-      'header-message-id' => $message->getHeader()->getFieldBody('Message-Id'),
+      'header-subject' => $message->getSubject(),
+      'header-to' => $message->getTo(),
+      'header-from' => $message->getFrom(),
+      'header-message-id' => $message->getMessageId(),
       'deliverer' => $processor_result->getDeliverer()->id(),
       'raw' => $message->toString(),
     );

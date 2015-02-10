@@ -28,7 +28,7 @@ class StandardDSNAnalyzerTest extends InmailUnitTestBase {
    * @dataProvider provideExpectedResults
    */
   public function testAnalyze($filename, $expected_code, $expected_recipient) {
-    $message = (new Parser(new LoggerChannel('test')))->parse($this->getRaw($filename));
+    $message = (new Parser(new LoggerChannel('test')))->parseMessage($this->getRaw($filename));
 
     // Run the analyzer.
     $analyzer = new StandardDSNAnalyzer(array(), $this->randomMachineName(), array());

@@ -6,6 +6,7 @@
 
 namespace Drupal\inmail_mailmute\Plugin\mailmute\SendState;
 
+use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\inmail\DSNStatus;
 use Drupal\mailmute\Plugin\mailmute\SendState\SendStateBase;
 
@@ -77,6 +78,29 @@ abstract class BounceSendstateBase extends SendStateBase {
   }
 
   /**
+   * Set the date when the triggering bounce was received.
+   *
+   * @param \Drupal\Component\DateTime\DateTimePlus $date
+   *   The date when the bounce message was received.
+   *
+   * @return $this
+   */
+  public function setDate(DateTimePlus $date) {
+    $this->configuration['date'] = $date;
+    return $this;
+  }
+
+  /**
+   * Returns the date when the triggering bounce was received.
+   *
+   * @return \Drupal\Component\DateTime\DateTimePlus|null
+   *   The date when the bounce message was received.
+   */
+  public function getDate() {
+    return isset($this->configuration['date']) ? $this->configuration['date'] : NULL;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function display() {
@@ -93,6 +117,12 @@ abstract class BounceSendstateBase extends SendStateBase {
       '#title' => $this->t('Status code'),
       '#markup' => $this->getCodeString(),
       '#access' => (bool) $this->getStatus(),
+    );
+
+    $display['bounce']['date'] = array(
+      '#type' => 'item',
+      '#title' => $this->t('Received'),
+      '#markup' => $this->getDate(),
     );
 
     $display['bounce']['reason'] = array(

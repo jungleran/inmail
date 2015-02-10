@@ -7,7 +7,7 @@
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\BounceAnalyzerResult;
-use Drupal\inmail\MIME\EntityInterface;
+use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\ProcessorResultInterface;
 
 /**
@@ -51,7 +51,7 @@ class VERPAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(EntityInterface $message, ProcessorResultInterface $processor_result) {
+  public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
     $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
 
@@ -67,7 +67,7 @@ class VERPAnalyzer extends AnalyzerBase {
     // Match the modified Return-Path (returnpath+alice=example.com@website.com)
     // and put the parts of the recipient address (alice, example.com) in
     // $matches.
-    if (preg_match(':^' . $return_path_split[0] . '\+(.*)=(.*)@' . $return_path_split[1] . '$:', $message->getHeader()->getFieldBody('To'), $matches)) {
+    if (preg_match(':^' . $return_path_split[0] . '\+(.*)=(.*)@' . $return_path_split[1] . '$:', $message->getTo(), $matches)) {
       // Report the recipient address (alice@example.com).
       $result->setRecipient($matches[1] . '@' . $matches[2]);
     }

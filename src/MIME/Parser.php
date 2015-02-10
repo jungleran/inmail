@@ -14,9 +14,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Parser for MIME (email) messages.
  *
- * Parser::parse() and Entity::toString() do not exactly invert each other.
- * Entity::toString() aims to produce results closely adhering to the MIME
- * standards, while the parser does not require full compliance to all its
+ * Parser::parseMessage() and Entity::toString() do not exactly invert each
+ * other. Entity::toString() aims to produce results closely adhering to the
+ * MIME standards, while the parser does not require full compliance to all its
  * recommendations. Notably, the length of folded lines may differ between raw
  * input and serialized output.
  *
@@ -51,14 +51,83 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
   }
 
   /**
+   * Extracts email addresses from a To header field.
+   *
+   * @param string $field
+   *   The content of a To header or similar.
+   *
+   * @return string[]
+   *   A list of email addresses.
+   */
+  public static function parseAddress($field) {
+    $parts = preg_split('/\s*,\s*/', trim($field));
+    $addresses = [];
+    foreach ($parts as $part) {
+      if (preg_match('/^\S+@\S+\.\S+$/', $part)) {
+        $addresses[] = $part;
+      }
+      elseif (preg_match('/<(\S+@\S+\.\S+)>$/', $part, $matches)) {
+        $addresses[] = $matches[1];
+      }
+    }
+    return $addresses;
+  }
+
+  /**
    * {@inheritdoc}
    */
-  public function parse($raw) {
+  public function parseMessage($raw) {
+    $entity = $this->parseEntity($raw);
+
+    // The parsing may or may not deduce a specific type.
+    // If it is Message (or more specific) it can be returned as is.
+    if ($entity instanceof MessageInterface) {
+      return $entity;
+    }
+
+    // If it is a MultipartEntity, we must create a MultipartMessage from it, to
+    // satisfy the MessageInterface return type of this method.
+    if ($entity instanceof MultipartEntity) {
+      return new MultipartMessage($entity, $entity->getParts());
+    }
+
+    // If it has not been recognized as any specific type, we should at least
+    // create a Message from it.
+    if (in_array($entity->getContentType()['type'], ['multipart', 'message'])) {
+      return new Message($entity->getHeader(), $entity->getBody());
+    }
+    else {
+      throw new ParseException('Tried to parse a non-message entity as a message');
+    }
+  }
+
+  /**
+   * Parses a string entity into a structured entity object.
+   *
+   * Note: This method is subject to change in order to support more Entity
+   * types. See issue https://www.drupal.org/node/2389349
+   *
+   * The input can be a message or more generally a MIME entity.
+   *
+   * While the header section is required in a message, it is optional for
+   * multipart parts, in which case the entity contains only the body, preceded
+   * by a double CRLF.
+   *
+   * @param string $raw
+   *   A string entity.
+   *
+   * @return \Drupal\inmail\MIME\EntityInterface
+   *   The resulting Entity object abstraction.
+   *
+   * @throws \Drupal\inmail\MIME\ParseException
+   *   If parsing fails.
+   */
+  protected function parseEntity($raw) {
     // Normalize to LF.
     $raw = str_replace("\r\n", "\n", $raw);
 
     // Parse to a basic entity.
-    $entity = $this->parseEntity($raw);
+    $entity = $this->parseBasicEntity($raw);
 
     // Identify a multipart entity and decorate the entity object.
     if ($this->isMultipart($entity)) {
@@ -79,6 +148,9 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
   /**
    * Parses a raw entity into a basic entity object.
    *
+   * Note: This method is subject to change in order to support more Entity
+   * types. See issue https://www.drupal.org/node/2389349
+   *
    * @param string $raw
    *   A raw entity.
    *
@@ -88,7 +160,7 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
    * @throws \Drupal\inmail\MIME\ParseException
    *   If parsing fails.
    */
-  protected function parseEntity($raw) {
+  protected function parseBasicEntity($raw) {
     // Header is separated from body by a blank line.
     $header_body = preg_split("/(^|\n)\n/", $raw, 2);
     if (count($header_body) != 2) {
@@ -104,6 +176,9 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
 
   /**
    * Parses an entity into a multipart entity.
+   *
+   * Note: This method is subject to change in order to support more Entity
+   * types. See issue https://www.drupal.org/node/2389349
    *
    * @param \Drupal\inmail\MIME\Entity $entity
    *   A basic entity.
@@ -256,7 +331,7 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
 
     // Recursively parse each part.
     foreach ($parts as $key => $part) {
-      $parts[$key] = $this->parse($part);
+      $parts[$key] = $this->parseEntity($part);
     }
     return $parts;
   }

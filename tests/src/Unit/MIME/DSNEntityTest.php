@@ -58,7 +58,7 @@ EOF;
    */
   public function testParse() {
     // Parse and compare.
-    $parsed_message = (new Parser(new LoggerChannel('test')))->parse(static::MSG_DSN);
+    $parsed_message = (new Parser(new LoggerChannel('test')))->parseMessage(static::MSG_DSN);
     $this->assertEquals(static::getMessage(), $parsed_message);
   }
 

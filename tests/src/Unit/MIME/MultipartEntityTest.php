@@ -10,7 +10,7 @@ namespace Drupal\Tests\inmail\Unit\MIME;
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\inmail\MIME\Entity;
 use Drupal\inmail\MIME\Header;
-use Drupal\inmail\MIME\MultipartEntity;
+use Drupal\inmail\MIME\MultipartMessage;
 use Drupal\inmail\MIME\Parser;
 use Drupal\Tests\UnitTestCase;
 
@@ -18,6 +18,7 @@ use Drupal\Tests\UnitTestCase;
  * Tests the Parser, Entity and MultipartEntity classes.
  *
  * @coversDefaultClass \Drupal\inmail\MIME\MultipartEntity
+ *
  * @group inmail
  */
 class MultipartEntityTest extends UnitTestCase {
@@ -59,11 +60,11 @@ EOF;
   /**
    * Tests the parser.
    *
-   * @covers \Drupal\inmail\MIME\Parser::parse
+   * @covers \Drupal\inmail\MIME\Parser::parseMessage
    */
   public function testParse() {
     // Parse and compare.
-    $parsed_message = (new Parser(new LoggerChannel('test')))->parse(static::MSG_MULTIPART);
+    $parsed_message = (new Parser(new LoggerChannel('test')))->parseMessage(static::MSG_MULTIPART);
     $this->assertEquals(static::getMessage(), $parsed_message);
   }
 
@@ -107,7 +108,7 @@ EOF;
    * @covers \Drupal\inmail\MIME\Entity::getBody
    * @covers \Drupal\inmail\MIME\Entity::getDecodedBody
    *
-   * @dataProvider ::provideEncodedEntities
+   * @dataProvider provideEncodedEntities
    */
   public function testGetBodyUndecoded(Header $header, $body, $decoded_body) {
     $entity = new Entity($header, $body);
@@ -125,18 +126,18 @@ EOF;
   }
 
   /**
-   * Just to make it obvious, test that toString() inverts parse().
+   * Just to make it obvious, test that toString() inverts parseMessage().
    */
   public function testParseToString() {
     $parser = new Parser(new LoggerChannel('test'));
 
     // Parse and back again.
-    $parsed = $parser->parse(static::MSG_MULTIPART);
+    $parsed = $parser->parseMessage(static::MSG_MULTIPART);
     $this->assertEquals(static::MSG_MULTIPART, $parsed->toString());
 
     // To string and back again.
     $string = static::getMessage()->toString();
-    $this->assertEquals(static::getMessage(), $parser->parse($string));
+    $this->assertEquals(static::getMessage(), $parser->parseMessage($string));
   }
 
   /**
@@ -144,7 +145,7 @@ EOF;
    */
   protected static function getMessage() {
     // The multipart message corresponding to the final parse result.
-    return new MultipartEntity(
+    return new MultipartMessage(
       new Entity(static::getMessageHeader(), static::getBody()),
       [
         static::getFirstPart(),

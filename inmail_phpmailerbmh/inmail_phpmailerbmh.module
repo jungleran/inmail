@@ -4,7 +4,7 @@
  * Procedural code for the Inmail PHPMailer-BMH submodule.
  */
 
-use Drupal\inmail\Message;
+use Drupal\inmail\MIME\Parser;
 
 if (!function_exists('imap_rfc822_parse_adrlist')) {
   /**
@@ -24,6 +24,6 @@ if (!function_exists('imap_rfc822_parse_adrlist')) {
       // return value structure of the original function.
       list($mailbox, $host) = explode('@', $address);
       return (object) ['mailbox' => $mailbox, 'host' => $host];
-    }, Message::parseAddress($address));
+    }, Parser::parseAddress($address));
   }
 }

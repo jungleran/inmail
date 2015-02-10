@@ -53,13 +53,13 @@ use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
  * which serves to perform various actions depending on the content of the
  * message.
  *
- * First the plain-text message is parsed into a \Drupal\inmail\Message object,
- * which is then passed through a series of analyzers, along with a
- * \Drupal\inmail\MessageAnalyzer\Result\AnalyzerResult object. Each analyzer
- * evaluates some aspect of the message and possibly adds collected information
- * to the result. Finally the message and the result are sent through a series
- * of handlers, in order for them to perform useful actions based on the
- * analysis results.
+ * First the plain-text message is parsed into a
+ * \Drupal\inmail\MIME\EntityInterface object, which is then passed through a
+ * series of analyzers, along with a \Drupal\inmail\ProcessorResult object. Each
+ * analyzer evaluates some aspect of the message and possibly adds collected
+ * information to the result. Finally the message and the result are sent
+ * through a series of handlers, in order for them to perform useful actions
+ * based on the analysis results.
  * @}
  */
 
@@ -74,8 +74,9 @@ use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
  * @link http://tools.ietf.org/html/rfc3464 RFC 3464 @endlink and
  * @link http://tools.ietf.org/html/rfc3462 RFC 3462 @endlink.
  *
- * A raw message string can be parsed with \Drupal\inmail\MIME\Parser::parse()
- * into a \Drupal\inmail\MIME\Entity object. The parser attempts to downcast the
+ * A raw message string can be parsed with
+ * \Drupal\inmail\MIME\Parser::parseMessage() into an object implementing
+ * \Drupal\inmail\MIME\MessageInterface. The parser attempts to downcast the
  * object based on its content type and structure, into a
  * \Drupal\inmail\MIME\MultipartEntity or even more specifically to a
  * \Drupal\inmail\MIME\DSNEntity.
@@ -245,11 +246,11 @@ function inmail_mail($key, &$message, $params) {
   switch ($key) {
     // Forwards unclassified bounces through ModeratorForwardHandler.
     case 'handler_moderator_forward':
-      /** @var \Drupal\inmail\MIME\EntityInterface $original */
+      /** @var \Drupal\inmail\MIME\MessageInterface $original */
       $original = $params['original'];
 
       // Set subject.
-      $message['subject'] = $original->getHeader()->getFieldBody('Subject');
+      $message['subject'] = $original->getSubject();
 
       // Set body.
       $message['body'][] = $original->getBody();

@@ -52,23 +52,12 @@ class InmailCollectWebTest extends WebTestBase {
 
     // View details.
     $this->clickLink('View');
-    $this->assertText('DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
-    $this->assertText('bounces+user=example.org@example.com');
-    $this->assertText('Postmaster@acacia.example.org');
-    $this->assertText('&lt;21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031EC2C@acacia.example.org&gt;');
-    $this->assertTrue($this->xpath('//details/summary[text()=@subject]', ['@subject' => "DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory"]));
-    $this->assertTrue($this->xpath('//details/details/summary[text()="Part 2"]'));
-
-    // Disable the plugin and view again.
-    debug(array_map(function($s) {return $s->toArray();}, SchemaConfig::loadMultiple()));
-    SchemaConfig::load('inmail_message')->disable()->save();
-    $this->drupalGet($this->getUrl());
     $this->assertText('"header-subject": "DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory"');
     $this->assertText('"header-to": "bounces+user=example.org@example.com"');
     $this->assertText('"header-from": "Postmaster@acacia.example.org"');
     // '<' and '>' are converted to &lt; and &gt; entities by the formatter.
-    $this->assertText('"header-message-id": "&lt;21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031EC2C@acacia.example.org&gt;"');
-    $this->assertText('"deliverer": "test"');
+    $this->assertText('&quot;header-message-id&quot;: &quot;&lt;21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031EC2C@acacia.example.org&gt;&quot;');
+    $this->assertText('&quot;deliverer&quot;: &quot;test&quot;');
     // Last line of the raw message.
     $this->assertText('--==IFJRGLKFGIR25201654UHRUHIHD--');
   }

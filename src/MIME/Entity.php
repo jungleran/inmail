@@ -93,13 +93,6 @@ class Entity implements EntityInterface {
   /**
    * {@inheritdoc}
    */
-  public function getMessageId() {
-    return $this->getHeader()->getFieldBody('Message-Id');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getBody() {
     return $this->body;
   }
