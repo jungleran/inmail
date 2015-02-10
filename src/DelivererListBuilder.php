@@ -88,12 +88,8 @@ class DelivererListBuilder extends ConfigEntityListBuilder {
 
       if ($plugin instanceof FetcherInterface) {
         // Set the "Remaining messages" count.
-        if ($count = $plugin->getCount()) {
-          $row['count'] = $count;
-        }
-        else {
-          $row['count'] = $this->t('Unknown');
-        }
+        $count = $plugin->getCount();
+        $row['count'] = isset($count) ? $count : $this->t('Unknown');
 
         // Set the relative time of last check.
         if ($last_checked = $plugin->getLastCheckedTime()) {

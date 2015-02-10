@@ -66,7 +66,7 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
    */
   public function parse(CollectDataItem $data_field) {
     $raw = json_decode($data_field->data)->raw;
-    return $this->parser->parse($raw);
+    return $this->parser->parseMessage($raw);
   }
 
   /**
@@ -107,7 +107,7 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public function getPropertyDefinitions() {
-    $properties['body'] = DataDefinition::create('string')
+    $properties['body'] = DataDefinition::create('string_long')
       ->setLabel(t('Body'));
 
     $properties['subject'] = DataDefinition::create('string')

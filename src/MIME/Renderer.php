@@ -72,7 +72,7 @@ class Renderer {
   public function renderHeaderFields(EntityInterface $entity, array $field_names) {
     $headers = array();
     foreach ($field_names as $field_name) {
-      if ($entity->getHeader()->getFieldBodyUnfiltered($field_name)) {
+      if ($entity->getHeader()->getFieldBody($field_name)) {
         $field_name_clean = str_replace('-', '_', strtolower($field_name));
         $headers[$field_name_clean] = $this->renderHeaderField($entity, $field_name);
       }
@@ -111,14 +111,7 @@ class Renderer {
         );
 
       default:
-        // Not recognized as text - likely an attachment.
-        $extra_header_fields = array();
-        foreach (['Content-Type', 'Content-ID'] as $field_name) {
-          if ($entity->getHeader()->getFieldBody($field_name)) {
-            $extra_header_fields[strtolower($field_name)] = $this->renderHeaderField($entity, $field_name);
-          }
-        }
-        return $extra_header_fields;
+        return $this->renderHeaderFields($entity, ['Content-Id']);
     }
   }
 
