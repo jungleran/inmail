@@ -43,6 +43,46 @@ class HeaderTest extends UnitTestCase {
   }
 
   /**
+   * Tests if there is a field.
+   *
+   * @covers ::hasField
+   *
+   * @dataProvider provideHeadersHasField
+   */
+  public function testHasField(Header $header, $expected) {
+    $this->assertEquals($expected, $header->hasField('Content-Type'));
+  }
+
+  /**
+   * Provides header objects for testing testHasField().
+   *
+   * @return array
+   *   Header objects and expected representations.
+   */
+  public function provideHeadersHasField() {
+    return [
+      [
+        new Header([[
+          'name' => 'Content-Type',
+          'body' => 'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"',
+        ]]),
+        TRUE,
+      ],
+      [
+        new Header([[
+          'name' => 'content-type',
+          'body' => 'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"',
+        ]]),
+        TRUE,
+      ],
+      [
+        new Header(),
+        FALSE,
+      ],
+    ];
+  }
+
+  /**
    * Provides header objects for testing toString().
    *
    * @return array
