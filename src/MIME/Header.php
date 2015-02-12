@@ -76,6 +76,20 @@ class Header {
   }
 
   /**
+   * Checks if there is a field.
+   *
+   * @param string $name
+   *   The name of the field to find.
+   *
+   * @return bool
+   *   Return TRUE if there is a field, or FALSE if no field
+   */
+  public function hasField($name) {
+    $field = $this->findFirstField($name);
+    return ($field !== FALSE);
+  }
+
+  /**
    * Adds a field to the header.
    *
    * Note that in the context of an MTA processing a message, headers are

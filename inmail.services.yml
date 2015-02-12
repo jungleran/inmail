@@ -1,7 +1,7 @@
 services:
   inmail.processor:
     class: Drupal\inmail\MessageProcessor
-    arguments: ['@entity.manager', '@plugin.manager.inmail.analyzer', '@plugin.manager.inmail.handler', '@logger.channel.inmail']
+    arguments: ['@entity.manager', '@plugin.manager.inmail.analyzer', '@plugin.manager.inmail.handler', '@logger.channel.inmail', '@inmail.mime_parser']
   plugin.manager.inmail.deliverer:
     class: Drupal\Core\Plugin\DefaultPluginManager
     arguments:
