@@ -116,8 +116,14 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
     $properties['to'] = DataDefinition::create('string')
       ->setLabel(t('To'));
 
+    $properties['to_addresses'] = DataDefinition::create('email')
+      ->setLabel(t('To address'));
+
     $properties['from'] = DataDefinition::create('string')
       ->setLabel(t('From'));
+
+    $properties['from_addresses'] = DataDefinition::create('email')
+      ->setLabel(t('From address'));
 
     return $properties;
   }
@@ -132,6 +138,13 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
     if ($property_name == 'body') {
       // @todo Handle MultipartEntity.
       $value = $message->getDecodedBody();
+    }
+    elseif (in_array($property_name, ['to_addresses', 'from_addresses'])) {
+      $field_name = substr($property_name, 0, strpos($property_name, '_'));
+      $field_body = $message->getHeader()->getFieldBody($field_name);
+      $emails = Parser::parseAddress($field_body);
+      // @todo Return list of all addresses.
+      $value = reset($emails);
     }
     else {
       $value = $message->getHeader()->getFieldBody($property_name);
