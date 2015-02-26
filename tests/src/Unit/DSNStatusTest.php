@@ -13,6 +13,7 @@ use Drupal\Tests\UnitTestCase;
  * Unit tests the DSN status class.
  *
  * @coversDefaultClass \Drupal\inmail\DSNStatus
+ *
  * @group inmail
  */
 class DSNStatusTest extends UnitTestCase {
@@ -21,7 +22,9 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the constructor for invalid codes.
    *
    * @covers ::__construct
+   *
    * @expectedException \InvalidArgumentException
+   *
    * @dataProvider provideInvalidCodes
    */
   public function testConstructInvalid($class, $subject, $detail) {
@@ -32,6 +35,7 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the parse method for valid codes.
    *
    * @covers ::parse
+   *
    * @dataProvider provideValidCodes
    */
   public function testParse($class, $subject, $detail) {
@@ -42,7 +46,9 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the parse method for invalid codes.
    *
    * @covers ::parse
+   *
    * @expectedException \InvalidArgumentException
+   *
    * @dataProvider provideInvalidCodes
    */
   public function testParseInvalid($class, $subject, $detail) {
@@ -53,6 +59,7 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the getCode method.
    *
    * @covers ::getCode
+   *
    * @dataProvider provideValidCodes
    */
   public function testGetCode($class, $subject, $detail) {
@@ -64,6 +71,7 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the isSuccess method.
    *
    * @covers ::isSuccess
+   *
    * @dataProvider provideValidCodes
    */
   public function testIsSuccess($class, $subject, $detail) {
@@ -75,6 +83,7 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the isPermanentFailure method.
    *
    * @covers ::isPermanentFailure
+   *
    * @dataProvider provideValidCodes
    */
   public function testIsPermanentFailure($class, $subject, $detail) {
@@ -86,6 +95,7 @@ class DSNStatusTest extends UnitTestCase {
    * Tests the isTransientFailure method.
    *
    * @covers ::isTransientFailure
+   *
    * @dataProvider provideValidCodes
    */
   public function testIsTransientFailure($class, $subject, $detail) {
@@ -99,6 +109,7 @@ class DSNStatusTest extends UnitTestCase {
    * @covers ::getLabel
    * @covers ::getClassLabel
    * @covers ::getDetailLabel
+   *
    * @dataProvider provideKnownCodes
    */
   public function getLabelKnown($class, $subject, $detail) {
@@ -138,6 +149,7 @@ class DSNStatusTest extends UnitTestCase {
    * @covers ::getLabel
    * @covers ::getClassLabel
    * @covers ::getDetailLabel
+   *
    * @dataProvider provideOtherCodes
    */
   public function getLabelOther($class, $subject, $detail) {

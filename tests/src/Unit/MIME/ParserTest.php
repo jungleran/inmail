@@ -22,7 +22,7 @@ class ParserTest extends InmailUnitTestBase {
   /**
    * Tests that an exception is thrown when parsing fails.
    *
-   * @covers ::parse
+   * @covers ::parseMessage
    *
    * @dataProvider provideMalformedRaws
    *

@@ -16,7 +16,8 @@ use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 /**
  * Unit tests the DSN bounce message analyzer.
  *
- * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\StandardDSNAnalyzer
+ * @coversDefaultClass \Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNAnalyzer
+ *
  * @group inmail
  */
 class StandardDSNAnalyzerTest extends InmailUnitTestBase {
@@ -25,6 +26,7 @@ class StandardDSNAnalyzerTest extends InmailUnitTestBase {
    * Tests the analyze method.
    *
    * @covers ::analyze
+   *
    * @dataProvider provideExpectedResults
    */
   public function testAnalyze($filename, $expected_code, $expected_recipient) {

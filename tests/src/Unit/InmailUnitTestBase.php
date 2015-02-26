@@ -11,7 +11,7 @@ use Drupal\Tests\UnitTestCase;
 /**
  * Base class for Inmail unit tests.
  */
-class InmailUnitTestBase extends UnitTestCase {
+abstract class InmailUnitTestBase extends UnitTestCase {
 
   /**
    * Returns the raw contents of a given test message file.

@@ -16,7 +16,8 @@ use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 /**
  * Unit tests for the DSN reason analyzer.
  *
- * @coversDefaultClass \Drupal\inmail\MessageAnalyzer\StandardDSNReasonAnalyzer
+ * @coversDefaultClass \Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNReasonAnalyzer
+ *
  * @group inmail
  */
 class StandardDSNReasonAnalyzerTest extends InmailUnitTestBase {
@@ -25,6 +26,7 @@ class StandardDSNReasonAnalyzerTest extends InmailUnitTestBase {
    * Tests the analyze method.
    *
    * @covers ::analyze
+   *
    * @dataProvider provideReasons
    */
   public function testAnalyze($filename, $expected_reason) {

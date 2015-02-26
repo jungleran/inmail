@@ -19,6 +19,7 @@ use Drupal\Tests\UnitTestCase;
  * Tests the Parser, Entity and DSNEntity classes.
  *
  * @coversDefaultClass \Drupal\inmail\MIME\DSNEntity
+ *
  * @group inmail
  */
 class DSNEntityTest extends UnitTestCase {
@@ -54,7 +55,7 @@ EOF;
   /**
    * Tests the parser.
    *
-   * @covers \Drupal\inmail\MIME\MIMEParser::parse
+   * @covers \Drupal\inmail\MIME\Parser::parseMessage
    */
   public function testParse() {
     // Parse and compare.
