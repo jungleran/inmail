@@ -6,6 +6,9 @@
 # script. It will then run the Inmail processor (analyzers and handlers) for
 # each message.
 
+# Enter Drush environment
+cd `dirname $0`
+
 # Parse options
 while getopts hdo: option; do
   case $option in
@@ -23,10 +26,16 @@ EOF
       exit
       ;;
     d) # Dump environment information for debugging
+      pwd
+      echo
       id
+      echo
       set
+      echo
       drush status
-      drush inmail-services
+      echo
+      drush inmail-plugins
+      echo
       DRUSHOPTS=-d
       ;;
     o) # Additional Drush options
@@ -35,8 +44,8 @@ EOF
   esac
 done
 
-# Enter Drush environment
-cd `dirname $0`
+# Access the arguments after the options
+shift $(($OPTIND - 1))
 
 # Email content (one message) is piped from stdin to the Drush command
-drush $DRUSHOPTS inmail-process
+drush $DRUSHOPTS inmail-process $1

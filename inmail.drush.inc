@@ -5,6 +5,7 @@
  */
 
 use Drupal\inmail\Entity\AnalyzerConfig;
+use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 
 /**
@@ -31,7 +32,7 @@ function inmail_drush_command() {
   $items['inmail-process'] = array(
     'description' => 'Process a mail message provided through STDIN, or one or more mail messages by filename.',
     'arguments' => array(
-      'plugin' => 'The ID of a Drush Deliverer plugin configuration.',
+      'deliverer' => 'The ID of a Drush Deliverer plugin configuration.',
       'file [file2 ...]' => 'One or more file names to parse as messages. If no filenames are given, a message is read from STDIN.',
     ),
     'examples' => array(
@@ -42,7 +43,7 @@ function inmail_drush_command() {
   );
 
   $items['inmail-plugins'] = array(
-    'description' => 'Tell which service classes are being used for analysis and handling.',
+    'description' => 'Tell which plugins are being used for message delivery, analysis and handling.',
     'drupal dependencies' => array('inmail'),
   );
 
@@ -53,7 +54,6 @@ function inmail_drush_command() {
  * Drush command implementation for processing a mail message.
  */
 function drush_inmail_process() {
-  inmail_drush_setup();
   if (!inmail_drush_assert_uri()) {
     return;
   }
@@ -65,7 +65,7 @@ function drush_inmail_process() {
 
   // Identify deliverer.
   $deliverer_config_id = array_shift($args);
-  $deliverer = \Drupal::entityManager()->getStorage('inmail_deliverer')->load($deliverer_config_id);
+  $deliverer = DelivererConfig::load($deliverer_config_id);
   if (empty($deliverer)) {
     drush_set_error(dt('Deliverer "@deliverer_id" not found', ['@deliverer_id' => $deliverer_config_id]));
     return;
@@ -88,34 +88,23 @@ function drush_inmail_process() {
  * Output the class names of current analyzers and handlers.
  */
 function drush_inmail_plugins() {
-  inmail_drush_setup();
-
-  /** @var \Drupal\inmail\Entity\AnalyzerConfig[] $analyzer_configs */
-  $analyzer_configs = AnalyzerConfig::loadMultiple();
-  foreach ($analyzer_configs as $analyzer_config) {
-    // Creating plugin instances enables us to detect if a config references a
-    // missing plugin.
-    /** @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface $analyzer */
-    $analyzer = \Drupal::service('plugin.manager.inmail.analyzer')->createInstance($analyzer_config->getPluginId());
-    echo "Analyzer: {$analyzer_config->label()} ({$analyzer->getPluginId()})\n";
+  $deliverer_configs = DelivererConfig::loadMultiple();
+  foreach ($deliverer_configs as $deliverer_config) {
+    echo "Deliverer: {$deliverer_config->label()} ({$deliverer_config->getPluginId()})\n";
   }
 
-  /** @var \Drupal\inmail\Entity\HandlerConfig[] $handler_configs */
+  $analyzer_configs = AnalyzerConfig::loadMultiple();
+  foreach ($analyzer_configs as $analyzer_config) {
+    echo "Analyzer: {$analyzer_config->label()} ({$analyzer_config->getPluginId()})\n";
+  }
+
   $handler_configs = HandlerConfig::loadMultiple();
   foreach ($handler_configs as $handler_config) {
+    // Handlers have fallback support. Creating plugin instances enables us to
+    // detect if a config references a missing plugin.
     /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
     $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId());
     echo "Handler: {$handler_config->label()} ({$handler->getPluginId()})\n";
-  }
-}
-
-/**
- * Perform some preparation for interaction with the processing mechanism.
- */
-function inmail_drush_setup() {
-  // @todo Remove this when https://www.drupal.org/node/2208949 is fixed.
-  if (\Drupal::moduleHandler()->moduleExists('composer_manager')) {
-    \Drupal::service('composer_manager.manager')->registerAutoloader();
   }
 }
 
