@@ -62,6 +62,14 @@ class ParserTest extends InmailUnitTestBase {
       ['a@b.c, d.e@f.g.h', ['a@b.c', 'd.e@f.g.h']],
       ['Admin <admin@example.com>', ['admin@example.com']],
       ['Admin <admin@example.com>, User <user.name@users.example.com>', ['admin@example.com', 'user.name@users.example.com']],
+      ['Admin, Admin <admin@example.com>, User, User <user.name@users.example.com>', ['admin@example.com', 'user.name@users.example.com']],
+      ['"Admin, Admin <admin@example.com>"', []],
+      ['"Admin, Admin" <admin@example.com>', ['admin@example.com']],
+      ['"Admin, Admin <admin@example.com>" <admin@example.com>', ['admin@example.com']],
+      ['"Admin, € Admin" <admin@example.com>', ['admin@example.com']],
+      ['"Admin, Admin®" <admin@example.com>', ['admin@example.com']],
+      ['Admin™ <admin@example.com>', ['admin@example.com']],
+      ['Admin <admin+admin@example.com>', ['admin+admin@example.com']],
     ];
   }
 
