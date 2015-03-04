@@ -46,7 +46,7 @@ class InmailCollectWebTest extends WebTestBase {
     $this->drupalGet('admin/content/collect');
     $this->assertText('https://www.drupal.org/project/inmail/schema/message');
     $this->assertText(format_date(strtotime('19 Feb 2014 10:05:15 +0100'), 'short'));
-    $this->assertText(Url::fromUri('base://inmail/message/message-id/21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031EC2C@acacia.example.org', ['absolute' => TRUE]));
+    $this->assertText(Url::fromUri('base:inmail/message/message-id/21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031EC2C@acacia.example.org', ['absolute' => TRUE])->toString());
     $this->assertText('application/json');
 
     // View details.

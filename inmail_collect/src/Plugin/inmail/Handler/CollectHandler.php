@@ -53,13 +53,13 @@ class CollectHandler extends HandlerBase {
 
     if (!empty($message_id)) {
       // @todo Formally document this uri pattern.
-      $origin_uri = Url::fromUri('base://inmail/message/message-id/'
-        . $message_id, ['absolute' => TRUE]);
+      $origin_uri = Url::fromUri('base:inmail/message/message-id/'
+        . $message_id, ['absolute' => TRUE])->toString();
     }
     else {
       // @todo Formally document this uri pattern.
-      $origin_uri = Url::fromUri('base://inmail/message/uuid/'
-        . \Drupal::service('uuid')->generate(), ['absolute' => TRUE]);
+      $origin_uri = Url::fromUri('base:inmail/message/uuid/'
+        . \Drupal::service('uuid')->generate(), ['absolute' => TRUE])->toString();
     }
 
     // The data to store. Includes the whole message string for completeness,
