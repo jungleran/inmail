@@ -1,0 +1,10 @@
+{
+  "name": "drupal/inmail",
+  "type": "drupal-module",
+  "description": "The Inmail module for Drupal 8 enables processing of incoming email.",
+  "homepage": "https://www.drupal.org/project/inmail",
+  "license": "GPL-2.0",
+  "require": {
+    "drupal/core": "~8.0.0"
+  }
+}
