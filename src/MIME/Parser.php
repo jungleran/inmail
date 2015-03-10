@@ -93,12 +93,7 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
 
     // If it has not been recognized as any specific type, we should at least
     // create a Message from it.
-    if (in_array($entity->getContentType()['type'], ['multipart', 'message'])) {
-      return new Message($entity->getHeader(), $entity->getBody());
-    }
-    else {
-      throw new ParseException('Tried to parse a non-message entity as a message');
-    }
+    return new Message($entity->getHeader(), $entity->getBody());
   }
 
   /**
