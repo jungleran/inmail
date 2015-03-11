@@ -7,6 +7,7 @@
 
 namespace Drupal\inmail_collect\Tests;
 
+use Drupal\collect\Entity\SchemaConfig;
 use Drupal\Core\Url;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\simpletest\WebTestBase;
@@ -32,6 +33,8 @@ class InmailCollectWebTest extends WebTestBase {
 
   /**
    * Tests the user interface.
+   *
+   * @see Drupal\inmail_collect\Plugin\collect\Schema\InmailMessageSchema::build()
    */
   public function testUi() {
     // Process and store a message.
@@ -49,7 +52,8 @@ class InmailCollectWebTest extends WebTestBase {
     $this->assertText(Url::fromUri('base:inmail/message/message-id/21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031EC2C@acacia.example.org', ['absolute' => TRUE])->toString());
     $this->assertText('application/json');
 
-    // View details.
+    // View details as JSON.
+    SchemaConfig::load('inmail_message')->disable()->save();
     $this->clickLink('View');
     $this->assertText('&quot;header-subject&quot;: &quot;DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory&quot;');
     $this->assertText('&quot;header-to&quot;: &quot;bounces+user=example.org@example.com&quot;');
@@ -59,6 +63,27 @@ class InmailCollectWebTest extends WebTestBase {
     $this->assertText('&quot;deliverer&quot;: &quot;test&quot;');
     // Last line of the raw message.
     $this->assertText('--==IFJRGLKFGIR25201654UHRUHIHD--');
+
+    // View details as rendered.
+    SchemaConfig::load('inmail_message')->enable()->save();
+    $this->drupalGet($this->getUrl());
+    // Details summaries of each part.
+    $this->assertEqual($this->xpath('//div[@class="field-item"]/details/summary')[0], 'DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
+    $this->assertEqual($this->xpath('//details/div[@class="details-wrapper"]/details/summary')[0], t('Part 1'));
+    $this->assertEqual($this->xpath('//details/div[@class="details-wrapper"]/details/summary')[1], t('Part 2'));
+    $this->assertEqual($this->xpath('//details/div[@class="details-wrapper"]/details/summary')[2], t('Part 3'));
+    // Eliminate repeated whitespace to simplify matching.
+    $this->setRawContent(preg_replace('/\s+/', ' ', $this->getRawContent()));
+    // Header fields.
+    $this->assertText(t('From') . ' Postmaster@acacia.example.org');
+    $this->assertText(t('To') . ' bounces+user=example.org@example.com');
+    $this->assertText(t('Subject') . ' DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
+    $this->assertText(t('Content-Type') . ' multipart/report');
+    $this->assertText(t('Content-Type') . ' text/plain');
+    $this->assertText(t('Content-Type') . ' message/delivery-status');
+    $this->assertText(t('Content-Type') . ' message/rfc822');
+    // Body.
+    $this->assertText('Your message Subject: We want a toxic-free future was not delivered to: environment@lvmh.fr');
   }
 
 }

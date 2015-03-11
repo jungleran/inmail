@@ -29,8 +29,8 @@ interface FetcherInterface extends DelivererInterface, ConfigurablePluginInterfa
   /**
    * Returns the number of remaining messages to fetch.
    *
-   * @return int
-   *   Number of remaining messages.
+   * @return int|null
+   *   Number of remaining messages, or NULL if it is unknown.
    */
   public function getCount();
 

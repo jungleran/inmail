@@ -93,6 +93,13 @@ function drush_inmail_plugins() {
     echo "Deliverer: {$deliverer_config->label()} ({$deliverer_config->getPluginId()})\n";
   }
 
+  /** @var \Drupal\inmail\Entity\DelivererConfig[] $deliverer_configs */
+  $deliverer_configs = DelivererConfig::loadMultiple();
+  foreach ($deliverer_configs as $deliverer_config) {
+    echo "Deliverer: {$deliverer_config->label()} ({$deliverer_config->getPluginId()})\n";
+  }
+
+  /** @var \Drupal\inmail\Entity\AnalyzerConfig[] $analyzer_configs */
   $analyzer_configs = AnalyzerConfig::loadMultiple();
   foreach ($analyzer_configs as $analyzer_config) {
     echo "Analyzer: {$analyzer_config->label()} ({$analyzer_config->getPluginId()})\n";

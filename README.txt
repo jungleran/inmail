@@ -63,13 +63,13 @@ inmail-process", providing shell access to Inmail.
 To use the Drush command, first create a Deliverer configuration using the
 "Drush inmail-process" plugin, and match the "deliverer_id" argument with the
 machine name of the created configuration. The examples assume a configuration
-created with the ID "drush".
+created with the ID "postfix-drush".
 
 Consider as an example a web/mail server at example.com, with a Drupal root at
 /var/www/drupal. All mail sent to site@example.com is to be processed by Inmail.
 Simply add the following line to /etc/aliases:
 
-  site: "| /var/www/drupal/modules/inmail/postfix-filter.sh -o --uri=example.com drush"
+  site: "| /var/www/drupal/modules/inmail/postfix-filter.sh -o --uri=example.com postfix-drush"
 
 In this second example, Postfix is used to test a new component of Inmail, and
 all test messages sent from the developer's machine to any address are looped
@@ -90,14 +90,14 @@ back to the developer's account "admin" on the local Postfix server.
        /^.*/ OK
 
      ~admin/.forward:
-       "| /var/www/drupal/modules/inmail/postfix-filter.sh -o --uri=example.com drush"
+       "| /var/www/drupal/modules/inmail/postfix-filter.sh -o --uri=example.com postfix-drush"
 
 The script and these examples assumes a Unix-based environment. The examples
 should only be read as guidelines, as the exact configuration is likely to vary
 between systems. You may for example need to provide the path to the Drush
 executable:
 
-  "| PATH=/usr/local/bin:$PATH /path/to/postfix-filter.sh drush"
+  "| PATH=/usr/local/bin:$PATH /path/to/postfix-filter.sh postfix-drush"
 
 
 IMAP

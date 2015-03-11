@@ -36,29 +36,41 @@ class CollectHandler extends HandlerBase {
   }
 
   /**
+   * The URI defining the Inmail message schema.
+   */
+  const SCHEMA_URI = 'https://www.drupal.org/project/inmail/schema/message';
+
+  /**
+   * URI base for the origin URI.
+   */
+  const ORIGIN_URI_BASE = 'base:inmail/message';
+
+  /**
    * {@inheritdoc}
    */
   public function invoke(MessageInterface $message, ProcessorResultInterface $processor_result) {
     // For successful processing, a message needs to follow the standards.
     // Some aspects are critical. Check them and cancel otherwise and log.
-    // @todo Check for present fields Date, From, To
+    if (!$message->getReceivedDate() || !$message->getFrom() || !$message->getTo() || $message->getSubject() === NULL) {
+      \Drupal::logger('inmail')->info('Not creating container from message missing necessary header fields.');
+      return;
+    }
 
     // By RFC 5322 (and its predecessors), the uniqueness of the Message-Id
     // field is guaranteed by the host that generates it. While uuid offers
     // more robust uniqueness, Message-Id is preferred because it is defined
     // also outside the domains of Inmail and Collect.
-
     // Remove brackets from RFC822 message-id format "<" addr-spec ">"
     $message_id = trim($message->getMessageId(), '<>');
 
     if (!empty($message_id)) {
       // @todo Formally document this uri pattern.
-      $origin_uri = Url::fromUri('base:inmail/message/message-id/'
+      $origin_uri = Url::fromUri(static::ORIGIN_URI_BASE . '/message-id/'
         . $message_id, ['absolute' => TRUE])->toString();
     }
     else {
       // @todo Formally document this uri pattern.
-      $origin_uri = Url::fromUri('base:inmail/message/uuid/'
+      $origin_uri = Url::fromUri(static::ORIGIN_URI_BASE . '/uuid/'
         . \Drupal::service('uuid')->generate(), ['absolute' => TRUE])->toString();
     }
 
@@ -78,12 +90,11 @@ class CollectHandler extends HandlerBase {
       'origin_uri' => $origin_uri,
       'data' => array(
         // @todo Formally document this schema with present fields.
-        'schema' => 'https://www.drupal.org/project/inmail/schema/message',
+        'schema' => static::SCHEMA_URI,
         'type' => 'application/json',
         'data' => json_encode($data),
       ),
-      // @todo Call date accessor when/if it is implemented in https://www.drupal.org/node/2379923.
-      'date' => strtotime($message->getHeader()->getFieldBody('Date')),
+      'date' => $message->getReceivedDate()->getTimestamp(),
     ))->save();
   }
 }
