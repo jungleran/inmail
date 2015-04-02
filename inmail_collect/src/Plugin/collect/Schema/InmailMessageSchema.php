@@ -105,8 +105,8 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
   /**
    * {@inheritdoc}
    */
-  public function getPropertyDefinitions() {
-    $properties['body'] = DataDefinition::create('string_long')
+  public static function getStaticPropertyDefinitions() {
+    $properties['body'] = DataDefinition::create('string')
       ->setLabel(t('Body'));
 
     $properties['subject'] = DataDefinition::create('string')

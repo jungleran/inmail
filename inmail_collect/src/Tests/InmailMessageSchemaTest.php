@@ -55,12 +55,12 @@ class InmailMessageSchemaTest extends KernelTestBase {
     $data = $typed_data_provider->getTypedData($container->getDataItem());
 
     // Each property of the schema should map to data in the message.
-    $this->assertEqual('Nancy <nancy@example.com>', $data->get('from'));
-    $this->assertEqual('nancy@example.com', $data->get('from_address'));
-    $this->assertEqual('Arild <arild@example.com>', $data->get('to'));
-    $this->assertEqual('arild@example.com', $data->get('to_address'));
-    $this->assertEqual('Out of office', $data->get('subject'));
-    $this->assertEqual("Hello\nI'm out of office due to illness", $data->get('body'));
+    $this->assertEqual('Nancy <nancy@example.com>', $data->get('from')->getValue());
+    $this->assertEqual('nancy@example.com', $data->get('from_address')->getValue());
+    $this->assertEqual('Arild <arild@example.com>', $data->get('to')->getValue());
+    $this->assertEqual('arild@example.com', $data->get('to_address')->getValue());
+    $this->assertEqual('Out of office', $data->get('subject')->getValue());
+    $this->assertEqual("Hello\nI'm out of office due to illness", $data->get('body')->getValue());
   }
 
 }

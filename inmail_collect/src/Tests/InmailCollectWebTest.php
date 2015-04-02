@@ -27,11 +27,6 @@ class InmailCollectWebTest extends WebTestBase {
   public static $modules = array('inmail_collect');
 
   /**
-   * Disable strict schema checking until schema is updated, https://www.drupal.org/node/2392365
-   */
-  protected $strictConfigSchema = FALSE;
-
-  /**
    * Tests the user interface.
    *
    * @see Drupal\inmail_collect\Plugin\collect\Schema\InmailMessageSchema::build()
@@ -68,10 +63,11 @@ class InmailCollectWebTest extends WebTestBase {
     SchemaConfig::load('inmail_message')->enable()->save();
     $this->drupalGet($this->getUrl());
     // Details summaries of each part.
-    $this->assertEqual($this->xpath('//div[@class="field-item"]/details/summary')[0], 'DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
-    $this->assertEqual($this->xpath('//details/div[@class="details-wrapper"]/details/summary')[0], t('Part 1'));
-    $this->assertEqual($this->xpath('//details/div[@class="details-wrapper"]/details/summary')[1], t('Part 2'));
-    $this->assertEqual($this->xpath('//details/div[@class="details-wrapper"]/details/summary')[2], t('Part 3'));
+    $this->assertFieldByXPath('//div[@class="field-item"]/details[1]/summary', t('Schema plugin applied'));
+    $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/summary', 'DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
+    $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/div/details[1]/summary', t('Part 1'));
+    $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/div/details[2]/summary', t('Part 2'));
+    $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/div/details[3]/summary', t('Part 3'));
     // Eliminate repeated whitespace to simplify matching.
     $this->setRawContent(preg_replace('/\s+/', ' ', $this->getRawContent()));
     // Header fields.
