@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail;
 
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\inmail\Entity\DelivererConfig;
@@ -130,7 +130,7 @@ class MessageProcessor implements MessageProcessorInterface {
         $messages = [];
         foreach ($log as $item) {
           // Apply placeholders.
-          $messages[] = String::format($item['message'], $item['placeholders']);
+          $messages[] = SafeMarkup::format($item['message'], $item['placeholders']);
         }
         $event->addArgument($source, $messages);
       }

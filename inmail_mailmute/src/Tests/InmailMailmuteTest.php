@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail_mailmute\Tests;
 
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Entity\DelivererConfig;
@@ -129,7 +129,7 @@ class InmailMailmuteTest extends KernelTestBase {
 
       // Check that the state did not change.
       $new_state = $sendstate_manager->getState($this->user->getEmail());
-      $message = String::format('Status %status results in state %state', array('%status' => $status->getCode(), '%state' => $new_state->getPluginId()));
+      $message = SafeMarkup::format('Status %status results in state %state', array('%status' => $status->getCode(), '%state' => $new_state->getPluginId()));
       $this->assertEqual($new_state->getPluginId(), 'persistent_send', $message);
     }
   }
