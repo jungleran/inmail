@@ -51,26 +51,38 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
   }
 
   /**
-   * Extracts email addresses from a To header field.
+   * Extracts names and email addresses from a header field.
+   *
+   * Some header fields, most notably To and Cc, may contain multiple addresses,
+   * optionally including names.
    *
    * @param string $field
    *   The content of a To header or similar.
    *
-   * @return string[]
-   *   A list of email addresses.
+   * @return array[]
+   *   A list of associative arrays, each with the following elements:
+   *     - name: the optional name before the address
+   *     - address: the email address
+   *
+   * @see https://tools.ietf.org/html/rfc5322#section-3.4
+   *
+   * @todo Allow comma in name, https://www.drupal.org/node/2475057
    */
   public static function parseAddress($field) {
+    // Separate by comma, each element is trimmed.
     $parts = preg_split('/\s*,\s*/', trim($field));
-    $addresses = [];
+    $participants = [];
     foreach ($parts as $part) {
       if (preg_match('/^\S+@\S+\.\S+$/', $part)) {
-        $addresses[] = $part;
+        // Match address "foo@example.com".
+        $participants[] = ['name' => '', 'address' => $part];
       }
-      elseif (preg_match('/<(\S+@\S+\.\S+)>$/', $part, $matches)) {
-        $addresses[] = $matches[1];
+      elseif (preg_match('/(.*)<(\S+@\S+\.\S+)>$/', $part, $matches)) {
+        // Match name and address "Foo Bar <foo@example.com>".
+        $participants[] = ['name' => trim(trim($matches[1]), '"'), 'address' => $matches[2]];
       }
     }
-    return $addresses;
+    return $participants;
   }
 
   /**

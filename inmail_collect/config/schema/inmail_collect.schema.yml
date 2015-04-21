@@ -1,0 +1,2 @@
+collect.data_definition.inmail_email_participant:
+  type: collect.complex_data_definition

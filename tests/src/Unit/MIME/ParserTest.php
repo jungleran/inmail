@@ -58,18 +58,51 @@ class ParserTest extends InmailUnitTestBase {
    */
   public static function provideAddresses() {
     return [
-      [' admin@example.com ', ['admin@example.com']],
-      ['a@b.c, d.e@f.g.h', ['a@b.c', 'd.e@f.g.h']],
-      ['Admin <admin@example.com>', ['admin@example.com']],
-      ['Admin <admin@example.com>, User <user.name@users.example.com>', ['admin@example.com', 'user.name@users.example.com']],
-      ['Admin, Admin <admin@example.com>, User, User <user.name@users.example.com>', ['admin@example.com', 'user.name@users.example.com']],
+      // Spaces.
+      [' admin@example.com ', [
+        ['name' => '', 'address' => 'admin@example.com'],
+      ]],
+      // Multiple.
+      ['a@b.c, d.e@f.g.h', [
+        ['name' => '', 'address' => 'a@b.c'],
+        ['name' => '', 'address' => 'd.e@f.g.h'],
+      ]],
+      // With name.
+      ['Admin <admin@example.com>', [
+        ['name' => 'Admin', 'address' => 'admin@example.com'],
+      ]],
+      // With quote-enclosed name.
+      ['"Admin" <admin@example.com>', [
+        ['name' => 'Admin', 'address' => 'admin@example.com'],
+      ]],
+      // Multiple with name.
+      ['Admin <admin@example.com>, User <user.name@users.example.com>', [
+        ['name' => 'Admin', 'address' => 'admin@example.com'],
+        ['name' => 'User', 'address' => 'user.name@users.example.com'],
+      ]],
+      // Comma in name (resolves to multiple, where first is invalid).
+      ['Admin, Bedmin <admin@example.com>', [
+        ['name' => 'Bedmin', 'address' => 'admin@example.com'],
+      ]],
+      // Address in quotes but not after (invalid).
       ['"Admin, Admin <admin@example.com>"', []],
-      ['"Admin, Admin" <admin@example.com>', ['admin@example.com']],
-      ['"Admin, Admin <admin@example.com>" <admin@example.com>', ['admin@example.com']],
-      ['"Admin, € Admin" <admin@example.com>', ['admin@example.com']],
-      ['"Admin, Admin®" <admin@example.com>', ['admin@example.com']],
-      ['Admin™ <admin@example.com>', ['admin@example.com']],
-      ['Admin <admin+admin@example.com>', ['admin+admin@example.com']],
+      // @todo Allow comma in name, https://www.drupal.org/node/2475057
+//      // Comma in name (quoted, valid).
+//      ['"Admin, Admin" <admin@example.com>', [
+//        ['name' => 'Admin, Admin', 'address' => 'admin@example.com'],
+//      ]],
+//      // Address in quotes and after.
+//      ['"Admin, Admin <admin@example.com>" <admin@example.com>', [
+//        ['name' => 'Admin <admin@example.com>', 'address' => 'admin@example.com'],
+//      ]],
+      // Unicode in name.
+      ['Admin™ <admin@example.com>', [
+        ['name' => 'Admin™', 'address' => 'admin@example.com'],
+      ]],
+      // Sub-address extension pattern.
+      ['Admin <admin+admin@example.com>', [
+        ['name' => 'Admin', 'address' => 'admin+admin@example.com'],
+      ]],
     ];
   }
 

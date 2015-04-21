@@ -19,10 +19,10 @@ if (!function_exists('imap_rfc822_parse_adrlist')) {
    */
   function imap_rfc822_parse_adrlist($address, $default_host) {
     // For each address.
-    return array_map(function($address) {
+    return array_map(function(array $participant) {
       // Split the address and put the parts in an object, in order to match the
       // return value structure of the original function.
-      list($mailbox, $host) = explode('@', $address);
+      list($mailbox, $host) = explode('@', $participant['address']);
       return (object) ['mailbox' => $mailbox, 'host' => $host];
     }, Parser::parseAddress($address));
   }

@@ -114,17 +114,11 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
     $properties['subject'] = new PropertyDefinition('subject', DataDefinition::create('string')
       ->setLabel(t('Subject')));
 
-    $properties['to'] = new PropertyDefinition('to', DataDefinition::create('string')
+    $properties['to'] = new PropertyDefinition('to', DataDefinition::create('inmail_email_participant')
       ->setLabel(t('To')));
 
-    $properties['to_address'] = new PropertyDefinition('to_address', DataDefinition::create('email')
-      ->setLabel(t('To address')));
-
-    $properties['from'] = new PropertyDefinition('from', DataDefinition::create('string')
+    $properties['from'] = new PropertyDefinition('from', DataDefinition::create('inmail_email_participant')
       ->setLabel(t('From')));
-
-    $properties['from_address'] = new PropertyDefinition('from_address', DataDefinition::create('email')
-      ->setLabel(t('From address')));
 
     return $properties;
   }
@@ -141,12 +135,13 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
       // @todo Handle MultipartEntity, https://www.drupal.org/node/2450229
       return $message->getDecodedBody();
     }
-    if (in_array($property_name, ['to_address', 'from_address'])) {
-      $field_name = substr($property_name, 0, strpos($property_name, '_'));
-      $field_body = $message->getHeader()->getFieldBody($field_name);
-      $emails = Parser::parseAddress($field_body);
+    if (in_array($property_name, ['to', 'from'])) {
+      $field_body = $message->getHeader()->getFieldBody($property_name);
+      $participants = Parser::parseAddress($field_body);
+      // The returned value is an associative array with elements "name" and
+      // "address", suitable for the inmail_email_participant datatype.
       // @todo Return list of all addresses, https://www.drupal.org/node/2379801
-      return reset($emails);
+      return reset($participants);
     }
     // Many property names are just header field names.
     return $message->getHeader()->getFieldBody($property_name);

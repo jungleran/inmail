@@ -7,6 +7,7 @@
 namespace Drupal\inmail_collect\Tests;
 
 use Drupal\collect\Entity\Container;
+use Drupal\inmail\Plugin\DataType\EmailParticipant;
 use Drupal\simpletest\KernelTestBase;
 
 /**
@@ -42,8 +43,8 @@ class InmailMessageSchemaTest extends KernelTestBase {
   /**
    * Tests the properties of the schema plugin.
    *
-   * @see Drupal\inmail_collect\Plugin\collect\Schema\InmailMessageSchema::getDataProperty()
-   * @see Drupal\inmail_collect\Plugin\collect\Schema\InmailMessageSchema::getPropertyDefinitions()
+   * @see Drupal\inmail_collect\Plugin\collect\Schema\InmailMessageSchema::evaluate()
+   * @see Drupal\inmail_collect\Plugin\collect\Schema\InmailMessageSchema::getStaticPropertyDefinitions()
    */
   public function testProperties() {
     $raw = file_get_contents(\Drupal::root() . '/' . drupal_get_path('module', 'inmail_test') . '/eml/simple-autoreply.eml');
@@ -60,10 +61,10 @@ class InmailMessageSchemaTest extends KernelTestBase {
     $data = $typed_data_provider->getTypedData($container);
 
     // Each property of the schema should map to data in the message.
-    $this->assertEqual('Nancy <nancy@example.com>', $data->get('from')->getValue());
-    $this->assertEqual('nancy@example.com', $data->get('from_address')->getValue());
-    $this->assertEqual('Arild <arild@example.com>', $data->get('to')->getValue());
-    $this->assertEqual('arild@example.com', $data->get('to_address')->getValue());
+    $this->assertTrue($data->get('from') instanceof EmailParticipant);
+    $this->assertEqual(['name' => 'Nancy', 'address' => 'nancy@example.com'], $data->get('from')->getValue());
+    $this->assertTrue($data->get('to') instanceof EmailParticipant);
+    $this->assertEqual(['name' => 'Arild', 'address' => 'arild@example.com'], $data->get('to')->getValue());
     $this->assertEqual('Out of office', $data->get('subject')->getValue());
     $this->assertEqual("Hello\nI'm out of office due to illness", $data->get('body')->getValue());
   }
