@@ -63,7 +63,6 @@ class InmailCollectWebTest extends WebTestBase {
     SchemaConfig::load('inmail_message')->enable()->save();
     $this->drupalGet($this->getUrl());
     // Details summaries of each part.
-    $this->assertFieldByXPath('//div[@class="field-item"]/details[1]/summary', t('Schema plugin applied'));
     $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/summary', 'DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
     $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/div/details[1]/summary', t('Part 1'));
     $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/div/details[2]/summary', t('Part 2'));

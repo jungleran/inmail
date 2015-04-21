@@ -88,12 +88,10 @@ class CollectHandler extends HandlerBase {
 
     Container::create(array(
       'origin_uri' => $origin_uri,
-      'data' => array(
-        // @todo Formally document this schema with present fields.
-        'schema' => static::SCHEMA_URI,
-        'type' => 'application/json',
-        'data' => json_encode($data),
-      ),
+      // @todo Formally document this schema with present fields.
+      'schema_uri' => static::SCHEMA_URI,
+      'type' => 'application/json',
+      'data' => json_encode($data),
       'date' => $message->getReceivedDate()->getTimestamp(),
     ))->save();
   }

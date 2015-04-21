@@ -7,7 +7,6 @@
 namespace Drupal\inmail_collect\Tests;
 
 use Drupal\collect\Entity\Container;
-use Drupal\collect\TypedData\CollectDataDefinition;
 use Drupal\simpletest\KernelTestBase;
 
 /**
@@ -22,7 +21,15 @@ class InmailMessageSchemaTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['inmail_collect', 'inmail', 'collect', 'inmail_test', 'rest', 'serialization'];
+  public static $modules = [
+    'inmail_collect',
+    'inmail',
+    'collect',
+    'collect_common',
+    'inmail_test',
+    'rest',
+    'serialization',
+  ];
 
   /**
    * {@inheritdoc}
@@ -41,18 +48,16 @@ class InmailMessageSchemaTest extends KernelTestBase {
   public function testProperties() {
     $raw = file_get_contents(\Drupal::root() . '/' . drupal_get_path('module', 'inmail_test') . '/eml/simple-autoreply.eml');
     $container = Container::create([
-      'data' => [
-        'data' => json_encode([
-          'raw' => $raw,
-        ]),
-        'schema' => 'https://www.drupal.org/project/inmail/schema/message',
-        'type' => 'application/json',
-      ],
+      'data' => json_encode([
+        'raw' => $raw,
+      ]),
+      'schema_uri' => 'https://www.drupal.org/project/inmail/schema/message',
+      'type' => 'application/json',
     ]);
 
     /** @var \Drupal\collect\TypedData\TypedDataProvider $typed_data_provider */
     $typed_data_provider = \Drupal::service('collect.typed_data_provider');
-    $data = $typed_data_provider->getTypedData($container->getDataItem());
+    $data = $typed_data_provider->getTypedData($container);
 
     // Each property of the schema should map to data in the message.
     $this->assertEqual('Nancy <nancy@example.com>', $data->get('from')->getValue());

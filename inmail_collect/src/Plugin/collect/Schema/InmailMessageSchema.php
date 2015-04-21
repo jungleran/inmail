@@ -6,8 +6,10 @@
 
 namespace Drupal\inmail_collect\Plugin\collect\Schema;
 
-use Drupal\collect\Plugin\Field\FieldType\CollectDataItem;
+use Drupal\collect\CollectContainerInterface;
+use Drupal\collect\Schema\PropertyDefinition;
 use Drupal\collect\Schema\SchemaBase;
+use Drupal\collect\Schema\SpecializedDisplaySchemaInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\inmail\MIME\Parser;
@@ -22,7 +24,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   label = @Translation("Email message")
  * )
  */
-class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginInterface {
+class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginInterface, SpecializedDisplaySchemaInterface {
 
   /**
    * The injected MIME parser.
@@ -63,15 +65,15 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
   /**
    * {@inheritdoc}
    */
-  public function parse(CollectDataItem $data_field) {
-    $raw = json_decode($data_field->data)->raw;
+  public function parse(CollectContainerInterface $container) {
+    $raw = json_decode($container->getData())->raw;
     return $this->parser->parseMessage($raw);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function build($data) {
+  public function build($data, CollectContainerInterface $container) {
     /** @var \Drupal\inmail\MIME\EntityInterface $data */
     return $this->renderer->renderEntity($data);
   }
@@ -106,23 +108,23 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public static function getStaticPropertyDefinitions() {
-    $properties['body'] = DataDefinition::create('string')
-      ->setLabel(t('Body'));
+    $properties['body'] = new PropertyDefinition('body', DataDefinition::create('string')
+      ->setLabel(t('Body')));
 
-    $properties['subject'] = DataDefinition::create('string')
-      ->setLabel(t('Subject'));
+    $properties['subject'] = new PropertyDefinition('subject', DataDefinition::create('string')
+      ->setLabel(t('Subject')));
 
-    $properties['to'] = DataDefinition::create('string')
-      ->setLabel(t('To'));
+    $properties['to'] = new PropertyDefinition('to', DataDefinition::create('string')
+      ->setLabel(t('To')));
 
-    $properties['to_address'] = DataDefinition::create('email')
-      ->setLabel(t('To address'));
+    $properties['to_address'] = new PropertyDefinition('to_address', DataDefinition::create('email')
+      ->setLabel(t('To address')));
 
-    $properties['from'] = DataDefinition::create('string')
-      ->setLabel(t('From'));
+    $properties['from'] = new PropertyDefinition('from', DataDefinition::create('string')
+      ->setLabel(t('From')));
 
-    $properties['from_address'] = DataDefinition::create('email')
-      ->setLabel(t('From address'));
+    $properties['from_address'] = new PropertyDefinition('from_address', DataDefinition::create('email')
+      ->setLabel(t('From address')));
 
     return $properties;
   }
@@ -130,7 +132,8 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
   /**
    * {@inheritdoc}
    */
-  public function getDataProperty($data, $property_name) {
+  public function evaluate($data, $property_name) {
+    // @todo Define a query format. For To/From/Cc, allow it to specify name, address or both.
     /** @var \Drupal\inmail\MIME\EntityInterface $message */
     $message = $data;
 
