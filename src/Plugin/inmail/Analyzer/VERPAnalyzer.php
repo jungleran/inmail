@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Plugin\inmail\Analyzer\VERPAnalyzer.
+ * Contains \Drupal\inmail\Plugin\inmail\Analyzer\VerpAnalyzer.
  */
 
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
@@ -37,7 +37,7 @@ use Drupal\inmail\ProcessorResultInterface;
  *
  * // http://www.postfix.org/generic.5.html
  *
- * @see inmail_mail_alter_VERP()
+ * @see inmail_mail_alter_verp()
  *
  * @ingroup analyzer
  *
@@ -46,7 +46,7 @@ use Drupal\inmail\ProcessorResultInterface;
  *   label = @Translation("VERP Analyzer")
  * )
  */
-class VERPAnalyzer extends AnalyzerBase {
+class VerpAnalyzer extends AnalyzerBase {
 
   /**
    * {@inheritdoc}
@@ -60,7 +60,7 @@ class VERPAnalyzer extends AnalyzerBase {
     $return_path_split = explode('@', $return_path);
 
     if (count($return_path_split) != 2) {
-      $processor_result->log('VERPAnalyzer', 'VERP Analyzer found invalid Return-Path address "%return_path"', array('%return_path' => $return_path));
+      $processor_result->log('VerpAnalyzer', 'VERP Analyzer found invalid Return-Path address "%return_path"', array('%return_path' => $return_path));
       return;
     }
 

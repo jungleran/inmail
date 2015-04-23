@@ -43,9 +43,9 @@ class AnalyzerTest extends KernelTestBase {
   public function testEffectivePriority() {
     // This message is designed to challenge the priority in which analyzers are
     // invoked: if priority is not working correctly, StandardDSNAnalyzer comes
-    // before VERPAnalyzer (because of alphabetical sorting?) and sets the
+    // before VerpAnalyzer (because of alphabetical sorting?) and sets the
     // recipient property from the Final-Recipient part of the DSN report.
-    // With correct priorities, VERPAnalyzer will come first and set the
+    // With correct priorities, VerpAnalyzer will come first and set the
     // property using the more reliable VERP address.
     $raw = <<<EOF
 To: bounces+verp-parsed=example.org@example.com

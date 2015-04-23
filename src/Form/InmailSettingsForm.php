@@ -39,7 +39,7 @@ class InmailSettingsForm extends ConfigFormBase {
     $form['return_path'] = array(
       '#title' => $this->t('Return-Path address'),
       '#type' => 'email',
-      '#description' => $this->t('Normally the site email address (%site_mail) is used for the <code>Return-Path</code> header in outgoing messages. You can use this field to set another, dedicated address, or leave it empty to use the site email address.',
+      '#description' => $this->t('Normally the site email address (%site_mail) is used for the <code>Return-Path</code> header in outgoing messages. You can use this field to set another, dedicated address, or leave it empty to use the site email address. Note: VERP is not applied on messages with multiple recipients.',
           ['%site_mail' => \Drupal::config('system.site')->get('mail')]),
       // Setting #element_validate breaks merging with defaults, so specify the
       // standard email validation explicitly.

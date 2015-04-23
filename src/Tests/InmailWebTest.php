@@ -148,7 +148,7 @@ class InmailWebTest extends WebTestBase {
    * @see \Drupal\inmail\Form\AnalyzerConfigurationForm
    * @see \Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNAnalyzer
    * @see \Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNReasonAnalyzer
-   * @see \Drupal\inmail\Plugin\inmail\Analyzer\VERPAnalyzer
+   * @see \Drupal\inmail\Plugin\inmail\Analyzer\VerpAnalyzer
    */
   protected function doTestAnalyzerUi() {
     // Check Analyzer list.

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Tests\VERPTest.
+ * Contains \Drupal\inmail\Tests\VerpTest.
  */
 
 namespace Drupal\inmail\Tests;
@@ -19,14 +19,14 @@ use Drupal\simpletest\KernelTestBase;
  *
  * @group inmail
  */
-class VERPTest extends KernelTestBase {
+class VerpTest extends KernelTestBase {
 
   /**
    * Modules to enable.
    *
    * @var array
    */
-  public static $modules = array('inmail', 'inmail_test', 'system');
+  public static $modules = array('inmail', 'inmail_test', 'system', 'dblog');
 
   /**
    * {@inheritdoc}
@@ -34,6 +34,7 @@ class VERPTest extends KernelTestBase {
   public function setUp() {
     parent::setUp();
     $this->installConfig(['inmail', 'system']);
+    $this->installSchema('dblog', ['watchdog']);
     \Drupal::configFactory()->getEditable('system.site')
       ->set('mail', 'bounces@example.com')
       ->save();
@@ -45,13 +46,14 @@ class VERPTest extends KernelTestBase {
   /**
    * Test the VERP mechanism.
    */
-  public function testVERP() {
+  public function testVerp() {
     // Send a message and check the modified Return-Path.
     $recipient = 'user@example.org';
     $expected_returnpath = 'bounces+user=example.org@example.com';
 
     $message = \Drupal::service('plugin.manager.mail')->mail('inmail_test', 'VERP', $recipient, LanguageInterface::LANGCODE_DEFAULT);
     $this->assertEqual($message['headers']['Return-Path'], $expected_returnpath);
+    $this->assertTrue($message['send']);
 
     // Enable ResultKeeperHandler.
     HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
@@ -70,6 +72,31 @@ class VERPTest extends KernelTestBase {
     $result = ResultKeeperHandler::$result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
     $parsed_recipient = $result->getRecipient();
     $this->assertEqual($parsed_recipient, $recipient);
+
+    // VERP should be skipped for messages with Cc recipients.
+    $message = \Drupal::service('plugin.manager.mail')->mail('inmail_test', 'cc', $recipient, LanguageInterface::LANGCODE_DEFAULT);
+    $this->assertEqual($this->getLatestLogMessage()['message'], 'Cannot use VERP for message with Cc recipients, message ID: @id');
+    $this->assertFalse($message['send']);
+
+    // VERP should be skipped when there are multiple recipients.
+    $recipient = 'alice@example.org, bob@example.org';
+    $message = \Drupal::service('plugin.manager.mail')->mail('inmail_test', 'VERP', $recipient, LanguageInterface::LANGCODE_DEFAULT);
+    $this->assertEqual($this->getLatestLogMessage()['message'], 'Cannot use VERP for multiple recipients, message ID: @id');
+    $this->assertFalse($message['send']);
+  }
+
+  /**
+   * Returns the latest watchdog entry.
+   *
+   * @return array
+   *   The latest log entry, as an associative array.
+   */
+  protected function getLatestLogMessage() {
+    return \Drupal::database()->select('watchdog', 'w')
+      ->fields('w', ['message'])
+      ->orderBy('wid', 'DESC')
+      ->execute()
+      ->fetchAssoc();
   }
 
 }

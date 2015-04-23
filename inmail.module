@@ -6,6 +6,7 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\inmail\Entity\AnalyzerConfig;
+use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 
 /**
@@ -196,7 +197,7 @@ function inmail_mail_alter(&$message) {
 
   // Manipulate the Return-Path.
   if (AnalyzerConfig::load('verp')->status()) {
-    inmail_mail_alter_VERP($message);
+    inmail_mail_alter_verp($message);
   }
 }
 
@@ -205,19 +206,45 @@ function inmail_mail_alter(&$message) {
  *
  * The technique is called Variable Envelope Return Path (VERP) and enables easy
  * identification of the intended recipient for incoming bounce messages. That
- * identification happens in VERPAnalyzer.
+ * identification happens in VerpAnalyzer.
  *
- * @see \Drupal\inmail\MessageAnalyzer\VERPAnalyzer
- * @see inmail_generate_VERP()
+ * @see \Drupal\inmail\MessageAnalyzer\VerpAnalyzer
+ * @see inmail_generate_verp()
+ *
+ * @todo Make VERP pluggable, https://www.drupal.org/node/2463737
  */
-function inmail_mail_alter_VERP(&$message) {
+function inmail_mail_alter_verp(&$message) {
   // Identify current Return-Path value.
   $return_path = $message['headers']['Return-Path'];
 
+  // Parse recipient address.
+  $to = Parser::parseAddress($message['to']);
+
+  // Give up if recipient is multiple addresses, because including multiple
+  // addresses in the Return-Path is troublesome.
+  if (count($to) != 1) {
+    \Drupal::logger('inmail')->notice('Cannot use VERP for multiple recipients, message ID: @id', ['@id' => $message['id']]);
+    $message['send'] = FALSE;
+    return;
+  }
+
+  // Copy headers to allow case-insensitive lookup.
+  $headers = array_change_key_case($message['headers'], CASE_LOWER);
+
+  // Give up if there are Cc/Bcc recipients, because if they bounce we will
+  // accidentally identify the To recipient as undeliverable.
+  // @todo Handle VERP for bounces from a Cc recipient, https://www.drupal.org/node/2475987
+  $has_cc = isset($headers['cc']) && Parser::parseAddress($headers['cc']);
+  $has_bcc = isset($headers['bcc']) && Parser::parseAddress($headers['bcc']);
+  if ($has_cc || $has_bcc) {
+    \Drupal::logger('inmail')->notice('Cannot use VERP for message with Cc/Bcc recipients, message ID: @id', ['@id' => $message['id']]);
+    $message['send'] = FALSE;
+    return;
+  }
+
   // Include recipient address in Return-Path value.
-  // @todo Handle multiple recipients and "Foo <a@b.c>" format: https://www.drupal.org/node/2379801
   if ($return_path) {
-    $message['headers']['Return-Path'] = inmail_generate_VERP($return_path, $message['to']);
+    $message['headers']['Return-Path'] = inmail_generate_verp($return_path, $message['to']);
   }
 }
 
@@ -234,7 +261,7 @@ function inmail_mail_alter_VERP(&$message) {
  *
  * @see \Drupal\inmail\MessageAnalyzer\VERPAnalyzer
  */
-function inmail_generate_VERP($return_path, $recipient) {
+function inmail_generate_verp($return_path, $recipient) {
   $to = str_replace('@', '=', $recipient);
   return str_replace('@', "+$to@", $return_path);
 }

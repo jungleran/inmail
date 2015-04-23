@@ -45,7 +45,6 @@ class DirectMail implements MailInterface {
   public function mail(array $message) {
     // Headers are passed in $message['raw_headers'], see explanation in
     // inmail_mail().
-    // @todo Handle multiple recipients and "Foo <a@b.c>" format: https://www.drupal.org/node/2379801
     return (bool) mail(
       $message['to'],
       $message['subject'],

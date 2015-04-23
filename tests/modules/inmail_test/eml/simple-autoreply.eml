@@ -7,6 +7,8 @@ Received: by s482.loopia.se (Postfix, from userid 5001)
 Message-Id: <dovecot-sieve-1425425088-363907-0@s482.loopia.se>
 Date: Wed, 04 Mar 2015 00:24:48 +0100
 From: Nancy <nancy@example.com>
+Cc: Boss <boss@example.com>
+Bcc: Big Brother <bigbrother@example.com>
 To: Arild <arild@example.com>
 Subject: Out of office
 In-Reply-To: <CAFZOsfNCeJ+=e3gngmXf7xGGmG6r+pjNHvYdjh+WhQwSZ1G_qA@mail.gmail.com>
