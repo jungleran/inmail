@@ -1,0 +1,121 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - collect_crm_core_contact
+    - inmail
+id: email_message
+label: 'Email message'
+uri_pattern: 'https://www.drupal.org/project/inmail/schema/message'
+plugin_id: inmail_message
+locked: false
+container_revision: false
+properties:
+  body:
+    query: body
+    data_definition:
+      type: string
+      label: Body
+      description: ''
+  subject:
+    query: subject
+    data_definition:
+      type: string
+      label: Subject
+      description: ''
+  from:
+    query: from
+    data_definition:
+      type: inmail_email_participant
+      label: From
+      description: ''
+  to:
+    query: to
+    data_definition:
+      type: list
+      label: To
+      description: ''
+      item_definition:
+        type: inmail_email_participant
+        label: ''
+        description: ''
+        properties:
+          name:
+            type: string
+            label: Name
+            description: ''
+          address:
+            type: email
+            label: Email
+            description: ''
+  cc:
+    query: cc
+    data_definition:
+      type: list
+      label: Cc
+      description: ''
+      item_definition:
+        type: inmail_email_participant
+        label: ''
+        description: ''
+        properties:
+          name:
+            type: string
+            label: Name
+            description: ''
+          address:
+            type: email
+            label: Email
+            description: ''
+  bcc:
+    query: bcc
+    data_definition:
+      type: list
+      label: Bcc
+      description: ''
+      item_definition:
+        type: inmail_email_participant
+        label: ''
+        description: ''
+        properties:
+          name:
+            type: string
+            label: Name
+            description: ''
+          address:
+            type: email
+            label: Email
+            description: ''
+processors:
+  -
+    weight: 0
+    settings:
+      relation: from
+      contact_type: individual
+      fields:
+        name: from
+        contact_mail: from
+    plugin_id: contact_matcher
+  -
+    weight: 1
+    settings:
+      relation: to
+      contact_type: individual
+      fields:
+        name: to
+        contact_mail: to
+    plugin_id: contact_matcher
+  -
+    weight: 2
+    settings:
+      relation: cc
+      contact_type: individual
+      fields:
+        name: cc
+        contact_mail: cc
+    plugin_id: contact_matcher
+  -
+    weight: 3
+    settings:
+      title_property: subject
+    plugin_id: activity_creator

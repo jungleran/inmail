@@ -8,6 +8,7 @@
 namespace Drupal\inmail_collect\Tests;
 
 use Drupal\collect\Entity\SchemaConfig;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Url;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\simpletest\WebTestBase;
@@ -48,8 +49,8 @@ class InmailCollectWebTest extends WebTestBase {
     $this->assertText('application/json');
 
     // View details as JSON.
-    SchemaConfig::load('inmail_message')->disable()->save();
     $this->clickLink('View');
+    $container_url = $this->getUrl();
     $this->assertText('&quot;header-subject&quot;: &quot;DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory&quot;');
     $this->assertText('&quot;header-to&quot;: &quot;bounces+user=example.org@example.com&quot;');
     $this->assertText('&quot;header-from&quot;: &quot;Postmaster@acacia.example.org&quot;');
@@ -59,9 +60,12 @@ class InmailCollectWebTest extends WebTestBase {
     // Last line of the raw message.
     $this->assertText('--==IFJRGLKFGIR25201654UHRUHIHD--');
 
+    // Create suggested Inmail schema.
+    $this->clickLink(t('Set up a @label schema', ['@label' => 'Email message']));
+    $this->drupalPostForm(NULL, array('id' => 'email_message'), t('Save'));
+
     // View details as rendered.
-    SchemaConfig::load('inmail_message')->enable()->save();
-    $this->drupalGet($this->getUrl());
+    $this->drupalGet($container_url);
     // Details summaries of each part.
     $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/summary', 'DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
     $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/div/details[1]/summary', t('Part 1'));

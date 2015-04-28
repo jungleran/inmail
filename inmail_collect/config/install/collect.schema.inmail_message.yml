@@ -1,5 +1,0 @@
-langcode: en
-id: inmail_message
-label: Inmail Message
-uri_pattern: https://www.drupal.org/project/inmail/schema/message
-plugin_id: inmail_message

@@ -7,6 +7,7 @@
 namespace Drupal\inmail_collect\Tests;
 
 use Drupal\collect\Entity\Container;
+use Drupal\collect\Entity\SchemaConfig;
 use Drupal\inmail\Plugin\DataType\EmailParticipant;
 use Drupal\simpletest\KernelTestBase;
 
@@ -33,14 +34,6 @@ class InmailMessageSchemaTest extends KernelTestBase {
   ];
 
   /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-    $this->installConfig(['inmail_collect']);
-  }
-
-  /**
    * Tests the properties of the schema plugin.
    *
    * @see Drupal\inmail_collect\Plugin\collect\Schema\InmailMessageSchema::evaluate()
@@ -55,6 +48,18 @@ class InmailMessageSchemaTest extends KernelTestBase {
       'schema_uri' => 'https://www.drupal.org/project/inmail/schema/message',
       'type' => 'application/json',
     ]);
+
+    // Create suggested schema.
+    /** @var \Drupal\collect\Schema\SchemaManagerInterface $schema_manager */
+    $schema_manager = \Drupal::service('plugin.manager.collect.schema');
+    $schema_config = $schema_manager->suggestConfig($container);
+    SchemaConfig::create([
+      'id' => 'email_schema',
+      'label' => $schema_config->label(),
+      'plugin_id' => $schema_config->getPluginId(),
+      'uri_pattern' => $schema_config->getUriPattern(),
+      'properties' => $schema_config->getProperties(),
+    ])->save();
 
     /** @var \Drupal\collect\TypedData\TypedDataProvider $typed_data_provider */
     $typed_data_provider = \Drupal::service('collect.typed_data_provider');

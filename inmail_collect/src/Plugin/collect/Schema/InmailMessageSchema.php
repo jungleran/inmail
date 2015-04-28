@@ -22,7 +22,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @Schema(
  *   id = "inmail_message",
- *   label = @Translation("Email message")
+ *   label = @Translation("Email message"),
+ *   patterns = {
+ *     "https://www.drupal.org/project/inmail/schema/message"
+ *   }
  * )
  */
 class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginInterface, SpecializedDisplaySchemaInterface {
@@ -115,6 +118,9 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
     $properties['subject'] = new PropertyDefinition('subject', DataDefinition::create('string')
       ->setLabel(t('Subject')));
 
+    $properties['from'] = new PropertyDefinition('from', DataDefinition::create('inmail_email_participant')
+      ->setLabel(t('From')));
+
     $properties['to'] = new PropertyDefinition('to', ListDataDefinition::create('inmail_email_participant')
       ->setLabel(t('To')));
 
@@ -123,9 +129,6 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
 
     $properties['bcc'] = new PropertyDefinition('bcc', ListDataDefinition::create('inmail_email_participant')
       ->setLabel(t('Bcc')));
-
-    $properties['from'] = new PropertyDefinition('from', DataDefinition::create('inmail_email_participant')
-      ->setLabel(t('From')));
 
     return $properties;
   }
