@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\TypedData\EmailParticipantDefinition.
+ * Contains \Drupal\inmail\TypedData\MailboxDefinition.
  */
 
 namespace Drupal\inmail\TypedData;
@@ -10,13 +10,13 @@ use Drupal\Core\TypedData\ComplexDataDefinitionBase;
 use Drupal\Core\TypedData\DataDefinition;
 
 /**
- * Data definition class for the inmail_email_participant datatype.
+ * Data definition class for the inmail_mailbox datatype.
  */
-class EmailParticipantDefinition extends ComplexDataDefinitionBase {
+class MailboxDefinition extends ComplexDataDefinitionBase {
   /**
    * {@inheritdoc}
    */
-  public static function create($type = 'inmail_email_participant') {
+  public static function create($type = 'inmail_mailbox') {
     return parent::create($type);
   }
 
@@ -28,7 +28,7 @@ class EmailParticipantDefinition extends ComplexDataDefinitionBase {
       'name' => DataDefinition::create('string')
         ->setLabel('Name'),
       'address' => DataDefinition::create('email')
-        ->setLabel('Email')
+        ->setLabel('Address')
         ->setRequired(TRUE),
     ];
   }

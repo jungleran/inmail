@@ -26,7 +26,7 @@ properties:
   from:
     query: from
     data_definition:
-      type: inmail_email_participant
+      type: inmail_mailbox
       label: From
       description: ''
   to:
@@ -36,7 +36,7 @@ properties:
       label: To
       description: ''
       item_definition:
-        type: inmail_email_participant
+        type: inmail_mailbox
         label: ''
         description: ''
         properties:
@@ -55,7 +55,7 @@ properties:
       label: Cc
       description: ''
       item_definition:
-        type: inmail_email_participant
+        type: inmail_mailbox
         label: ''
         description: ''
         properties:
@@ -74,7 +74,7 @@ properties:
       label: Bcc
       description: ''
       item_definition:
-        type: inmail_email_participant
+        type: inmail_mailbox
         label: ''
         description: ''
         properties:

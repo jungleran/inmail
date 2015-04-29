@@ -71,18 +71,18 @@ class Parser implements ParserInterface, ContainerInjectionInterface {
   public static function parseAddress($field) {
     // Separate by comma, each element is trimmed.
     $parts = preg_split('/\s*,\s*/', trim($field));
-    $participants = [];
+    $mailboxes = [];
     foreach ($parts as $part) {
       if (preg_match('/^\S+@\S+\.\S+$/', $part)) {
         // Match address "foo@example.com".
-        $participants[] = ['name' => '', 'address' => $part];
+        $mailboxes[] = ['name' => '', 'address' => $part];
       }
       elseif (preg_match('/(.*)<(\S+@\S+\.\S+)>$/', $part, $matches)) {
         // Match name and address "Foo Bar <foo@example.com>".
-        $participants[] = ['name' => trim(trim($matches[1]), '"'), 'address' => $matches[2]];
+        $mailboxes[] = ['name' => trim(trim($matches[1]), '"'), 'address' => $matches[2]];
       }
     }
-    return $participants;
+    return $mailboxes;
   }
 
   /**

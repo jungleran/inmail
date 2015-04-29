@@ -6,7 +6,7 @@
 
 namespace Drupal\inmail\Tests;
 
-use Drupal\inmail\TypedData\EmailParticipantDefinition;
+use Drupal\inmail\TypedData\MailboxDefinition;
 use Drupal\simpletest\KernelTestBase;
 
 /**
@@ -23,17 +23,17 @@ class InmailDataTypeTest extends KernelTestBase {
   public static $modules = ['inmail'];
 
   /**
-   * Tests the inmail_email_participant datatype.
+   * Tests the inmail_mailbox datatype.
    */
-  public function testEmailParticipant() {
+  public function testMailbox() {
     $typed_data_manager = \Drupal::typedDataManager();
 
     // Test the definition create method.
-    $data_definition = EmailParticipantDefinition::create();
-    $this->assertEqual($data_definition, $typed_data_manager->createDataDefinition('inmail_email_participant'));
+    $data_definition = MailboxDefinition::create();
+    $this->assertEqual($data_definition, $typed_data_manager->createDataDefinition('inmail_mailbox'));
 
     // Access the properties.
-    /** @var \Drupal\inmail\Plugin\DataType\EmailParticipant $data */
+    /** @var \Drupal\inmail\Plugin\DataType\Mailbox $data */
     $data = $typed_data_manager->create($data_definition, [
       'name' => 'Alice',
       'address' => 'alice@example.com',

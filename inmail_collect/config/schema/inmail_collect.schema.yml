@@ -1,2 +1,2 @@
-collect.data_definition.inmail_email_participant:
+collect.data_definition.inmail_mailbox:
   type: collect.complex_data_definition

@@ -118,16 +118,16 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
     $properties['subject'] = new PropertyDefinition('subject', DataDefinition::create('string')
       ->setLabel(t('Subject')));
 
-    $properties['from'] = new PropertyDefinition('from', DataDefinition::create('inmail_email_participant')
+    $properties['from'] = new PropertyDefinition('from', DataDefinition::create('inmail_mailbox')
       ->setLabel(t('From')));
 
-    $properties['to'] = new PropertyDefinition('to', ListDataDefinition::create('inmail_email_participant')
+    $properties['to'] = new PropertyDefinition('to', ListDataDefinition::create('inmail_mailbox')
       ->setLabel(t('To')));
 
-    $properties['cc'] = new PropertyDefinition('cc', ListDataDefinition::create('inmail_email_participant')
+    $properties['cc'] = new PropertyDefinition('cc', ListDataDefinition::create('inmail_mailbox')
       ->setLabel(t('Cc')));
 
-    $properties['bcc'] = new PropertyDefinition('bcc', ListDataDefinition::create('inmail_email_participant')
+    $properties['bcc'] = new PropertyDefinition('bcc', ListDataDefinition::create('inmail_mailbox')
       ->setLabel(t('Bcc')));
 
     return $properties;
@@ -148,13 +148,13 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
     if (in_array($property_name, ['from', 'to', 'cc', 'bcc'])) {
       $field_body = $message->getHeader()->getFieldBody($property_name);
       // The returned value is an associative array with elements "name" and
-      // "address", suitable for the inmail_email_participant datatype.
-      $participants = Parser::parseAddress($field_body);
-      // Determine whether to return one or all participants.
+      // "address", suitable for the inmail_mailbox datatype.
+      $mailboxes = Parser::parseAddress($field_body);
+      // Determine whether to return as single or as array.
       if (in_array($property_name, ['to', 'cc', 'bcc'])) {
-        return $participants;
+        return $mailboxes;
       }
-      return reset($participants);
+      return reset($mailboxes);
     }
     // Many property names are just header field names.
     return $message->getHeader()->getFieldBody($property_name);

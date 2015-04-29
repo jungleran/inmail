@@ -8,7 +8,7 @@ namespace Drupal\inmail_collect\Tests;
 
 use Drupal\collect\Entity\Container;
 use Drupal\collect\Entity\SchemaConfig;
-use Drupal\inmail\Plugin\DataType\EmailParticipant;
+use Drupal\inmail\Plugin\DataType\Mailbox;
 use Drupal\simpletest\KernelTestBase;
 
 /**
@@ -66,13 +66,13 @@ class InmailMessageSchemaTest extends KernelTestBase {
     $data = $typed_data_provider->getTypedData($container);
 
     // Each property of the schema should map to data in the message.
-    $this->assertTrue($data->get('from') instanceof EmailParticipant);
+    $this->assertTrue($data->get('from') instanceof Mailbox);
     $this->assertEqual(['name' => 'Nancy', 'address' => 'nancy@example.com'], $data->get('from')->getValue());
-    $this->assertTrue($data->get('to')->get(0) instanceof EmailParticipant);
+    $this->assertTrue($data->get('to')->get(0) instanceof Mailbox);
     $this->assertEqual([['name' => 'Arild', 'address' => 'arild@example.com']], $data->get('to')->getValue());
-    $this->assertTrue($data->get('cc')->get(0) instanceof EmailParticipant);
+    $this->assertTrue($data->get('cc')->get(0) instanceof Mailbox);
     $this->assertEqual([['name' => 'Boss', 'address' => 'boss@example.com']], $data->get('cc')->getValue());
-    $this->assertTrue($data->get('bcc')->get(0) instanceof EmailParticipant);
+    $this->assertTrue($data->get('bcc')->get(0) instanceof Mailbox);
     $this->assertEqual([['name' => 'Big Brother', 'address' => 'bigbrother@example.com']], $data->get('bcc')->getValue());
     $this->assertEqual('Out of office', $data->get('subject')->getValue());
     $this->assertEqual("Hello\nI'm out of office due to illness", $data->get('body')->getValue());
