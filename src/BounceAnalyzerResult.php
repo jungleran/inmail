@@ -162,10 +162,14 @@ class BounceAnalyzerResult implements AnalyzerResultInterface {
    * {@inheritdoc}
    */
   public function summarize() {
-    return [
-      'recipient' => $this->getRecipient(),
-      'code' => $this->getStatusCode()->getCode(),
-    ];
+    $summary = array();
+    if ($this->getRecipient()) {
+      $summary['recipient'] = $this->getRecipient();
+    }
+    if ($this->getStatusCode() && $this->getStatusCode()->getCode()) {
+      $summary['code'] = $this->getStatusCode()->getCode();
+    }
+    return $summary;
   }
 
   /**

@@ -84,4 +84,11 @@ EOF;
     $this->assertEqual($result->getRecipient(), 'verp-parsed@example.org');
   }
 
+  /**
+   * Tests BounceAnalyzerResult by instantiation of the object and calls a method.
+   */
+  public function testBounce() {
+    $bouncetest = new BounceAnalyzerResult();
+    $bouncetest->summarize();
+  }
 }
