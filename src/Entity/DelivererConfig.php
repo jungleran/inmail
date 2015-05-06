@@ -29,6 +29,12 @@ namespace Drupal\inmail\Entity;
  *     "label" = "label",
  *     "status" = "status"
  *   },
+ *   config_export = {
+ *     "id",
+ *     "label",
+ *     "plugin",
+ *     "configuration",
+ *   },
  *   links = {
  *     "edit-form" = "admin/config/system/inmail/analyzers/{inmail_deliverer}",
  *     "delete-form" = "admin/config/system/inmail/analyzers/{inmail_deliverer}/delete",

@@ -30,6 +30,13 @@ namespace Drupal\inmail\Entity;
  *     "status" = "status",
  *     "weight" = "weight"
  *   },
+ *   config_export = {
+ *     "id",
+ *     "label",
+ *     "plugin",
+ *     "configuration",
+ *     "weight",
+ *   },
  *   links = {
  *     "edit-form" = "admin/config/system/inmail/analyzers/{inmail_analyzer}",
  *     "enable" = "admin/config/system/inmail/analyzers/{inmail_analyzer}/enable",
