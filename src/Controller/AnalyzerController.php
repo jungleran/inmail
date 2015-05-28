@@ -37,7 +37,7 @@ class AnalyzerController extends ControllerBase {
    */
   public function enable(AnalyzerConfig $inmail_analyzer) {
     $inmail_analyzer->enable()->save();
-    return new RedirectResponse(\Drupal::url('inmail.analyzer_list', [], ['absolute' => TRUE]));
+    return new RedirectResponse(\Drupal::url('entity.inmail_analyzer.collection', [], ['absolute' => TRUE]));
   }
 
   /**
@@ -45,7 +45,7 @@ class AnalyzerController extends ControllerBase {
    */
   public function disable(AnalyzerConfig $inmail_analyzer) {
     $inmail_analyzer->disable()->save();
-    return new RedirectResponse(\Drupal::url('inmail.analyzer_list', [], ['absolute' => TRUE]));
+    return new RedirectResponse(\Drupal::url('entity.inmail_analyzer.collection', [], ['absolute' => TRUE]));
   }
 
 }

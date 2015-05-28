@@ -4,20 +4,20 @@ inmail.settings:
   base_route: inmail.settings
   weight: 0
 
-inmail.deliverer_list:
-  route_name: inmail.deliverer_list
+entity.inmail_deliverer.collection:
+  route_name: entity.inmail_deliverer.collection
   title: 'Mail deliverers'
   base_route: inmail.settings
   weight: 1
 
-inmail.analyzer_list:
-  route_name: inmail.analyzer_list
+entity.inmail_analyzer.collection:
+  route_name: entity.inmail_analyzer.collection
   title: 'Message analyzers'
   base_route: inmail.settings
   weight: 2
 
-inmail.handler_list:
-  route_name: inmail.handler_list
+entity.inmail_handler.collection:
+  route_name: entity.inmail_handler.collection
   title: 'Message handlers'
   base_route: inmail.settings
   weight: 3

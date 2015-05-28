@@ -36,7 +36,7 @@ class AnalyzerConfigurationForm extends PluginConfigurationForm {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    $form_state->setRedirect('inmail.analyzer_list');
+    $form_state->setRedirect('entity.inmail_analyzer.collection');
   }
 
 }

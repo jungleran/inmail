@@ -44,7 +44,7 @@ class DelivererDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('inmail.deliverer_list');
+    return new Url('entity.inmail_deliverer.collection');
   }
 
 }

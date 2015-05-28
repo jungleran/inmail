@@ -57,7 +57,7 @@ class DelivererController extends ControllerBase implements ContainerInjectionIn
    */
   public function enable(DelivererConfig $inmail_deliverer) {
     $inmail_deliverer->enable()->save();
-    return new RedirectResponse(\Drupal::url('inmail.deliverer_list', [], ['absolute' => TRUE]));
+    return new RedirectResponse(\Drupal::url('entity.inmail_deliverer.collection', [], ['absolute' => TRUE]));
   }
 
   /**
@@ -65,7 +65,7 @@ class DelivererController extends ControllerBase implements ContainerInjectionIn
    */
   public function disable(DelivererConfig $inmail_deliverer) {
     $inmail_deliverer->disable()->save();
-    return new RedirectResponse(\Drupal::url('inmail.deliverer_list', [], ['absolute' => TRUE]));
+    return new RedirectResponse(\Drupal::url('entity.inmail_deliverer.collection', [], ['absolute' => TRUE]));
   }
 
 }
