@@ -23,6 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @Schema(
  *   id = "inmail_message",
  *   label = @Translation("Email message"),
+ *   description = @Translation("Contains body and header fields of an email message."),
  *   patterns = {
  *     "https://www.drupal.org/project/inmail/schema/message"
  *   }
