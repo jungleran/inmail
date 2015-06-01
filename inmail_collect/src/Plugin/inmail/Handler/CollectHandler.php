@@ -74,6 +74,9 @@ class CollectHandler extends HandlerBase {
         . \Drupal::service('uuid')->generate(), ['absolute' => TRUE])->toString();
     }
 
+    // Decode "@", "=", "+" characters as they are allowed in URLs.
+    $origin_uri = str_replace(['%40', '%3D', '%2B'], ['@', '=', '+'], $origin_uri);
+
     // The data to store. Includes the whole message string for completeness,
     // and a few regular and useful header fields.
     $data = array(

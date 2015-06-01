@@ -7,9 +7,6 @@
 
 namespace Drupal\inmail_collect\Tests;
 
-use Drupal\collect\Entity\SchemaConfig;
-use Drupal\Component\Utility\SafeMarkup;
-use Drupal\Core\Url;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\simpletest\WebTestBase;
 
@@ -45,17 +42,19 @@ class InmailCollectWebTest extends WebTestBase {
     $this->drupalGet('admin/content/collect');
     $this->assertText('https://www.drupal.org/project/inmail/schema/message');
     $this->assertText(format_date(strtotime('19 Feb 2014 10:05:15 +0100'), 'short'));
-    $this->assertText(Url::fromUri('base:inmail/message/message-id/21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031EC2C@acacia.example.org', ['absolute' => TRUE])->toString());
+    $origin_uri = \Drupal::request()->getSchemeAndHttpHost() . \Drupal::request()->getBasePath() . '/inmail/message/message-id/21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031=EC2C+@acacia.example.org';
+    $this->assertText($origin_uri);
     $this->assertText('application/json');
 
     // View details as JSON.
     $this->clickLink('View');
     $container_url = $this->getUrl();
+    $this->assertLink($origin_uri);
     $this->assertText('&quot;header-subject&quot;: &quot;DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory&quot;');
     $this->assertText('&quot;header-to&quot;: &quot;bounces+user=example.org@example.com&quot;');
     $this->assertText('&quot;header-from&quot;: &quot;Postmaster@acacia.example.org&quot;');
     // '<' and '>' are converted to &lt; and &gt; entities by the formatter.
-    $this->assertText('&quot;header-message-id&quot;: &quot;&lt;21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031EC2C@acacia.example.org&gt;&quot;');
+    $this->assertText('&quot;header-message-id&quot;: &quot;&lt;21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031=EC2C+@acacia.example.org&gt;&quot;');
     $this->assertText('&quot;deliverer&quot;: &quot;test&quot;');
     // Last line of the raw message.
     $this->assertText('--==IFJRGLKFGIR25201654UHRUHIHD--');
