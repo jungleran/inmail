@@ -1,22 +1,22 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_collect\Tests\InmailMessageSchemaTest.
+ * Contains \Drupal\inmail_collect\Tests\InmailMessageModelTest.
  */
 
 namespace Drupal\inmail_collect\Tests;
 
 use Drupal\collect\Entity\Container;
-use Drupal\collect\Entity\SchemaConfig;
+use Drupal\collect\Entity\Model;
 use Drupal\inmail\Plugin\DataType\Mailbox;
 use Drupal\simpletest\KernelTestBase;
 
 /**
- * Tests the Inmail schema.
+ * Tests the Inmail model plugin.
  *
  * @group inmail
  */
-class InmailMessageSchemaTest extends KernelTestBase {
+class InmailMessageModelTest extends KernelTestBase {
 
   /**
    * Modules to enable.
@@ -34,10 +34,10 @@ class InmailMessageSchemaTest extends KernelTestBase {
   ];
 
   /**
-   * Tests the properties of the schema plugin.
+   * Tests the properties of the model plugin.
    *
-   * @see Drupal\inmail_collect\Plugin\collect\Schema\InmailMessageSchema::evaluate()
-   * @see Drupal\inmail_collect\Plugin\collect\Schema\InmailMessageSchema::getStaticPropertyDefinitions()
+   * @see Drupal\inmail_collect\Plugin\collect\Model\InmailMessage::evaluate()
+   * @see Drupal\inmail_collect\Plugin\collect\Model\InmailMessage::getStaticPropertyDefinitions()
    */
   public function testProperties() {
     $raw = file_get_contents(\Drupal::root() . '/' . drupal_get_path('module', 'inmail_test') . '/eml/simple-autoreply.eml');
@@ -49,23 +49,23 @@ class InmailMessageSchemaTest extends KernelTestBase {
       'type' => 'application/json',
     ]);
 
-    // Create suggested schema.
-    /** @var \Drupal\collect\Schema\SchemaManagerInterface $schema_manager */
-    $schema_manager = \Drupal::service('plugin.manager.collect.schema');
-    $schema_config = $schema_manager->suggestConfig($container);
-    SchemaConfig::create([
-      'id' => 'email_schema',
-      'label' => $schema_config->label(),
-      'plugin_id' => $schema_config->getPluginId(),
-      'uri_pattern' => $schema_config->getUriPattern(),
-      'properties' => $schema_config->getProperties(),
+    // Create suggested model.
+    /** @var \Drupal\collect\Model\ModelManagerInterface $model_manager */
+    $model_manager = \Drupal::service('plugin.manager.collect.model');
+    $model = $model_manager->suggestModel($container);
+    Model::create([
+      'id' => 'email_model',
+      'label' => $model->label(),
+      'plugin_id' => $model->getPluginId(),
+      'uri_pattern' => $model->getUriPattern(),
+      'properties' => $model->getProperties(),
     ])->save();
 
     /** @var \Drupal\collect\TypedData\TypedDataProvider $typed_data_provider */
     $typed_data_provider = \Drupal::service('collect.typed_data_provider');
     $data = $typed_data_provider->getTypedData($container);
 
-    // Each property of the schema should map to data in the message.
+    // Each property of the model should map to data in the message.
     $this->assertTrue($data->get('from') instanceof Mailbox);
     $this->assertEqual(['name' => 'Nancy', 'address' => 'nancy@example.com'], $data->get('from')->getValue());
     $this->assertTrue($data->get('to')->get(0) instanceof Mailbox);

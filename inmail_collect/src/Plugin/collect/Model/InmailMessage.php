@@ -1,15 +1,15 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_collect\Plugin\collect\Schema\InmailMessageSchema.
+ * Contains \Drupal\inmail_collect\Plugin\collect\Model\InmailMessage.
  */
 
-namespace Drupal\inmail_collect\Plugin\collect\Schema;
+namespace Drupal\inmail_collect\Plugin\collect\Model;
 
 use Drupal\collect\CollectContainerInterface;
-use Drupal\collect\Schema\PropertyDefinition;
-use Drupal\collect\Schema\SchemaBase;
-use Drupal\collect\Schema\SpecializedDisplaySchemaInterface;
+use Drupal\collect\Model\ModelPluginBase;
+use Drupal\collect\Model\PropertyDefinition;
+use Drupal\collect\Model\SpecializedDisplayModelPluginInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\ListDataDefinition;
@@ -18,9 +18,9 @@ use Drupal\inmail\MIME\Renderer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Schema plugin for Inmail messages.
+ * Model plugin for Inmail messages.
  *
- * @Schema(
+ * @Model(
  *   id = "inmail_message",
  *   label = @Translation("Email message"),
  *   description = @Translation("Contains body and header fields of an email message."),
@@ -29,7 +29,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginInterface, SpecializedDisplaySchemaInterface {
+class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInterface, SpecializedDisplayModelPluginInterface {
 
   /**
    * The injected MIME parser.
@@ -46,7 +46,7 @@ class InmailMessageSchema extends SchemaBase implements ContainerFactoryPluginIn
   protected $renderer;
 
   /**
-   * Constructs a new InmailMessageSchema plugin instance.
+   * Constructs a new InmailMessage plugin instance.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, Parser $parser, Renderer $renderer) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);

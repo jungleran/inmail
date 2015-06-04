@@ -27,7 +27,7 @@ class InmailCollectWebTest extends WebTestBase {
   /**
    * Tests the user interface.
    *
-   * @see Drupal\inmail_collect\Plugin\collect\Schema\InmailMessageSchema::build()
+   * @see Drupal\inmail_collect\Plugin\collect\Model\InmailMessage::build()
    */
   public function testUi() {
     // Process and store a message.
@@ -50,6 +50,8 @@ class InmailCollectWebTest extends WebTestBase {
     $this->clickLink('View');
     $container_url = $this->getUrl();
     $this->assertLink($origin_uri);
+    $this->assertText(t('There is no plugin configured to display data.'));
+    $this->clickLink(t('Raw data'));
     $this->assertText('&quot;header-subject&quot;: &quot;DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory&quot;');
     $this->assertText('&quot;header-to&quot;: &quot;bounces+user=example.org@example.com&quot;');
     $this->assertText('&quot;header-from&quot;: &quot;Postmaster@acacia.example.org&quot;');
@@ -59,17 +61,15 @@ class InmailCollectWebTest extends WebTestBase {
     // Last line of the raw message.
     $this->assertText('--==IFJRGLKFGIR25201654UHRUHIHD--');
 
-    // Create suggested Inmail schema.
-    $this->clickLink(t('Set up a @label schema', ['@label' => 'Email message']));
-    $this->drupalPostForm(NULL, array('id' => 'email_message'), t('Save'));
-
-    // View details as rendered.
+    // Create suggested Inmail model and view details as rendered.
     $this->drupalGet($container_url);
+    $this->clickLink(t('Set up a @label model', ['@label' => 'Email message']));
+    $this->drupalPostForm(NULL, array('id' => 'email_message'), t('Save'));
     // Details summaries of each part.
-    $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/summary', 'DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
-    $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/div/details[1]/summary', t('Part 1'));
-    $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/div/details[2]/summary', t('Part 2'));
-    $this->assertFieldByXPath('//div[@class="field-item"]/details/div/details/div/details[3]/summary', t('Part 3'));
+    $this->assertFieldByXPath('//div[@class="field-item"]//details/summary', 'DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
+    $this->assertFieldByXPath('//div[@class="field-item"]//details/div/details[1]/summary', t('Part 1'));
+    $this->assertFieldByXPath('//div[@class="field-item"]//details/div/details[2]/summary', t('Part 2'));
+    $this->assertFieldByXPath('//div[@class="field-item"]//details/div/details[3]/summary', t('Part 3'));
     // Eliminate repeated whitespace to simplify matching.
     $this->setRawContent(preg_replace('/\s+/', ' ', $this->getRawContent()));
     // Header fields.

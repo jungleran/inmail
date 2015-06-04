@@ -75,7 +75,7 @@ class VerpTest extends KernelTestBase {
 
     // VERP should be skipped for messages with Cc recipients.
     $message = \Drupal::service('plugin.manager.mail')->mail('inmail_test', 'cc', $recipient, LanguageInterface::LANGCODE_DEFAULT);
-    $this->assertEqual($this->getLatestLogMessage()['message'], 'Cannot use VERP for message with Cc recipients, message ID: @id');
+    $this->assertEqual($this->getLatestLogMessage()['message'], 'Cannot use VERP for message with Cc/Bcc recipients, message ID: @id');
     $this->assertFalse($message['send']);
 
     // VERP should be skipped when there are multiple recipients.
