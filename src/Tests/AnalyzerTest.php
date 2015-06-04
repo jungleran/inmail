@@ -77,7 +77,7 @@ EOF;
     HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
     $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
-    $processor_result = ResultKeeperHandler::$result;
+    $processor_result = ResultKeeperHandler::getResult();
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
 

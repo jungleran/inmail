@@ -22,20 +22,6 @@ use Drupal\inmail\ProcessorResultInterface;
 class ResultKeeperHandler extends HandlerBase {
 
   /**
-   * The processed message.
-   *
-   * @var \Drupal\inmail\MIME\EntityInterface
-   */
-  public static $message;
-
-  /**
-   * The analysis result.
-   *
-   * @var \Drupal\inmail\ProcessorResultInterface
-   */
-  public static $result;
-
-  /**
    * {@inheritdoc}
    */
   public function help() {
@@ -46,8 +32,28 @@ class ResultKeeperHandler extends HandlerBase {
    * {@inheritdoc}
    */
   public function invoke(MessageInterface $message, ProcessorResultInterface $processor_result) {
-    static::$message = $message;
-    static::$result = $processor_result;
+    \Drupal::state()->set('inmail_test.result_keeper.message', $message);
+    \Drupal::state()->set('inmail_test.result_keeper.result', $processor_result);
+  }
+
+  /**
+   * Returns the latest message processed by this handler.
+   *
+   * @return \Drupal\inmail\MIME\MessageInterface|null
+   *   The latest message object, or NULL if none has been handled.
+   */
+  public static function getMessage() {
+    return \Drupal::state()->get('inmail_test.result_keeper.message');
+  }
+
+  /**
+   * Returns the latest processing result.
+   *
+   * @return \Drupal\inmail\ProcessorResultInterface|null
+   *   The latest processing result.
+   */
+  public static function getResult() {
+    return \Drupal::state()->get('inmail_test.result_keeper.result');
   }
 
 }

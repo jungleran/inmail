@@ -69,7 +69,7 @@ class VerpTest extends KernelTestBase {
     $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = ResultKeeperHandler::$result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+    $result = ResultKeeperHandler::getResult()->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
     $parsed_recipient = $result->getRecipient();
     $this->assertEqual($parsed_recipient, $recipient);
 
