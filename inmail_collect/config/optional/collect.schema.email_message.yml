@@ -4,6 +4,7 @@ dependencies:
   module:
     - collect_crm_core_contact
     - inmail
+    - inmail_collect
 id: email_message
 label: 'Email message'
 uri_pattern: 'https://www.drupal.org/project/inmail/schema/message'
@@ -46,7 +47,7 @@ properties:
             description: ''
           address:
             type: email
-            label: Email
+            label: Address
             description: ''
   cc:
     query: cc
@@ -65,7 +66,7 @@ properties:
             description: ''
           address:
             type: email
-            label: Email
+            label: Address
             description: ''
   bcc:
     query: bcc
@@ -84,38 +85,34 @@ properties:
             description: ''
           address:
             type: email
-            label: Email
+            label: Address
             description: ''
 processors:
   -
+    plugin_id: contact_matcher
     weight: 0
-    settings:
-      relation: from
-      contact_type: individual
-      fields:
-        name: from
-        contact_mail: from
-    plugin_id: contact_matcher
+    relation: from
+    contact_type: individual
+    fields:
+      name: from
+      contact_mail: from
   -
+    plugin_id: contact_matcher
     weight: 1
-    settings:
-      relation: to
-      contact_type: individual
-      fields:
-        name: to
-        contact_mail: to
-    plugin_id: contact_matcher
+    relation: to
+    contact_type: individual
+    fields:
+      name: to
+      contact_mail: to
   -
+    plugin_id: contact_matcher
     weight: 2
-    settings:
-      relation: cc
-      contact_type: individual
-      fields:
-        name: cc
-        contact_mail: cc
-    plugin_id: contact_matcher
+    relation: cc
+    contact_type: individual
+    fields:
+      name: cc
+      contact_mail: cc
   -
-    weight: 3
-    settings:
-      title_property: subject
     plugin_id: activity_creator
+    weight: 3
+    title_property: subject
