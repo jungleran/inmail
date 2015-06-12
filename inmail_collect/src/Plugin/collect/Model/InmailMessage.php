@@ -10,6 +10,7 @@ use Drupal\collect\CollectContainerInterface;
 use Drupal\collect\Model\ModelPluginBase;
 use Drupal\collect\Model\PropertyDefinition;
 use Drupal\collect\Model\SpecializedDisplayModelPluginInterface;
+use Drupal\collect\TypedData\CollectDataInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\ListDataDefinition;
@@ -78,32 +79,32 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
   /**
    * {@inheritdoc}
    */
-  public function build($data, CollectContainerInterface $container) {
-    /** @var \Drupal\inmail\MIME\EntityInterface $data */
-    return $this->renderer->renderEntity($data);
+  public function build(CollectDataInterface $data) {
+    return $this->renderer->renderEntity($data->getParsedData());
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildTeaser($data) {
-    /** @var \Drupal\inmail\MIME\EntityInterface $data */
+  public function buildTeaser(CollectDataInterface $data) {
+    /** @var \Drupal\inmail\MIME\MessageInterface $parsed_data */
+    $parsed_data = $data->getParsedData();
     $output = array();
 
     $output['subject'] = array(
       '#type' => 'item',
       '#title' => $this->t('Subject'),
-      '#markup' => htmlentities($data->getHeader()->getFieldBody('Subject')),
+      '#markup' => htmlentities($parsed_data->getSubject()),
     );
     $output['from'] = array(
       '#type' => 'item',
       '#title' => $this->t('From'),
-      '#markup' => htmlentities($data->getHeader()->getFieldBody('From')),
+      '#markup' => htmlentities($parsed_data->getFrom()),
     );
     $output['to'] = array(
       '#type' => 'item',
       '#title' => $this->t('To'),
-      '#markup' => htmlentities($data->getHeader()->getFieldBody('To')),
+      '#markup' => htmlentities($parsed_data->getTo()),
     );
 
     return $output;

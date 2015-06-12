@@ -49,7 +49,7 @@ class InmailCollectWebTest extends WebTestBase {
     // View details as JSON.
     $this->clickLink('View');
     $container_url = $this->getUrl();
-    $this->assertLink($origin_uri);
+    $this->assertText($origin_uri);
     $this->assertText(t('There is no plugin configured to display data.'));
     $this->clickLink(t('Raw data'));
     $this->assertText('&quot;header-subject&quot;: &quot;DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory&quot;');
