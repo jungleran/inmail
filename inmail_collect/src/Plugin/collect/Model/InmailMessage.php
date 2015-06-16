@@ -89,7 +89,7 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
   public function buildTeaser(CollectDataInterface $data) {
     /** @var \Drupal\inmail\MIME\MessageInterface $parsed_data */
     $parsed_data = $data->getParsedData();
-    $output = array();
+    $output = parent::buildTeaser($data);
 
     $output['subject'] = array(
       '#type' => 'item',
