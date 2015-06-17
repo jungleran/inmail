@@ -89,7 +89,7 @@ properties:
             description: ''
 processors:
   -
-    plugin_id: contact_matcher
+    plugin_id: contact_matcher_mail
     weight: 0
     relation: from
     contact_type: individual
@@ -97,7 +97,7 @@ processors:
       name: from
       contact_mail: from
   -
-    plugin_id: contact_matcher
+    plugin_id: contact_matcher_mail
     weight: 1
     relation: to
     contact_type: individual
@@ -105,7 +105,7 @@ processors:
       name: to
       contact_mail: to
   -
-    plugin_id: contact_matcher
+    plugin_id: contact_matcher_mail
     weight: 2
     relation: cc
     contact_type: individual
