@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   module:
-    - collect_crm_core_contact
+    - collect_crm
     - inmail
     - inmail_collect
 id: email_message
