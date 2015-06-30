@@ -138,8 +138,9 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
   /**
    * {@inheritdoc}
    */
-  public function evaluate($data, $property_name) {
+  public function resolveQueryPath($data, array $path) {
     // @todo Define a query format. For To/From/Cc, allow it to specify name, address or both.
+    $property_name = reset($path);
     /** @var \Drupal\inmail\MIME\EntityInterface $message */
     $message = $data;
 
