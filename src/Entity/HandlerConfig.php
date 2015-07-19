@@ -36,9 +36,9 @@ namespace Drupal\inmail\Entity;
  *     "configuration",
  *   },
  *   links = {
- *     "edit-form" = "admin/config/system/inmail/analyzers/{inmail_handler}",
- *     "enable" = "admin/config/system/inmail/analyzers/{inmail_handler}/enable",
- *     "disable" = "admin/config/system/inmail/analyzers/{inmail_handler}/disable"
+ *     "edit-form" = "/admin/config/system/inmail/analyzers/{inmail_handler}",
+ *     "enable" = "/admin/config/system/inmail/analyzers/{inmail_handler}/enable",
+ *     "disable" = "/admin/config/system/inmail/analyzers/{inmail_handler}/disable"
  *   }
  * )
  */
