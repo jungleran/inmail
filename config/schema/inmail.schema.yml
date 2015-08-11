@@ -1,7 +1,7 @@
 # Module settings
 inmail.settings:
   label: 'Inmail settings'
-  type: mapping
+  type: config_object
   mapping:
     return_path:
       label: 'Return-Path address'
