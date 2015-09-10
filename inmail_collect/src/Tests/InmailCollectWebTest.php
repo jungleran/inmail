@@ -22,7 +22,7 @@ class InmailCollectWebTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail_collect');
+  public static $modules = array('inmail_collect', 'block');
 
   /**
    * Tests the user interface.
@@ -30,6 +30,8 @@ class InmailCollectWebTest extends WebTestBase {
    * @see Drupal\inmail_collect\Plugin\collect\Model\InmailMessage::build()
    */
   public function testUi() {
+    $this->drupalPlaceBlock('local_actions_block');
+    $this->drupalPlaceBlock('local_tasks_block');
     // Process and store a message.
     /** @var \Drupal\inmail\MessageProcessor $processor */
     $processor = \Drupal::service('inmail.processor');
@@ -66,10 +68,11 @@ class InmailCollectWebTest extends WebTestBase {
     $this->clickLink(t('Set up a @label model', ['@label' => 'Email message']));
     $this->drupalPostForm(NULL, array('id' => 'email_message'), t('Save'));
     // Details summaries of each part.
-    $this->assertFieldByXPath('//div[@class="field-item"]//details/summary', 'DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
-    $this->assertFieldByXPath('//div[@class="field-item"]//details/div/details[1]/summary', t('Part 1'));
-    $this->assertFieldByXPath('//div[@class="field-item"]//details/div/details[2]/summary', t('Part 2'));
-    $this->assertFieldByXPath('//div[@class="field-item"]//details/div/details[3]/summary', t('Part 3'));
+    $details= $this->xpath('//div[@class="field__item"]//details');
+    $this->assertEqual((string) $details[0]->summary, 'DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
+    $this->assertEqual((string) $details[0]->div->details[0]->summary, t('Part 1'));
+    $this->assertEqual((string) $details[0]->div->details[1]->summary, t('Part 2'));
+    $this->assertEqual((string) $details[0]->div->details[2]->summary, t('Part 3'));
     // Eliminate repeated whitespace to simplify matching.
     $this->setRawContent(preg_replace('/\s+/', ' ', $this->getRawContent()));
     // Header fields.
