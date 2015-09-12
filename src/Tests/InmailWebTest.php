@@ -22,7 +22,17 @@ class InmailWebTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail', 'inmail_test');
+  public static $modules = array('inmail', 'inmail_test', 'block');
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    parent::setUp();
+
+    $this->drupalPlaceBlock('local_tasks_block');
+    $this->drupalPlaceBlock('local_actions_block');
+  }
 
   /**
    * Tests the admin UI.
