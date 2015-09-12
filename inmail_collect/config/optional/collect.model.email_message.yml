@@ -93,6 +93,7 @@ processors:
     weight: 0
     relation: from
     contact_type: individual
+    matcher: inmail_individual
     fields:
       name: from
       contact_mail: from
@@ -101,6 +102,7 @@ processors:
     weight: 1
     relation: to
     contact_type: individual
+    matcher: inmail_individual
     fields:
       name: to
       contact_mail: to
@@ -109,6 +111,7 @@ processors:
     weight: 2
     relation: cc
     contact_type: individual
+    matcher: inmail_individual
     fields:
       name: cc
       contact_mail: cc
