@@ -32,6 +32,7 @@ class InmailCollectWebTest extends WebTestBase {
   public function testUi() {
     $this->drupalPlaceBlock('local_actions_block');
     $this->drupalPlaceBlock('local_tasks_block');
+    $this->drupalPlaceBlock('page_title_block');
     // Process and store a message.
     /** @var \Drupal\inmail\MessageProcessor $processor */
     $processor = \Drupal::service('inmail.processor');
