@@ -1,4 +1,4 @@
-name: Message Analyzer: PHPMailer-BMH
+name: 'Message Analyzer: PHPMailer-BMH'
 type: module
 description: Message Analyzer wrapper for PHPMailer-BMH (https://github.com/instaclick/PHPMailer-BMH).
 package: Mail

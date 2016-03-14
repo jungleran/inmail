@@ -1,4 +1,4 @@
-name: Message handler: Mailmute
+name: 'Message handler: Mailmute'
 type: module
 description: Trigger Mailmute state transitions upon incoming bounce messages.
 package: Mail
