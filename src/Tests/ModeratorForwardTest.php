@@ -6,10 +6,9 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\Core\Test\AssertMailTrait;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
-
-use Drupal\inmail\MIME\Parser;
 use Drupal\simpletest\KernelTestBase;
 
 /**
@@ -18,6 +17,7 @@ use Drupal\simpletest\KernelTestBase;
  * @group inmail
  */
 class ModeratorForwardTest extends KernelTestBase {
+  use AssertMailTrait;
 
   /**
    * Modules to install.
@@ -33,9 +33,7 @@ class ModeratorForwardTest extends KernelTestBase {
     parent::setUp();
     $this->installConfig(array('inmail'));
     $this->installEntitySchema('inmail_handler');
-    \Drupal::configFactory()->getEditable('system.mail')
-      ->set('interface.default', 'inmail_test_mail_collector')
-      ->save();
+    $GLOBALS['config']['system.mail']['interface']['default'] = 'inmail_test_mail_collector';
     \Drupal::configFactory()->getEditable('system.site')
       ->set('mail', 'bounces@example.com')
       ->save();
@@ -99,11 +97,11 @@ class ModeratorForwardTest extends KernelTestBase {
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
     $processor->process($original, DelivererConfig::create(array('id' => 'test')));
-    $messages = \Drupal::state()->get('system.test_mail_collector');
+    $messages = $this->getMails(['id' => 'inmail_handler_moderator_forward']);
     $forward = array_pop($messages);
 
     // Body should be unchanged.
-    $this->assertEqual(implode("\n", $forward['body']), $original_parsed->getBody(), 'Forwarded message body is unchanged.');
+    $this->assertEqual($forward['body'], $original_parsed->getBody(), 'Forwarded message body is unchanged.');
 
     // Headers should have the correct changes.
     $headers_prefix = "X-Inmail-Forwarded: handler_moderator_forward\n";
@@ -131,8 +129,7 @@ class ModeratorForwardTest extends KernelTestBase {
    * Counts the number of sent mail and compares to an expected value.
    */
   protected function assertMailCount($expected, $message = '', $group = 'Other') {
-    $messages = \Drupal::state()->get('system.test_mail_collector');
-    $this->assertEqual(count($messages), $expected, $message, $group);
+    $this->assertEqual(count($this->getMails()), $expected, $message, $group);
   }
 
 }

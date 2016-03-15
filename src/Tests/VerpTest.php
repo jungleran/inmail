@@ -38,9 +38,6 @@ class VerpTest extends KernelTestBase {
     \Drupal::configFactory()->getEditable('system.site')
       ->set('mail', 'bounces@example.com')
       ->save();
-    \Drupal::configFactory()->getEditable('system.mail')
-      ->set('interface', ['default' => 'test_mail_collector'])
-      ->save();
   }
 
   /**
