@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Tests\ProcessorTest.
+ * Contains \Drupal\Tests\inmail\Kernel\ProcessorTest.
  */
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\inmail\Entity\DelivererConfig;
-use Drupal\simpletest\KernelTestBase;
+use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Tests the behaviour of the MessageProcessor class.

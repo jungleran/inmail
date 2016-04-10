@@ -1,15 +1,15 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Tests\ModeratorForwardTest.
+ * Contains \Drupal\Tests\inmail\Kernel\ModeratorForwardTest.
  */
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\simpletest\KernelTestBase;
+use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Tests the Moderator Forward handler plugin.

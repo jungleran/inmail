@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Tests\VerpTest.
+ * Contains \Drupal\Tests\inmail\Kernel\VerpTest.
  */
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\Entity\AnalyzerConfig;
@@ -12,7 +12,7 @@ use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\Core\Language\LanguageInterface;
-use Drupal\simpletest\KernelTestBase;
+use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Tests the VERP mechanism.

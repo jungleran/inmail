@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Tests\DelivererTest.
+ * Contains \Drupal\Tests\inmail\Kernel\DelivererTest.
  */
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\inmail\Entity\DelivererConfig;
-use Drupal\simpletest\KernelTestBase;
+use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Tests mail deliverers.

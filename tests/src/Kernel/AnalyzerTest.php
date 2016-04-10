@@ -1,16 +1,16 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Tests\AnalyzerTest.
+ * Contains \Drupal\Tests\inmail\Kernel\AnalyzerTest.
  */
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
-use Drupal\simpletest\KernelTestBase;
+use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Tests analyzers.

@@ -1,15 +1,15 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_collect\Tests\InmailMessageModelTest.
+ * Contains \Drupal\Tests\inmail_collect\Kernel\InmailMessageModelTest.
  */
 
-namespace Drupal\inmail_collect\Tests;
+namespace Drupal\Tests\inmail_collect\Kernel;
 
 use Drupal\collect\Entity\Container;
 use Drupal\collect\Entity\Model;
 use Drupal\inmail\Plugin\DataType\Mailbox;
-use Drupal\simpletest\KernelTestBase;
+use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Tests the Inmail model plugin.

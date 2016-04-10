@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail\Tests\InmailDataTypeTest.
+ * Contains \Drupal\Tests\inmail\Kernel\InmailDataTypeTest.
  */
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\inmail\TypedData\MailboxDefinition;
-use Drupal\simpletest\KernelTestBase;
+use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Tests inmail datatypes.
@@ -15,6 +15,7 @@ use Drupal\simpletest\KernelTestBase;
  * @group inmail
  */
 class InmailDataTypeTest extends KernelTestBase {
+
   /**
    * Modules to enable.
    *

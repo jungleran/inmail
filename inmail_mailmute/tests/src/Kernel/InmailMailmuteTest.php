@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\inmail_mailmute\Tests\InmailMailmuteTest.
+ * Contains \Drupal\Tests\inmail_mailmute\Kernel\InmailMailmuteTest.
  */
 
-namespace Drupal\inmail_mailmute\Tests;
+namespace Drupal\Tests\inmail_mailmute\Kernel;
 
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\inmail\BounceAnalyzerResult;
@@ -14,7 +14,7 @@ use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\MIME\Header;
 use Drupal\inmail\MIME\Message;
 use Drupal\inmail\ProcessorResult;
-use Drupal\simpletest\KernelTestBase;
+use Drupal\KernelTests\KernelTestBase;
 use Drupal\user\Entity\User;
 
 /**
