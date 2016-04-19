@@ -132,6 +132,10 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
     $properties['bcc'] = new PropertyDefinition('bcc', ListDataDefinition::create('inmail_mailbox')
       ->setLabel(t('Bcc')));
 
+    $properties['_default_title'] = new PropertyDefinition('_default_title', DataDefinition::create('string')
+      ->setLabel('Default title')
+      ->setDescription('The default title of a container provided by applied model.'));
+
     return $properties;
   }
 
@@ -144,10 +148,15 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
     /** @var \Drupal\inmail\MIME\EntityInterface $message */
     $message = $data;
 
+    if ($property_name == '_default_title') {
+      return 'Mail: ' . $message->getHeader()->getFieldBody('subject');
+    }
+
     if ($property_name == 'body') {
       // @todo Handle MultipartEntity, https://www.drupal.org/node/2450229
       return $message->getDecodedBody();
     }
+
     if (in_array($property_name, ['from', 'to', 'cc', 'bcc'])) {
       $field_body = $message->getHeader()->getFieldBody($property_name);
       // The returned value is an associative array with elements "name" and

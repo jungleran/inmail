@@ -76,6 +76,7 @@ class InmailMessageModelTest extends KernelTestBase {
     $this->assertEqual([['name' => 'Big Brother', 'address' => 'bigbrother@example.com']], $data->get('bcc')->getValue());
     $this->assertEqual('Out of office', $data->get('subject')->getValue());
     $this->assertEqual("Hello\nI'm out of office due to illness", $data->get('body')->getValue());
+    $this->assertEquals('Mail: Out of office', $data->get('_default_title')->getValue());
   }
 
 }
