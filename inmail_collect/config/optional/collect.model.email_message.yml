@@ -118,4 +118,4 @@ processors:
   -
     plugin_id: activity_creator
     weight: 3
-    title_property: subject
+    title_property: _default_title
