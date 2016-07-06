@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail_test\Plugin\inmail\Deliverer\TestFetcher.
- */
 
 namespace Drupal\inmail_test\Plugin\inmail\Deliverer;
 

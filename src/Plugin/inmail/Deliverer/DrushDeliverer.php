@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Plugin\inmail\Deliverer\DrushDeliverer.
- */
 
 namespace Drupal\inmail\Plugin\inmail\Deliverer;
 

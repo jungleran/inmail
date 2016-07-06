@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\Tests\inmail_collect\Kernel\InmailMessageModelTest.
- */
 
 namespace Drupal\Tests\inmail_collect\Kernel;
 

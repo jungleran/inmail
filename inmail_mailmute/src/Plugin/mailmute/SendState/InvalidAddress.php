@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail_mailmute\Plugin\mailmute\SendState\InvalidAddress.
- */
 
 namespace Drupal\inmail_mailmute\Plugin\mailmute\SendState;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail_demo\Form\PasteForm.
- */
 
 namespace Drupal\inmail_demo\Form;
 

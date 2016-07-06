@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\BounceAnalyzerResult.
- */
 
 namespace Drupal\inmail;
 

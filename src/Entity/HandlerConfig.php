@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Entity\HandlerConfig.
- */
 
 namespace Drupal\inmail\Entity;
 

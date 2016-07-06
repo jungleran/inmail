@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Form\DelivererListForm.
- */
 
 namespace Drupal\inmail\Form;
 

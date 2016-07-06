@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\Tests\inmail\Unit\MIME\ParserTest.
- */
 
 namespace Drupal\Tests\inmail\Unit\MIME;
 

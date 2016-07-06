@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\inmail_collect\Tests\InmailCollectWebTest.
- */
-
 namespace Drupal\inmail_collect\Tests;
 
 use Drupal\inmail\Entity\DelivererConfig;

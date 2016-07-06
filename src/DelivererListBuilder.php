@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\DelivererListBuilder.
- */
 
 namespace Drupal\inmail;
 

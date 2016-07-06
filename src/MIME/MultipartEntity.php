@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\MIME\MultipartEntity.
- */
 
 namespace Drupal\inmail\MIME;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\Tests\inmail_mailmute\Kernel\InmailMailmuteTest.
- */
 
 namespace Drupal\Tests\inmail_mailmute\Kernel;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail_demo\Plugin\inmail\Deliverer\Paste.
- */
 
 namespace Drupal\inmail_demo\Plugin\inmail\Deliverer;
 

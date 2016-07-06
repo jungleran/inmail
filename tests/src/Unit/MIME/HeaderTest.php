@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \MIME\HeaderTest.
- */
 
 namespace Drupal\Tests\inmail\Unit\MIME;
 

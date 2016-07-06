@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Plugin\inmail\Analyzer\VerpAnalyzer.
- */
 
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 

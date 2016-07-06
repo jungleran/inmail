@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail_mailmute\Plugin\mailmute\SendState\PersistentSend.
- */
 
 namespace Drupal\inmail_mailmute\Plugin\mailmute\SendState;
 

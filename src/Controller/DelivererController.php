@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Controller\DelivererController.
- */
 
 namespace Drupal\inmail\Controller;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\MessageProcessor.
- */
 
 namespace Drupal\inmail;
 

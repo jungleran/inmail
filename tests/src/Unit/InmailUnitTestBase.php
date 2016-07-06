@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\Tests\inmail\Unit\InmailUnitTestBase.
- */
 
 namespace Drupal\Tests\inmail\Unit;
 

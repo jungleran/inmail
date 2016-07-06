@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface.
- */
 
 namespace Drupal\inmail\Plugin\inmail\Deliverer;
 

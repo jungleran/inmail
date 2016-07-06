@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\MIME\Encodings.
- */
 
 namespace Drupal\inmail\MIME;
 

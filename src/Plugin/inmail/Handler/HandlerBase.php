@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Plugin\inmail\Handler\HandlerBase.
- */
 
 namespace Drupal\inmail\Plugin\inmail\Handler;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\DSNStatus.
- */
 
 namespace Drupal\inmail;
 

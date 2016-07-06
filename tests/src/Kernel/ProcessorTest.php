@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\Tests\inmail\Kernel\ProcessorTest.
- */
 
 namespace Drupal\Tests\inmail\Kernel;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Plugin\Mail\DirectMail.
- */
 
 namespace Drupal\inmail\Plugin\Mail;
 

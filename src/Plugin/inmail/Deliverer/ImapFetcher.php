@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Deliverer\ImapFetcher.
- */
 
 namespace Drupal\inmail\Plugin\inmail\Deliverer;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail_phpmailerbmh\Plugin\inmail\Analyzer\PHPMailerBMHAnalyzer.
- */
 
 namespace Drupal\inmail_phpmailerbmh\Plugin\inmail\Analyzer;
 

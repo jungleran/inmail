@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\TypedData\MailboxDefinition.
- */
 
 namespace Drupal\inmail\TypedData;
 

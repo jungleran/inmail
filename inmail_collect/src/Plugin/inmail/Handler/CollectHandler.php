@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail_collect\Plugin\inmail\Handler\CollectHandler.
- */
 
 namespace Drupal\inmail_collect\Plugin\inmail\Handler;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail_collect\Plugin\collect\Model\InmailMessage.
- */
 
 namespace Drupal\inmail_collect\Plugin\collect\Model;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\HandlerListBuilder.
- */
 
 namespace Drupal\inmail;
 

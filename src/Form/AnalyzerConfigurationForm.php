@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Form\AnalyzerConfigurationForm.
- */
 
 namespace Drupal\inmail\Form;
 

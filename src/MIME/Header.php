@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\MIME\Header.
- */
 
 namespace Drupal\inmail\MIME;
 

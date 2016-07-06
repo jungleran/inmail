@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Tests\IntegrationTest.
- */
 
 namespace Drupal\inmail\Tests;
 

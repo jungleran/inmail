@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail_test\Plugin\Mail\InmailTestMailCollector.
- */
 
 namespace Drupal\inmail_test\Plugin\Mail;
 

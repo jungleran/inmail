@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Form\PluginConfigurationForm.
- */
 
 namespace Drupal\inmail\Form;
 

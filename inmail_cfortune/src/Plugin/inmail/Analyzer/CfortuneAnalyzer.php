@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail_cfortune\Plugin\inmail\Analyzer\CfortuneAnalyzer.
- */
 
 namespace Drupal\inmail_cfortune\Plugin\inmail\Analyzer;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail_mailmute\Plugin\inmail\Handler\MailmuteHandler.
- */
 
 namespace Drupal\inmail_mailmute\Plugin\inmail\Handler;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer\StandardDSNReasonAnalyzerTest.
- */
 
 namespace Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer;
 

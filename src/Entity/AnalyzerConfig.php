@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Entity\AnalyzerConfig.
- */
 
 namespace Drupal\inmail\Entity;
 

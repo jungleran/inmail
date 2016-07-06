@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Plugin\DataType\Mailbox.
- */
 
 namespace Drupal\inmail\Plugin\DataType;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\MIME\ParseException.
- */
 
 namespace Drupal\inmail\MIME;
 

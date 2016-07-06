@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\ProcessorResultInterface.
- */
 
 namespace Drupal\inmail;
 

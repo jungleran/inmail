@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\inmail\Annotation\Analyzer.
- */
 
 namespace Drupal\inmail\Annotation;
 
