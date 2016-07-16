@@ -69,7 +69,7 @@ class PasteForm extends FormBase {
    *   The unique string identifying the form.
    */
   public function getFormId() {
-    return 'inmail_demo.paste';
+    return 'inmail_demo_paste';
   }
 
   /**
