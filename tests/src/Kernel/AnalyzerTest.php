@@ -2,11 +2,16 @@
 
 namespace Drupal\Tests\inmail\Kernel;
 
+use Drupal\Core\Plugin\Context\Context;
+use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\inmail\BounceAnalyzerResult;
+use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
+use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\user\Entity\User;
 
 /**
  * Tests analyzers.
@@ -20,7 +25,7 @@ class AnalyzerTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail', 'inmail_test');
+  public static $modules = array('inmail', 'inmail_test', 'user');
 
   /**
    * {@inheritdoc}
@@ -70,14 +75,40 @@ EOF;
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
 
+    AnalyzerConfig::create(['id' => 'test_analyzer', 'plugin' => 'test_analyzer'])->save();
     HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
     $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
     $processor_result = ResultKeeperHandler::getResult();
     /** @var \Drupal\inmail\BounceAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
+    $default_result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
 
     $this->assertEqual($result->getRecipient(), 'verp-parsed@example.org');
+
+    $this->assertEquals(User::getAnonymousUser()->id(), $default_result->getAccount()->id());
+    $this->assertEquals('Sample context value', $default_result->getContext('test')->getContextValue());
+
+    // Adding already defined context should throw exception.
+    $exception_message = 'Context "test" already exists.';
+    try {
+      $default_result->addContext('test', new Context(new ContextDefinition()));
+      $this->fail($exception_message);
+    }
+    catch (\InvalidArgumentException $e) {
+      $this->assertEquals($exception_message, $e->getMessage());
+    }
+
+    // Accessing undefined context should throw exception.
+    $exception_message = 'Context "invalid_context_name" does not exist.';
+    try {
+      $default_result->getContext('invalid_context_name');
+      $this->fail($exception_message);
+    }
+    catch (\InvalidArgumentException $e) {
+      $this->assertEquals($exception_message, $e->getMessage());
+    }
   }
 
   /**

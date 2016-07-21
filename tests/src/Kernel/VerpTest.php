@@ -22,7 +22,7 @@ class VerpTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail', 'inmail_test', 'system', 'dblog');
+  public static $modules = array('inmail', 'inmail_test', 'system', 'dblog', 'user');
 
   /**
    * {@inheritdoc}

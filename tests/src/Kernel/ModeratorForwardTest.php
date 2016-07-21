@@ -20,7 +20,7 @@ class ModeratorForwardTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail', 'inmail_test', 'system');
+  public static $modules = array('inmail', 'inmail_test', 'system', 'user');
 
   /**
    * {@inheritdoc}

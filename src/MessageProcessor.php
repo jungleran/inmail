@@ -8,6 +8,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\MIME\ParseException;
 use Drupal\inmail\MIME\ParserInterface;
+use Drupal\user\Entity\User;
 
 /**
  * Mail message processor using services to analyze and handle messages.
@@ -95,6 +96,12 @@ class MessageProcessor implements MessageProcessorInterface {
     // Analyze message.
     $result = new ProcessorResult();
     $result->setDeliverer($deliverer);
+
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
+    $default_result = $result->ensureAnalyzerResult(DefaultAnalyzerResult::TOPIC, DefaultAnalyzerResult::createFactory());
+    // Enabled analyzers will be able to update the account.
+    $default_result->setAccount(User::getAnonymousUser());
+
     $analyzer_configs = $this->analyzerStorage->loadMultiple();
     uasort($analyzer_configs, array($this->analyzerStorage->getEntityType()->getClass(), 'sort'));
     foreach ($analyzer_configs as $analyzer_config) {
