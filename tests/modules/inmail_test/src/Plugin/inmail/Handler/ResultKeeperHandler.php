@@ -30,6 +30,7 @@ class ResultKeeperHandler extends HandlerBase {
   public function invoke(MessageInterface $message, ProcessorResultInterface $processor_result) {
     \Drupal::state()->set('inmail_test.result_keeper.message', $message);
     \Drupal::state()->set('inmail_test.result_keeper.result', $processor_result);
+    \Drupal::state()->set('inmail_test.result_keeper.account_name', \Drupal::currentUser()->getDisplayName());
   }
 
   /**
@@ -50,6 +51,16 @@ class ResultKeeperHandler extends HandlerBase {
    */
   public static function getResult() {
     return \Drupal::state()->get('inmail_test.result_keeper.result');
+  }
+
+  /**
+   * Returns the account display name.
+   *
+   * @return string
+   *   The account display name.
+   */
+  public static function getAccountName() {
+    return \Drupal::state()->get('inmail_test.result_keeper.account_name');
   }
 
 }

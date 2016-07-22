@@ -25,13 +25,16 @@ class AnalyzerTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail', 'inmail_test', 'user');
+  public static $modules = array('inmail', 'inmail_test', 'user', 'system');
 
   /**
    * {@inheritdoc}
    */
   protected function setUp() {
     parent::setUp();
+    $this->installSchema('system', ['sequences']);
+    $this->installSchema('user', ['users_data']);
+    $this->installEntitySchema('user');
     $this->installConfig(['inmail']);
     \Drupal::configFactory()->getEditable('inmail.settings')
       ->set('return_path', 'bounces@example.com')
@@ -87,7 +90,7 @@ EOF;
 
     $this->assertEqual($result->getRecipient(), 'verp-parsed@example.org');
 
-    $this->assertEquals(User::getAnonymousUser()->id(), $default_result->getAccount()->id());
+    $this->assertEquals('Demo User', $default_result->getAccount()->getDisplayName());
     $this->assertEquals('Sample context value', $default_result->getContext('test')->getContextValue());
 
     // Adding already defined context should throw exception.
