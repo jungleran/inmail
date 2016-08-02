@@ -93,15 +93,9 @@ EOF;
     $this->assertEquals('Demo User', $default_result->getAccount()->getDisplayName());
     $this->assertEquals('Sample context value', $default_result->getContext('test')->getContextValue());
 
-    // Adding already defined context should throw exception.
-    $exception_message = 'Context "test" already exists.';
-    try {
-      $default_result->addContext('test', new Context(new ContextDefinition()));
-      $this->fail($exception_message);
-    }
-    catch (\InvalidArgumentException $e) {
-      $this->assertEquals($exception_message, $e->getMessage());
-    }
+    // Adding already defined context should overwrite the existing one.
+    $default_result->setContext('test', new Context(new ContextDefinition('string'), 'New value'));
+    $this->assertEquals('New value', $default_result->getContext('test')->getContextValue());
 
     // Accessing undefined context should throw exception.
     $exception_message = 'Context "invalid_context_name" does not exist.';

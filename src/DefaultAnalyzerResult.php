@@ -184,10 +184,7 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface, DefaultAnalyzerR
   /**
    * @inheritDoc
    */
-  public function addContext($name, ContextInterface $context) {
-    if (isset($this->contexts[$name])) {
-      throw new \InvalidArgumentException('Context "' . $name . '" already exists.');
-    }
+  public function setContext($name, ContextInterface $context) {
     $this->contexts[$name] = $context;
   }
 

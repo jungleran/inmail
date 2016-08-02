@@ -50,7 +50,7 @@ class TestAnalyzer extends AnalyzerBase {
   protected function addContext($default_result) {
     $context_definition = new ContextDefinition('string', $this->t('Test Context'));
     $context = new Context($context_definition, 'Sample context value');
-    $default_result->addContext('test', $context);
+    $default_result->setContext('test', $context);
   }
 
 }

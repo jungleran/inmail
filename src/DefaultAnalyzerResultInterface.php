@@ -106,12 +106,9 @@ interface DefaultAnalyzerResultInterface {
    * @param string $name
    *   The name of the context.
    * @param \Drupal\Core\Plugin\Context\ContextInterface $context
-   *   The context to add.
-   *
-   * @throws \InvalidArgumentException
-   *   Throws an exception if the given context name already exists.
+   *   The context to set.
    */
-  public function addContext($name, ContextInterface $context);
+  public function setContext($name, ContextInterface $context);
 
   /**
    * Gets the values for all defined contexts.
