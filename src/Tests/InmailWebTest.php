@@ -173,6 +173,14 @@ class InmailWebTest extends WebTestBase {
     $this->clickLink('Disable');
     $this->clickLink('Enable');
 
+    // Check default value of the status field when configuring.
+    $this->clickLink('Configure');
+    $this->assertFieldChecked('edit-status');
+    $this->drupalPostForm(NULL, ['status' => FALSE], 'Save');
+    $this->clickLink('Configure');
+    $this->assertNoFieldChecked('edit-status');
+    $this->drupalPostForm(NULL, ['status' => TRUE], 'Save');
+
     // The analyzers should be ordered according to default config.
     $this->assertFieldByXPath('//table[@id="edit-entities"]/tbody/tr[1]/td/text()', 'VERP Analyzer');
     $this->assertFieldByXPath('//table[@id="edit-entities"]/tbody/tr[2]/td/text()', 'Standard DSN Analyzer');

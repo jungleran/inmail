@@ -63,7 +63,7 @@ class PluginConfigurationForm extends EntityForm {
     $form['status'] = array(
       '#title' => $this->t('Enabled'),
       '#type' => 'checkbox',
-      '#default_value' => TRUE,
+      '#default_value' => $entity->status(),
     );
 
     $form['plugin_container'] = array(
