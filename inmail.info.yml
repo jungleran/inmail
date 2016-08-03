@@ -4,3 +4,5 @@ description: Incoming mail message handler. Fetches and processes incoming mail 
 package: Mail
 version: 8.x-1.x
 core: 8.x
+test_dependencies:
+  - past
