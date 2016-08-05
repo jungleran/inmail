@@ -90,6 +90,8 @@ class InmailWebTest extends WebTestBase {
       'plugin' => 'imap',
     );
     $this->drupalPostAjaxForm(NULL, $edit, 'plugin');
+    $this->assertText('Account');
+    $this->assertRaw('<input data-drupal-selector="edit-test-connection" type="submit"');
     $edit += array(
       'host' => 'imap.example.com',
       'username' => 'user',

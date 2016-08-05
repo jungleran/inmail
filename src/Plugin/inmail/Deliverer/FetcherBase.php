@@ -111,4 +111,34 @@ abstract class FetcherBase extends DelivererBase implements FetcherInterface {
     $this->setCount(NULL);
   }
 
+  /**
+   * Handles submit call of "Test connection" button.
+   */
+  public function submitTestConnection(array $form, FormStateInterface $form_state) {
+    throw new \Exception('Implement submitTestConnection() method in a subclass.');
+  }
+
+  /**
+   * Adds a "Test connection" button to a form.
+   *
+   * @return array
+   *   A form array containing "Test connection" button.
+   */
+  public function addTestConnectionButton() {
+    $form['test_connection'] = array(
+      '#type' => 'submit',
+      '#value' => t('Test connection'),
+      '#submit' => array(
+        array($this, 'submitTestConnection'),
+      ),
+      '#executes_submit_callback' => TRUE,
+      '#ajax' => array(
+        'callback' => '::getPluginContainerFormChild',
+        'wrapper' => 'inmail-plugin',
+      ),
+    );
+
+    return $form;
+  }
+
 }

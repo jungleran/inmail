@@ -145,31 +145,34 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['info'] = array(
+    $form['account'] = array(
+      '#type' => 'fieldset',
+      '#title' => $this->t('Account'),
+    );
+    $form['account']['info'] = array(
       '#type' => 'item',
       '#markup' => $this->t('Please refer to your email provider for the appropriate values for these fields.'),
     );
-
-    $form['host'] = array(
+    $form['account']['host'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Host'),
       '#default_value' => $this->configuration['host'],
     );
 
-    $form['port'] = array(
+    $form['account']['port'] = array(
       '#type' => 'number',
       '#title' => $this->t('Port'),
       '#default_value' => $this->configuration['port'],
       '#description' => $this->t('The standard port number is 143, or 993 when using SSL.'),
     );
 
-    $form['ssl'] = array(
+    $form['account']['ssl'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Use SSL'),
       '#default_value' => $this->configuration['ssl'],
     );
 
-    $form['username'] = array(
+    $form['account']['username'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Username'),
       '#default_value' => $this->configuration['username'],
@@ -178,12 +181,12 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
     // Password field cannot have #default_value. To avoid forcing user to
     // re-enter password with each save, password updating is conditional on
     // this checkbox.
-    $form['password_update'] = array(
+    $form['account']['password_update'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Update password'),
     );
 
-    $form['password'] = array(
+    $form['account']['password'] = array(
       '#type' => 'password',
       '#title' => $this->t('Password'),
       '#states' => array(
@@ -195,8 +198,8 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
 
     // Always show password field if configuration is new.
     if ($form_state->getFormObject()->getEntity()->isNew()) {
-      $form['password_update']['#access'] = FALSE;
-      $form['password']['#states']['visible'] = array();
+      $form['account']['password_update']['#access'] = FALSE;
+      $form['account']['password']['#states']['visible'] = array();
     }
 
     $form['batch_size'] = array(
@@ -206,15 +209,19 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       '#description' => $this->t('How many messages to fetch on each invocation.'),
     );
 
+    // Add a "Test connection" button.
+    $form['account'] += parent::addTestConnectionButton();
+
     return $form;
   }
 
   /**
-   * {@inheritdoc}
+   * Updates the fetcher configuration.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
    */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
-    parent::submitConfigurationForm($form, $form_state);
-
+  protected function updateConfiguration(FormStateInterface $form_state) {
     $configuration = array(
       'host' => $form_state->getValue('host'),
       'port' => $form_state->getValue('port'),
@@ -229,6 +236,51 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
     }
 
     $this->setConfiguration($configuration);
+  }
+
+  /**
+   * Checks the account credentials.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return bool
+   *   TRUE if credentials are valid. Otherwise, FALSE.
+   */
+  protected function hasValidCredentials(FormStateInterface $form_state) {
+    $this->updateConfiguration($form_state);
+    try {
+      $hasValidCredentials = $this->doImap(function ($imap_stream) {
+        // At this point IMAP connection is open and credentials are valid.
+        return TRUE;
+      });
+    }
+    catch (\Exception $e) {
+      $hasValidCredentials = FALSE;
+    }
+
+    return (bool) $hasValidCredentials;
+  }
+
+  /**
+   * Handles submit call of "Test connection" button.
+   */
+  public function submitTestConnection(array $form, FormStateInterface $form_state) {
+    if ($this->hasValidCredentials($form_state)) {
+      drupal_set_message(t('Valid credentials!'));
+    }
+    else {
+      drupal_set_message(t('Invalid credentials!'), 'error');
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
+
+    $this->updateConfiguration($form_state);
   }
 
 }
