@@ -115,7 +115,7 @@ class MessageProcessor implements MessageProcessorInterface {
     uasort($analyzer_configs, array($this->analyzerStorage->getEntityType()->getClass(), 'sort'));
     foreach ($analyzer_configs as $analyzer_config) {
       /** @var \Drupal\inmail\Entity\AnalyzerConfig $analyzer_config */
-      if ($analyzer_config->status()) {
+      if ($analyzer_config->status() && $analyzer_config->isAvailable()) {
         /** @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface $analyzer */
         $analyzer = $this->analyzerManager->createInstance($analyzer_config->getPluginId(), $analyzer_config->getConfiguration());
         $analyzer->analyze($message, $result);
@@ -136,7 +136,7 @@ class MessageProcessor implements MessageProcessorInterface {
     // Handle message.
     foreach ($this->handlerStorage->loadMultiple() as $handler_config) {
       /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
-      if ($handler_config->status()) {
+      if ($handler_config->status() && $handler_config->isAvailable()) {
         /** @var \Drupal\inmail\Plugin\inmail\handler\HandlerInterface $handler */
         $handler = $this->handlerManager->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
         $handler->invoke($message, $result);

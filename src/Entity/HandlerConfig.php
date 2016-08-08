@@ -40,4 +40,12 @@ namespace Drupal\inmail\Entity;
  */
 class HandlerConfig extends PluginConfigEntity {
   // @todo Implement HandlerConfig::calculateDependencies() https://www.drupal.org/node/2379929
+
+  /**
+   * The Inmail plugin type.
+   *
+   * @var string
+   */
+  protected $pluginType = 'handler';
+
 }

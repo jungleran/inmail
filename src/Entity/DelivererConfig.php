@@ -40,4 +40,12 @@ namespace Drupal\inmail\Entity;
  * )
  */
 class DelivererConfig extends PluginConfigEntity {
+
+  /**
+   * The Inmail plugin type.
+   *
+   * @var string
+   */
+  protected $pluginType = 'deliverer';
+
 }

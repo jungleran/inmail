@@ -77,7 +77,7 @@ class DelivererListForm extends FormBase {
       // Get plugin instance.
       $deliverer = $this->delivererManager->createInstance($deliverer_config->getPluginId(), $deliverer_config->getConfiguration());
       // Update plugin.
-      if ($deliverer instanceof FetcherInterface) {
+      if ($deliverer instanceof FetcherInterface && $deliverer->isAvailable()) {
         $deliverer->update();
         $deliverer->setLastCheckedTime(REQUEST_TIME);
         $fetchers_count++;

@@ -1,8 +1,7 @@
 <?php
 
 namespace Drupal\inmail\Plugin\inmail\Deliverer;
-
-use Drupal\Core\Plugin\PluginBase;
+use Drupal\inmail\InmailPluginBase;
 
 /**
  * Base class for mail deliverers.
@@ -13,7 +12,7 @@ use Drupal\Core\Plugin\PluginBase;
  *
  * @ingroup deliverer
  */
-abstract class DelivererBase extends PluginBase implements DelivererInterface {
+abstract class DelivererBase extends InmailPluginBase implements DelivererInterface {
 
   /**
    * {@inheritdoc}

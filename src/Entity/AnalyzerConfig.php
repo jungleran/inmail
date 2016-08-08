@@ -43,6 +43,13 @@ namespace Drupal\inmail\Entity;
 class AnalyzerConfig extends PluginConfigEntity {
 
   /**
+   * The Inmail plugin type.
+   *
+   * @var string
+   */
+  protected $pluginType = 'analyzer';
+
+  /**
    * The weight of the analyzer configuration.
    *
    * Analyzers with lower weights are invoked before those with higher weights.

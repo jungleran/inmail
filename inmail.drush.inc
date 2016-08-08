@@ -70,6 +70,10 @@ function drush_inmail_process() {
     drush_set_error(dt('Deliverer "@deliverer_id" not found', ['@deliverer_id' => $deliverer_config_id]));
     return;
   }
+  if (!$deliverer->isAvailable()) {
+    drush_set_error(dt('Deliverer "@deliverer_id" is not available', ['@deliverer_id' => $deliverer_config_id]));
+    return;
+  }
 
   if (count($args) > 0) {
     $raws = array();

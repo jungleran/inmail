@@ -3,14 +3,14 @@
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Plugin\PluginBase;
+use Drupal\inmail\InmailPluginBase;
 
 /**
  * Base class for message analyzer plugins.
  *
  * @ingroup analyzer
  */
-abstract class AnalyzerBase extends PluginBase implements AnalyzerInterface {
+abstract class AnalyzerBase extends InmailPluginBase implements AnalyzerInterface {
 
   /**
    * {@inheritdoc}

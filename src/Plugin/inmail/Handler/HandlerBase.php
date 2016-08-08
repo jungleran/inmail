@@ -3,7 +3,7 @@
 namespace Drupal\inmail\Plugin\inmail\Handler;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Plugin\PluginBase;
+use Drupal\inmail\InmailPluginBase;
 
 /**
  * Base class for message handler plugins.
@@ -13,7 +13,7 @@ use Drupal\Core\Plugin\PluginBase;
  *
  * @ingroup handler
  */
-abstract class HandlerBase extends PluginBase implements HandlerInterface {
+abstract class HandlerBase extends InmailPluginBase implements HandlerInterface {
 
   /**
    * {@inheritdoc}

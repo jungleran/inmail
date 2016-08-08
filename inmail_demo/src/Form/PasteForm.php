@@ -187,17 +187,20 @@ class PasteForm extends FormBase {
   }
 
   /**
-   * Loads and returns all deliverer configs using the Paste deliverer.
+   * Loads and returns all available deliverer configs using Paste deliverer.
    *
    * @return \Drupal\inmail\Entity\DelivererConfig[]
-   *   All enabled Paste deliverer configs.
+   *   All enabled and available Paste deliverer configs.
    */
   protected function getDelivererConfigs() {
     $ids = $this->delivererStorage->getQuery()
       ->condition('plugin', 'paste')
       ->condition('status', TRUE)
       ->execute();
-    return $this->delivererStorage->loadMultiple($ids);
+    $deliverers = $this->delivererStorage->loadMultiple($ids);
+    return array_filter($deliverers, function ($deliverer) {
+      return $deliverer->isAvailable();
+    });
   }
 
   /**

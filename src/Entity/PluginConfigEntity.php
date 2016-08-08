@@ -38,6 +38,13 @@ abstract class PluginConfigEntity extends ConfigEntityBase {
   protected $configuration = array();
 
   /**
+   * The plugin instance.
+   *
+   * @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface|\Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface|\Drupal\inmail\Plugin\inmail\Handler\HandlerInterface
+   */
+  protected $pluginInstance;
+
+  /**
    * Returns the plugin ID.
    *
    * @return string
@@ -71,4 +78,47 @@ abstract class PluginConfigEntity extends ConfigEntityBase {
     $this->configuration = $configuration;
     return $this;
   }
+
+  /**
+   * Returns the plugin instance.
+   *
+   * @return \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface|\Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface|\Drupal\inmail\Plugin\inmail\Handler\HandlerInterface The instantiated plugin.
+   * The instantiated plugin.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
+   *   Throws an exception in case of missing plugin.
+   */
+  public function getPluginInstance() {
+    if (empty($this->pluginInstance)) {
+      $this->pluginInstance = \Drupal::service('plugin.manager.inmail.' . $this->pluginType)->createInstance($this->plugin, $this->configuration);
+    }
+
+    return $this->pluginInstance;
+  }
+
+  /**
+   * Returns the plugin type.
+   *
+   * @return string
+   *   The plugin type.
+   */
+  public function getPluginType() {
+    return $this->pluginType;
+  }
+
+  /**
+   * Flag determining whether a plugin is available to be used in processing.
+   *
+   * @return bool
+   *   TRUE if the plugin is available. Otherwise, FALSE.
+   */
+  public function isAvailable() {
+    $is_available = FALSE;
+    if ($plugin = $this->getPluginInstance()) {
+      $is_available = $plugin->isAvailable();
+    }
+
+    return $is_available;
+  }
+
 }

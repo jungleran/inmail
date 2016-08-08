@@ -40,6 +40,9 @@ class TestAnalyzer extends AnalyzerBase {
       $demo_user->save();
     }
     $default_result->setAccount($demo_user);
+
+    // Update the body of the default result.
+    $default_result->setBody($message->getBody());
   }
 
   /**
