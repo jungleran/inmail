@@ -10,7 +10,7 @@ use Drupal\user\UserInterface;
  *
  * @ingroup analyzer
  */
-class DefaultAnalyzerResult implements AnalyzerResultInterface, DefaultAnalyzerResultInterface {
+class DefaultAnalyzerResult implements AnalyzerResultInterface {
 
   /**
    * Identifies this class in relation to other analyzer results.
@@ -87,35 +87,50 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface, DefaultAnalyzerR
   }
 
   /**
-   * {@inheritdoc}
+   * Sets the sender mail address.
+   *
+   * @param string $sender
+   *   The address of the sender.
    */
   public function setSender($sender) {
     $this->sender = $sender;
   }
 
   /**
-   * {@inheritdoc}
+   * Returns the sender of the message.
+   *
+   * @return string|null
+   *   The address of the sender, or NULL if it is not found.
    */
   public function getSender() {
     return $this->sender;
   }
 
   /**
-   * {@inheritdoc}
+   * Sets the account.
+   *
+   * @param \Drupal\user\UserInterface $account
+   *   The new user.
    */
   public function setAccount(UserInterface $account) {
     $this->account = $account;
   }
 
   /**
-   * {@inheritdoc}
+   * Returns a user object.
+   *
+   * @return \Drupal\user\UserInterface
+   *   The user object.
    */
   public function getAccount() {
     return $this->account;
   }
 
   /**
-   * {@inheritdoc}
+   * Determines if the user is authenticated.
+   *
+   * @return bool
+   *   TRUE if user is authenticated. Otherwise, FALSE.
    */
   public function isUserAuthenticated() {
     return $this->account ? $this->account->isAuthenticated() : FALSE;
@@ -140,70 +155,111 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface, DefaultAnalyzerR
   }
 
   /**
-   * {@inheritdoc}
+   * Returns the analyzed body of the message.
+   *
+   * @return string
+   *   The analyzed body of the message.
    */
   public function getBody() {
     return $this->body;
   }
 
   /**
-   * {@inheritdoc}
+   * Sets the analyzed message body.
+   *
+   * @param string $body
+   *   The analyzed body of the message.
    */
   public function setBody($body) {
     $this->body = $body;
   }
 
   /**
-   * {@inheritdoc}
+   * Returns the message footer.
+   *
+   * @return string
+   *   The footer of the message.
    */
   public function getFooter() {
     return $this->footer;
   }
 
   /**
-   * {@inheritdoc}
+   * Sets the message footer.
+   *
+   * @param string $footer
+   *   The message footer.
    */
   public function setFooter($footer) {
     $this->footer = $footer;
   }
 
   /**
-   * @inheritDoc
+   * Returns the analyzed message subject.
+   *
+   * @return string
+   *   The message subject.
    */
   public function getSubject() {
     return $this->subject;
   }
 
   /**
-   * @inheritDoc
+   * Sets the actual message subject.
+   *
+   * @param string $subject
+   *   The analyzed message subject.
    */
   public function setSubject($subject) {
     $this->subject = $subject;
   }
 
   /**
-   * @inheritDoc
+   * Sets the condition context for a given name.
+   *
+   * @param string $name
+   *   The name of the context.
+   * @param \Drupal\Core\Plugin\Context\ContextInterface $context
+   *   The context to set.
    */
   public function setContext($name, ContextInterface $context) {
     $this->contexts[$name] = $context;
   }
 
   /**
-   * @inheritDoc
+   * Gets an array of all collected contexts for this analyzer result.
+   *
+   * @return \Drupal\Core\Plugin\Context\ContextInterface[]
+   *   An array of set contexts, keyed by context name.
    */
   public function getAllContexts() {
     return $this->contexts;
   }
 
   /**
-   * @inheritDoc
+   * Returns whether context exists.
+   *
+   * @param string $name
+   *   The name of the context.
+   *
+   * @return bool
+   *   TRUE if the context exists. Otherwise, FALSE.
    */
   public function hasContext($name) {
     return isset($this->contexts[$name]);
   }
 
   /**
-   * @inheritDoc
+   * Gets the specific context from the list of available contexts.
+   *
+   * @param string $name
+   *   The name of the context to return.
+   *
+   * @return \Drupal\Core\Plugin\Context\ContextInterface
+   *   Requested context object or NULL if not found.
+   *
+   * @throws \InvalidArgumentException
+   *   Throws an exception if requested context does not exist.
    */
   public function getContext($name) {
     if (!isset($this->contexts[$name])) {
@@ -214,7 +270,13 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface, DefaultAnalyzerR
   }
 
   /**
-   * @inheritDoc
+   * Returns the contexts of the given type.
+   *
+   * @param string $type
+   *   The context type.
+   *
+   * @return \Drupal\Core\Plugin\Context\ContextInterface[]
+   *   Contexts array of the given data type, keyed by context name.
    */
   public function getContextsWithType($type) {
     $filtered_contexts = [];
@@ -227,6 +289,5 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface, DefaultAnalyzerR
 
     return $filtered_contexts;
   }
-
 
 }
