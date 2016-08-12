@@ -35,7 +35,7 @@ abstract class PluginConfigEntity extends ConfigEntityBase {
    *
    * @var array
    */
-  protected $configuration = array();
+  protected $configuration = [];
 
   /**
    * The plugin instance.
@@ -43,41 +43,6 @@ abstract class PluginConfigEntity extends ConfigEntityBase {
    * @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface|\Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface|\Drupal\inmail\Plugin\inmail\Handler\HandlerInterface
    */
   protected $pluginInstance;
-
-  /**
-   * Returns the plugin ID.
-   *
-   * @return string
-   *   The machine name of this plugin.
-   */
-  public function getPluginId() {
-    return $this->plugin;
-  }
-
-  /**
-   * Returns the configuration stored for this plugin.
-   *
-   * @return array
-   *   The plugin configuration. Its properties are defined by the associated
-   *   plugin.
-   */
-  public function getConfiguration() {
-    return $this->configuration;
-  }
-
-  /**
-   * Replaces the configuration stored for this plugin.
-   *
-   * @param array $configuration
-   *   New plugin configuraion. Should match the properties defined by the
-   *   plugin referenced by ::$plugin.
-   *
-   * @return $this
-   */
-  public function setConfiguration(array $configuration) {
-    $this->configuration = $configuration;
-    return $this;
-  }
 
   /**
    * Returns the plugin instance.

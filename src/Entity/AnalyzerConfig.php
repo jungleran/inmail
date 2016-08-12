@@ -2,6 +2,8 @@
 
 namespace Drupal\inmail\Entity;
 
+use Drupal\inmail\AnalyzerConfigInterface;
+
 /**
  * Message analyzer configuration entity.
  *
@@ -40,7 +42,7 @@ namespace Drupal\inmail\Entity;
  *   }
  * )
  */
-class AnalyzerConfig extends PluginConfigEntity {
+class AnalyzerConfig extends PluginConfigEntity implements AnalyzerConfigInterface {
 
   /**
    * The Inmail plugin type.
@@ -57,5 +59,47 @@ class AnalyzerConfig extends PluginConfigEntity {
    * @var int
    */
   protected $weight;
+
+  /**
+   * @inheritdoc
+   */
+  public function getWeight() {
+    return $this->weight;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function setWeight($weight) {
+    $this->weight = $weight;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function getPluginId() {
+    return $this->plugin;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function setPluginId($plugin) {
+    $this->plugin = $plugin;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function getConfiguration() {
+    return $this->configuration;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function setConfiguration(array $configuration) {
+    $this->configuration = $configuration;
+  }
 
 }

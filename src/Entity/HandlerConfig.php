@@ -2,6 +2,8 @@
 
 namespace Drupal\inmail\Entity;
 
+use Drupal\inmail\HandlerConfigInterface;
+
 /**
  * Message handler configuration entity.
  *
@@ -38,7 +40,7 @@ namespace Drupal\inmail\Entity;
  *   }
  * )
  */
-class HandlerConfig extends PluginConfigEntity {
+class HandlerConfig extends PluginConfigEntity implements HandlerConfigInterface {
   // @todo Implement HandlerConfig::calculateDependencies() https://www.drupal.org/node/2379929
 
   /**
@@ -47,5 +49,34 @@ class HandlerConfig extends PluginConfigEntity {
    * @var string
    */
   protected $pluginType = 'handler';
+
+  /**
+   * @inheritdoc
+   */
+  public function getPluginId() {
+    return $this->plugin;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function setPluginId($plugin) {
+    $this->plugin = $plugin;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function getConfiguration() {
+    return $this->configuration;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function setConfiguration(array $configuration) {
+    $this->configuration = $configuration;
+    return $this;
+  }
 
 }
