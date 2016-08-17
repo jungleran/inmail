@@ -3,7 +3,7 @@
 namespace Drupal\inmail;
 
 /**
- * Thin interface for the handler config manager.
+ * Thin interface for the handler config.
  *
  * @package Drupal\inmail
  */

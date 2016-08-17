@@ -12,17 +12,17 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 interface InmailPluginConfigInterface extends ConfigEntityInterface {
 
   /**
-   *Returns the plugin ID.
+   * Returns the plugin ID.
    *
    * @return string
-   *   The machine name of this plugin
+   *   The machine name of this plugin.
    */
   public function getPluginId();
 
   /**
    * Sets the plugin ID.
    *
-   * @param $plugin
+   * @param string $plugin
    */
   public function setPluginId($plugin);
 
@@ -30,18 +30,16 @@ interface InmailPluginConfigInterface extends ConfigEntityInterface {
    * Returns the configuration stored for this plugin.
    *
    * @return array
-   *   The plugin configuration. Its properties are defined by associated
+   *   An array of this plugin's configuration.
    */
   public function getConfiguration();
 
   /**
-   * Replaces the configuration stored for this plugin.
+   * Sets the configuration stored for this plugin.
    *
    * @param array
    *   New plugin configuration. Should match the properties defined by the
-   *   plugin referenced by ::$plugin
-   *
-   * @return  $this
+   *   plugin referenced by ::$plugin.
    */
   public function setConfiguration(array $configuration);
 

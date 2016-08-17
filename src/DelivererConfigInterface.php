@@ -3,7 +3,7 @@
 namespace Drupal\inmail;
 
 /**
- * Thin interface for the deliverer config manager.
+ * Thin interface for the deliverer config.
  *
  * @package Drupal\inmail
  */

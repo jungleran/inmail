@@ -3,7 +3,6 @@
 namespace Drupal\inmail\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\HandlerConfigInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;

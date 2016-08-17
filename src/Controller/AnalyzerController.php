@@ -4,7 +4,6 @@ namespace Drupal\inmail\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\inmail\AnalyzerConfigInterface;
-use Drupal\inmail\Entity\AnalyzerConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 

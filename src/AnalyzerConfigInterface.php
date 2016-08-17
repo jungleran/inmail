@@ -3,26 +3,25 @@
 namespace Drupal\inmail;
 
 /**
- * Thin interface for the analyzer config manager.
+ * Thin interface for the analyzer config.
  *
  * @package Drupal\inmail
  */
 interface AnalyzerConfigInterface extends InmailPluginConfigInterface {
 
   /**
-   * Returns the weight
+   * Returns the weight.
    *
    * @return int
-   *   The weight of analyzer configuration
+   *   The weight of analyzer configuration.
    */
   public function getWeight();
 
   /**
+   * Sets the weight.
    *
-   * Sets the weight
-   *
-   * @param $weight
-   *   The weight of analyzer configurations
+   * @param string|int $weight
+   *   The weight of analyzer configuration.
    */
   public function setWeight($weight);
 
