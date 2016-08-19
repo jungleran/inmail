@@ -16,8 +16,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Reacts to bounce messages by managing the send state of the bouncing address.
  *
- * @todo Test logging https://www.drupal.org/node/2381933
- *
  * @ingroup mailmute
  *
  * @Handler(

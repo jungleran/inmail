@@ -20,7 +20,7 @@ class ModeratorForwardTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail', 'inmail_test', 'system', 'user');
+  public static $modules = array('inmail', 'inmail_test', 'system', 'user', 'past', 'past_db', 'options');
 
   /**
    * {@inheritdoc}
@@ -33,6 +33,8 @@ class ModeratorForwardTest extends KernelTestBase {
     \Drupal::configFactory()->getEditable('system.site')
       ->set('mail', 'bounces@example.com')
       ->save();
+    $this->installEntitySchema('past_event');
+    $this->installSchema('past_db', array('past_event_argument', 'past_event_data'));
   }
 
   /**
@@ -62,14 +64,29 @@ class ModeratorForwardTest extends KernelTestBase {
     $bounce_no_status = str_replace('Status:', 'Foo:', $bounce);
     $processor->process($bounce_no_status, DelivererConfig::create(array('id' => 'test')));
     $this->assertMailCount(0);
-    // @todo Read log? https://www.drupal.org/node/2381933
+
+    // Check the Past event created by the processor.
+    $events = \Drupal::entityTypeManager()->getStorage('past_event')->loadMultiple();
+    // Reading last event.
+    $last_event = end($events);
+    $event_message = $last_event->getMessage();
+    $moderator_message = (string) $last_event->getArgument('ModeratorForwardHandler')->getData()[0];
+    $this->assertEqual($event_message, '<21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031=EC2C+@acacia.example.org>');
+    $this->assertEqual($moderator_message, 'Moderator <em class="placeholder">user@example.org</em> is bouncing.');
 
     // Do not handle, and log an error, if the custom X header is set.
     $handler_config->setConfiguration(array('moderator' => 'moderator@example.com'))->save();
     $regular_x = "X-Inmail-Forwarded: ModeratorForwardTest\n" . $regular;
     $processor->process($regular_x, DelivererConfig::create(array('id' => 'test')));
     $this->assertMailCount(0);
-    // @todo Read log? https://www.drupal.org/node/2381933
+
+    // Again check past event log.
+    $events = \Drupal::entityTypeManager()->getStorage('past_event')->loadMultiple();
+    $last_event = end($events);
+    $event_message = $last_event->getMessage();
+    $moderator_message = (string) $last_event->getArgument('ModeratorForwardHandler')->getData()[0];
+    $this->assertEqual($event_message, '<CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.gmail.com>');
+    $this->assertEqual($moderator_message, 'Refused to forward the same email twice (<em class="placeholder">BMH testing sample</em>).');
 
     // Forward non-bounces if conditions are right.
     $processor->process($regular, DelivererConfig::create(array('id' => 'test')));

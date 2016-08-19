@@ -14,7 +14,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Message handler that forwards unclassified bounces by email to a moderator.
  *
  * @todo Validate moderator email address https://www.drupal.org/node/2381855
- * @todo Test logging https://www.drupal.org/node/2381933
  *
  * @Handler(
  *   id = "moderator_forward",
