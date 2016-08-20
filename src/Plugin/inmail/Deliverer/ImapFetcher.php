@@ -283,4 +283,30 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
     $this->updateConfiguration($form_state);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function isAvailable() {
+    // Checks if the imap extension is enabled.
+    return function_exists('imap_open');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function checkPluginRequirements() {
+    $requirements = [
+      'title' => t('PHP IMAP'),
+      'severity' => REQUIREMENT_OK,
+    ];
+    if(!function_exists('imap_open')) {
+      $requirements['severity'] = REQUIREMENT_ERROR;
+      $requirements['description'] = t('The <a href=":imap">PHP IMAP</a> extension is missing, it must be enabled.', [':imap' => 'http://www.php.net/imap']);
+    }
+    else {
+      $requirements['description'] = t('The <a href=":imap">PHP IMAP</a> extension is installed.', [':imap' => 'http://www.php.net/imap']);
+    }
+    return $requirements;
+  }
+
 }
