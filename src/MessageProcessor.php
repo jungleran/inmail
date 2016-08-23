@@ -86,83 +86,94 @@ class MessageProcessor implements MessageProcessorInterface {
    * {@inheritdoc}
    */
   public function process($raw, DelivererConfig $deliverer) {
-    // Parse message.
-    try {
-      $message = $this->parser->parseMessage($raw);
-    }
-    catch (ParseException $e) {
-      $this->loggerChannel->info('Unable to process message, parser failed with message "@message"', array('@message' => $e->getMessage()));
-      return;
-    }
-
-    // Create log event.
     $event = NULL;
+    // Create a log event.
     if (\Drupal::moduleHandler()->moduleExists('past')) {
-      $event = past_event_create('inmail', 'process', $message->getMessageId());
+      $event = past_event_create('inmail', 'process', 'Incoming mail');
       $event->addArgument('deliverer', $deliverer);
     }
 
-    // Analyze message.
-    $result = new ProcessorResult();
-    $result->setDeliverer($deliverer);
-
-    /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
-    $default_result = $result->ensureAnalyzerResult(DefaultAnalyzerResult::TOPIC, DefaultAnalyzerResult::createFactory());
-    // Enabled analyzers will be able to update the account.
-    $default_result->setAccount(User::getAnonymousUser());
-
-    $analyzer_configs = $this->analyzerStorage->loadMultiple();
-    uasort($analyzer_configs, array($this->analyzerStorage->getEntityType()->getClass(), 'sort'));
-    foreach ($analyzer_configs as $analyzer_config) {
-      /** @var \Drupal\inmail\Entity\AnalyzerConfig $analyzer_config */
-      if ($analyzer_config->status() && $analyzer_config->isAvailable()) {
-        /** @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface $analyzer */
-        $analyzer = $this->analyzerManager->createInstance($analyzer_config->getPluginId(), $analyzer_config->getConfiguration());
-        $analyzer->analyze($message, $result);
-      }
-    }
-
-    foreach ($result->getAnalyzerResults() as $analyzer_result) {
-      $event and $event->addArgument(get_class($analyzer_result), $analyzer_result->summarize());
-    }
-
-    // Conditionally switch to the account identified by analyzers.
     $has_account_changed = FALSE;
-    if ($default_result->isUserAuthenticated()) {
-      $this->accountSwitcher->switchTo($default_result->getAccount());
-      $has_account_changed = TRUE;
-    }
-
-    // Handle message.
-    foreach ($this->handlerStorage->loadMultiple() as $handler_config) {
-      /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
-      if ($handler_config->status() && $handler_config->isAvailable()) {
-        /** @var \Drupal\inmail\Plugin\inmail\handler\HandlerInterface $handler */
-        $handler = $this->handlerManager->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
-        $handler->invoke($message, $result);
+    try {
+      // Parse message.
+      $message = $this->parser->parseMessage($raw);
+      // Set event message if parsing the message passed.
+      if ($event) {
+        $event->setMessage('Incoming mail: ' . $message->getMessageId());
       }
-    }
 
-    if ($has_account_changed) {
-      // Switch back to a previous account.
-      $this->accountSwitcher->switchBack();
-    }
+      // Analyze message.
+      $result = new ProcessorResult();
+      $result->setDeliverer($deliverer);
 
-    if ($event) {
-      // Dump all log items into a past argument per source.
-      foreach ($result->readLog() as $source => $log) {
-        $messages = [];
-        foreach ($log as $item) {
-          // Apply placeholders.
-          $messages[] = SafeMarkup::format($item['message'], $item['placeholders']);
+      /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
+      $default_result = $result->ensureAnalyzerResult(DefaultAnalyzerResult::TOPIC, DefaultAnalyzerResult::createFactory());
+      // Enabled analyzers will be able to update the account.
+      $default_result->setAccount(User::getAnonymousUser());
+
+      $analyzer_configs = $this->analyzerStorage->loadMultiple();
+      uasort($analyzer_configs, array($this->analyzerStorage->getEntityType()->getClass(), 'sort'));
+      foreach ($analyzer_configs as $analyzer_config) {
+        /** @var \Drupal\inmail\Entity\AnalyzerConfig $analyzer_config */
+        if ($analyzer_config->status() && $analyzer_config->isAvailable()) {
+          /** @var \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface $analyzer */
+          $analyzer = $this->analyzerManager->createInstance($analyzer_config->getPluginId(), $analyzer_config->getConfiguration());
+          $analyzer->analyze($message, $result);
         }
-        $event->addArgument($source, $messages);
       }
 
-      // Save the log event.
-      $event->save();
-    }
+      foreach ($result->getAnalyzerResults() as $analyzer_result) {
+        $event and $event->addArgument(get_class($analyzer_result), $analyzer_result->summarize());
+      }
 
+      // Conditionally switch to the account identified by analyzers.
+      if ($default_result->isUserAuthenticated()) {
+        $this->accountSwitcher->switchTo($default_result->getAccount());
+        $has_account_changed = TRUE;
+      }
+
+      // Handle message.
+      foreach ($this->handlerStorage->loadMultiple() as $handler_config) {
+        /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
+        if ($handler_config->status() && $handler_config->isAvailable()) {
+          /** @var \Drupal\inmail\Plugin\inmail\handler\HandlerInterface $handler */
+          $handler = $this->handlerManager->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
+          $handler->invoke($message, $result);
+        }
+      }
+
+      if ($event) {
+        // Dump all log items into a past argument per source.
+        foreach ($result->readLog() as $source => $log) {
+          $messages = [];
+          foreach ($log as $item) {
+            // Apply placeholders.
+            $messages[] = SafeMarkup::format($item['message'], $item['placeholders']);
+          }
+          $event->addArgument($source, $messages);
+        }
+      }
+    }
+    catch (ParseException $e) {
+      // Set event message if parsing the message fails.
+      if ($event) {
+        $event->setMessage('Incoming mail, parsing failed with error: ' . $e->getMessage());
+        $event->addException($e);
+      }
+
+      $this->loggerChannel->error('Unable to process message, parser failed with error: ' . $e->getMessage());
+    }
+    finally {
+      if ($has_account_changed) {
+        // Switch back to a previous account.
+        $this->accountSwitcher->switchBack();
+      }
+
+      // Save the log event
+      if ($event) {
+        $event->save();
+      }
+    }
   }
 
   /**

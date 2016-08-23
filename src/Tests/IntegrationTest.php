@@ -17,7 +17,13 @@ class IntegrationTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail_mailmute', 'field_ui');
+  public static $modules = [
+    'inmail_mailmute',
+    'field_ui',
+    'past',
+    'past_db',
+    'past_testhidden',
+  ];
 
   /**
    * {@inheritdoc}
@@ -74,6 +80,11 @@ class IntegrationTest extends WebTestBase {
     $this->assertText('Permanent Failure: Bad destination mailbox address');
     $this->assertText('2015-01-29 15:43:04 +01:00');
     $this->assertText('This didn\'t go too well.');
+
+    $processor->process(NULL, DelivererConfig::create(['id' => 'test']));
+    $event = $this->getLastEventByMachinename('process');
+    $this->assertNotNull($event);
+    $this->assertEqual($event->getMessage(), 'Incoming mail, parsing failed with error: Failed to split header from body');
   }
 
   /**
@@ -146,6 +157,22 @@ $body
 
 EOF;
 
+  }
+
+  /**
+   * Returns the last event with a given machine name.
+   *
+   * @param string $machine_name
+   *
+   * @return PastEventInterface
+   */
+  public function getLastEventByMachinename($machine_name) {
+    $event_id = db_query_range('SELECT event_id FROM {past_event} WHERE machine_name = :machine_name ORDER BY event_id DESC', 0, 1, array(':machine_name' => $machine_name))->fetchField();
+    if ($event_id) {
+      return \Drupal::entityManager()
+        ->getStorage('past_event')
+        ->load($event_id);
+    }
   }
 
 }

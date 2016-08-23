@@ -71,7 +71,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $last_event = end($events);
     $event_message = $last_event->getMessage();
     $moderator_message = (string) $last_event->getArgument('ModeratorForwardHandler')->getData()[0];
-    $this->assertEqual($event_message, '<21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031=EC2C+@acacia.example.org>');
+    $this->assertEqual($event_message, 'Incoming mail: <21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031=EC2C+@acacia.example.org>');
     $this->assertEqual($moderator_message, 'Moderator <em class="placeholder">user@example.org</em> is bouncing.');
 
     // Do not handle, and log an error, if the custom X header is set.
@@ -85,7 +85,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $last_event = end($events);
     $event_message = $last_event->getMessage();
     $moderator_message = (string) $last_event->getArgument('ModeratorForwardHandler')->getData()[0];
-    $this->assertEqual($event_message, '<CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.gmail.com>');
+    $this->assertEqual($event_message, 'Incoming mail: <CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.gmail.com>');
     $this->assertEqual($moderator_message, 'Refused to forward the same email twice (<em class="placeholder">BMH testing sample</em>).');
 
     // Forward non-bounces if conditions are right.

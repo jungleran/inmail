@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\inmail\Unit\MIME;
+namespace Drupal\Tests\inmail\Unit\MIME;
 
 use Drupal\inmail\MIME\Entity;
 use Drupal\inmail\MIME\Header;
