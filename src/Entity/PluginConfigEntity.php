@@ -3,11 +3,12 @@
 namespace Drupal\inmail\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
+use Drupal\inmail\InmailPluginConfigInterface;
 
 /**
  * Defines a config entity skeleton for plugin configuration.
  */
-abstract class PluginConfigEntity extends ConfigEntityBase {
+abstract class PluginConfigEntity extends ConfigEntityBase implements InmailPluginConfigInterface {
 
   /**
    * The machine name of the plugin configuration.
@@ -84,6 +85,35 @@ abstract class PluginConfigEntity extends ConfigEntityBase {
     }
 
     return $is_available;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setPluginId($plugin) {
+    $this->plugin = $plugin;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setConfiguration(array $configuration ) {
+    $this->configuration = $configuration;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConfiguration() {
+    return $this->configuration;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getPluginId() {
+    return $this->plugin;
   }
 
 }

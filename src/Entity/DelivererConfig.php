@@ -49,32 +49,4 @@ class DelivererConfig extends PluginConfigEntity implements DelivererConfigInter
    */
   protected $pluginType = 'deliverer';
 
-  /**
-   * @inheritdoc
-   */
-  public function getPluginId() {
-    return $this->plugin;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function setPluginId($plugin) {
-    $this->plugin = $plugin;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function getConfiguration() {
-    return $this->configuration;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function setConfiguration(array $configuration) {
-    $this->configuration = $configuration;
-  }
-
 }
