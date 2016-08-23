@@ -110,11 +110,15 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
     // Connect to IMAP with details from configuration.
     $mailbox_flags = $this->configuration['ssl'] ? '/ssl' : '';
     $mailbox = '{' . $this->configuration['host'] . ':' . $this->configuration['port'] . $mailbox_flags . '}';
-    $imap_res = imap_open($mailbox, $this->configuration['username'], $this->configuration['password']);
+    if ($this->configuration['protocol'] === 'pop3') {
+      $mailbox = '{' . $this->configuration['host'] . ':' . $this->configuration['port'] . '/pop3' . $mailbox_flags . '}';
+    }
 
+    $imap_res = @imap_open($mailbox, $this->configuration['username'], $this->configuration['password']);
+    $errors = imap_errors();
     if (empty($imap_res)) {
       // @todo Return noisily if misconfigured or imap missing. Possibly stop retrying, https://www.drupal.org/node/2405757
-      $this->loggerChannel->error('Deliverer connection failed: @error', ['@error' => implode("\n", imap_errors())]);
+      $this->loggerChannel->error('Deliverer connection failed: @error', ['@error' => implode("\n", $errors)]);
       return NULL;
     }
 
@@ -135,6 +139,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       // Standard non-SSL IMAP port as defined by RFC 3501.
       'port' => 143,
       'ssl' => FALSE,
+      'protocol' => 'imap',
       'username' => '',
       'password' => '',
       'batch_size' => '100',
@@ -149,10 +154,22 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       '#type' => 'fieldset',
       '#title' => $this->t('Account'),
     );
+
     $form['account']['info'] = array(
       '#type' => 'item',
       '#markup' => $this->t('Please refer to your email provider for the appropriate values for these fields.'),
     );
+
+    $form['account']['protocol'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Protocol'),
+      '#options' => [
+        'imap' => $this->t('IMAP'),
+        'pop3' => $this->t('POP3'),
+      ],
+      '#default_value' => $this->configuration['protocol'],
+    ];
+
     $form['account']['host'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Host'),
@@ -163,7 +180,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       '#type' => 'number',
       '#title' => $this->t('Port'),
       '#default_value' => $this->configuration['port'],
-      '#description' => $this->t('The standard port number is 143, or 993 when using SSL.'),
+      '#description' => $this->t('The standard port number for IMAP is 143 (SSL: 993), POP3: 110 (SSL: 995).'),
     );
 
     $form['account']['ssl'] = array(
@@ -171,6 +188,8 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       '#title' => $this->t('Use SSL'),
       '#default_value' => $this->configuration['ssl'],
     );
+
+
 
     $form['account']['username'] = array(
       '#type' => 'textfield',
@@ -226,6 +245,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       'host' => $form_state->getValue('host'),
       'port' => $form_state->getValue('port'),
       'ssl' => $form_state->getValue('ssl'),
+      'protocol' => $form_state->getValue('protocol'),
       'username' => $form_state->getValue('username'),
       'batch_size' => $form_state->getValue('batch_size'),
     ) + $this->getConfiguration();

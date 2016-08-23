@@ -98,6 +98,9 @@ inmail.plugin.deliverer.imap:
     ssl:
       label: 'SSL'
       type: boolean
+    protocol:
+      select: 'Protocol'
+      type: string
     port:
       label: 'Port'
       type: integer
