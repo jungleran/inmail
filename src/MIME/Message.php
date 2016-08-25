@@ -51,4 +51,31 @@ class Message extends Entity implements MessageInterface {
     return new DateTimePlus($date_string);
   }
 
+  /**
+   * Check that the message complies to the RFC standard.
+   *
+   * @return bool
+   *   TRUE if message is valid, otherwise FALSE.
+   */
+  public function validate() {
+    // By RFC 5322 format, Date and From header fields are only required fields.
+    $result = TRUE;
+    foreach (['Received', 'From'] as $key) {
+      $counter = count($this->getHeader()->getFieldBodies($key));
+      // If the field is absent, save error message in array.
+      if (!$this->getHeader()->hasField($key)) {
+        $result = FALSE;
+        $this->error_messages[$key] = 'Missing ' . $key . ' Field';
+      }
+      // Count number of field bodies. According to RFC, there should be only one
+      // occurrence of fields Received and From.
+      if ($counter > 1) {
+        $result = FALSE;
+        $this->error_messages[$key] = $counter . ' ' . $key . ' Fields';
+      }
+      $counter = 0;
+    }
+    return $result;
+  }
+
 }

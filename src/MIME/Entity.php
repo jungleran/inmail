@@ -12,6 +12,15 @@ use Drupal\Component\Utility\Unicode;
 class Entity implements EntityInterface {
 
   /**
+   * An associative array of keys and corresponding error messages.
+   *
+   * It contains information that is provided by validate function.
+   *
+   * @var array
+   */
+  protected $error_messages = [];
+
+  /**
    * The entity header.
    *
    * @var \Drupal\inmail\MIME\Header
@@ -129,6 +138,28 @@ class Entity implements EntityInterface {
   public function toString() {
     // A blank line terminates the header section and begins the body.
     return $this->getHeader()->toString() . "\n\n" . $this->getBody();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validate() {
+    return TRUE;
+  }
+
+  /**
+   * Returns error messages from validation.
+   *
+   * @return array
+   *   Associative array with keys and related error messages, or empty array
+   *   if no validation errors exists.
+   */
+  public function getValidationErrors() {
+    $errors = $this->error_messages;
+    // Empty the error message array.
+    $this->error_messages = [];
+
+    return $errors;
   }
 
 }

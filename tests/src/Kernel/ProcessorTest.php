@@ -53,6 +53,7 @@ class ProcessorTest extends KernelTestBase {
     $raw = <<<EOF
 Subject: Hello!
 From: Demo User <demo@example.com>
+Received: 23 Aug 2016 17:48:6 +0600
 To: receiver@example.com
 
 Hello world!

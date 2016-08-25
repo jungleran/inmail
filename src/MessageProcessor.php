@@ -10,6 +10,7 @@ use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\MIME\ParseException;
 use Drupal\inmail\MIME\ParserInterface;
 use Drupal\user\Entity\User;
+use Drupal\Core\Logger\RfcLogLevel;
 
 /**
  * Mail message processor using services to analyze and handle messages.
@@ -97,6 +98,15 @@ class MessageProcessor implements MessageProcessorInterface {
     try {
       // Parse message.
       $message = $this->parser->parseMessage($raw);
+      // Checks that the message complies to the RFC standard.
+      if (!$message->validate()) {
+        $this->loggerChannel->info('Message Validation failed with message %message', ['%message' => implode(', ', $message->getValidationErrors())]);
+        if ($event) {
+          $event->addArgument('validation errors', $message->getValidationErrors());
+          $event->setSeverity(RfcLogLevel::ERROR);
+        }
+        return;
+      }
       // Set event message if parsing the message passed.
       if ($event) {
         $event->setMessage('Incoming mail: ' . $message->getMessageId());

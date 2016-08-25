@@ -213,4 +213,26 @@ class Header {
     return $string;
   }
 
+  /**
+   * Returns the body of the fields with the given name.
+   *
+   * @param string $name
+   *   The name of a header field.
+   * @param bool $filter
+   *   Whether '(comments)' should be filtered from the content.
+   *
+   * @return string
+   *   The body of the field or empty array if the field is not present.
+   */
+  public function getFieldBodies($name, $filter = FALSE) {
+    // Iterate through headers and find the matches.
+    $body = [];
+    foreach ($this->fields as $key => $field) {
+      if (strcasecmp($field['name'], $name) == 0) {
+        $body[] = trim($this->fields[$key]['body']);
+      }
+    }
+    return ($filter && $body) ? preg_replace('/\([^)]*\)/', '', $body) : $body;
+  }
+
 }

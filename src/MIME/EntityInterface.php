@@ -83,4 +83,25 @@ interface EntityInterface {
    */
   public function toString();
 
+  /**
+   * Check that Entity is valid.
+   *
+   * Implementations must make sure getValidationErrors() returns any errors
+   * found.
+   *
+   * @return bool
+   *   Returns TRUE if valid, otherwise FALSE.
+   */
+  public function validate();
+
+  /**
+   * Returns validation error messages.
+   *
+   * This should only be called after validate().
+   *
+   * @return array
+   *   Returns error messages if validation fails, otherwise empty array.
+   */
+  public function getValidationErrors();
+
 }
