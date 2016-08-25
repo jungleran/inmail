@@ -85,12 +85,20 @@ class CollectHandler extends HandlerBase {
       'raw' => $message->toString(),
     );
 
+    // Handling json encoding with binary data/invalid UTF-8.
+    // If the json_encode fails abort operation, otherwise continue.
+    $json = json_encode($data);
+    if (!$json) {
+      $processor_result->log('CollectHandler', 'Failed json encode with given data');
+      return;
+    }
+
     Container::create(array(
       'origin_uri' => $origin_uri,
       // @todo Formally document this schema with present fields.
       'schema_uri' => static::SCHEMA_URI,
       'type' => 'application/json',
-      'data' => json_encode($data),
+      'data' => $json,
       'date' => $message->getReceivedDate()->getTimestamp(),
     ))->save();
   }

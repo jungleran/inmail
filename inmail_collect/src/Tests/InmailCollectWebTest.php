@@ -2,7 +2,11 @@
 
 namespace Drupal\inmail_collect\Tests;
 
+use Drupal\collect\Entity\Container;
 use Drupal\inmail\Entity\DelivererConfig;
+use Drupal\inmail\MIME\Header;
+use Drupal\inmail\MIME\Message;
+use Drupal\inmail\ProcessorResult;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -81,6 +85,34 @@ class InmailCollectWebTest extends WebTestBase {
     $this->assertText(t('Content-Type') . ' message/rfc822');
     // Body.
     $this->assertText('Your message Subject: We want a toxic-free future was not delivered to: environment@lvmh.fr');
+  }
+
+  /**
+   * Tests json encode when given invalid UTF-8/binary data.
+   *
+   * @see Drupal\inmail_collect\Plugin\inmail\Handler\CollectHandler::invoke()
+   */
+  public function testInvoke() {
+    // Testing json_encode function which should fail for binary data.
+    /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
+    $handler_config = \Drupal::entityTypeManager()->getStorage('inmail_handler')->load('collect');
+    /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
+    $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
+    $processor_result = new ProcessorResult();
+    $processor_result->setDeliverer(DelivererConfig::create(array('id' => 'test')));
+    // Creating Message which contains invalid UTF-8 character.
+    $message = new Message(new Header([
+      ['name' => 'Message-ID', 'body' => "\x80"],
+      ['name' => 'Received', 'body' => 'blah; Thu, 29 Jan 2015 15:43:04 +0100'],
+      ['name' => 'Subject', 'body' => 'Foo'],
+      ['name' => 'To', 'body' => 'Bar'],
+      ['name' => 'From', 'body' => 'foobar@example.com']
+    ]), 'body');
+    // Triggering json_encode which should fail.
+    $handler->invoke($message, $processor_result);
+    $containers = Container::loadMultiple();
+    // Load the last data and check that is an empty array.
+    $this->assertEqual([], $containers);
   }
 
 }
