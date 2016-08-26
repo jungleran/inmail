@@ -113,3 +113,12 @@ inmail.plugin.deliverer.imap:
     batch_size:
       label: 'Batch size'
       type: integer
+
+# Schema for IMAP quota sensor.
+monitoring.settings.inmail_monitoring_imap_quota:
+  type: monitoring.settings_base
+  label: 'IMAP quota sensor settings'
+  mapping:
+    imap_fetcher:
+      label: Inmail IMAP fetcher to track its quota
+      type: string

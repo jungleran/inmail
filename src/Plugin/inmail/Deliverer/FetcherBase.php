@@ -49,6 +49,13 @@ abstract class FetcherBase extends DelivererBase implements FetcherInterface {
   /**
    * {@inheritdoc}
    */
+  public function getQuota() {
+    return NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getLastCheckedTime() {
     $config_id = $this->getConfiguration()['config_id'];
     return \Drupal::state()->get($this->makeStateKey('last_checked'));

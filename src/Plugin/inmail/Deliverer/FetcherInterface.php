@@ -38,6 +38,14 @@ interface FetcherInterface extends DelivererInterface, ConfigurablePluginInterfa
   public function update();
 
   /**
+   * Retrieves the quota settings for "INBOX".
+   *
+   * @return array|null
+   *    An array of usage and limit or null if quota is not available.
+   */
+  public function getQuota();
+
+  /**
    * Update the timestamp of the last status check made.
    *
    * @param int|null $timestamp

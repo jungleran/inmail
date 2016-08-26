@@ -92,6 +92,19 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function getQuota() {
+    return $this->doImap(function($imap_stream) {
+      $quota = imap_get_quotaroot($imap_stream, 'INBOX');
+      if (!empty($quota) && is_array($quota)) {
+        return $quota;
+      }
+      return NULL;
+    });
+  }
+
+  /**
    * Connect to IMAP server and perform arbitrary operations.
    *
    * If connection fails, an exception is thrown and the callback is never
