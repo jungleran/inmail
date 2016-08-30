@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\inmail\Kernel;
 
-use Drupal\inmail\BounceAnalyzerResult;
+use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
@@ -61,9 +61,16 @@ class VerpTest extends KernelTestBase {
     $processor = \Drupal::service('inmail.processor');
     $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
-    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = ResultKeeperHandler::getResult()->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
-    $parsed_recipient = $result->getRecipient();
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
+    $result = ResultKeeperHandler::getResult()->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    if (!$result->hasContext('bounce')) {
+      return;
+    }
+    $bounce_context = $result->getContext('bounce');
+
+    /** @var \Drupal\inmail\Plugin\DataType\BounceData $bounce_data */
+    $bounce_data = $bounce_context->getContextData();
+    $parsed_recipient = $bounce_data->getRecipient();
     $this->assertEqual($parsed_recipient, $recipient);
 
     // VERP should be skipped for messages with Cc recipients.

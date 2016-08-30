@@ -31,7 +31,7 @@ class ProcessorResult implements ProcessorResultInterface {
    * @var array[][]
    */
   protected $log = array();
-
+  
   /**
    * {@inheritdoc}
    */

@@ -2,6 +2,8 @@
 
 namespace Drupal\inmail;
 
+use Drupal\Core\Plugin\Context\Context;
+use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\Context\ContextInterface;
 use Drupal\user\UserInterface;
 
@@ -290,4 +292,31 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface {
     return $filtered_contexts;
   }
 
+  /**
+   * Returns the bounce data.
+   *
+   * @param $name
+   *   The name of context.
+   *
+   * @param $data_type
+   *   The data type of context.
+   *
+   * @return \Drupal\inmail\Plugin\DataType\BounceData
+   *   The bonce data of $name context.
+   */
+  public function ensureContext($name, $data_type) {
+    $data = NULL;
+    if ($this->hasContext($name)) {
+      $bounce_data = $this->getContext($name)->getContextData();
+    }
+    else {
+      /** @var \Drupal\Core\TypedData\TypedDataManagerInterface $typed_data_manager */
+      $typed_data_manager =\Drupal::service('typed_data_manager');
+      $bounce_data = $typed_data_manager->create(BounceDataDefinition::create($data_type));
+      $bounce_context = new Context(new ContextDefinition($data_type), $bounce_data);
+      $this->setContext($name, $bounce_context);
+    }
+
+    return $bounce_data;
+  }
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\Tests\inmail\Unit\Plugin\inmail\Analyzer;
+namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\Core\Logger\LoggerChannel;
-use Drupal\inmail\BounceAnalyzerResult;
+use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNReasonAnalyzer;
 use Drupal\inmail\ProcessorResult;
-use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
+use Drupal\Tests\token\Kernel\KernelTestBase;
 
 /**
  * Unit tests for the DSN reason analyzer.
@@ -16,7 +16,9 @@ use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
  *
  * @group inmail
  */
-class StandardDSNReasonAnalyzerTest extends InmailUnitTestBase {
+class StandardDSNReasonAnalyzerTest extends KernelTestBase {
+
+  public static $modules = ['inmail'];
 
   /**
    * Tests the analyze method.
@@ -29,14 +31,21 @@ class StandardDSNReasonAnalyzerTest extends InmailUnitTestBase {
     $message = (new Parser(new LoggerChannel('test')))->parseMessage($this->getRaw($filename));
     $analyzer = new StandardDSNReasonAnalyzer(array(), $this->randomMachineName(), array());
     $processor_result = new ProcessorResult();
+    $processor_result->ensureAnalyzerResult(DefaultAnalyzerResult::TOPIC, DefaultAnalyzerResult::createFactory());
+
     $analyzer->analyze($message, $processor_result);
-    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
+
+    $bounce_context = $result->getContext('bounce');
+
     if (isset($expected_reason)) {
-      $this->assertEquals($expected_reason, $result->getReason());
+      $this->assertEquals($expected_reason, $bounce_data->getReason());
     }
     else {
-      $this->assertNull($result);
+      $this->assertFalse(is_null($bounce_context));
+
     }
   }
 
@@ -83,6 +92,20 @@ because:
   User environment (environment@lvmh.fr) not listed in Domino Directory',
       ],
     ];
+  }
+
+  /**
+   * Returns the raw contents of a given test message file.
+   *
+   * @param string $filename
+   *   The name of the file.
+   *
+   * @return string
+   *   The message content.
+   */
+  protected function getRaw($filename) {
+    $path = __DIR__ . '/../../modules/inmail_test/eml/' . $filename;
+    return file_get_contents($path);
   }
 
 }

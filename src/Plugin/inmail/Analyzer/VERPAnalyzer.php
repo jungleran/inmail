@@ -2,7 +2,7 @@
 
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
-use Drupal\inmail\BounceAnalyzerResult;
+use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\ProcessorResultInterface;
 
@@ -48,8 +48,9 @@ class VerpAnalyzer extends AnalyzerBase {
    * {@inheritdoc}
    */
   public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
-    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     // Split the site address to facilitate matching.
     $return_path = \Drupal::config('inmail.settings')->get('return_path') ?: \Drupal::config('system.site')->get('mail');
@@ -65,7 +66,7 @@ class VerpAnalyzer extends AnalyzerBase {
     // $matches.
     if (preg_match(':^' . $return_path_split[0] . '\+(.*)=(.*)@' . $return_path_split[1] . '$:', $message->getTo(), $matches)) {
       // Report the recipient address (alice@example.com).
-      $result->setRecipient($matches[1] . '@' . $matches[2]);
+      $bounce_data->setRecipient($matches[1] . '@' . $matches[2]);
     }
   }
 

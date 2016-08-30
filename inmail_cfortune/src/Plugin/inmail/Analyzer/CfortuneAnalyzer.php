@@ -3,7 +3,7 @@
 namespace Drupal\inmail_cfortune\Plugin\inmail\Analyzer;
 
 use cfortune\PHPBounceHandler\BounceHandler;
-use Drupal\inmail\BounceAnalyzerResult;
+use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerBase;
@@ -33,8 +33,9 @@ class CfortuneAnalyzer extends AnalyzerBase {
    * {@inheritdoc}
    */
   public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
-    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     // All operational code is contained in the BounceHandler class.
     $handler = new BounceHandler();
@@ -45,11 +46,11 @@ class CfortuneAnalyzer extends AnalyzerBase {
     // The recipient property possibly contains the target recipient of the
     // message that bounced.
     if ($handler->recipient) {
-      $result->setRecipient(trim($handler->recipient));
+      $bounce_data->setRecipient(trim($handler->recipient));
     }
     // The status property possibly contains an RFC 3463 status code.
     if ($handler->status) {
-      $result->setStatusCode(DSNStatus::parse($handler->status));
+      $bounce_data->setStatusCode(DSNStatus::parse($handler->status));
     }
   }
 

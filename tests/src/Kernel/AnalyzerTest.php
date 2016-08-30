@@ -4,14 +4,12 @@ namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
-use Drupal\inmail\BounceAnalyzerResult;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\user\Entity\User;
 
 /**
  * Tests analyzers.
@@ -83,12 +81,15 @@ EOF;
     $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
     $processor_result = ResultKeeperHandler::getResult();
-    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
     /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
     $default_result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $bounce_context = $result->getContext('bounce');
+    /** @var \Drupal\inmail\Plugin\DataType\BounceData $bounce_data */
+    $bounce_data = $bounce_context->getContextData();
 
-    $this->assertEqual($result->getRecipient(), 'verp-parsed@example.org');
+    $this->assertEqual($bounce_data->getRecipient(), 'verp-parsed@example.org');
 
     $this->assertEquals('Demo User', $default_result->getAccount()->getDisplayName());
     $this->assertEquals('Sample context value', $default_result->getContext('test')->getContextValue());
@@ -108,11 +109,4 @@ EOF;
     }
   }
 
-  /**
-   * Tests BounceAnalyzerResult by instantiation of the object and calls a method.
-   */
-  public function testBounce() {
-    $bouncetest = new BounceAnalyzerResult();
-    $bouncetest->summarize();
-  }
 }

@@ -3,7 +3,7 @@
 namespace Drupal\Tests\inmail_mailmute\Kernel;
 
 use Drupal\Component\Utility\SafeMarkup;
-use Drupal\inmail\BounceAnalyzerResult;
+use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
@@ -62,7 +62,7 @@ class InmailMailmuteTest extends KernelTestBase {
     $processor = \Drupal::service('inmail.processor');
 
     // @todo Extend sample message collection https://www.drupal.org/node/2381029
-    $cases = array(
+    $cases = [
       // Normal message should not trigger mute.
       'normal.eml' => 'send',
       // "Mailbox full" bounce should trigger counting.
@@ -71,7 +71,7 @@ class InmailMailmuteTest extends KernelTestBase {
       'nouser.eml' => 'inmail_invalid_address',
       // "Access denied" bounce should trigger mute.
       'accessdenied.eml' => 'inmail_invalid_address',
-    );
+    ];
 
     foreach ($cases as $filename => $expected) {
       $this->resetUser();
@@ -114,9 +114,19 @@ class InmailMailmuteTest extends KernelTestBase {
 
       // Invoke the handler.
       $processor_result = new ProcessorResult();
-      /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-      $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
-      $result->setStatusCode($status);
+      /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
+      $result = $processor_result->ensureAnalyzerResult(DefaultAnalyzerResult::TOPIC, DefaultAnalyzerResult::createFactory());
+      /** @var \Drupal\inmail\BounceDataDefinition $bounce_context */
+      if (!$result->hasContext('bounce')) {
+        return;
+      }
+
+      $bounce_context = $result->getContext('bounce');
+
+      /** @var \Drupal\inmail\Plugin\DataType\BounceData $bounce_data */
+      $bounce_data = $bounce_context->getContextData();
+
+      $bounce_data->setStatusCode($status);
       /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
       $handler_config = \Drupal::entityManager()->getStorage('inmail_handler')->load('mailmute');
       /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */

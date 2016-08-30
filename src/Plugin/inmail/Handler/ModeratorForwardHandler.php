@@ -5,7 +5,7 @@ namespace Drupal\inmail\Plugin\inmail\Handler;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\inmail\BounceAnalyzerResult;
+use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\ProcessorResultInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -71,18 +71,19 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
       return;
     }
 
-    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     // Cancel if the message is successfully classified.
-    if ($result->isBounce()) {
+    if ($bounce_data->isBounce()) {
       return;
     }
 
     // Cancel and make noise if it was the moderator address that bounced!
     // This is for the off chance that we identified the intended recipient
     // but not a bounce status code.
-    if ($result->getRecipient() == $moderator) {
+    if ($bounce_data->getRecipient() == $moderator) {
       $processor_result->log('ModeratorForwardHandler', 'Moderator %address is bouncing.', array('%address' => $moderator));
       return;
     }

@@ -1,59 +1,17 @@
 <?php
 
-namespace Drupal\inmail;
+namespace Drupal\inmail\Plugin\DataType;
+
+use Drupal\Core\TypedData\Plugin\DataType\Map;
+use Drupal\inmail\DSNStatus;
 
 /**
- * Contains analyzer results.
- *
- * The setter methods only have effect the first time they are called, so values
- * are only writable once.
- *
- * @ingroup analyzer
+ * @DataType(
+ *   id = "inmail_bounce",
+ *   definition_class = "Drupal\inmail\BounceDataDefinition"
+ * )
  */
-class BounceAnalyzerResult implements AnalyzerResultInterface {
-
-  /**
-   * Identifies this class in relation to other analyzer results.
-   *
-   * Use this as the $topic argument for ProcessorResultInterface methods.
-   *
-   * @see \Drupal\inmail\ProcessorResultInterface
-   */
-  const TOPIC = 'bounce';
-
-  /**
-   * The reported status code.
-   *
-   * @var \Drupal\inmail\DSNStatus
-   */
-  protected $statusCode;
-
-  /**
-   * The reported recipient.
-   *
-   * @var string
-   */
-  protected $recipient;
-
-  /**
-   * The reported bounce reason.
-   *
-   * @var string
-   */
-  protected $reason;
-
-  /**
-   * Returns a function closure that in turn returns a new class instance.
-   *
-   * @return callable
-   *   A factory closure that returns a new BounceAnalyzerResult object when
-   *   called.
-   */
-  public static function createFactory() {
-    return function() {
-      return new static();
-    };
-  }
+class BounceData extends Map {
 
   /**
    * Report the intended recipient for a bounce message.
@@ -62,8 +20,8 @@ class BounceAnalyzerResult implements AnalyzerResultInterface {
    *   The address of the recipient.
    */
   public function setRecipient($recipient) {
-    if (!isset($this->recipient)) {
-      $this->recipient = $recipient;
+    if (!$this->getRecipient()) {
+      $this->set('recipient',$recipient);
     }
   }
 
@@ -74,16 +32,16 @@ class BounceAnalyzerResult implements AnalyzerResultInterface {
    *   A status code.
    */
   public function setStatusCode(DSNStatus $code) {
-    if (!isset($this->statusCode)) {
-      $this->statusCode = $code;
+    if (!$this->getStatusCode()) {
+      $this->set('status_code', $code->getCode());
       return;
     }
 
     // If subject and detail are 0 (like X.0.0), allow overriding those.
-    $current_code = $this->statusCode;
+    $current_code = $this->getStatusCode();
     if ($current_code->getSubject() == 0 && $current_code->getDetail() == 0) {
       $new_code = new DSNStatus($current_code->getClass(), $code->getSubject(), $code->getDetail());
-      $this->statusCode = $new_code;
+      $this->set('status_code',$new_code->getCode());
     }
   }
 
@@ -91,11 +49,11 @@ class BounceAnalyzerResult implements AnalyzerResultInterface {
    * Report the reason for a bounce message.
    *
    * @param string $reason
-   *   Human-readable information in English explaning why the bounce happened.
+   *   Human-readable information in English explaining why the bounce happened.
    */
   public function setReason($reason) {
-    if (!isset($this->reason)) {
-      $this->reason = $reason;
+    if (!$this->getReason()) {
+      $this->set('reason',$reason);
     }
   }
 
@@ -107,17 +65,21 @@ class BounceAnalyzerResult implements AnalyzerResultInterface {
    *   reported.
    */
   public function getRecipient() {
-    return $this->recipient;
+    return $this->get('recipient')->getValue();
   }
 
   /**
    * Returns the reported status code of a bounce message.
    *
-   * @return \Drupal\inmail\DSNStatus
+   * @return \Drupal\inmail\DSNStatus|null
    *   The status code, or NULL if it has not been reported.
    */
   public function getStatusCode() {
-    return $this->statusCode;
+    if ($code = $this->get('status_code')->getValue()) {
+      return DSNStatus::parse($this->get('status_code')->getValue());
+    }
+
+    return NULL;
   }
 
   /**
@@ -127,7 +89,7 @@ class BounceAnalyzerResult implements AnalyzerResultInterface {
    *   The reason message, in English, or NULL if it has not been reported.
    */
   public function getReason() {
-    return $this->reason;
+    return $this->get('reason')->getValue();
   }
 
   /**
@@ -154,24 +116,4 @@ class BounceAnalyzerResult implements AnalyzerResultInterface {
     return TRUE;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function summarize() {
-    $summary = array();
-    if ($this->getRecipient()) {
-      $summary['recipient'] = $this->getRecipient();
-    }
-    if ($this->getStatusCode() && $this->getStatusCode()->getCode()) {
-      $summary['code'] = $this->getStatusCode()->getCode();
-    }
-    return $summary;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function label() {
-    return t('Bounce');
-  }
 }

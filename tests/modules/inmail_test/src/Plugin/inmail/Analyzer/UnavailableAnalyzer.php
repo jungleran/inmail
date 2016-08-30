@@ -23,7 +23,6 @@ class UnavailableAnalyzer extends AnalyzerBase {
   public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
     /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
     $default_result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
-
     // Do the fake body update. This should not be executed as we only execute
     // available analyzers.
     $default_result->setBody('The body has been updated by UnavailableAnalyzer.');

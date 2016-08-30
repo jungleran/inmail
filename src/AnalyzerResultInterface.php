@@ -28,4 +28,6 @@ interface AnalyzerResultInterface {
    */
   public function label();
 
+
+
 }

@@ -4,7 +4,7 @@ namespace Drupal\inmail_mailmute\Plugin\inmail\Handler;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\inmail\BounceAnalyzerResult;
+use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
 use Drupal\inmail\ProcessorResultInterface;
@@ -65,21 +65,20 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
    * {@inheritdoc}
    */
   public function invoke(MessageInterface $message, ProcessorResultInterface $processor_result) {
-    $result = $processor_result->getAnalyzerResult(BounceAnalyzerResult::TOPIC);
-    if (!$result instanceof BounceAnalyzerResult) {
-      return;
-    }
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     // Only handle bounces.
-    if (!$result->isBounce()) {
+    if (!$bounce_data->isBounce()) {
       return;
     }
 
-    $status_code = $result->getStatusCode();
+    $status_code = $bounce_data->getStatusCode();
     $log_context = ['%code' => $status_code->getCode()];
 
     // Only handle bounces with an identifiable recipient.
-    if (!$address = $result->getRecipient()) {
+    if (!$address = $bounce_data->getRecipient()) {
       // @todo Log the message body or place it in a moderation queue: https://www.drupal.org/node/2379879
       $processor_result->log('MailmuteHandler', 'Bounce with status %code received but no recipient identified.', $log_context);
       return;
@@ -102,8 +101,8 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
     }
 
     $state_configuration = array(
-      'code' => $result->getStatusCode(),
-      'reason' => $result->getReason(),
+      'code' => $bounce_data->getStatusCode(),
+      'reason' => $bounce_data->getReason(),
       'date' => $message->getReceivedDate(),
     );
 

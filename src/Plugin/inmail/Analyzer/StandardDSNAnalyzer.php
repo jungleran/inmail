@@ -2,7 +2,7 @@
 
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
-use Drupal\inmail\BounceAnalyzerResult;
+use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\MIME\DSNEntity;
 use Drupal\inmail\MIME\MessageInterface;
@@ -40,8 +40,9 @@ class StandardDSNAnalyzer extends AnalyzerBase {
       return;
     }
 
-    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     // @todo Store date for bounces https://www.drupal.org/node/2379923
     // Iterate over per-recipient field groups in the DSN.
@@ -50,17 +51,16 @@ class StandardDSNAnalyzer extends AnalyzerBase {
       // Parse the 'Status:' field, having the format X.XXX.XXX.
       $subcodes = explode('.', $fields->getFieldBody('Status'));
       if (count($subcodes) == 3) {
-        $result->setStatusCode(new DSNStatus($subcodes[0], $subcodes[1], $subcodes[2]));
+        $bounce_data->setStatusCode(new DSNStatus($subcodes[0], $subcodes[1], $subcodes[2]));
       }
 
       // Extract address from the 'Final-Recipient:' field, which has the format
       // "type; address".
       $field_parts = preg_split('/;\s*/', $fields->getFieldBody('Final-Recipient'));
       if (count($field_parts) == 2) {
-        $result->setRecipient($field_parts[1]);
+        $bounce_data->setRecipient($field_parts[1]);
       }
     }
-
   }
 
 }

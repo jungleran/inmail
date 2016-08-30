@@ -67,6 +67,8 @@ interface ProcessorResultInterface {
    */
   public function getAnalyzerResults();
 
+
+
   /**
    * Add a log message to the processing logger.
    *

@@ -2,7 +2,7 @@
 
 namespace Drupal\inmail_phpmailerbmh\Plugin\inmail\Analyzer;
 
-use Drupal\inmail\BounceAnalyzerResult;
+use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\MIME\DSNEntity;
 use Drupal\inmail\MIME\MessageInterface;
@@ -68,8 +68,9 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
    * {@inheritdoc}
    */
   public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
-    /** @var \Drupal\inmail\BounceAnalyzerResult $result */
-    $result = $processor_result->ensureAnalyzerResult(BounceAnalyzerResult::TOPIC, BounceAnalyzerResult::createFactory());
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
+    $result = $processor_result->getAnalyzerResult('bounce', 'inmail_bounce');
+    $bounce_data = $result->ensureContext('bounce', 'inmail_)bounce');
 
     // The analysis part of the library is in the bmhDSNRules and bmhBodyRules
     // functions.
@@ -91,12 +92,12 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
     //   - rule_no: references a single match condition in the code.
     //   - email: the recipient causing the bounce, if identifiable.
     if (isset($bmh_result['email'])) {
-      $result->setRecipient($bmh_result['email']);
+      $bounce_data->setRecipient($bmh_result['email']);
     }
     if (isset(static::$rulecatStatusMap[$bmh_result['rule_cat']])) {
       $code = static::$rulecatStatusMap[$bmh_result['rule_cat']];
       if ($code) {
-        $result->setStatusCode(DSNStatus::parse($code));
+        $bounce_data->setStatusCode(DSNStatus::parse($code));
       }
     }
   }
