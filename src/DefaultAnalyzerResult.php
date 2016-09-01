@@ -305,8 +305,18 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface {
    *   The bonce data of $name context.
    */
   public function ensureContext($name, $data_type) {
-    $data = NULL;
+    $bounce_data = NULL;
     if ($this->hasContext($name)) {
+      $context_data_type = $this->getContext($name)
+        ->getContextData()
+        ->getDataDefinition()
+        ->getDataType();
+      if ($data_type !== $context_data_type) {
+        throw new \InvalidArgumentException('Invalid data type '
+          . $data_type
+          . ' has been given.');
+      }
+
       $bounce_data = $this->getContext($name)->getContextData();
     }
     else {
