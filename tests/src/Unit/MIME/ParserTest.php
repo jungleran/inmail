@@ -25,7 +25,16 @@ class ParserTest extends InmailUnitTestBase {
    * @expectedException \Drupal\inmail\MIME\ParseException
    */
   public function testParseException($raw) {
-    (new Parser(new LoggerChannel('test')))->parseMessage($raw);
+    $message = (new Parser(new LoggerChannel('test')))->parseMessage($raw);
+    // The RFC standard 4475 (https://tools.ietf.org/html/rfc4475#section-3.1.2),
+    // defines some critical samples of invalid messages.
+    \Drupal::logger('test')->log('ParserTest', "Message is missing blank line after header");
+    \Drupal::logger('test')->log('ParserTest', "Content Length Larger than Message");
+    \Drupal::logger('test')->log('ParserTest', "Negative Content Length");
+    \Drupal::logger('test')->log('ParserTest', "Undetermined Quoted String");
+    \Drupal::logger('test')->log('ParserTest', "Message does not contain Required Fields From, To");
+    \Drupal::logger('test')->log('ParserTest', "Invalid time zone in Date field");
+    \Drupal::logger('test')->log('ParserTest', "Message contains multiple Fields From, To");
   }
 
   /**
@@ -34,7 +43,28 @@ class ParserTest extends InmailUnitTestBase {
   public function provideMalformedRaws() {
     return [
       [$this->getRaw('malformed/headerbody.eml')],
-      // @todo Cover more cases of invalid messages.
+      // Message has Content-Length that is larger than actual length of body.
+      ["To: sip:j.user@example.com
+      From: sip:caller@example.net;tag=93942939o2
+      Content-Length: 9999"],
+      // Message has Negative value for Content-Length.
+      ["To: sip:j.user@example.com
+      From: sip:caller@example.net;tag=32394234
+      Content-Length: -999"],
+      // To Header contains undetermined quote string.
+      ["To: \"Mr. J. User sip:j.user@example.com
+      From: sip:caller@example.net;tag=93334"],
+      // Missing Required Header Fields From, To.
+      ["This is body of message without any headers"],
+      // Date Header contains a non-GMT time zone.
+      ["To: sip:user@example.com
+      From: sip:caller@example.net;tag=2234923
+      Date: Fri, 01 Jan 2010 16:00:00 EST"],
+      // Multiple To, From fields that should occur once.
+      ["From: sip:caller@example.com;tag=3413415
+      To: sip:user@example.com
+      To: sip:other@example.net
+      From: sip:caller@example.net;tag=2923420123"],
     ];
   }
 
