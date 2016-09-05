@@ -43,6 +43,16 @@ class InmailSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('return_path'),
     );
 
+    // Display the logging in case Past module is enabled.
+    if (\Drupal::moduleHandler()->moduleExists('past')) {
+      $form['log_raw_emails'] = array(
+        '#title' => $this->t('Log raw email messages'),
+        '#type' => 'checkbox',
+        '#description' => $this->t('Enabling raw email message logging extends default verbose processing logging. <a href="https://www.drupal.org/project/past">Past</a> module must be enabled.'),
+        '#default_value' => $config->get('log_raw_emails'),
+      );
+    }
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -54,6 +64,7 @@ class InmailSettingsForm extends ConfigFormBase {
 
     $this->config('inmail.settings')
       ->set('return_path', $form_state->getValue('return_path'))
+      ->set('log_raw_emails', $form_state->getValue('log_raw_emails', FALSE))
       ->save();
   }
 

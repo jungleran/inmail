@@ -6,6 +6,9 @@ inmail.settings:
     return_path:
       label: 'Return-Path address'
       type: email
+    log_raw_emails:
+      label: 'Log raw email messages'
+      type: boolean
 
 # Config entities
 inmail.analyzer.*:

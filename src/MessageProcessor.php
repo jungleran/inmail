@@ -92,6 +92,10 @@ class MessageProcessor implements MessageProcessorInterface {
     if (\Drupal::moduleHandler()->moduleExists('past')) {
       $event = past_event_create('inmail', 'process', 'Incoming mail');
       $event->addArgument('deliverer', $deliverer);
+      // Log the raw email message.
+      if (\Drupal::config('inmail.settings')->get('log_raw_emails')) {
+        $event->addArgument('email', $raw);
+      }
     }
 
     $has_account_changed = FALSE;

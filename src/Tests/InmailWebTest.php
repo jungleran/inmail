@@ -46,10 +46,15 @@ class InmailWebTest extends WebTestBase {
     $this->drupalGet('admin/config');
     $this->clickLink('Inmail');
     $this->assertField('return_path');
+    $this->assertNoField('edit-log-raw-emails');
+
+    // Enable Past module.
+    \Drupal::service('module_installer')->install(['past'], FALSE);
 
     // Check validation.
     $this->drupalPostForm(NULL, ['return_path' => 'not an address'], 'Save configuration');
     $this->assertText('The email address not an address is not valid.');
+    $this->assertNoFieldChecked('edit-log-raw-emails');
 
     $this->drupalPostForm(NULL, ['return_path' => 'not+allowed@example.com'], 'Save configuration');
     $this->assertText('The address may not contain a + character.');
@@ -57,8 +62,9 @@ class InmailWebTest extends WebTestBase {
     $this->drupalPostForm(NULL, ['return_path' => 'bounces@example.com'], 'Save configuration');
     $this->assertText('The configuration options have been saved.');
 
-    $this->drupalPostForm(NULL, ['return_path' => ''], 'Save configuration');
+    $this->drupalPostForm(NULL, ['return_path' => '', 'log_raw_emails' => TRUE], 'Save configuration');
     $this->assertText('The configuration options have been saved.');
+    $this->assertFieldChecked('edit-log-raw-emails');
 
     // Check other parts of UI. Saving some time by not implementing them as
     // proper test methods.

@@ -35,6 +35,10 @@ class IntegrationTest extends WebTestBase {
     \Drupal::configFactory()->getEditable('user.settings')
       ->set('register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL)
       ->save();
+    // Enable logging of raw mail messages.
+    \Drupal::configFactory()->getEditable('inmail.settings')
+      ->set('log_raw_emails', TRUE)
+      ->save();
   }
 
   /**
@@ -71,6 +75,10 @@ class IntegrationTest extends WebTestBase {
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
     $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
+
+    // Assert the raw message was logged.
+    $event = $this->getLastEventByMachinename('process');
+    $this->assertEqual($event->getArgument('email')->getData(), $raw);
 
     // Check send state. Status code, date and reason are parsed from the
     // generated bounce message.
