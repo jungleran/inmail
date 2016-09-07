@@ -121,7 +121,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $expected_headers = $original_parsed->getHeader()->toString();
     $expected_headers = str_replace("To: Arild Matsson <inmail_test@example.com>\n", '', $expected_headers);
     $expected_headers = $headers_prefix . $expected_headers;
-    $this->assertEqual($forward['raw_headers'], $expected_headers, 'Forwarded message headers have the correct changes.');
+    $this->assertEqual($forward['raw_headers']->toString(), $expected_headers, 'Forwarded message headers have the correct changes.');
   }
 
   /**

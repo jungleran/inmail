@@ -41,11 +41,19 @@ class DirectMail implements MailInterface {
   public function mail(array $message) {
     // Headers are passed in $message['raw_headers'], see explanation in
     // inmail_mail().
+
+    $headers = NULL;
+    if (isset($message['raw_headers'])) {
+      // Cleanup the Subject as it's added when sending.
+      $message['raw_headers']->removeField('Subject');
+      $headers = $message['raw_headers']->toString();
+    }
+
     return (bool) mail(
       $message['to'],
       $message['subject'],
       $message['body'],
-      $message['raw_headers']
+      $headers
     );
   }
 }

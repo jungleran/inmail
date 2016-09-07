@@ -291,7 +291,7 @@ function inmail_mail($key, &$message, $params) {
       $header = clone $original->getHeader();
       $header->removeField('To');
       $header->addField('X-Inmail-Forwarded', 'handler_moderator_forward');
-      $message['raw_headers'] = $header->toString();
+      $message['raw_headers'] = $header;
       break;
   }
 }
