@@ -121,13 +121,13 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    */
   protected function doImap(callable $callback) {
     // Connect to IMAP with details from configuration.
-    $mailbox_flags = $this->configuration['ssl'] ? '/ssl' : '';
-    $mailbox = '{' . $this->configuration['host'] . ':' . $this->configuration['port'] . $mailbox_flags . '}';
-    if ($this->configuration['protocol'] === 'pop3') {
-      $mailbox = '{' . $this->configuration['host'] . ':' . $this->configuration['port'] . '/pop3' . $mailbox_flags . '}';
-    }
+    $mailbox = '{'. $this->configuration['host'] . ':' . $this->configuration['port'] . $this->getFlags() . '}';
 
-    $imap_res = @imap_open($mailbox, $this->configuration['username'], $this->configuration['password']);
+    $imap_res = @imap_open(
+      $mailbox,
+      $this->configuration['username'],
+      $this->configuration['password']
+    );
     $errors = imap_errors();
     if (empty($imap_res)) {
       // @todo Return noisily if misconfigured or imap missing. Possibly stop retrying, https://www.drupal.org/node/2405757
@@ -144,6 +144,26 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
   }
 
   /**
+   * Return the flags for mailbox.
+   *
+   * @return string
+   *   Flags for mailbox.
+   */
+  public function getFlags() {
+    $flags = $this->configuration['ssl'] ? '/ssl' : '';
+
+    if ($this->configuration['protocol'] === 'pop3') {
+      $flags.= '/pop3';
+    }
+
+    if ($this->configuration['novalidate_ssl']) {
+      $flags .= '/novalidate-cert';
+    }
+
+    return $flags;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
@@ -152,6 +172,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       // Standard non-SSL IMAP port as defined by RFC 3501.
       'port' => 143,
       'ssl' => FALSE,
+      'novalidate_ssl' => FALSE,
       'protocol' => 'imap',
       'username' => '',
       'password' => '',
@@ -202,7 +223,16 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       '#default_value' => $this->configuration['ssl'],
     );
 
-
+    $form['account']['novalidate_ssl'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Do not validate certificates from TLS/SSL server.'),
+      '#default_value' => $this->getConfiguration()['novalidate_ssl'],
+      '#states' => [
+        'visible' => [
+          ':input[name = "ssl"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
 
     $form['account']['username'] = array(
       '#type' => 'textfield',
@@ -258,6 +288,8 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       'host' => $form_state->getValue('host'),
       'port' => $form_state->getValue('port'),
       'ssl' => $form_state->getValue('ssl'),
+      'novalidate_ssl' =>
+        $form_state->getValue('ssl') ? $form_state->getValue('novalidate_ssl') : FALSE,
       'protocol' => $form_state->getValue('protocol'),
       'username' => $form_state->getValue('username'),
       'batch_size' => $form_state->getValue('batch_size'),

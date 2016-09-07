@@ -101,6 +101,9 @@ inmail.plugin.deliverer.imap:
     ssl:
       label: 'SSL'
       type: boolean
+    novalidate_ssl:
+      label: 'Novalidate-cert'
+      type: string
     protocol:
       select: 'Protocol'
       type: string
