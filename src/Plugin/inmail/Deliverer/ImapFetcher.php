@@ -121,7 +121,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    */
   protected function doImap(callable $callback) {
     // Connect to IMAP with details from configuration.
-    $mailbox = '{'. $this->configuration['host'] . ':' . $this->configuration['port'] . $this->getFlags() . '}';
+    $mailbox = '{' . $this->configuration['host'] . ':' . $this->getPort() . $this->getFlags() . '}';
 
     $imap_res = @imap_open(
       $mailbox,
@@ -144,12 +144,27 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
   }
 
   /**
-   * Return the flags for mailbox.
+   * Returns the port number depending on protocol.
+   *
+   * @return integer
+   *   Port number.
+   */
+  protected function getPort() {
+    $port = $this->configuration['imap_port'];
+    if ($this->configuration['protocol'] === 'pop3') {
+      $port = $this->configuration['pop3_port'];
+    }
+
+    return $port;
+  }
+
+  /**
+   * Returns the flags for mailbox.
    *
    * @return string
    *   Flags for mailbox.
    */
-  public function getFlags() {
+  protected function getFlags() {
     $flags = $this->configuration['ssl'] ? '/ssl' : '';
 
     if ($this->configuration['protocol'] === 'pop3') {
@@ -167,17 +182,18 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'host' => '',
       // Standard non-SSL IMAP port as defined by RFC 3501.
-      'port' => 143,
+      'imap_port' => 143,
+      'pop3_port' => 110,
       'ssl' => FALSE,
       'novalidate_ssl' => FALSE,
       'protocol' => 'imap',
       'username' => '',
       'password' => '',
       'batch_size' => '100',
-    );
+    ];
   }
 
   /**
@@ -210,12 +226,29 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       '#default_value' => $this->configuration['host'],
     );
 
-    $form['account']['port'] = array(
+    $form['account']['imap_port'] = [
       '#type' => 'number',
       '#title' => $this->t('Port'),
-      '#default_value' => $this->configuration['port'],
-      '#description' => $this->t('The standard port number for IMAP is 143 (SSL: 993), POP3: 110 (SSL: 995).'),
-    );
+      '#default_value' => $this->configuration['imap_port'],
+      '#description' => t('The standard port number for IMAP is 143 (SSL:993)'),
+      '#states' => [
+        'visible' => [
+          ':input[name = "protocol"]' => ['value' => 'imap']
+        ]
+      ],
+    ];
+
+    $form['account']['pop3_port'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Port'),
+      '#default_value' => $this->configuration['pop3_port'],
+      '#description' => t('The standard port number for POP3 is 110 (SSL: 995).'),
+      '#states' => [
+        'visible' => [
+          ':input[name = "protocol"]' => ['value' => 'pop3']
+        ]
+      ],
+    ];
 
     $form['account']['ssl'] = array(
       '#type' => 'checkbox',
@@ -284,16 +317,17 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    *   The form state.
    */
   protected function updateConfiguration(FormStateInterface $form_state) {
-    $configuration = array(
+    $configuration = [
       'host' => $form_state->getValue('host'),
-      'port' => $form_state->getValue('port'),
+      'imap_port' => $form_state->getValue('imap_port'),
+      'pop3_port' => $form_state->getValue('pop3_port'),
       'ssl' => $form_state->getValue('ssl'),
       'novalidate_ssl' =>
         $form_state->getValue('ssl') ? $form_state->getValue('novalidate_ssl') : FALSE,
       'protocol' => $form_state->getValue('protocol'),
       'username' => $form_state->getValue('username'),
       'batch_size' => $form_state->getValue('batch_size'),
-    ) + $this->getConfiguration();
+    ] + $this->getConfiguration();
 
     // Only update password if "Update password" is checked.
     if ($form_state->getValue('password_update')) {

@@ -107,8 +107,11 @@ inmail.plugin.deliverer.imap:
     protocol:
       select: 'Protocol'
       type: string
-    port:
-      label: 'Port'
+    imap_port:
+      label: 'IMAP port'
+      type: integer
+    pop3_port:
+      label: 'POP3 port'
       type: integer
     username:
       label: 'Username'

@@ -26,6 +26,14 @@ class InmailWebTest extends WebTestBase {
   public function setUp() {
     parent::setUp();
 
+    // Create a test user and log in.
+    $user = $this->drupalCreateUser([
+      'access administration pages',
+      'administer inmail',
+    ]
+    );
+    $this->drupalLogin($user);
+
     $this->drupalPlaceBlock('local_tasks_block');
     $this->drupalPlaceBlock('local_actions_block');
     $this->drupalPlaceBlock('page_title_block');
@@ -35,13 +43,6 @@ class InmailWebTest extends WebTestBase {
    * Tests the admin UI.
    */
   public function testAdminUi() {
-    // Create a test user and log in.
-    $user = $this->drupalCreateUser(array(
-      'access administration pages',
-      'administer inmail',
-    ));
-    $this->drupalLogin($user);
-
     // Check the form.
     $this->drupalGet('admin/config');
     $this->clickLink('Inmail');
@@ -140,7 +141,6 @@ class InmailWebTest extends WebTestBase {
     $this->clickLink('Delete');
     $this->drupalPostForm(NULL, array(), 'Delete');
     $this->assertText('There is no Mail deliverer yet.');
-
     // Add test fetcher.
     $edit = array(
       'label' => 'Test Test Fetcher',
@@ -156,6 +156,48 @@ class InmailWebTest extends WebTestBase {
     $this->assertFieldByXPath($overview_count_xpath);
   }
 
+  /**
+   * Test if form save value correctly for IMAP port number and protocol.
+   */
+  public function testIMAPPortAndProtocol() {
+    $this->drupalGet('admin/config/system/inmail/deliverers/add');
+    $edit = [
+      'label' => 'Test IMAP Fetcher',
+      'id' => 'test_imap',
+      'plugin' => 'imap',
+    ];
+    $this->drupalPostAjaxForm(NULL, $edit, 'plugin');
+    $edit += [
+      'protocol' => 'imap',
+      'host' => 'imap@example.com',
+      'imap_port' => 145,
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->drupalGet('admin/config/system/inmail/deliverers/test_imap');
+    $this->assertText('Test IMAP Fetcher');
+    $this->assertFieldById('edit-imap-port', 145);
+    $this->assertText('IMAP');
+  }
+
+  function testPOP3PortAndProtocol() {
+    $this->drupalGet('admin/config/system/inmail/deliverers/add');
+    $edit = [
+      'label' => 'Test POP3 Fetcher',
+      'id' => 'test_pop3',
+      'plugin' => 'imap',
+    ];
+    $this->drupalPostAjaxForm(NULL, $edit, 'plugin');
+    $edit += [
+      'protocol' => 'pop3',
+      'host' => 'pop3@example.com',
+      'pop3_port' => 110,
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->drupalGet('admin/config/system/inmail/deliverers/test_pop3');
+    $this->assertText('Test POP3 Fetcher');
+    $this->assertFieldById('edit-pop3-port', 110);
+    $this->assertText('POP3');
+  }
   /**
    * Tests the listing and configuration form of analyzers.
    *
