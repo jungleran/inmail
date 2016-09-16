@@ -43,35 +43,30 @@ class InmailWebTest extends WebTestBase {
    * Tests the admin UI.
    */
   public function testAdminUi() {
-    // Check the form.
-    $this->drupalGet('admin/config');
-    $this->clickLink('Inmail');
-    $this->assertField('return_path');
-    $this->assertNoField('edit-log-raw-emails');
-
-    // Enable Past module.
-    \Drupal::service('module_installer')->install(['past'], FALSE);
-
-    // Check validation.
-    $this->drupalPostForm(NULL, ['return_path' => 'not an address'], 'Save configuration');
-    $this->assertText('The email address not an address is not valid.');
-    $this->assertNoFieldChecked('edit-log-raw-emails');
-
-    $this->drupalPostForm(NULL, ['return_path' => 'not+allowed@example.com'], 'Save configuration');
-    $this->assertText('The address may not contain a + character.');
-
-    $this->drupalPostForm(NULL, ['return_path' => 'bounces@example.com'], 'Save configuration');
-    $this->assertText('The configuration options have been saved.');
-
-    $this->drupalPostForm(NULL, ['return_path' => '', 'log_raw_emails' => TRUE], 'Save configuration');
-    $this->assertText('The configuration options have been saved.');
-    $this->assertFieldChecked('edit-log-raw-emails');
+    // Create a test user and log in.
+    $user = $this->drupalCreateUser(array(
+      'access administration pages',
+      'administer inmail',
+    ));
+    $this->drupalLogin($user);
 
     // Check other parts of UI. Saving some time by not implementing them as
     // proper test methods.
+    $this->doTestDefaultTab();
     $this->doTestDelivererUi();
     $this->doTestAnalyzerUi();
     $this->doTestHandlerUi();
+    $this->doTestSettingsUI();
+  }
+
+  /**
+   * Tests if the Mail deliverers is a default tab.
+   */
+  public function doTestDefaultTab() {
+    // Check the form.
+    $this->drupalGet('admin/config');
+    $this->clickLink('Inmail');
+    $this->assertText('Mail deliverers');
   }
 
   /**
@@ -83,7 +78,6 @@ class InmailWebTest extends WebTestBase {
    */
   protected function doTestDelivererUi() {
     // Check Deliverer list.
-    $this->clickLink('Mail deliverers');
     $this->assertUrl('admin/config/system/inmail/deliverers');
     $this->assertText('There is no Mail deliverer yet.');
 
@@ -289,4 +283,31 @@ class InmailWebTest extends WebTestBase {
     $this->assertFieldByName('moderator', 'moderator@example.com');
   }
 
+  /**
+   * Tests configuration form of settings.
+   */
+  public function doTestSettingsUI() {
+    $this->drupalGet('/admin/config/system/inmail');
+    $this->assertField('return_path');
+    $this->assertNoField('edit-log-raw-emails');
+
+    // Enable Past module.
+    \Drupal::service('module_installer')->install(['past'], FALSE);
+
+    // Check validation.
+    $this->drupalPostForm(NULL, ['return_path' => 'not an address'], 'Save configuration');
+    $this->assertText('The email address not an address is not valid.');
+    $this->assertNoFieldChecked('edit-log-raw-emails');
+
+    $this->drupalPostForm(NULL, ['return_path' => 'not+allowed@example.com'], 'Save configuration');
+    $this->assertText('The address may not contain a + character.');
+
+    $this->drupalPostForm(NULL, ['return_path' => 'bounces@example.com'], 'Save configuration');
+    $this->assertText('The configuration options have been saved.');
+
+    $this->drupalPostForm(NULL, ['return_path' => '', 'log_raw_emails' => TRUE], 'Save configuration');
+    $this->assertText('The configuration options have been saved.');
+    $this->assertFieldChecked('edit-log-raw-emails');
+
+  }
 }
