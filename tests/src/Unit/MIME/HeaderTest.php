@@ -112,4 +112,57 @@ class HeaderTest extends UnitTestCase {
     ];
   }
 
+  /**
+   * Tests adding field to the header.
+   *
+   * @covers ::addField
+   *
+   * @dataProvider provideHeaders
+   */
+  public function testAddField(Header $header) {
+    $header->addField('X-Space-Header', 'Alienware');
+    $this->assertTrue($header->hasField('X-Space-Header'));
+  }
+
+  /**
+   * Tests removing field from the header.
+   *
+   * @covers ::removeField
+   *
+   * @dataProvider provideHeadersHasField
+   */
+  public function testRemoveField(Header $header) {
+    $header->removeField('Content-Type');
+    $this->assertFalse($header->hasField('Content-Type'));
+  }
+
+  /**
+   * Tests getting bodies with given name.
+   *
+   * @covers ::getFieldBodies
+   */
+  public function testGetFieldBodies() {
+    $header = new Header([[
+      'name' => 'Subject',
+      'body' => 'I am Your Subject Body',
+    ]]);
+    $this->assertEquals($header->getFieldBodies('Subject')[0], "I am Your Subject Body");
+    $this->assertEquals(count($header->getFieldBodies('Subject')), 1);
+  }
+
+  /**
+   * Tests getting body with the given name.
+   *
+   * @covers ::getFieldBody
+   *
+   * @dataProvider provideHeaders
+   */
+  public function testGetFieldBody() {
+    $header = new Header([[
+      'name' => 'Content-Type',
+      'body' => 'Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren',
+    ]]);
+    $this->assertEquals('Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren', $header->getFieldBody('Content-Type'));
+  }
+
 }
