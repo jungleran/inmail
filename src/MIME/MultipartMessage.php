@@ -12,6 +12,8 @@ use Drupal\Component\Datetime\DateTimePlus;
  */
 class MultipartMessage extends MultipartEntity implements MessageInterface {
 
+  use MessageTrait;
+
   /**
    * {@inheritdoc}
    */
@@ -24,20 +26,6 @@ class MultipartMessage extends MultipartEntity implements MessageInterface {
    */
   public function getSubject() {
     return $this->getHeader()->getFieldBody('Subject');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getTo() {
-    return $this->getHeader()->getFieldBody('To');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getFrom() {
-    return $this->getHeader()->getFieldBody('From');
   }
 
   /**

@@ -11,6 +11,8 @@ use Drupal\Component\Datetime\DateTimePlus;
  */
 class Message extends Entity implements MessageInterface {
 
+  use MessageTrait;
+
   /**
    * {@inheritdoc}
    */
@@ -23,20 +25,6 @@ class Message extends Entity implements MessageInterface {
    */
   public function getSubject() {
     return $this->getHeader()->getFieldBody('Subject');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getTo() {
-    return $this->getHeader()->getFieldBody('To');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getFrom() {
-    return $this->getHeader()->getFieldBody('From');
   }
 
   /**
