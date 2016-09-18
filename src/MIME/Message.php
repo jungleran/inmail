@@ -66,4 +66,19 @@ class Message extends Entity implements MessageInterface {
     return $result;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getPlainText() {
+    $content_fields = $this->getContentType();
+    $content_type = $content_fields['type'] . '/' . $content_fields['subtype'] ;
+    if ($content_type == 'text/plain') {
+      return $this->getDecodedBody();
+    }
+    else if ($content_type == 'text/html') {
+      return strip_tags($this->getDecodedBody());
+    }
+    return '';
+  }
+
 }

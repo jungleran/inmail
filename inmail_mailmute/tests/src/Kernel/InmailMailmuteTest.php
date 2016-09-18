@@ -87,6 +87,19 @@ class InmailMailmuteTest extends KernelTestBase {
       $this->assertEqual($this->user->sendstate->plugin_id, $expected);
       // @todo Test more than plugin ID: status code, reason, date.
     }
+
+    // Check that plain text extraction works properly.
+    $parser = \Drupal::service('inmail.mime_parser');
+    // Assert that we get expected plaintexts message.
+    $parsed_message = $parser->parseMessage($this->getMessageFileContents('normal.eml'));
+    $this->assertEqual($parsed_message->getPlainText(), "Hey, it would be really bad for a mail handler to classify this as a bounce\njust because I have no mailbox outside my house.\n");
+    // Check plaintext extraction for single-part message.
+    $message = new Message(new Header([
+      ['name' => 'From', 'body' => 'Foo'],
+      ['name' => 'To', 'body' => 'Bar'],
+      ['name' => 'Content-Type', 'body' => 'text/html'],
+    ]), '<p>This is test paragraph for plaintext extraction</p>');
+    $this->assertEqual($message->getPlainText(), 'This is test paragraph for plaintext extraction');
   }
 
   /**

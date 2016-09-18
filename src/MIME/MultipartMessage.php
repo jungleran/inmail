@@ -40,4 +40,23 @@ class MultipartMessage extends MultipartEntity implements MessageInterface {
     return new DateTimePlus($date_string);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getPlainText() {
+    $message_parts = $this->getParts();
+    foreach ($message_parts as $key => $part) {
+      $content_fields = $message_parts[$key]->getContentType();
+      $content_type = $content_fields['type'] . '/' . $content_fields['subtype'] ;
+      $body = $message_parts[$key]->getDecodedBody();
+      if ($content_type == 'text/plain') {
+        return $body;
+      }
+      else if ($content_type == 'text/html') {
+        return strip_tags($body);
+      }
+    }
+    return '';
+  }
+
 }

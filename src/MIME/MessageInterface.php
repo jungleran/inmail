@@ -63,4 +63,12 @@ interface MessageInterface extends EntityInterface {
    */
   public function getReceivedDate();
 
+  /**
+   * Helper method to extract plaintext representation of body.
+   *
+   * @return string
+   *   Resulting plain texts of body, otherwise empty string.
+   */
+  public function getPlainText();
+
 }
