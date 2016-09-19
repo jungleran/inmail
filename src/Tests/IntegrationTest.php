@@ -23,6 +23,7 @@ class IntegrationTest extends WebTestBase {
     'past',
     'past_db',
     'past_testhidden',
+    'inmail_test',
   ];
 
   /**
@@ -79,6 +80,20 @@ class IntegrationTest extends WebTestBase {
     // Assert the raw message was logged.
     $event = $this->getLastEventByMachinename('process');
     $this->assertEqual($event->getArgument('email')->getData(), $raw);
+
+    /** @var \Drupal\inmail\MIME\Parser $parser */
+    $parser = \Drupal::service('inmail.mime_parser');
+    $message = $parser->parseMessage($raw);
+
+    // Test the Inmail Message element output.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id());
+    $this->assertText('Email display');
+    $this->assertText('Teaser');
+    $this->assertText($message->getFrom() . ' | ' . $message->getSubject() . ' | ' . $message->getReceivedDate());
+    $this->assertText('Full');
+    $this->assertText('Received: ' . $message->getReceivedDate());
+    $this->assertText('From: ' . $message->getFrom());
+    $this->assertText('To: ' . $message->getTo());
 
     // Check send state. Status code, date and reason are parsed from the
     // generated bounce message.

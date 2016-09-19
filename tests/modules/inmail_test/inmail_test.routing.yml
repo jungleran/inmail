@@ -1,0 +1,6 @@
+inmail_test.past_email_display:
+  path: admin/inmail-test/email/{past_event}
+  defaults:
+    _controller: '\Drupal\inmail_test\Controller\EmailDisplayController::formatDisplay'
+  requirements:
+    _access: 'TRUE'

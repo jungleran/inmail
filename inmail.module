@@ -323,3 +323,27 @@ function inmail_cron() {
   // Update timestamp of last sync.
   \Drupal::state()->set('inmail.deliverers.last_synced', REQUEST_TIME);
 }
+
+/**
+ * Implements hook_theme().
+ */
+function inmail_theme() {
+  return [
+    'inmail_message' => [
+      'render element' => 'inmail_message',
+      'template' => 'inmail-message',
+      'variables' => [
+        'view_mode' => '',
+        'message' => '',
+      ],
+    ],
+    'inmail_multipart_message' => [
+      'render element' => 'inmail_message',
+      'template' => 'inmail-multipart-message',
+      'variables' => [
+        'view_mode' => '',
+        'message' => '',
+      ],
+    ],
+  ];
+}

@@ -1,0 +1,31 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display Inmail Message object.
+ *
+ * Available variables:
+ * - message: Parsed Inmail Message object.
+ *    An instance of \Drupal\inmail\MIME\MessageInterface.
+ * - view_mode: View mode; for example, "teaser" or "full".
+ * - attributes: HTML attributes for the containing element.
+ *
+ * @ingroup themeable
+ */
+#}
+{% if view_mode == 'teaser' %}
+    {# @todo: Discuss the teaser mode. #}
+    <p>{{ message.from }} | {{ message.subject }} | {{ message.getReceivedDate() }}</p>
+{% endif %}
+{% if view_mode == 'full' %}
+<div>
+    {# @todo: Loop over header fields #}
+    <p><strong>Header:</strong> {{ message.header.toString() }}</p>
+
+    <p><strong>Received:</strong> {{ message.getReceivedDate() }}</p>
+    <p><strong>From:</strong> {{ message.from }}</p>
+    <p><strong>To:</strong> {{ message.to }}</p>
+    <p><strong>Subject:</strong> {{ message.subject }}</p>
+    {# Use getPlainText() after https://www.drupal.org/node/2405069. #}
+    <p><strong>Body:</strong> {{ message.getDecodedBody() }}</p>
+</div>
+{% endif %}
