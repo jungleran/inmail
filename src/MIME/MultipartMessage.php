@@ -46,9 +46,12 @@ class MultipartMessage extends MultipartEntity implements MessageInterface {
   public function getPlainText() {
     $message_parts = $this->getParts();
     foreach ($message_parts as $key => $part) {
-      $content_fields = $message_parts[$key]->getContentType();
+      $content_fields = $part->getContentType();
       $content_type = $content_fields['type'] . '/' . $content_fields['subtype'] ;
-      $body = $message_parts[$key]->getDecodedBody();
+      $body = $part->getDecodedBody();
+
+      // The first plaintext or HTML part wins.
+      // @todo Consider further parts and concatenate bodies?
       if ($content_type == 'text/plain') {
         return $body;
       }
