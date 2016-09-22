@@ -34,7 +34,12 @@ class ProcessorTest extends KernelTestBase {
     $processor = \Drupal::service('inmail.processor');
     $path = drupal_get_path('module', 'inmail_test') . '/eml/malformed/headerbody.eml';
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
-    $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
+    // Reset the state to be sure that function is called in the test.
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
+    // Since the message is invalid, success in processing is never called
+    // and state never got changed.
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), '');
 
     // Check last DbLog message.
     $dblog_statement = \Drupal::database()->select('watchdog', 'w')
@@ -71,7 +76,10 @@ EOF;
     $unavailable_analyzer->save();
 
     HandlerConfig::create(['id' => 'result_keeper', 'plugin' => 'result_keeper'])->save();
-    $processor->process($raw, DelivererConfig::create(['id' => 'test']));
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', $raw, DelivererConfig::create(['id' => 'test']));
+    // Assert that success function is called.
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
 
     $processor_result = ResultKeeperHandler::getResult();
     /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */

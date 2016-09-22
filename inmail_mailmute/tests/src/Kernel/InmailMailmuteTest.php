@@ -77,7 +77,11 @@ class InmailMailmuteTest extends KernelTestBase {
       $raw = $this->getMessageFileContents($filename);
 
       // Let magic happen.
-      $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
+      // Reset the state to be sure that function is called in the test.
+      \Drupal::state()->set('inmail.test.success', '');
+      $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
+      // Assert that success function is called.
+      $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
 
       // Reload user.
       $this->user = User::load($this->user->id());
@@ -172,7 +176,9 @@ class InmailMailmuteTest extends KernelTestBase {
     for ($count = 1; $count < 3; $count++) {
       // Process a soft bounce from the user.
       $raw = $this->getMessageFileContents('full.eml');
-      $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
+      \Drupal::state()->set('inmail.test.success', '');
+      $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
+      $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
 
       // Reload user and check the count.
       $this->user = User::load($this->user->id());
@@ -182,7 +188,9 @@ class InmailMailmuteTest extends KernelTestBase {
 
     // Process another one and check that the user is now muted.
     $raw = $this->getMessageFileContents('full.eml');
-    $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
     $this->user = User::load($this->user->id());
     $this->assertEqual($this->user->sendstate->plugin_id, 'inmail_temporarily_unreachable');
   }

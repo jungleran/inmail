@@ -98,6 +98,9 @@ class InmailWebTest extends WebTestBase {
       'username' => 'user',
       'password' => 'pass',
     );
+    // Check there is option to delete messages after fetching and processing.
+    $this->assertFieldByName('delete_processed');
+    $this->assertText('Makes Expunge of messages after fetching and successful processing.');
     $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertUrl('admin/config/system/inmail/deliverers');
     $this->assertText('Test IMAP Fetcher');

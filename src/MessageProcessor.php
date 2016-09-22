@@ -86,7 +86,7 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * {@inheritdoc}
    */
-  public function process($raw, DelivererConfig $deliverer) {
+  public function process($key, $raw, DelivererConfig $deliverer) {
     $event = NULL;
     // Create a log event.
     if (\Drupal::moduleHandler()->moduleExists('past')) {
@@ -167,6 +167,7 @@ class MessageProcessor implements MessageProcessorInterface {
           $event->addArgument($source, $messages);
         }
       }
+      $result->success($key);
     }
     catch (ParseException $e) {
       // Set event message if parsing the message fails.
@@ -194,8 +195,8 @@ class MessageProcessor implements MessageProcessorInterface {
    * {@inheritdoc}
    */
   public function processMultiple(array $messages, DelivererConfig $deliverer) {
-    foreach ($messages as $message) {
-      $this->process($message, $deliverer);
+    foreach ($messages as $key => $message) {
+      $this->process($key, $message, $deliverer);
     }
   }
 }

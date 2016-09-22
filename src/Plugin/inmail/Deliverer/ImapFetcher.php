@@ -21,6 +21,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface {
 
   /**
+   * Message id used for marking and deletion of messages.
+   */
+  protected $message_id;
+
+  /**
    * Injected Inmail logger channel.
    *
    * @var \Drupal\Core\Logger\LoggerChannelInterface
@@ -78,6 +83,34 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
 
       return $raws;
     }) ?: array();
+  }
+
+  /**
+   * Deletes the message.
+   *
+   * @param mixed $key
+   *   Key of the message.
+   */
+  public function deleteMessage($key) {
+    $this->message_id = $key;
+    // Delete fetched messages if it is specified in configuration, and
+    // after successful processing.
+    if ($this->configuration['delete_processed']) {
+      $this->doImap(function($imap_stream) {
+        // Key of the message is ID for deletion process.
+        // Mark the messages for deletion.
+        imap_delete($imap_stream, $this->message_id);
+        // Delete all messages marked for deletion.
+        imap_expunge($imap_stream);
+      });
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function success($key) {
+    $this->deleteMessage($key);
   }
 
   /**
@@ -193,6 +226,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       'username' => '',
       'password' => '',
       'batch_size' => '100',
+      'delete_processed' => FALSE,
     ];
   }
 
@@ -208,6 +242,13 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
     $form['account']['info'] = array(
       '#type' => 'item',
       '#markup' => $this->t('Please refer to your email provider for the appropriate values for these fields.'),
+    );
+
+    $form['account']['delete_processed'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Delete fetched'),
+      '#default_value' => $this->configuration['delete_processed'],
+      '#description' => $this->t('Makes Expunge of messages after fetching and successful processing.'),
     );
 
     $form['account']['protocol'] = [
@@ -327,6 +368,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       'protocol' => $form_state->getValue('protocol'),
       'username' => $form_state->getValue('username'),
       'batch_size' => $form_state->getValue('batch_size'),
+      'delete_processed' => $form_state->getValue('delete_processed'),
     ] + $this->getConfiguration();
 
     // Only update password if "Update password" is checked.

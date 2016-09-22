@@ -2,6 +2,7 @@
 
 namespace Drupal\inmail;
 
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\inmail\Entity\DelivererConfig;
 
 /**
@@ -102,6 +103,21 @@ class ProcessorResult implements ProcessorResultInterface {
    */
   public function readLog() {
     return $this->log;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function success($key) {
+    $deliverer = $this->getDeliverer();
+    try {
+      // Set the state in order to check later that success functions is called.
+      \Drupal::state()->set('inmail.test.success', $key);
+      $deliverer->getPluginInstance()->success($key);
+    }
+    catch (PluginNotFoundException $e) {
+      // There is no plugin.
+    }
   }
 
 }

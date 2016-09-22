@@ -77,7 +77,11 @@ EOF;
 
     AnalyzerConfig::create(['id' => 'test_analyzer', 'plugin' => 'test_analyzer'])->save();
     HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
-    $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
+    // Reset the state to be sure that function is called in the test.
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
+    // Assert that success function is called.
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
 
     $processor_result = ResultKeeperHandler::getResult();
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */

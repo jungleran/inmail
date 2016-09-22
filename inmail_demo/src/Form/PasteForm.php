@@ -213,7 +213,7 @@ class PasteForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $deliverer_config = $this->delivererStorage->load($form_state->getValue('deliverer'));
-    $this->messageProcessor->process($form_state->getValue('text'), $deliverer_config);
+    $this->messageProcessor->process('unique_key', $form_state->getValue('text'), $deliverer_config);
     drupal_set_message($this->t('The message has been processed.'));
     if ($this->moduleHandler->moduleExists('past_db')) {
       drupal_set_message($this->t('See the <a href="@log_url">Past log</a> for results.', ['@log_url' => $this->url('view.past_event_log.page_1')]));

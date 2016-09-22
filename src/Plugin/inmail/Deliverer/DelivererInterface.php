@@ -21,4 +21,12 @@ interface DelivererInterface extends PluginInspectionInterface {
    */
   public function getLabel();
 
+  /**
+   * Notify deliverer about successful processing of the message.
+   *
+   * @param string $key
+   *   Key of the message that was processed.
+   */
+  public function success($key);
+
 }

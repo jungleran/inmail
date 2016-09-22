@@ -122,6 +122,9 @@ inmail.plugin.deliverer.imap:
     batch_size:
       label: 'Batch size'
       type: integer
+    delete_processed:
+      label: 'Delete processed'
+      type: boolean
 
 # Schema for IMAP quota sensor.
 monitoring.settings.inmail_monitoring_imap_quota:

@@ -75,7 +75,9 @@ class IntegrationTest extends WebTestBase {
     // script or a mail deliverer.
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
-    $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
 
     // Assert the raw message was logged.
     $event = $this->getLastEventByMachinename('process');
@@ -104,7 +106,10 @@ class IntegrationTest extends WebTestBase {
     $this->assertText('2015-01-29 15:43:04 +01:00');
     $this->assertText('This didn\'t go too well.');
 
-    $processor->process(NULL, DelivererConfig::create(['id' => 'test']));
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', NULL, DelivererConfig::create(['id' => 'test']));
+    // Success function is never called since we pass NULL, thus state is unchanged.
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), '');
     $event = $this->getLastEventByMachinename('process');
     $this->assertNotNull($event);
     $this->assertEqual($event->getMessage(), 'Incoming mail, parsing failed with error: Failed to split header from body');

@@ -84,7 +84,7 @@ function drush_inmail_process() {
   }
   else {
     $raw = _inmail_get_piped_input();
-    $processor->process($raw, $deliverer);
+    $processor->process('unique_key', $raw, $deliverer);
   }
 }
 

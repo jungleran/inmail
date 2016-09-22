@@ -74,8 +74,9 @@ class TestFetcher extends FetcherBase implements ContainerFactoryPluginInterface
     // Decrement the remaining counter.
     static::$remaining--;
 
-    // Return one minimal message.
-    return array("Subject: Dummy message $count\n\nFoo");
+    // Message must be valid, so it can pass all validations and trigger
+    // some functions (i.e. success()).
+    return array("From: FooBar\nReceived: Tue, 23 Aug 2016 17:48:6 +0600\nSubject: Dummy message $count\n\nMessage Body");
   }
 
   /**
@@ -125,6 +126,13 @@ class TestFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function success($key) {
+    \Drupal::state()->set('inmail.test.success', $key);
   }
 
 }

@@ -21,4 +21,10 @@ abstract class DelivererBase extends InmailPluginBase implements DelivererInterf
     return $this->pluginDefinition['label'];
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function success($key) {
+  }
+
 }

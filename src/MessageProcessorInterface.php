@@ -18,12 +18,14 @@ interface MessageProcessorInterface {
    * outgoing message to a receiver, and a callback sets the receiver's send
    * state to mute.
    *
+   * @param string $key
+   *   Key of the message.
    * @param string $raw
    *   A raw mail message.
    * @param \Drupal\inmail\Entity\DelivererConfig $deliverer
    *   The Deliverer configuration that delivered the messages.
    */
-  public function process($raw, DelivererConfig $deliverer);
+  public function process($key, $raw, DelivererConfig $deliverer);
 
   /**
    * Analyzes and executes callbacks for multiple messages.

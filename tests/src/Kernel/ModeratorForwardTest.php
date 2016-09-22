@@ -47,14 +47,21 @@ class ModeratorForwardTest extends KernelTestBase {
     $regular = $this->getMessageFileContents('normal.eml');
 
     // Do not handle if message is bounce.
-    $processor->process($bounce, DelivererConfig::create(array('id' => 'test')));
+    // Reset the state to be sure that function is called in the test.
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', $bounce, DelivererConfig::create(array('id' => 'test')));
+    // Message passed all tests, parsings and thus success is called.
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
     $this->assertMailCount(0);
 
     // Do not handle if moderator address is unset.
     /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
     $handler_config = HandlerConfig::load('moderator_forward');
     $this->assertEqual($handler_config->getConfiguration()['moderator'], '');
-    $processor->process($regular, DelivererConfig::create(array('id' => 'test')));
+    // Reset the state since in previous call it is set.
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', $regular, DelivererConfig::create(array('id' => 'test')));
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
     $this->assertMailCount(0);
 
     // Do not handle, and log an error, if moderator address is same as intended
@@ -62,7 +69,9 @@ class ModeratorForwardTest extends KernelTestBase {
     $handler_config->setConfiguration(array('moderator' => 'user@example.org'))->save();
     // Forge a mail where we recognize recipient but not status.
     $bounce_no_status = str_replace('Status:', 'Foo:', $bounce);
-    $processor->process($bounce_no_status, DelivererConfig::create(array('id' => 'test')));
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', $bounce_no_status, DelivererConfig::create(array('id' => 'test')));
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
     $this->assertMailCount(0);
 
     // Check the Past event created by the processor.
@@ -77,7 +86,9 @@ class ModeratorForwardTest extends KernelTestBase {
     // Do not handle, and log an error, if the custom X header is set.
     $handler_config->setConfiguration(array('moderator' => 'moderator@example.com'))->save();
     $regular_x = "X-Inmail-Forwarded: ModeratorForwardTest\n" . $regular;
-    $processor->process($regular_x, DelivererConfig::create(array('id' => 'test')));
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', $regular_x, DelivererConfig::create(array('id' => 'test')));
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
     $this->assertMailCount(0);
 
     // Again check past event log.
@@ -89,7 +100,9 @@ class ModeratorForwardTest extends KernelTestBase {
     $this->assertEqual($moderator_message, 'Refused to forward the same email twice (<em class="placeholder">BMH testing sample</em>).');
 
     // Forward non-bounces if conditions are right.
-    $processor->process($regular, DelivererConfig::create(array('id' => 'test')));
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', $regular, DelivererConfig::create(array('id' => 'test')));
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
     $this->assertMailCount(1);
   }
 
@@ -109,7 +122,9 @@ class ModeratorForwardTest extends KernelTestBase {
       ->save();
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
-    $processor->process($original, DelivererConfig::create(array('id' => 'test')));
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key',$original, DelivererConfig::create(array('id' => 'test')));
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
     $messages = $this->getMails(['id' => 'inmail_handler_moderator_forward']);
     $forward = array_pop($messages);
 

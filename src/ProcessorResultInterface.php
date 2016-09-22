@@ -95,4 +95,12 @@ interface ProcessorResultInterface {
    */
   public function readLog();
 
+  /**
+   * Sets the flag of processing to TRUE for specific message.
+   *
+   * @param string $key
+   *   Key of the message.
+   */
+  public function success($key);
+
 }

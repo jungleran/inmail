@@ -36,8 +36,10 @@ class InmailCollectWebTest extends WebTestBase {
     /** @var \Drupal\inmail\MessageProcessor $processor */
     $processor = \Drupal::service('inmail.processor');
     $raw = file_get_contents(\Drupal::root() . '/' . drupal_get_path('module', 'inmail_test') . '/eml/nouser.eml');
-    $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
-
+    \Drupal::state()->set('inmail.test.success', '');
+    $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
+    // Assert success function is called.
+    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
     // Log in and view the list.
     $user = $this->drupalCreateUser(array('administer collect'));
     $this->drupalLogin($user);
