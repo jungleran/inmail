@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\inmail\Kernel;
 
-use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
@@ -62,7 +61,7 @@ class VerpTest extends KernelTestBase {
     $processor->process($raw, DelivererConfig::create(array('id' => 'test')));
 
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
-    $result = ResultKeeperHandler::getResult()->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $result = ResultKeeperHandler::getResult()->getAnalyzerResult();
     if (!$result->hasContext('bounce')) {
       return;
     }

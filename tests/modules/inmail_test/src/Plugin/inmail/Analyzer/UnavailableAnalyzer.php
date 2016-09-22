@@ -2,7 +2,6 @@
 
 namespace Drupal\inmail_test\Plugin\inmail\Analyzer;
 
-use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerBase;
 use Drupal\inmail\ProcessorResultInterface;
@@ -22,7 +21,7 @@ class UnavailableAnalyzer extends AnalyzerBase {
    */
   public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
     /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
-    $default_result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $default_result = $processor_result->getAnalyzerResult();
     // Do the fake body update. This should not be executed as we only execute
     // available analyzers.
     $default_result->setBody('The body has been updated by UnavailableAnalyzer.');

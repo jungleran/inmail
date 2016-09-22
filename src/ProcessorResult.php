@@ -47,6 +47,13 @@ class ProcessorResult implements ProcessorResultInterface {
   }
 
   /**
+   * Creates a new analyzer result instance.
+   */
+  public function __construct () {
+    $this->analyzerResults[DefaultAnalyzerResult::TOPIC] = new DefaultAnalyzerResult();
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function ensureAnalyzerResult($topic, callable $factory) {
@@ -66,7 +73,7 @@ class ProcessorResult implements ProcessorResultInterface {
   /**
    * {@inheritdoc}
    */
-  public function getAnalyzerResult($topic) {
+  public function getAnalyzerResult($topic = DefaultAnalyzerResult::TOPIC) {
     if (isset($this->analyzerResults[$topic])) {
       return $this->analyzerResults[$topic];
     }

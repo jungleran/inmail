@@ -3,7 +3,6 @@
 namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\Core\Logger\LoggerChannel;
-use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNAnalyzer;
 use Drupal\inmail\ProcessorResult;
@@ -53,11 +52,10 @@ class StandardDSNAnalyzerTest extends KernelTestBase {
     // Run the analyzer.
     $analyzer = new StandardDSNAnalyzer(array(), $this->randomMachineName(), array());
     $processor_result = new ProcessorResult();
-    $processor_result->ensureAnalyzerResult(DefaultAnalyzerResult::TOPIC, DefaultAnalyzerResult::createFactory());
 
     $analyzer->analyze($message, $processor_result);
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
-    $result = $processor_result->ensureAnalyzerResult(DefaultAnalyzerResult::TOPIC, DefaultAnalyzerResult::createFactory());
+    $result = $processor_result->getAnalyzerResult();
     $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
     /** @var \Drupal\inmail\BounceDataDefinition $bounce_context */
     $bounce_context = $result->getContext('bounce');

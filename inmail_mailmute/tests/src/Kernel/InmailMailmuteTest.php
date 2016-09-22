@@ -3,7 +3,6 @@
 namespace Drupal\Tests\inmail_mailmute\Kernel;
 
 use Drupal\Component\Utility\SafeMarkup;
-use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
@@ -128,7 +127,7 @@ class InmailMailmuteTest extends KernelTestBase {
       // Invoke the handler.
       $processor_result = new ProcessorResult();
       /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
-      $result = $processor_result->ensureAnalyzerResult(DefaultAnalyzerResult::TOPIC, DefaultAnalyzerResult::createFactory());
+      $result = $processor_result->getAnalyzerResult();
       /** @var \Drupal\inmail\BounceDataDefinition $bounce_context */
       if (!$result->hasContext('bounce')) {
         return;

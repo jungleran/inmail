@@ -2,7 +2,6 @@
 
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
-use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\MIME\DSNEntity;
 use Drupal\inmail\MIME\MessageInterface;
@@ -41,7 +40,7 @@ class StandardDSNAnalyzer extends AnalyzerBase {
     }
 
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $result = $processor_result->getAnalyzerResult();
     $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     // @todo Store date for bounces https://www.drupal.org/node/2379923

@@ -4,7 +4,6 @@ namespace Drupal\inmail_mailmute\Plugin\inmail\Handler;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
 use Drupal\inmail\ProcessorResultInterface;
@@ -66,7 +65,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
    */
   public function invoke(MessageInterface $message, ProcessorResultInterface $processor_result) {
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $result = $processor_result->getAnalyzerResult();
     $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     // Only handle bounces.

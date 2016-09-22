@@ -3,7 +3,6 @@
 namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\Core\Logger\LoggerChannel;
-use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNReasonAnalyzer;
 use Drupal\inmail\ProcessorResult;
@@ -31,11 +30,10 @@ class StandardDSNReasonAnalyzerTest extends KernelTestBase {
     $message = (new Parser(new LoggerChannel('test')))->parseMessage($this->getRaw($filename));
     $analyzer = new StandardDSNReasonAnalyzer(array(), $this->randomMachineName(), array());
     $processor_result = new ProcessorResult();
-    $processor_result->ensureAnalyzerResult(DefaultAnalyzerResult::TOPIC, DefaultAnalyzerResult::createFactory());
 
     $analyzer->analyze($message, $processor_result);
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $result = $processor_result->getAnalyzerResult();
     $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     $bounce_context = $result->getContext('bounce');

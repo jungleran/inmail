@@ -7,7 +7,6 @@ use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\KernelTests\KernelTestBase;
 
@@ -82,9 +81,9 @@ EOF;
 
     $processor_result = ResultKeeperHandler::getResult();
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $result = $processor_result->getAnalyzerResult();
     /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
-    $default_result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $default_result = $processor_result->getAnalyzerResult();
     $bounce_context = $result->getContext('bounce');
     /** @var \Drupal\inmail\Plugin\DataType\BounceData $bounce_data */
     $bounce_data = $bounce_context->getContextData();

@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\inmail\Kernel;
 
-use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
@@ -76,7 +75,7 @@ EOF;
 
     $processor_result = ResultKeeperHandler::getResult();
     /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
-    $default_result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $default_result = $processor_result->getAnalyzerResult();
 
     // Assert "Test Analyzer" updated the account on default result.
     $this->assertEquals('Demo User', $default_result->getAccount()->getDisplayName());

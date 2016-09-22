@@ -2,7 +2,6 @@
 
 namespace Drupal\inmail_phpmailerbmh\Plugin\inmail\Analyzer;
 
-use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\MIME\DSNEntity;
 use Drupal\inmail\MIME\MessageInterface;

@@ -121,7 +121,7 @@ class MessageProcessor implements MessageProcessorInterface {
       $result->setDeliverer($deliverer);
 
       /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
-      $default_result = $result->ensureAnalyzerResult(DefaultAnalyzerResult::TOPIC, DefaultAnalyzerResult::createFactory());
+      $default_result = $result->getAnalyzerResult();
       // Enabled analyzers will be able to update the account.
       $default_result->setAccount(User::getAnonymousUser());
 

@@ -2,7 +2,6 @@
 
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
-use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\MIME\DSNEntity;
 use Drupal\inmail\MIME\MessageInterface;
 use Drupal\inmail\ProcessorResultInterface;
@@ -31,7 +30,7 @@ class StandardDSNReasonAnalyzer extends AnalyzerBase {
     }
 
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
-    $result = $processor_result->getAnalyzerResult(DefaultAnalyzerResult::TOPIC);
+    $result = $processor_result->getAnalyzerResult();
     $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     // Save the human-readable bounce reason.
