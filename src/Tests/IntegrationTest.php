@@ -88,11 +88,12 @@ class IntegrationTest extends WebTestBase {
     $message = $parser->parseMessage($raw);
 
     // Test the Inmail Message element output.
-    $this->drupalGet('admin/inmail-test/email/' . $event->id());
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
     $this->assertText('Email display');
-    $this->assertText('Teaser');
     $this->assertText($message->getFrom() . ' | ' . $message->getSubject() . ' | ' . $message->getReceivedDate());
-    $this->assertText('Full');
+
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    $this->assertText('Email display');
     $this->assertText('Received: ' . $message->getReceivedDate());
     $this->assertText('From: ' . $message->getFrom());
     $this->assertText('To: ' . $message->getTo());

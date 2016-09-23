@@ -13,7 +13,7 @@ class EmailDisplayController extends ControllerBase {
   /**
    * Renders the email argument display of an past event.
    */
-  public function formatDisplay(PastEventInterface $past_event) {
+  public function formatDisplay(PastEventInterface $past_event, $view_mode) {
     $build['#title'] = t('Email display');
 
     if ($past_event->getModule() != 'inmail' || (!$raw_email_argument = $past_event->getArgument('email'))) {
@@ -28,26 +28,10 @@ class EmailDisplayController extends ControllerBase {
     $parser = \Drupal::service('inmail.mime_parser');
     $message = $parser->parseMessage($raw_email_argument->getData());
 
-    // Teaser display mode.
-    $build['teaser'] = [
-      '#type' => 'fieldset',
-      '#title' => $this->t('Teaser'),
-    ];
-    $build['teaser']['email'] = [
+    $build['email'] = [
       '#type' => 'inmail_message',
       '#message' => $message,
-      '#view_mode' => 'teaser',
-    ];
-
-    // Full display mode.
-    $build['full'] = [
-      '#type' => 'fieldset',
-      '#title' => $this->t('Full'),
-    ];
-    $build['full']['email'] = [
-      '#type' => 'inmail_message',
-      '#message' => $message,
-      '#view_mode' => 'full',
+      '#view_mode' => $view_mode,
     ];
 
     return $build;
