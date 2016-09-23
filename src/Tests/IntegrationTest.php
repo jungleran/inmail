@@ -98,6 +98,15 @@ class IntegrationTest extends WebTestBase {
     $this->assertText('From: ' . $message->getFrom());
     $this->assertText('To: ' . $message->getTo());
 
+    // Testing the access to past event created by non-inmail module.
+    // @see \Drupal\inmail_test\Controller\EmailDisplayController
+    $event = past_event_create('past', 'test1', 'Test log entry');
+    $event->save();
+    $this->drupalGet('admin/inmail-test/email/' . $event->id());
+    // Should be thrown NotFoundHttpException.
+    $this->assertResponse(404);
+    $this->assertText('Page not found');
+
     // Check send state. Status code, date and reason are parsed from the
     // generated bounce message.
     $this->drupalGet('user/2');
