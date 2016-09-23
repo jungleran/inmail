@@ -60,6 +60,13 @@ class DelivererListForm extends FormBase {
       '#type' => 'submit',
       '#value' => $this->t('Check fetcher status'),
     );
+    $form['check']['process_button'] = array(
+      '#type' => 'submit',
+      '#value' => $this->t('Process fetchers'),
+      '#submit' => array(
+        array($this, 'submitFetchProcessing'),
+      ),
+    );
 
     // Let the list builder render the table.
     $form['table'] = \Drupal::entityManager()->getListBuilder('inmail_deliverer')->render();
@@ -90,6 +97,53 @@ class DelivererListForm extends FormBase {
     }
     else {
       drupal_set_message('There are no configured fetchers, nothing to update.');
+    }
+  }
+
+  /**
+   * Trigger processing of an active fetcher.
+   */
+  public function submitFetchProcessing(array &$form, FormStateInterface $form_state) {
+    // Find active deliverers.
+    $deliverer_ids = \Drupal::entityQuery('inmail_deliverer')->condition('status', TRUE)->execute();
+    /** @var \Drupal\inmail\Entity\DelivererConfig[] $deliverers */
+    $deliverers = \Drupal::entityTypeManager()->getStorage('inmail_deliverer')->loadMultiple($deliverer_ids);
+    /** @var \Drupal\inmail\MessageProcessorInterface $processor */
+    $processor = \Drupal::service('inmail.processor');
+    $fetchers = [];
+    $processed_count = 0;
+
+    foreach ($deliverers as $deliverer) {
+      // List only active fetchers.
+      if ($deliverer->getPluginInstance() instanceof FetcherInterface && $deliverer->isAvailable()) {
+        $fetchers[$deliverer->id()] = $deliverer->label();
+        $raws = $deliverer->getPluginInstance()->fetch();
+        $processor->processMultiple($raws, $deliverer);
+        $processed_count += count($raws);
+
+        // No more messages to process for specific deliverer?
+        if ($deliverer->getPluginInstance()->getCount() != 0) {
+          // @todo This message could be repeating.
+          drupal_set_message(t('There are more messages to process.'));
+        }
+        // @todo Add Batch API. https://www.drupal.org/node/2804337.
+      }
+    }
+
+    // Processing finished, show final message.
+    if (empty($fetchers)) {
+      drupal_set_message(t('There are no active fetchers. Please enable or <a href=":url">add</a> one.', [
+        ':url' => '/admin/config/system/inmail/deliverers/add'
+      ]), 'warning');
+    }
+    else if ($processed_count) {
+      drupal_set_message(t('Processed @count messages by @fetchers.', [
+        '@count' => $processed_count,
+        '@fetchers' => implode(', ', $fetchers),
+      ]));
+    }
+    else {
+      drupal_set_message(t('No messages to process.'));
     }
   }
 

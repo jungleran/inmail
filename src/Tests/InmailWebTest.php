@@ -148,6 +148,9 @@ class InmailWebTest extends WebTestBase {
     $this->drupalPostForm(NULL, $edit, 'Save');
     $overview_count_xpath = '//td[text()="100"]';
     $this->assertNoFieldByXPath($overview_count_xpath);
+    $this->assertFieldById('edit-process-button');
+    $this->drupalPostForm(NULL, array(), 'Process fetchers');
+    $this->assertText('Message processing successfully finished');
     $this->drupalPostForm(NULL, array(), 'Check fetcher status');
     $this->assertText('Fetcher state info has been updated.');
     $this->assertFieldByXPath($overview_count_xpath);
