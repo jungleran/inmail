@@ -43,6 +43,66 @@ class IntegrationTest extends WebTestBase {
   }
 
   /**
+   * Tests that mails are properly displayed using Inmail message element.
+   */
+  public function testEmailDisplay() {
+    $regular = drupal_get_path('module', 'inmail_test') . '/eml/normal.eml';
+    $raw_multipart = file_get_contents(DRUPAL_ROOT . '/' . $regular);
+
+    // Create a test user and log in.
+    $user = $this->drupalCreateUser([
+      'access administration pages',
+      'administer inmail',
+    ]);
+    $this->drupalLogin($user);
+
+    // In reality the message would be passed to the processor through a drush
+    // script or a mail deliverer.
+    /** @var \Drupal\inmail\MessageProcessorInterface $processor */
+    $processor = \Drupal::service('inmail.processor');
+    \Drupal::state()->set('inmail.test.success', '');
+    // Process the raw multipart mail message.
+    $processor->process('unique_key', $raw_multipart, DelivererConfig::create(['id' => 'test']));
+
+    // Assert the raw message was logged.
+    /** @var \Drupal\past\PastEventInterface $event */
+    $event = $this->getLastEventByMachinename('process');
+    $this->assertEqual($event->getArgument('email')->getData(), $raw_multipart);
+
+    /** @var \Drupal\inmail\MIME\Parser $parser */
+    $parser = \Drupal::service('inmail.mime_parser');
+    $message = $parser->parseMessage($raw_multipart);
+
+    // Test "teaser" view mode of Inmail message element.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
+    $this->assertText('Email display');
+    $this->assertRaw(htmlspecialchars($message->getFrom()) . ' | ' . $message->getSubject() . ' | ' . $message->getReceivedDate());
+
+    // Test "full" view mode of Inmail message element.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    $this->assertText('Email display');
+    $this->assertText('Received: ' . $message->getReceivedDate());
+    $this->assertText('From: ' . htmlspecialchars($message->getFrom()));
+    $this->assertText('To: ' . htmlspecialchars($message->getTo()));
+    // Assert message parts.
+    $this->assertText('plain');
+    $this->assertText('html');
+    $this->assertText('Header: ' . $message->getPart(0)->getHeader()->toString());
+    $this->assertText('Body: ' . $message->getPart(0)->getDecodedBody());
+    $this->assertText('Header: ' . $message->getPart(1)->getHeader()->toString());
+    $this->assertText('Body: ' . htmlspecialchars($message->getPart(1)->getDecodedBody()));
+
+    // Testing the access to past event created by non-inmail module.
+    // @see \Drupal\inmail_test\Controller\EmailDisplayController.
+    $event = past_event_create('past', 'test1', 'Test log entry');
+    $event->save();
+    $this->drupalGet('admin/inmail-test/email/' . $event->id());
+    // Should be thrown NotFoundHttpException.
+    $this->assertResponse(404);
+    $this->assertText('Page not found');
+  }
+
+  /**
    * Tests the Inmail + Mailmute mechanism with a hard bounce for a user.
    */
   public function testBounceFlow() {
@@ -78,34 +138,6 @@ class IntegrationTest extends WebTestBase {
     \Drupal::state()->set('inmail.test.success', '');
     $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
     $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
-
-    // Assert the raw message was logged.
-    $event = $this->getLastEventByMachinename('process');
-    $this->assertEqual($event->getArgument('email')->getData(), $raw);
-
-    /** @var \Drupal\inmail\MIME\Parser $parser */
-    $parser = \Drupal::service('inmail.mime_parser');
-    $message = $parser->parseMessage($raw);
-
-    // Test the Inmail Message element output.
-    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
-    $this->assertText('Email display');
-    $this->assertText($message->getFrom() . ' | ' . $message->getSubject() . ' | ' . $message->getReceivedDate());
-
-    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
-    $this->assertText('Email display');
-    $this->assertText('Received: ' . $message->getReceivedDate());
-    $this->assertText('From: ' . $message->getFrom());
-    $this->assertText('To: ' . $message->getTo());
-
-    // Testing the access to past event created by non-inmail module.
-    // @see \Drupal\inmail_test\Controller\EmailDisplayController
-    $event = past_event_create('past', 'test1', 'Test log entry');
-    $event->save();
-    $this->drupalGet('admin/inmail-test/email/' . $event->id());
-    // Should be thrown NotFoundHttpException.
-    $this->assertResponse(404);
-    $this->assertText('Page not found');
 
     // Check send state. Status code, date and reason are parsed from the
     // generated bounce message.

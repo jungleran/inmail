@@ -25,9 +25,5 @@
         <p><strong>From:</strong> {{ message.from }}</p>
         <p><strong>To:</strong> {{ message.to }}</p>
         <p><strong>Subject:</strong> {{ message.subject }}</p>
-        {# Use getPlainText() after https://www.drupal.org/node/2405069. #}
-        <p><strong>Body:</strong> {{ message.getDecodedBody() }}</p>
-
-        {# @todo: Display mail attachments #}
     </div>
 {% endif %}

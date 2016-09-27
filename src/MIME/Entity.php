@@ -86,6 +86,22 @@ class Entity implements EntityInterface {
   /**
    * {@inheritdoc}
    */
+  public function getType() {
+    if ($this->header->hasField('Content-Disposition')) {
+      $disposition_field = $this->header->getFieldBody('Content-Disposition');
+      $field_parts = preg_split('/\s*;\s*/', $disposition_field, 2);
+      $type = reset($field_parts);
+    }
+    else {
+      $type = $this->getContentType()['subtype'];
+    }
+
+    return $type;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getContentTransferEncoding() {
     $field = $this->getHeader()->getFieldBody('Content-Transfer-Encoding');
     if (empty($field)) {

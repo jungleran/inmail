@@ -45,6 +45,14 @@ interface EntityInterface {
   public function getContentType();
 
   /**
+   * Returns the message part type. (inline, attachment, plain, html)
+   *
+   * @return string
+   *   The type.
+   */
+  public function getType();
+
+  /**
    * Returns the encoding of the body.
    *
    * @return string
