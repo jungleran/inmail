@@ -43,6 +43,13 @@ class InmailSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('return_path'),
     );
 
+    $form['batch_size'] = array(
+      '#type' => 'number',
+      '#title' => $this->t('Batch size'),
+      '#description' => $this->t('How many messages to fetch on each invocation.'),
+      '#default_value' => strval($config->get('batch_size')),
+    );
+
     // Display the logging in case Past module is enabled.
     if (\Drupal::moduleHandler()->moduleExists('past')) {
       $form['log_raw_emails'] = array(
@@ -61,10 +68,11 @@ class InmailSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-
+    $val = $this->config('inmail.settings');
     $this->config('inmail.settings')
       ->set('return_path', $form_state->getValue('return_path'))
       ->set('log_raw_emails', $form_state->getValue('log_raw_emails', FALSE))
+      ->set('batch_size', $form_state->getValue('batch_size'))
       ->save();
   }
 

@@ -9,6 +9,9 @@ inmail.settings:
     log_raw_emails:
       label: 'Log raw email messages'
       type: boolean
+    batch_size:
+      label: 'Batch size'
+      type: integer
 
 # Config entities
 inmail.analyzer.*:
@@ -119,9 +122,6 @@ inmail.plugin.deliverer.imap:
     password:
       label: 'Password'
       type: string
-    batch_size:
-      label: 'Batch size'
-      type: integer
     delete_processed:
       label: 'Delete processed'
       type: boolean

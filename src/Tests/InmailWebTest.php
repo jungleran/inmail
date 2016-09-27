@@ -296,6 +296,7 @@ class InmailWebTest extends WebTestBase {
     $this->drupalGet('/admin/config/system/inmail');
     $this->assertField('return_path');
     $this->assertNoField('edit-log-raw-emails');
+    $this->assertField('edit-batch-size');
 
     // Enable Past module.
     \Drupal::service('module_installer')->install(['past'], FALSE);

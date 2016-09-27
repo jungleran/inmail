@@ -69,7 +69,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       // Find IDs of unread messages.
       // @todo Introduce options for message selection, https://www.drupal.org/node/2405767
       $unread_ids = imap_search($imap_stream, 'UNSEEN') ?: array();
-      $batch_ids = array_splice($unread_ids, 0, $this->configuration['batch_size']);
+      $batch_ids = array_splice($unread_ids, 0, $this->config('inmail.settings')->get('batch_size'));
 
       // Get the header + body of each message.
       $raws = array();
@@ -225,7 +225,6 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       'protocol' => 'imap',
       'username' => '',
       'password' => '',
-      'batch_size' => '100',
       'delete_processed' => FALSE,
     ];
   }
@@ -338,13 +337,6 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       $form['account']['password']['#states']['visible'] = array();
     }
 
-    $form['batch_size'] = array(
-      '#type' => 'number',
-      '#title' => $this->t('Batch size'),
-      '#default_value' => $this->configuration['batch_size'],
-      '#description' => $this->t('How many messages to fetch on each invocation.'),
-    );
-
     // Add a "Test connection" button.
     $form['account'] += parent::addTestConnectionButton();
 
@@ -367,7 +359,6 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
         $form_state->getValue('ssl') ? $form_state->getValue('novalidate_ssl') : FALSE,
       'protocol' => $form_state->getValue('protocol'),
       'username' => $form_state->getValue('username'),
-      'batch_size' => $form_state->getValue('batch_size'),
       'delete_processed' => $form_state->getValue('delete_processed'),
     ] + $this->getConfiguration();
 
