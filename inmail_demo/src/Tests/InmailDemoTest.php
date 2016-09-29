@@ -36,6 +36,7 @@ class InmailDemoTest extends WebTestBase {
     $this->assertResponse(403);
     $this->drupalLogin($this->drupalCreateUser(['administer inmail']));
     $this->drupalGet('admin/config/system/inmail/paste');
+    $this->assertText('Paste email');
     $this->assertFieldByName('deliverer', 'paste');
     $this->drupalPostAjaxForm(NULL, [], ['op' => t('Load example')]);
     $this->drupalPostForm(NULL, [], t('Process email'));
