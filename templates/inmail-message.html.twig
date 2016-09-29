@@ -12,9 +12,18 @@
  * @ingroup themeable
  */
 #}
+<style>
+    .truncate_mail {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
 {% if view_mode == 'teaser' %}
     {# @todo: Discuss the teaser mode. #}
     <p>{{ message.from }} | {{ message.subject }} | {{ message.getReceivedDate() }}</p>
+    <p class="truncate_mail">{{ message.getPlainText() | slice(0, 1000) }}</p>
 {% endif %}
 {% if view_mode == 'full' %}
 <div>

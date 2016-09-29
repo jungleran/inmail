@@ -77,6 +77,7 @@ class IntegrationTest extends WebTestBase {
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
     $this->assertText('Email display');
     $this->assertRaw(htmlspecialchars($message->getFrom()) . ' | ' . $message->getSubject() . ' | ' . $message->getReceivedDate());
+    $this->assertText(htmlspecialchars($message->getPlainText(), ENT_QUOTES, 'UTF-8'));
 
     // Test "full" view mode of Inmail message element.
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
