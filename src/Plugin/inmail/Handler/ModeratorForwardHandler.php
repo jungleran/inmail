@@ -96,7 +96,11 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
     // Send forward.
     // DirectMail is set as mail plugin on install.
     // Message is composed in inmail_mail().
-    $params = array('original' => $message);
+    $params = array(
+      'original' => $message,
+      'plugin_id' => $processor_result->getDeliverer()->getPluginId(),
+      'deliverer_id' => $processor_result->getDeliverer()->id(),
+    );
     $this->mailManager->mail('inmail', 'handler_moderator_forward', $moderator, \Drupal::languageManager()->getDefaultLanguage(), $params);
   }
 

@@ -84,6 +84,8 @@ class ModeratorForwardTest extends KernelTestBase {
     $this->assertEqual($moderator_message, 'Moderator <em class="placeholder">user@example.org</em> is bouncing.');
 
     // Do not handle, and log an error, if the custom X header is set.
+    // Furthermore, if the Received Header states that message is forwarded,
+    // do not forward it again. It triggers function invoke().
     $handler_config->setConfiguration(array('moderator' => 'moderator@example.com'))->save();
     $regular_x = "X-Inmail-Forwarded: ModeratorForwardTest\n" . $regular;
     \Drupal::state()->set('inmail.test.success', '');
@@ -132,10 +134,14 @@ class ModeratorForwardTest extends KernelTestBase {
     $this->assertEqual($forward['body'], $original_parsed->getBody(), 'Forwarded message body is unchanged.');
 
     // Headers should have the correct changes.
-    $headers_prefix = "X-Inmail-Forwarded: handler_moderator_forward\n";
+    $forward_header = "X-Inmail-Forwarded: handler_moderator_forward\n";
     $expected_headers = $original_parsed->getHeader()->toString();
     $expected_headers = str_replace("To: Arild Matsson <inmail_test@example.com>\n", '', $expected_headers);
-    $expected_headers = $headers_prefix . $expected_headers;
+    // Extract the time from original message and append it.
+    $received_header = "Received: via: inmail  with:  test id:\n <CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.gmail.com>;" . substr($forward['received'], strpos($forward['received'], ';')+1) . "\n";
+    // Wrap the received header to 78 characters.
+    $expected_headers = $forward_header . wordwrap($received_header, 78, "\n ") . $expected_headers;
+    // Wrap to 78 characters to match original message.
     $this->assertEqual($forward['raw_headers']->toString(), $expected_headers, 'Forwarded message headers have the correct changes.');
   }
 

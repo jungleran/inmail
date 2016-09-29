@@ -282,6 +282,13 @@ function inmail_mail($key, &$message, $params) {
       // Set body.
       $message['body'][] = $original->getBody();
 
+      // Add field received. Names of sending and receiving hosts as well time
+      // of receipt should be specified. Furthermore, "with" parameter should
+      // should be included to specify protocol that is used.
+      // For more details check https://www.ietf.org/rfc/rfc0822.txt pg. 20.
+      // Using predefined function just to verify following the standards.
+      // @todo Create a method that will return configured host https://www.drupal.org/node/2805079
+      $message['received'] = 'via: inmail  with: ' . $params['plugin_id'] . ' ' . $params['deliverer_id'] . ' id: ' . $original->getMessageId() . '; '  . date(DATE_RFC2822);
       // Set headers, with custom X header prepended.
       // Alter hooks expect headers to be in name => value format. Such a
       // structure cannot handle duplicate header names, as is common with e.g.
@@ -290,6 +297,7 @@ function inmail_mail($key, &$message, $params) {
       // here, and the same is expected by DirectMail.
       $header = clone $original->getHeader();
       $header->removeField('To');
+      $header->addField('Received', $message['received']);
       $header->addField('X-Inmail-Forwarded', 'handler_moderator_forward');
       $message['raw_headers'] = $header;
       break;
