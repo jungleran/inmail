@@ -69,7 +69,7 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
   public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult('bounce', 'inmail_bounce');
-    $bounce_data = $result->ensureContext('bounce', 'inmail_)bounce');
+    $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     // The analysis part of the library is in the bmhDSNRules and bmhBodyRules
     // functions.

@@ -293,40 +293,42 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface {
   }
 
   /**
-   * Returns the bounce data.
+   * Ensures there is a context of the given data type and provides its data.
    *
-   * @param $name
-   *   The name of context.
+   * @param string $name
+   *   The name of the context.
+   * @param string $data_type
+   *   The context data type.
    *
-   * @param $data_type
-   *   The data type of context.
+   * @return \Drupal\Core\TypedData\TypedDataInterface
+   *   The typed data of given context.
    *
-   * @return \Drupal\inmail\Plugin\DataType\BounceData
-   *   The bonce data of $name context.
+   * @throws \InvalidArgumentException|\Drupal\Component\Plugin\Exception\PluginNotFoundException
+   *   Returns an exception in case of invalid data type.
    */
   public function ensureContext($name, $data_type) {
-    $bounce_data = NULL;
     if ($this->hasContext($name)) {
-      $context_data_type = $this->getContext($name)
-        ->getContextData()
-        ->getDataDefinition()
-        ->getDataType();
-      if ($data_type !== $context_data_type) {
-        throw new \InvalidArgumentException('Invalid data type '
-          . $data_type
-          . ' has been given.');
+      $context_data_type = $this->getContext($name)->getContextData()->getDataDefinition()->getDataType();
+      if ($data_type != $context_data_type) {
+        throw new \InvalidArgumentException('Invalid data type ' . $data_type . ' has been given.');
       }
-
-      $bounce_data = $this->getContext($name)->getContextData();
+      $data = $this->getContext($name)->getContextData();
     }
     else {
       /** @var \Drupal\Core\TypedData\TypedDataManagerInterface $typed_data_manager */
-      $typed_data_manager =\Drupal::service('typed_data_manager');
-      $bounce_data = $typed_data_manager->create(BounceDataDefinition::create($data_type));
-      $bounce_context = new Context(new ContextDefinition($data_type), $bounce_data);
-      $this->setContext($name, $bounce_context);
+      $typed_data_manager = \Drupal::service('typed_data_manager');
+      $data_definition = $typed_data_manager->createDataDefinition($data_type);
+      $configuration = [
+        'data_definition' => $data_definition,
+        'name' => NULL,
+        'parent' => NULL,
+      ];
+      $data = $typed_data_manager->createInstance($data_type, $configuration);
+      $context = new Context(new ContextDefinition($data_type), $data);
+      $this->setContext($name, $context);
     }
 
-    return $bounce_data;
+    return $data;
   }
+
 }

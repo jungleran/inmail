@@ -110,6 +110,26 @@ EOF;
     catch (\InvalidArgumentException $e) {
       $this->assertEquals($exception_message, $e->getMessage());
     }
+
+    // Try to ensure context that is being already set with invalid data type.
+    $exception_message = 'Invalid data type invalid_data_type has been given.';
+    try {
+      $result->ensureContext('bounce', 'invalid_data_type');
+      $this->fail($exception_message);
+    }
+    catch (\InvalidArgumentException $e) {
+      $this->assertEquals($exception_message, $e->getMessage());
+    }
+
+    // Try to ensure context on non-existing context with invalid data type.
+    $exception_message = 'The "invalid_data_type" plugin does not exist.';
+    try {
+      $result->ensureContext('non_existing_context', 'invalid_data_type');
+      $this->fail($exception_message);
+    }
+    catch (\Exception $e) {
+      $this->assertEquals($exception_message, $e->getMessage());
+    }
   }
 
 }
