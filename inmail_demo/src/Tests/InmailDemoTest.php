@@ -18,7 +18,11 @@ class InmailDemoTest extends WebTestBase {
    *
    * @var string[]
    */
-  public static $modules = array('inmail_demo', 'inmail_test');
+  public static $modules = [
+    'inmail_demo',
+    'inmail_test',
+    'block',
+  ];
 
   /**
    * {@inheritdoc}
@@ -26,6 +30,7 @@ class InmailDemoTest extends WebTestBase {
   public function setUp() {
     parent::setUp();
     HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
+    $this->drupalPlaceBlock('local_tasks_block');
   }
 
   /**
@@ -35,8 +40,9 @@ class InmailDemoTest extends WebTestBase {
     $this->drupalGet('admin/config/system/inmail/paste');
     $this->assertResponse(403);
     $this->drupalLogin($this->drupalCreateUser(['administer inmail']));
-    $this->drupalGet('admin/config/system/inmail/paste');
+    $this->drupalGet('admin/config/system/inmail');
     $this->assertText('Paste email');
+    $this->drupalGet('admin/config/system/inmail/paste');
     $this->assertFieldByName('deliverer', 'paste');
     $this->drupalPostAjaxForm(NULL, [], ['op' => t('Load example')]);
     $this->drupalPostForm(NULL, [], t('Process email'));
