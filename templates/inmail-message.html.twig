@@ -13,6 +13,14 @@
  */
 #}
 <style>
+    .message-header {
+        display: -webkit-flex;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .message-header__from, .message-header__subject, .message-header__received-date {
+        margin: 10px;
+    }
     .truncate_mail {
         white-space: nowrap;
         overflow: hidden;
@@ -22,7 +30,11 @@
 
 {% if view_mode == 'teaser' %}
     {# @todo: Discuss the teaser mode. #}
-    <p>{{ message.from }} | {{ message.subject }} | {{ message.getReceivedDate() }}</p>
+    <section class="message-header">
+        <div class="message-header__from">{{ message.from }}</div>
+        <div class="message-header__subject">{{ message.subject }}</div>
+        <div class="message-header__received-date">{{ message.getReceivedDate() }}</div>
+    </section>
     <p class="truncate_mail">{{ message.getPlainText() | slice(0, 1000) }}</p>
 {% endif %}
 {% if view_mode == 'full' %}
