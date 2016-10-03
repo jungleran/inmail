@@ -7,7 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Base class for mail fetchers.
  *
- * This provides dumb implementations for most methods, but leaves ::fetch() and
+ * This provides dumb implementations for most methods, but leaves ::fetchUnprocessedMessages() and
  * some configuration methods abstract.
  *
  * @ingroup deliverer
@@ -35,7 +35,7 @@ abstract class FetcherBase extends DelivererBase implements FetcherInterface {
   /**
    * {@inheritdoc}
    */
-  public function getCount() {
+  public function getCountUnprocessedMessages() {
     return \Drupal::state()->get($this->makeStateKey('remaining'));
   }
 

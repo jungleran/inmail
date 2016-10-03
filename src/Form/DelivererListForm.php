@@ -117,12 +117,12 @@ class DelivererListForm extends FormBase {
       // List only active fetchers.
       if ($deliverer->getPluginInstance() instanceof FetcherInterface && $deliverer->isAvailable()) {
         $fetchers[$deliverer->id()] = $deliverer->label();
-        $raws = $deliverer->getPluginInstance()->fetch();
+        $raws = $deliverer->getPluginInstance()->fetchUnprocessedMessages();
         $processor->processMultiple($raws, $deliverer);
         $processed_count += count($raws);
 
         // No more messages to process for specific deliverer?
-        if ($deliverer->getPluginInstance()->getCount() != 0) {
+        if ($deliverer->getPluginInstance()->getCountUnprocessedMessages() != 0) {
           // @todo This message could be repeating.
           drupal_set_message(t('There are more messages to process.'));
         }

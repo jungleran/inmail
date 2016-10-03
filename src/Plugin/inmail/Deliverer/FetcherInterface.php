@@ -20,7 +20,7 @@ interface FetcherInterface extends DelivererInterface, ConfigurablePluginInterfa
    * @return string[]
    *   The fetched messages, in complete raw form.
    */
-  public function fetch();
+  public function fetchUnprocessedMessages();
 
   /**
    * Returns the number of remaining messages to fetch.
@@ -28,7 +28,7 @@ interface FetcherInterface extends DelivererInterface, ConfigurablePluginInterfa
    * @return int|null
    *   Number of remaining messages, or NULL if it is unknown.
    */
-  public function getCount();
+  public function getCountUnprocessedMessages();
 
   /**
    * Updates the remaining messages count.

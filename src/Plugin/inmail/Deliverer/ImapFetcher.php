@@ -64,7 +64,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
   /**
    * {@inheritdoc}
    */
-  public function fetch() {
+  public function fetchUnprocessedMessages() {
     return $this->doImap(function($imap_stream) {
       // Find IDs of unread messages.
       // @todo Introduce options for message selection, https://www.drupal.org/node/2405767

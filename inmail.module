@@ -323,7 +323,7 @@ function inmail_cron() {
 
     // Only run active deliverers.
     if ($plugin instanceof FetcherInterface) {
-      $raws = $plugin->fetch();
+      $raws = $plugin->fetchUnprocessedMessages();
       $processor->processMultiple($raws, $deliverer);
     }
   }

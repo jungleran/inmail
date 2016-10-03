@@ -23,7 +23,7 @@ class TestFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    * Injected site state.
    *
    * The following state keys are used with the test deliverer:
-   *   - inmail.test.deliver_count: Number of times that fetch() has been
+   *   - inmail.test.deliver_count: Number of times that fetchUnprocessedMessages() has been
    *     invoked.
    *   - inmail.test.deliver_remaining: Cached number of remaining messages.
    *
@@ -66,7 +66,7 @@ class TestFetcher extends FetcherBase implements ContainerFactoryPluginInterface
   /**
    * {@inheritdoc}
    */
-  public function fetch() {
+  public function fetchUnprocessedMessages() {
     // Increment invocation count.
     $count = $this->state->get('inmail.test.deliver_count') + 1;
     $this->state->set('inmail.test.deliver_count', $count);
@@ -82,7 +82,7 @@ class TestFetcher extends FetcherBase implements ContainerFactoryPluginInterface
   /**
    * {@inheritdoc}
    */
-  public function getCount() {
+  public function getCountUnprocessedMessages() {
     return $this->state->get('inmail.test.deliver_remaining');
   }
 

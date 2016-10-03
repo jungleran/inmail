@@ -51,7 +51,7 @@ class DelivererTest extends KernelTestBase {
    * @see \Drupal\inmail\Entity\DelivererConfig
    */
   public function testSuccess() {
-    // Message is loaded from TestFetcher::fetch() which later causes that
+    // Message is loaded from TestFetcher::fetchUnprocessedMessages() which later causes that
     // in MessageProcessor::processMultiple() gets 0 as key since it is
     // single part message.
     $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 0);
