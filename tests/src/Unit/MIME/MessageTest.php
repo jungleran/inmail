@@ -43,10 +43,16 @@ class MessageTest extends UnitTestCase {
    * @covers ::getFrom
    */
   public function testGetFrom() {
+    // Single address.
     $message = new Message(new Header([['name' => 'From', 'body' => 'Foo']]), 'Bar');
     $this->assertEquals('Foo', $message->getFrom());
-    $message = new Message(new Header([['name' => 'From', 'body' => 'fooBar@xn--oak-ppa56b.ba']]), 'Bar');
-    $this->assertEquals('fooBar@ćošak.ba', $message->getFrom(TRUE));
+
+    if (function_exists('idn_to_utf8')) {
+      // Single IDN address.
+      $message = new Message(new Header([['name' => 'From', 'body' => 'fooBar@xn--oak-ppa56b.ba']]), 'Bar');
+      $this->assertEquals('fooBar@ćošak.ba', $message->getFrom(TRUE));
+    }
+
   }
 
   /**
@@ -55,10 +61,53 @@ class MessageTest extends UnitTestCase {
    * @covers ::getTo
    */
   public function testGetTo() {
+    // Empty recipient.
+    $message = new Message(new Header([[]]), 'I am a body');
+    $cc_field = $message->getCC();
+    $this->assertEquals([NULL], $cc_field);
+
+    // Single recipient address.
     $message = new Message(new Header([['name' => 'To', 'body' => 'Foo']]), 'Bar');
     $this->assertEquals('Foo', $message->getTo());
-    $message = new Message(new Header([['name' => 'To', 'body' => 'helloWorld@xn--xample-9ua.com']]), 'Bar');
-    $this->assertEquals('helloWorld@éxample.com', $message->getTo(TRUE));
+
+    // Multiple recipients.
+    // @todo Parse recipients and return list.
+    $message = new Message(new Header([['name' => 'Cc', 'body' => 'sunshine@example.com, moon@example.com']]), 'I am a body');
+    $cc_field = $message->getCC();
+    $this->assertEquals(['sunshine@example.com, moon@example.com'], $cc_field);
+    // @todo Parse recipients and return list.
+    // @todo Test mailbox with display name.
+
+    if (function_exists('idn_to_utf8')) {
+      // Single IDN recipient address with decoding.
+      $message = new Message(new Header([['name' => 'To', 'body' => 'helloWorld@xn--xample-9ua.com']]), 'Bar');
+      $this->assertEquals('helloWorld@éxample.com', $message->getTo(TRUE));
+    }
+  }
+
+  /**
+   * Tests the Cc recipients getter.
+   *
+   * @covers ::getCc
+   */
+  public function testGetCc() {
+    // Empty recipient.
+    $message = new Message(new Header([[]]), 'I am a body');
+    $cc_field = $message->getCC();
+    $this->assertEquals([NULL], $cc_field);
+
+    // Single recipient address.
+    $message = new Message(new Header([['name' => 'Cc', 'body' => 'sunshine@example.com']]), 'I am a body');
+    $cc_field = $message->getCC();
+    $this->assertEquals(['sunshine@example.com'], $cc_field);
+
+    // Multiple recipients.
+    // @todo Parse recipients and return list.
+    $message = new Message(new Header([['name' => 'Cc', 'body' => 'sunshine@example.com, moon@example.com']]), 'I am a body');
+    $cc_field = $message->getCC();
+    $this->assertEquals(['sunshine@example.com, moon@example.com'], $cc_field);
+
+    // @todo Also test mailbox with display name.
   }
 
   /**

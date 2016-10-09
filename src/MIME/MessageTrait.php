@@ -18,15 +18,25 @@ trait MessageTrait {
   abstract public function getHeader();
 
   /**
-   * {@inheritdoc}
+   * Converts body from Puny-code to UTF8.
+   *
+   * @param string $body
+   *   Field body to be decoded.
+   *
+   * @return string|null
+   *   Decoded UTF8 address if successful decoding, otherwise NULL.
    */
-  public function getFrom($decode = FALSE) {
-    $body = $this->getHeader()->getFieldBody('From');
-    if ($decode) {
-      if (strpos($body, '@') !== FALSE) {
-        $body = explode('@', $body, 2)[0] . '@' . idn_to_utf8(explode('@', $body, 2)[1]);
-      }
-      //@todo Properly parse Mail Address https://www.drupal.org/node/2800585
+  protected function getDecodedAddress($body) {
+    //@todo: Properly parse Mail Address https://www.drupal.org/node/2800585.
+
+    // Skip decoding if the intl package is missing.
+    if (!function_exists('idn_to_utf8')) {
+      return $body;
+    }
+
+    if (strpos($body, '@') !== FALSE) {
+      // Extracting body after '@' sign for proper IDN decoding.
+      $body = explode('@', $body, 2)[0] . '@' . \idn_to_utf8(explode('@', $body, 2)[1]);
     }
     return $body;
   }
@@ -34,16 +44,31 @@ trait MessageTrait {
   /**
    * {@inheritdoc}
    */
+  public function getFrom($decode = FALSE) {
+    //@todo: Properly parse Mail Address https://www.drupal.org/node/2800585.
+
+    $body = $this->getHeader()->getFieldBody('From');
+    return ($decode) ? ($this->getDecodedAddress($body)) : ($body);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getTo($decode = FALSE) {
+    //@todo Properly parse Mail Address https://www.drupal.org/node/2800585
+
     $body = $this->getHeader()->getFieldBody('To');
-    if ($decode) {
-      if (strpos($body, '@') !== FALSE) {
-        // Extracting body after '@' sign for proper IDN decoding.
-        $body = explode('@', $body, 2)[0] . '@' . idn_to_utf8(explode('@', $body, 2)[1]);
-      }
-      //@todo Properly parse Mail Address https://www.drupal.org/node/2800585
-    }
-    return $body;
+    return ($decode) ? ($this->getDecodedAddress($body)) : ($body);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCc($decode = FALSE) {
+    //@todo Properly parse Mail Address https://www.drupal.org/node/2800585
+
+    $body = $this->getHeader()->getFieldBody('Cc');
+    return ($decode) ? [$this->getDecodedAddress($body)] : [$body];
   }
 
 }

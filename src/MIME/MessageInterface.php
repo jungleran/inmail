@@ -38,8 +38,7 @@ interface MessageInterface extends EntityInterface {
    *   Optional value to indicate if header is in punycode form.
    *
    * @return string|null
-   *   The content of the 'From' header field, or null if that field does not
-   *   exist.
+   *   The 'From' header field body, or null if inexisting.
    */
   public function getFrom($decode = FALSE);
 
@@ -50,10 +49,20 @@ interface MessageInterface extends EntityInterface {
    *   Optional value to indicate if header is in punycode form.
    *
    * @return string|null
-   *   The content of the 'To' header field, or null if that field does not
-   *   exist.
+   *   List of 'To' recipients.
    */
   public function getTo($decode = FALSE);
+
+  /**
+   * Returns the list of Cc recipients.
+   *
+   * @param bool $decode
+   *   Optional value to indicate if header is in punycode form.
+   *
+   * @return array
+   *   The list of 'Cc' recipients
+   */
+  public function getCc($decode = FALSE);
 
   /**
    * Returns the date when the message was received by the recipient.
