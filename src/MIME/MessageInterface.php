@@ -43,13 +43,13 @@ interface MessageInterface extends EntityInterface {
   public function getFrom($decode = FALSE);
 
   /**
-   * Returns the message recipient.
+   * Returns the list of message recipients.
    *
    * @param bool $decode
    *   Optional value to indicate if header is in punycode form.
    *
-   * @return string|null
-   *   List of 'To' recipients.
+   * @return string[]
+   *   List of 'To' recipient addresses.
    */
   public function getTo($decode = FALSE);
 
@@ -59,8 +59,8 @@ interface MessageInterface extends EntityInterface {
    * @param bool $decode
    *   Optional value to indicate if header is in punycode form.
    *
-   * @return array
-   *   The list of 'Cc' recipients
+   * @return string[]
+   *   List of 'Cc' recipient addresses.
    */
   public function getCc($decode = FALSE);
 

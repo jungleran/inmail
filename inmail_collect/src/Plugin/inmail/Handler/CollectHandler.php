@@ -78,7 +78,7 @@ class CollectHandler extends HandlerBase {
     $data = array(
       // Note the Subject field is optional by RFC882.
       'header-subject' => $message->getSubject(),
-      'header-to' => $message->getTo(),
+      'header-to' => $message->getTo()[0],
       'header-from' => $message->getFrom(),
       'header-message-id' => $message->getMessageId(),
       'deliverer' => $processor_result->getDeliverer()->id(),

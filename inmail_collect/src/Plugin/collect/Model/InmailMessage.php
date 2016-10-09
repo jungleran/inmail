@@ -100,7 +100,8 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
     $output['to'] = array(
       '#type' => 'item',
       '#title' => $this->t('To'),
-      '#markup' => htmlentities($parsed_data->getTo()),
+      // By RFC 2822, addresses are comma-separated list.
+      '#markup' => htmlentities(implode(', ', $parsed_data->getTo())),
     );
 
     return $output;

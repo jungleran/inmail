@@ -48,7 +48,10 @@ trait MessageTrait {
     //@todo: Properly parse Mail Address https://www.drupal.org/node/2800585.
 
     $body = $this->getHeader()->getFieldBody('From');
-    return ($decode) ? ($this->getDecodedAddress($body)) : ($body);
+    if ($decode) {
+      $body = $this->getDecodedAddress($body);
+    }
+    return $body;
   }
 
   /**
@@ -56,9 +59,13 @@ trait MessageTrait {
    */
   public function getTo($decode = FALSE) {
     //@todo Properly parse Mail Address https://www.drupal.org/node/2800585
+    //@todo Deal with multiple recipients.
 
     $body = $this->getHeader()->getFieldBody('To');
-    return ($decode) ? ($this->getDecodedAddress($body)) : ($body);
+    if ($decode) {
+      $body = $this->getDecodedAddress($body);
+    }
+    return [$body];
   }
 
   /**
@@ -66,9 +73,13 @@ trait MessageTrait {
    */
   public function getCc($decode = FALSE) {
     //@todo Properly parse Mail Address https://www.drupal.org/node/2800585
+    //@todo Deal with multiple recipients.
 
     $body = $this->getHeader()->getFieldBody('Cc');
-    return ($decode) ? [$this->getDecodedAddress($body)] : [$body];
+    if ($decode) {
+      $body = $this->getDecodedAddress($body);
+    }
+    return [$body];
   }
 
 }

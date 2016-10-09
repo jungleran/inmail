@@ -68,7 +68,7 @@ class MessageTest extends UnitTestCase {
 
     // Single recipient address.
     $message = new Message(new Header([['name' => 'To', 'body' => 'Foo']]), 'Bar');
-    $this->assertEquals('Foo', $message->getTo());
+    $this->assertEquals(['Foo'], $message->getTo());
 
     // Multiple recipients.
     // @todo Parse recipients and return list.
@@ -81,7 +81,7 @@ class MessageTest extends UnitTestCase {
     if (function_exists('idn_to_utf8')) {
       // Single IDN recipient address with decoding.
       $message = new Message(new Header([['name' => 'To', 'body' => 'helloWorld@xn--xample-9ua.com']]), 'Bar');
-      $this->assertEquals('helloWorld@éxample.com', $message->getTo(TRUE));
+      $this->assertEquals(['helloWorld@éxample.com'], $message->getTo(TRUE));
     }
   }
 

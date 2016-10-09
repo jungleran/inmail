@@ -86,7 +86,7 @@ class IntegrationTest extends WebTestBase {
     $this->assertText('Email display');
     $this->assertText('Received: ' . $message->getReceivedDate());
     $this->assertText('From: ' . htmlspecialchars($message->getFrom()));
-    $this->assertText('To: ' . htmlspecialchars($message->getTo()));
+    $this->assertText('To: ' . htmlspecialchars(implode(', ', $message->getTo())));
     // Assert message parts.
     $this->assertText('plain');
     $this->assertText('html');
