@@ -2,17 +2,29 @@
  * @file
  * Stylesheet for inmail.
  */
-.message-header {
+.inmail-message--header header {
     display: -webkit-flex;
     display: flex;
     flex-wrap: wrap;
 }
 
-.message-header__from, .message-header__subject, .message-header__received-date {
+.inmail-message--header-from,
+.inmail-message--header-to,
+.inmail-message--header-subject,
+.inmail-message--header-received-date {
     margin: 10px;
 }
 
-.truncate_mail {
+.inmail-message--header-label {
+    font-weight: 700;
+}
+
+.inmail-message--header-all-body{
+    font-family: monospace;
+    white-space: pre;
+}
+
+.inmail--view-mode-teaser .inmail-message--body-plain {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

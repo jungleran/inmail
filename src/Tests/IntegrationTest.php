@@ -84,16 +84,22 @@ class IntegrationTest extends WebTestBase {
     // Test "full" view mode of Inmail message element.
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
     $this->assertText('Email display');
-    $this->assertText('Received: ' . $message->getReceivedDate());
-    $this->assertText('From: ' . htmlspecialchars($message->getFrom()));
-    $this->assertText('To: ' . htmlspecialchars(implode(', ', $message->getTo())));
+    // @todo Introduce assert helper for fields + body.
+    $this->assertText('Received');
+    $this->assertText($message->getReceivedDate());
+    $this->assertText('From');
+    $this->assertText(htmlspecialchars($message->getFrom()));
+    $this->assertText('To');
+    $this->assertText(htmlspecialchars(implode(', ', $message->getTo())));
     // Assert message parts.
     $this->assertText('plain');
     $this->assertText('html');
-    $this->assertText('Header: ' . $message->getPart(0)->getHeader()->toString());
-    $this->assertText('Body: ' . $message->getPart(0)->getDecodedBody());
-    $this->assertText('Header: ' . $message->getPart(1)->getHeader()->toString());
-    $this->assertText('Body: ' . htmlspecialchars($message->getPart(1)->getDecodedBody()));
+    $this->assertText('Header');
+    $this->assertText($message->getPart(0)->getHeader()->toString());
+    $this->assertText($message->getPart(0)->getDecodedBody());
+    $this->assertText('Header');
+    $this->assertText($message->getPart(1)->getHeader()->toString());
+    $this->assertText(htmlspecialchars($message->getPart(1)->getDecodedBody()));
 
     // Testing the access to past event created by non-inmail module.
     // @see \Drupal\inmail_test\Controller\EmailDisplayController.

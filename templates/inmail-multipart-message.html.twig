@@ -16,22 +16,40 @@
 {{ attach_library('inmail/message') }}
 
 {% if view_mode == 'teaser' %}
-    {# @todo: Discuss the teaser mode. #}
-    <section class="message-header">
-        <div class="message-header__from">{{ message.from }}</div>
-        <div class="message-header__subject">{{ message.subject }}</div>
-        <div class="message-header__received-date">{{ message.getReceivedDate() }}</div>
+    <section class="inmail-message inmail--view-mode-teaser">
+        <header>
+            <div class="inmail-message--header-from">{{ message.from }}</div>
+            <div class="inmail-message--header-subject">{{ message.subject }}</div>
+            <div class="inmail-message--header-received-date">{{ message.getReceivedDate() }}</div>
+        </header>
+        <div class="inmail-message--body-plain">{{ message.getPlainText() | slice(0, 1000) }}</div>
     </section>
-    <p class="truncate_mail">{{ message.getPlainText() | slice(0, 1000) }}</p>
 {% endif %}
 {% if view_mode == 'full' %}
-    <div>
-        {# @todo: Loop over header fields #}
-        <p><strong>Header:</strong> {{ message.header.toString() }}</p>
-
-        <p><strong>Received:</strong> {{ message.getReceivedDate() }}</p>
-        <p><strong>From:</strong> {{ message.from }}</p>
-        <p><strong>To:</strong> {{ message.getTo | join(', ') }}</p>
-        <p><strong>Subject:</strong> {{ message.subject }}</p>
-    </div>
+    <section class="inmail-message inmail--view-mode-full">
+        <header>
+            <div class="inmail-message--header-from">
+                <div class="inmail-message--header-label">From</div>
+                {{ message.from }}
+            </div>
+            <div class="inmail-message--header-to">
+                <div class="inmail-message--header-label">To</div>
+                {{ message.getTo | join(', ') }}
+            </div>
+            <div class="inmail-message--header-received-date">
+                <div class="inmail-message--header-label">Received</div>
+                {{ message.getReceivedDate() }}
+            </div>
+            <div class="inmail-message--header-subject">
+                <div class="inmail-message--header-label">Subject</div>
+                {{ message.subject }}
+            </div>
+            <div class="inmail-message--header-all">
+                <div class="inmail-message--header-label">All Headers</div>
+                {{ message.header.toString() }}
+            </div>
+            {# Use getPlainText() after https://www.drupal.org/node/2405069. #}
+        </header>
+        <div class="inmail-message--body">{{ message.getDecodedBody() }}</div>
+    </section>
 {% endif %}
