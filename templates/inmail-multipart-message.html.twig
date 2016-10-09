@@ -12,21 +12,8 @@
  * @ingroup themeable
  */
 #}
-<style>
-    .message-header {
-        display: -webkit-flex;
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .message-header__from, .message-header__subject, .message-header__received-date {
-        margin: 10px;
-    }
-    .truncate_mail {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-</style>
+
+{{ attach_library('inmail/message') }}
 
 {% if view_mode == 'teaser' %}
     {# @todo: Discuss the teaser mode. #}
