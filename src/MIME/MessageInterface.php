@@ -32,18 +32,6 @@ interface MessageInterface extends EntityInterface {
   public function getSubject();
 
   /**
-   * Returns the message recipient.
-   *
-   * @param bool $decode
-   *   Optional value to indicate if header is in punycode form.
-   *
-   * @return string|null
-   *   The content of the 'To' header field, or null if that field does not
-   *   exist.
-   */
-  public function getTo($decode = FALSE);
-
-  /**
    * Returns the message sender.
    *
    * @param bool $decode
@@ -56,6 +44,18 @@ interface MessageInterface extends EntityInterface {
   public function getFrom($decode = FALSE);
 
   /**
+   * Returns the message recipient.
+   *
+   * @param bool $decode
+   *   Optional value to indicate if header is in punycode form.
+   *
+   * @return string|null
+   *   The content of the 'To' header field, or null if that field does not
+   *   exist.
+   */
+  public function getTo($decode = FALSE);
+
+  /**
    * Returns the date when the message was received by the recipient.
    *
    * @return \Drupal\Component\DateTime\DateTimePlus
@@ -64,7 +64,7 @@ interface MessageInterface extends EntityInterface {
   public function getReceivedDate();
 
   /**
-   * Helper method to extract plaintext representation of body.
+   * Extracts plaintext representation of body.
    *
    * @return string
    *   Resulting plain texts of body, otherwise empty string.

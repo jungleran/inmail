@@ -38,18 +38,6 @@ class MessageTest extends UnitTestCase {
   }
 
   /**
-   * Tests the recipient getter.
-   *
-   * @covers ::getTo
-   */
-  public function testGetTo() {
-    $message = new Message(new Header([['name' => 'To', 'body' => 'Foo']]), 'Bar');
-    $this->assertEquals('Foo', $message->getTo());
-    $message = new Message(new Header([['name' => 'To', 'body' => 'helloWorld@xn--xample-9ua.com']]), 'Bar');
-    $this->assertEquals('helloWorld@éxample.com', $message->getTo(TRUE));
-  }
-
-  /**
    * Tests the sender getter.
    *
    * @covers ::getFrom
@@ -59,6 +47,18 @@ class MessageTest extends UnitTestCase {
     $this->assertEquals('Foo', $message->getFrom());
     $message = new Message(new Header([['name' => 'From', 'body' => 'fooBar@xn--oak-ppa56b.ba']]), 'Bar');
     $this->assertEquals('fooBar@ćošak.ba', $message->getFrom(TRUE));
+  }
+
+  /**
+   * Tests the recipient getter.
+   *
+   * @covers ::getTo
+   */
+  public function testGetTo() {
+    $message = new Message(new Header([['name' => 'To', 'body' => 'Foo']]), 'Bar');
+    $this->assertEquals('Foo', $message->getTo());
+    $message = new Message(new Header([['name' => 'To', 'body' => 'helloWorld@xn--xample-9ua.com']]), 'Bar');
+    $this->assertEquals('helloWorld@éxample.com', $message->getTo(TRUE));
   }
 
   /**
