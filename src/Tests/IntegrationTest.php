@@ -77,6 +77,8 @@ class IntegrationTest extends WebTestBase {
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
     $this->assertText('Email display');
     $this->assertRaw(htmlspecialchars($message->getFrom()));
+    $this->assertRaw(htmlspecialchars($message->getTo()[0]));
+    $this->assertRaw(htmlspecialchars($message->getCc()[0]));
     $this->assertRaw(htmlspecialchars($message->getSubject()));
     $this->assertRaw(htmlspecialchars($message->getReceivedDate()));
     $this->assertText(htmlspecialchars($message->getPlainText(), ENT_QUOTES, 'UTF-8'));
@@ -91,6 +93,8 @@ class IntegrationTest extends WebTestBase {
     $this->assertText(htmlspecialchars($message->getFrom()));
     $this->assertText('To');
     $this->assertText(htmlspecialchars(implode(', ', $message->getTo())));
+    $this->assertText('Cc');
+    $this->assertText(htmlspecialchars(implode(', ', $message->getCc())));
     // Assert message parts.
     $this->assertText('plain');
     $this->assertText('html');
@@ -100,6 +104,20 @@ class IntegrationTest extends WebTestBase {
     $this->assertText('Header');
     $this->assertText($message->getPart(1)->getHeader()->toString());
     $this->assertText(htmlspecialchars($message->getPart(1)->getDecodedBody()));
+
+    // By RFC 2822, To header field is not necessary.
+    // Load simple malformed message.
+    $regular = drupal_get_path('module', 'inmail_test') . '/eml/missing-to-field.eml';
+    $raw = file_get_contents(DRUPAL_ROOT . '/' . $regular);
+    $processor->process('unique_key', $raw, DelivererConfig::create(['id' => 'test']));
+    $event = $this->getLastEventByMachinename('process');
+    $this->assertEqual($event->getArgument('email')->getData(), $raw);
+    $message = $parser->parseMessage($raw);
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    $this->assertText('Email display');
+    $this->assertNoText('To');
+    // @todo properly assert message fields.
+    //$this->assertNoField('To', 'There is no To header field');
 
     // Testing the access to past event created by non-inmail module.
     // @see \Drupal\inmail_test\Controller\EmailDisplayController.

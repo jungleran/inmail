@@ -48,7 +48,7 @@ interface MessageInterface extends EntityInterface {
    * @param bool $decode
    *   Optional value to indicate if header is in punycode form.
    *
-   * @return string[]
+   * @return string[]|null
    *   List of 'To' recipient addresses.
    */
   public function getTo($decode = FALSE);
@@ -59,7 +59,7 @@ interface MessageInterface extends EntityInterface {
    * @param bool $decode
    *   Optional value to indicate if header is in punycode form.
    *
-   * @return string[]
+   * @return string[]|null
    *   List of 'Cc' recipient addresses.
    */
   public function getCc($decode = FALSE);

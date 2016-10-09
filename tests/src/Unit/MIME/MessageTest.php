@@ -64,7 +64,7 @@ class MessageTest extends UnitTestCase {
     // Empty recipient.
     $message = new Message(new Header([[]]), 'I am a body');
     $cc_field = $message->getCC();
-    $this->assertEquals([NULL], $cc_field);
+    $this->assertEquals(NULL, $cc_field);
 
     // Single recipient address.
     $message = new Message(new Header([['name' => 'To', 'body' => 'Foo']]), 'Bar');
@@ -94,7 +94,7 @@ class MessageTest extends UnitTestCase {
     // Empty recipient.
     $message = new Message(new Header([[]]), 'I am a body');
     $cc_field = $message->getCC();
-    $this->assertEquals([NULL], $cc_field);
+    $this->assertEquals(NULL, $cc_field);
 
     // Single recipient address.
     $message = new Message(new Header([['name' => 'Cc', 'body' => 'sunshine@example.com']]), 'I am a body');

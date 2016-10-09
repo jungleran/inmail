@@ -1,0 +1,8 @@
+MIME-Version: 1.0
+Received: by 10.194.188.75 with HTTP; Tue, 4 Oct 2016 02:21:01 -0700 (PDT)
+Message-Id: <dovecot-sieve-1425425088-363907-0@s482.loopia.se>
+Date: Tue, 21 Oct 2014 11:21:01 +0200
+Subject: Valid message with missing to header
+From: User <user@example.com>
+
+This is fully valid message that is missing 'to' header field.

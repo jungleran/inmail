@@ -19,6 +19,12 @@
     <section class="inmail-message inmail--view-mode-teaser">
         <header>
             <div class="inmail-message--header-from">{{ message.from }}</div>
+            {% if message.getTo is not empty %}
+                <div class="inmail-message--header-to">{{ message.getTo | join(', ') }}</div>
+            {% endif %}
+            {% if message.getCc is not empty %}
+                <div class="inmail-message--header-cc">{{ message.getCc | join(', ') }}</div>
+            {% endif %}
             <div class="inmail-message--header-subject">{{ message.subject }}</div>
             <div class="inmail-message--header-received-date">{{ message.getReceivedDate() }}</div>
         </header>
@@ -32,10 +38,18 @@
                 <div class="inmail-message--header-label">From</div>
                 {{ message.from }}
             </div>
-            <div class="inmail-message--header-to">
-                <div class="inmail-message--header-label">To</div>
-                {{ message.getTo | join(', ') }}
-            </div>
+            {% if message.getTo is not empty %}
+                <div class="inmail-message--header-to">
+                    <div class="inmail-message--header-label">To</div>
+                    {{ message.getTo | join(', ') }}
+                </div>
+            {% endif %}
+            {% if message.getCc is not empty %}
+                <div class="inmail-message--header-cc">
+                    <div class="inmail-message--header-label">CC</div>
+                    {{ message.getCc | join(', ') }}
+                </div>
+            {% endif %}
             <div class="inmail-message--header-received-date">
                 <div class="inmail-message--header-label">Received</div>
                 {{ message.getReceivedDate() }}

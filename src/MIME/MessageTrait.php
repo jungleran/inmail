@@ -65,7 +65,7 @@ trait MessageTrait {
     if ($decode) {
       $body = $this->getDecodedAddress($body);
     }
-    return [$body];
+    return $body ? [$body] : NULL;
   }
 
   /**
@@ -79,7 +79,7 @@ trait MessageTrait {
     if ($decode) {
       $body = $this->getDecodedAddress($body);
     }
-    return [$body];
+    return $body ? [$body] : NULL;
   }
 
 }

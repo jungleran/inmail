@@ -47,7 +47,7 @@ class CollectHandler extends HandlerBase {
   public function invoke(MessageInterface $message, ProcessorResultInterface $processor_result) {
     // For successful processing, a message needs to follow the standards.
     // Some aspects are critical. Check them and cancel otherwise and log.
-    if (!$message->getReceivedDate() || !$message->getFrom() || !$message->getTo() || $message->getSubject() === NULL) {
+    if (!$message->getReceivedDate() || !$message->getFrom() || $message->getSubject() === NULL) {
       \Drupal::logger('inmail')->info('Not creating container from message missing necessary header fields.');
       return;
     }
