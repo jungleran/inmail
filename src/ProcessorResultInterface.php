@@ -51,13 +51,14 @@ interface ProcessorResultInterface {
    * Returns an analyzer result instance.
    *
    * @param string $topic
-   *   The identifier for the analyzer result object.
+   *   (optional) The topic identifier for the analyzer result object.
+   *   Default to the default analyzer result's topic.
    *
    * @return \Drupal\inmail\AnalyzerResultInterface
    *   The analyzer result object. If no result object has yet been added for
    *   the given key, this returns NULL.
    */
-  public function getAnalyzerResult($topic);
+  public function getAnalyzerResult($topic = DefaultAnalyzerResult::TOPIC);
 
   /**
    * Returns all analyzer results.
@@ -66,8 +67,6 @@ interface ProcessorResultInterface {
    *   A list of analyzer results.
    */
   public function getAnalyzerResults();
-
-
 
   /**
    * Add a log message to the processing logger.
