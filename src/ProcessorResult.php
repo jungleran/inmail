@@ -111,9 +111,8 @@ class ProcessorResult implements ProcessorResultInterface {
   public function success($key) {
     $deliverer = $this->getDeliverer();
     try {
-      // Set the state in order to check later that success functions is called.
-      \Drupal::state()->set('inmail.test.success', $key);
-      $deliverer->getPluginInstance()->success($key);
+      $plugin = $deliverer->getPluginInstance();
+      $plugin->success($key);
     }
     catch (PluginNotFoundException $e) {
       // There is no plugin.

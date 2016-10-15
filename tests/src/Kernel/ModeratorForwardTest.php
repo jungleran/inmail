@@ -5,6 +5,8 @@ namespace Drupal\Tests\inmail\Kernel;
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
+use Drupal\inmail\Tests\DelivererTestTrait;
+use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
@@ -13,7 +15,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @group inmail
  */
 class ModeratorForwardTest extends KernelTestBase {
-  use AssertMailTrait;
+  use AssertMailTrait, DelivererTestTrait;
 
   /**
    * Modules to install.
@@ -48,10 +50,10 @@ class ModeratorForwardTest extends KernelTestBase {
 
     // Do not handle if message is bounce.
     // Reset the state to be sure that function is called in the test.
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', $bounce, DelivererConfig::create(array('id' => 'test')));
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $bounce, $this->createTestDeliverer());
     // Message passed all tests, parsings and thus success is called.
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+    $this->assertSuccess('unique_key');
     $this->assertMailCount(0);
 
     // Do not handle if moderator address is unset.
@@ -59,9 +61,9 @@ class ModeratorForwardTest extends KernelTestBase {
     $handler_config = HandlerConfig::load('moderator_forward');
     $this->assertEqual($handler_config->getConfiguration()['moderator'], '');
     // Reset the state since in previous call it is set.
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', $regular, DelivererConfig::create(array('id' => 'test')));
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $regular, $this->createTestDeliverer());
+    $this->assertSuccess('unique_key');
     $this->assertMailCount(0);
 
     // Do not handle, and log an error, if moderator address is same as intended
@@ -69,9 +71,9 @@ class ModeratorForwardTest extends KernelTestBase {
     $handler_config->setConfiguration(array('moderator' => 'user@example.org'))->save();
     // Forge a mail where we recognize recipient but not status.
     $bounce_no_status = str_replace('Status:', 'Foo:', $bounce);
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', $bounce_no_status, DelivererConfig::create(array('id' => 'test')));
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $bounce_no_status, $this->createTestDeliverer());
+    $this->assertSuccess('unique_key');
     $this->assertMailCount(0);
 
     // Check the Past event created by the processor.
@@ -88,9 +90,9 @@ class ModeratorForwardTest extends KernelTestBase {
     // do not forward it again. It triggers function invoke().
     $handler_config->setConfiguration(array('moderator' => 'moderator@example.com'))->save();
     $regular_x = "X-Inmail-Forwarded: ModeratorForwardTest\n" . $regular;
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', $regular_x, DelivererConfig::create(array('id' => 'test')));
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $regular_x, $this->createTestDeliverer());
+    $this->assertSuccess('unique_key');
     $this->assertMailCount(0);
 
     // Again check past event log.
@@ -102,9 +104,9 @@ class ModeratorForwardTest extends KernelTestBase {
     $this->assertEqual($moderator_message, 'Refused to forward the same email twice (<em class="placeholder">BMH testing sample</em>).');
 
     // Forward non-bounces if conditions are right.
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', $regular, DelivererConfig::create(array('id' => 'test')));
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $regular, $this->createTestDeliverer());
+    $this->assertSuccess('unique_key');
     $this->assertMailCount(1);
   }
 
@@ -124,9 +126,9 @@ class ModeratorForwardTest extends KernelTestBase {
       ->save();
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key',$original, DelivererConfig::create(array('id' => 'test')));
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $original, $this->createTestDeliverer());
+    $this->assertSuccess('unique_key');
     $messages = $this->getMails(['id' => 'inmail_handler_moderator_forward']);
     $forward = array_pop($messages);
 
@@ -138,7 +140,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $expected_headers = $original_parsed->getHeader()->toString();
     $expected_headers = str_replace("To: Arild Matsson <inmail_test@example.com>\n", '', $expected_headers);
     // Extract the time from original message and append it.
-    $received_header = "Received: via: inmail  with:  test id:\n <CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.gmail.com>;" . substr($forward['received'], strpos($forward['received'], ';')+1) . "\n";
+    $received_header = "Received: via: inmail  with: test_deliverer test id:\n <CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.gmail.com>;" . substr($forward['received'], strpos($forward['received'], ';')+1) . "\n";
     // Wrap the received header to 78 characters.
     $expected_headers = $forward_header . wordwrap($received_header, 78, "\n ") . $expected_headers;
     // Wrap to 78 characters to match original message.

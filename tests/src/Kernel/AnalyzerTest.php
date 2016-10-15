@@ -7,6 +7,8 @@ use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
+use Drupal\inmail\Tests\DelivererTestTrait;
+use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\KernelTests\KernelTestBase;
 
@@ -16,6 +18,8 @@ use Drupal\KernelTests\KernelTestBase;
  * @group inmail
  */
 class AnalyzerTest extends KernelTestBase {
+
+  use DelivererTestTrait;
 
   /**
    * Modules to enable.
@@ -78,10 +82,10 @@ EOF;
     AnalyzerConfig::create(['id' => 'test_analyzer', 'plugin' => 'test_analyzer'])->save();
     HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
     // Reset the state to be sure that function is called in the test.
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $raw, $this->createTestDeliverer());
     // Assert that success function is called.
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+    $this->assertSuccess('unique_key');
 
     $processor_result = ResultKeeperHandler::getResult();
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */

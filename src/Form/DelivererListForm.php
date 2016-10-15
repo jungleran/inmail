@@ -86,7 +86,6 @@ class DelivererListForm extends FormBase {
       // Update plugin.
       if ($deliverer instanceof FetcherInterface && $deliverer->isAvailable()) {
         $deliverer->update();
-        $deliverer->setLastCheckedTime(REQUEST_TIME);
         $fetchers_count++;
       }
     }
@@ -122,7 +121,7 @@ class DelivererListForm extends FormBase {
         $processed_count += count($raws);
 
         // No more messages to process for specific deliverer?
-        if ($deliverer->getPluginInstance()->getCountUnprocessedMessages() != 0) {
+        if ($deliverer->getPluginInstance()->getUnprocessedCount() != 0) {
           // @todo This message could be repeating.
           drupal_set_message(t('There are more messages to process.'));
         }

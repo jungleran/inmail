@@ -8,6 +8,7 @@ use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -59,7 +60,9 @@ class DelivererListBuilder extends ConfigEntityListBuilder {
   public function buildHeader() {
     $row['label'] = $this->t('Deliverer');
     $row['plugin'] = $this->t('Plugin');
-    $row['count'] = $this->t('Unprocessed');
+    $row['processed_count'] = $this->t('Processed');
+    $row['unprocessed_count'] = $this->t('Unprocessed');
+    $row['total_count'] = $this->t('Total');
     $row['last_checked'] = $this->t('Last checked');
     return $row + parent::buildHeader();
   }
@@ -72,7 +75,9 @@ class DelivererListBuilder extends ConfigEntityListBuilder {
     $row['label'] = $this->getLabel($entity);
     // @todo Replace with calculateDependencies(), https://www.drupal.org/node/2379929
     $row['plugin'] = $this->t('Plugin missing');
-    $row['count'] = NULL;
+    $row['processed_count'] = NULL;
+    $row['unprocessed_count'] = NULL;
+    $row['total_count'] = NULL;
     $row['last_checked'] = NULL;
 
     // Conditionally override values for some columns.
@@ -80,12 +85,15 @@ class DelivererListBuilder extends ConfigEntityListBuilder {
     $plugin_id = $entity->getPluginId();
     if ($this->delivererManager->hasDefinition($plugin_id)) {
       $row['plugin'] = $this->delivererManager->getDefinition($plugin_id)['label'];
+      /** @var DelivererInterface $plugin */
       $plugin = $this->delivererManager->createInstance($plugin_id, $entity->getConfiguration());
+
+      $row['processed_count'] = $plugin->getProcessedCount();
 
       if ($plugin instanceof FetcherInterface) {
         // Set the "Remaining messages" count.
-        $count = $plugin->getCountUnprocessedMessages();
-        $row['count'] = isset($count) ? $count : $this->t('Unknown');
+        $row['unprocessed_count'] = $plugin->getUnprocessedCount();
+        $row['total_count'] = $plugin->getTotalCount();
 
         // Set the relative time of last check.
         if ($last_checked = $plugin->getLastCheckedTime()) {

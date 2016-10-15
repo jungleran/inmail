@@ -34,7 +34,7 @@ class CountingBounces extends BounceSendstateBase {
     $display['label'] = array(
       '#markup' => $this->t($this->getThreshold() ? '@label (@count of @threshold received)' : '@label (@count received, no threshold set)', array(
         '@label' => $this->getPluginDefinition()['label'],
-        '@count' => $this->getCountUnprocessedMessages(),
+        '@count' => $this->getUnprocessedCount(),
         '@threshold' => $this->getThreshold(),
       )),
     );
@@ -48,7 +48,7 @@ class CountingBounces extends BounceSendstateBase {
    * @return int
    *   The number of received bounces.
    */
-  public function getCountUnprocessedMessages() {
+  public function getUnprocessedCount() {
     return isset($this->configuration['count']) ? $this->configuration['count'] : 0;
   }
 
@@ -66,7 +66,7 @@ class CountingBounces extends BounceSendstateBase {
    * Increment the current count of received bounces by 1.
    */
   public function increment() {
-    $this->setCount($this->getCountUnprocessedMessages() + 1);
+    $this->setCount($this->getUnprocessedCount() + 1);
   }
 
   /**

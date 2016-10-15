@@ -7,8 +7,11 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Base class for mail fetchers.
  *
- * This provides dumb implementations for most methods, but leaves ::fetchUnprocessedMessages() and
- * some configuration methods abstract.
+ * This provides dumb implementations for most methods, but leaves
+ * ::update() and ::fetchUnprocessedMessages() abstract.
+ *
+ * A fetcher additionally needs to implement ::buildConfigurationForm to offer
+ * settings to configure the connection.
  *
  * @ingroup deliverer
  */
@@ -28,15 +31,25 @@ abstract class FetcherBase extends DelivererBase implements FetcherInterface {
    * @param int $count
    *   The number of remaining messages.
    */
-  protected function setCount($count) {
-    \Drupal::state()->set($this->makeStateKey('remaining'), $count);
+  public function setUnprocessedCount($count) {
+    \Drupal::state()->set($this->makeStateKey('unprocessed_count'), $count);
+  }
+
+  /**
+   * Update the total number of messages.
+   *
+   * @param int $count
+   *   Total number of messages.
+   */
+  protected function setTotalCount($count) {
+    \Drupal::state()->set($this->makeStateKey('total_count'), $count);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getCountUnprocessedMessages() {
-    return \Drupal::state()->get($this->makeStateKey('remaining'));
+  public function getUnprocessedCount() {
+    return \Drupal::state()->get($this->makeStateKey('unprocessed_count'));
   }
 
   /**
@@ -44,6 +57,13 @@ abstract class FetcherBase extends DelivererBase implements FetcherInterface {
    */
   public function setLastCheckedTime($timestamp) {
     \Drupal::state()->set($this->makeStateKey('last_checked'), $timestamp);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTotalCount() {
+    return \Drupal::state()->get($this->makeStateKey('total_count'));
   }
 
   /**
@@ -57,65 +77,19 @@ abstract class FetcherBase extends DelivererBase implements FetcherInterface {
    * {@inheritdoc}
    */
   public function getLastCheckedTime() {
-    $config_id = $this->getConfiguration()['config_id'];
     return \Drupal::state()->get($this->makeStateKey('last_checked'));
-  }
-
-  /**
-   * Returns a state key appropriate for the given state property.
-   *
-   * @param string $key
-   *   Name of key.
-   *
-   * @return string
-   *   An appropriate name for a state property of the deliverer config
-   *   associated with this fetcher.
-   */
-  protected function makeStateKey($key) {
-    $config_id = $this->getConfiguration()['config_id'];
-    return "inmail.deliverer.$config_id.$key";
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function calculateDependencies() {
-    return array();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getConfiguration() {
-    return $this->configuration;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setConfiguration(array $configuration) {
-    $this->configuration = $configuration + $this->defaultConfiguration();
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
-    // No validation by default.
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
-    /** @var \Drupal\Core\Entity\EntityForm $form_object */
-    $form_object = $form_state->getFormObject();
-    $this->configuration['config_id'] = $form_object->getEntity()->id();
+    parent::submitConfigurationForm($form, $form_state);
 
     // Reset state.
     $this->setLastCheckedTime(NULL);
-    $this->setCount(NULL);
+    $this->setUnprocessedCount(NULL);
+    $this->setTotalCount(NULL);
   }
 
   /**

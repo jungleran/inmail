@@ -6,4 +6,5 @@ dependencies:
 id: paste
 label: Paste
 plugin: paste
-configuration: {  }
+configuration:
+  config_id: paste

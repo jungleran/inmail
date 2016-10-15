@@ -4,9 +4,8 @@ namespace Drupal\inmail_test\Plugin\inmail\Deliverer;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\State\StateInterface;
-use Drupal\inmail\Plugin\inmail\Deliverer\DelivererBase;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherBase;
+use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -14,22 +13,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @Deliverer(
  *   id = "test_fetcher",
- *   label = @Translation("Test")
+ *   label = @Translation("Test Fetcher")
  * )
  */
-class TestFetcher extends FetcherBase implements ContainerFactoryPluginInterface {
+class TestFetcher extends FetcherBase {
 
-  /**
-   * Injected site state.
-   *
-   * The following state keys are used with the test deliverer:
-   *   - inmail.test.deliver_count: Number of times that fetchUnprocessedMessages() has been
-   *     invoked.
-   *   - inmail.test.deliver_remaining: Cached number of remaining messages.
-   *
-   * @var \Drupal\Core\State\StateInterface
-   */
-  protected $state;
+  use TestDelivererTrait;
 
   /**
    * The number of remaining messages.
@@ -42,97 +31,52 @@ class TestFetcher extends FetcherBase implements ContainerFactoryPluginInterface
   protected static $remaining = 100;
 
   /**
-   * The Unix timestamp of the last check.
-   *
-   * @var int
-   */
-  protected static $last_checked;
-
-  /**
    * Constructs a TestFetcher.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, StateInterface $state) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->state = $state;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static($configuration, $plugin_id, $plugin_definition, $container->get('state'));
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function fetchUnprocessedMessages() {
-    // Increment invocation count.
-    $count = $this->state->get('inmail.test.deliver_count') + 1;
-    $this->state->set('inmail.test.deliver_count', $count);
-
-    // Decrement the remaining counter.
-    static::$remaining--;
-
-    // Message must be valid, so it can pass all validations and trigger
-    // some functions (i.e. success()).
-    return array("From: FooBar\nReceived: Tue, 23 Aug 2016 17:48:6 +0600\nSubject: Dummy message $count\n\nMessage Body");
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getCountUnprocessedMessages() {
-    return $this->state->get('inmail.test.deliver_remaining');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function update() {
-    $this->state->set('inmail.test.deliver_remaining', static::$remaining);
-    $this->setLastCheckedTime(REQUEST_TIME);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setLastCheckedTime($timestamp) {
-    static::$last_checked = $timestamp;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getLastCheckedTime() {
-    return static::$last_checked;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function defaultConfiguration() {
-    return array();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
   }
 
   /**
    * {@inheritdoc}
    */
   public function success($key) {
+    parent::success($key);
+
     \Drupal::state()->set('inmail.test.success', $key);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function fetchUnprocessedMessages() {
+    $time = \Drupal::time()->getCurrentTime();
+
+    // Decrement the remaining counter.
+    static::$remaining--;
+
+    $this->setTotalCount(200);
+    // Save number of unread messages.
+    $this->setUnprocessedCount(static::$remaining);
+    $this->setLastCheckedTime($time);
+
+    // Message must be valid, so it can pass all validations and trigger
+    // some functions (i.e. success()).
+    return [
+      "From: FooBar\nReceived: Tue, 23 Aug 2016 17:48:6 +0600\nSubject: Dummy message\n\nMessage Body"
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function update() {
+    $time = \Drupal::time()->getCurrentTime();
+
+    $this->setTotalCount(250);
+
+    $this->setUnprocessedCount(static::$remaining);
+    $this->setLastCheckedTime($time);
   }
 
 }

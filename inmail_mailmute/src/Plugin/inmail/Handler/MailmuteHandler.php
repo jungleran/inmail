@@ -118,7 +118,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
       $state->increment();
 
       // If the threshold is reached, start muting.
-      if ($state->getThreshold() && $state->getCountUnprocessedMessages() >= $state->getThreshold()) {
+      if ($state->getThreshold() && $state->getUnprocessedCount() >= $state->getThreshold()) {
         $this->sendstateManager->transition($address, 'inmail_temporarily_unreachable', $state_configuration);
         $processor_result->log('MailmuteHandler', 'Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_temporarily_unreachable']);
       }

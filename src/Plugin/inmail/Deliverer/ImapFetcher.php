@@ -66,20 +66,22 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    */
   public function fetchUnprocessedMessages() {
     return $this->doImap(function($imap_stream) {
+      // Capture current timestamp, not the request starting time.
+      $time = \Drupal::time()->getCurrentTime();
       // Find IDs of unread messages.
       // @todo Introduce options for message selection, https://www.drupal.org/node/2405767
-      $unread_ids = imap_search($imap_stream, 'UNSEEN') ?: array();
+      $unread_ids = $this->doImapSearch($imap_stream, 'UNSEEN');
       $batch_ids = array_splice($unread_ids, 0, \Drupal::config('inmail.settings')->get('batch_size'));
 
       // Get the header + body of each message.
       $raws = array();
       foreach ($batch_ids as $unread_id) {
-        $raws[] = imap_fetchheader($imap_stream, $unread_id) . imap_body($imap_stream, $unread_id);
+        $raws[$unread_id] = imap_fetchheader($imap_stream, $unread_id) . imap_body($imap_stream, $unread_id);
       }
 
       // Save number of unread messages.
-      $this->setCount(count($unread_ids));
-      $this->setLastCheckedTime(REQUEST_TIME);
+      $this->setUnprocessedCount(count($unread_ids));
+      $this->setLastCheckedTime($time);
 
       return $raws;
     }) ?: array();
@@ -102,6 +104,9 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
         imap_delete($imap_stream, $this->message_id);
         // Delete all messages marked for deletion.
         imap_expunge($imap_stream);
+        $unread_ids = $this->doImapSearch($imap_stream, 'UNSEEN');
+        $read_ids = $this->doImapSearch($imap_stream, 'SEEN');
+        $this->setTotalCount(count($unread_ids) + count($read_ids));
       });
     }
   }
@@ -110,6 +115,8 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function success($key) {
+    parent::success($key);
+
     $this->deleteMessage($key);
   }
 
@@ -118,8 +125,10 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    */
   public function update() {
     $this->doImap(function($imap_stream) {
-      $unread_ids = imap_search($imap_stream, 'UNSEEN') ?: array();
-      $this->setCount(count($unread_ids));
+      $unread_ids = $this->doImapSearch($imap_stream, 'UNSEEN');
+      $this->setUnprocessedCount(count($unread_ids));
+      $read_ids = $this->doImapSearch($imap_stream, 'SEEN');
+      $this->setTotalCount(count($unread_ids) + count($read_ids));
       $this->setLastCheckedTime(REQUEST_TIME);
     });
   }
@@ -174,6 +183,22 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
     // Close connection.
     imap_close($imap_res);
     return $return;
+  }
+
+  /**
+   * Performs an IMAP Search with empty handling.
+   *
+   * @param $imap_res
+   *   IMAP connection.
+   * @param string $type
+   *   Type of message, e.g. 'UNSEEN' or 'SEEN'.
+   *
+   * @return array
+   *   The found ids of messages.
+   */
+  public function doImapSearch($imap_res, $type) {
+    $result = imap_search($imap_res, $type);
+    return $result ?: [];
   }
 
   /**

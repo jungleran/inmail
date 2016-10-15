@@ -80,6 +80,7 @@ class InmailWebTest extends WebTestBase {
     // Check Deliverer list.
     $this->assertUrl('admin/config/system/inmail/deliverers');
     $this->assertText('There is no Mail deliverer yet.');
+    $this->assertText('Total');
 
     // Add an IMAP fetcher.
     $this->clickLink('Add deliverer');
@@ -139,19 +140,32 @@ class InmailWebTest extends WebTestBase {
     $this->drupalPostForm(NULL, array(), 'Delete');
     $this->assertText('There is no Mail deliverer yet.');
     // Add test fetcher.
+    $this->drupalGet('admin/config/system/inmail/deliverers/add');
     $edit = array(
       'label' => 'Test Test Fetcher',
       'id' => 'test_test',
       'plugin' => 'test_fetcher',
     );
-    $this->drupalPostAjaxForm('admin/config/system/inmail/deliverers/add', $edit, 'plugin');
+    $this->drupalPostAjaxForm(NULL, $edit, 'plugin');
     $this->drupalPostForm(NULL, $edit, 'Save');
     $overview_count_xpath = '//td[text()="100"]';
     $this->assertNoFieldByXPath($overview_count_xpath);
     $this->assertFieldById('edit-process-button');
+    $this->assertFieldByXPath('//table/tbody/tr/td[5]', '');
+    $this->drupalPostForm(NULL, array(), 'Check fetcher status');
+    $this->assertFieldByXPath('//table/tbody/tr/td[3]', '');
+    $this->assertFieldByXPath('//table/tbody/tr/td[4]', 100);
+    $this->assertFieldByXPath('//table/tbody/tr/td[5]', 250);
+    $this->assertText('Fetcher state info has been updated.');
     $this->drupalPostForm(NULL, array(), 'Process fetchers');
+    $this->assertFieldByXPath('//table/tbody/tr/td[3]', '1');
+    $this->assertFieldByXPath('//table/tbody/tr/td[4]', 99);
+    $this->assertFieldByXPath('//table/tbody/tr/td[5]', 200);
     $this->assertText('Processed 1 messages by Test Test Fetcher.');
     $this->drupalPostForm(NULL, array(), 'Check fetcher status');
+    $this->assertFieldByXPath('//table/tbody/tr/td[3]', '1');
+    $this->assertFieldByXPath('//table/tbody/tr/td[4]', 100);
+    $this->assertFieldByXPath('//table/tbody/tr/td[5]', 250);
     $this->assertText('Fetcher state info has been updated.');
     $this->assertFieldByXPath($overview_count_xpath);
   }

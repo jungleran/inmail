@@ -29,7 +29,12 @@ class InmailDemoTest extends WebTestBase {
    */
   public function setUp() {
     parent::setUp();
-    HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
+    $deliverer_config = HandlerConfig::create([
+      'id' => 'result_keeper',
+      'plugin' => 'result_keeper',
+    ]);
+    $deliverer_config->save();
+
     $this->drupalPlaceBlock('local_tasks_block');
   }
 

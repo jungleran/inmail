@@ -3,6 +3,7 @@
 namespace Drupal\inmail\Tests;
 
 use Drupal\inmail\Entity\DelivererConfig;
+use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -11,6 +12,8 @@ use Drupal\simpletest\WebTestBase;
  * @group inmail
  */
 class IntegrationTest extends WebTestBase {
+
+  use DelivererTestTrait;
 
   /**
    * Modules to enable.
@@ -60,9 +63,9 @@ class IntegrationTest extends WebTestBase {
     // script or a mail deliverer.
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
-    \Drupal::state()->set('inmail.test.success', '');
+    TestDeliverer::resetSuccess();
     // Process the raw multipart mail message.
-    $processor->process('unique_key', $raw_multipart, DelivererConfig::create(['id' => 'test']));
+    $processor->process('unique_key', $raw_multipart, $this->createTestDeliverer());
 
     // Assert the raw message was logged.
     /** @var \Drupal\past\PastEventInterface $event */
@@ -109,7 +112,7 @@ class IntegrationTest extends WebTestBase {
     // Load simple malformed message.
     $regular = drupal_get_path('module', 'inmail_test') . '/eml/missing-to-field.eml';
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $regular);
-    $processor->process('unique_key', $raw, DelivererConfig::create(['id' => 'test']));
+    $processor->process('unique_key', $raw, $this->createTestDeliverer());
     $event = $this->getLastEventByMachinename('process');
     $this->assertEqual($event->getArgument('email')->getData(), $raw);
     $message = $parser->parseMessage($raw);
@@ -162,9 +165,9 @@ class IntegrationTest extends WebTestBase {
     // script or a mail deliverer.
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $raw, $this->createTestDeliverer());
+    $this->assertSuccess('unique_key');
 
     // Check send state. Status code, date and reason are parsed from the
     // generated bounce message.
@@ -175,10 +178,10 @@ class IntegrationTest extends WebTestBase {
     $this->assertText('2015-01-29 15:43:04 +01:00');
     $this->assertText('This didn\'t go too well.');
 
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', NULL, DelivererConfig::create(['id' => 'test']));
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', NULL, $this->createTestDeliverer());
     // Success function is never called since we pass NULL, thus state is unchanged.
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), '');
+    $this->assertSuccess('');
     $event = $this->getLastEventByMachinename('process');
     $this->assertNotNull($event);
     $this->assertEqual($event->getMessage(), 'Incoming mail, parsing failed with error: Failed to split header from body');

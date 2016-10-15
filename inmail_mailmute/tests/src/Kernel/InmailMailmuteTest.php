@@ -9,6 +9,8 @@ use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\MIME\Header;
 use Drupal\inmail\MIME\Message;
 use Drupal\inmail\ProcessorResult;
+use Drupal\inmail\Tests\DelivererTestTrait;
+use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\user\Entity\User;
 
@@ -18,6 +20,8 @@ use Drupal\user\Entity\User;
  * @group inmail
  */
 class InmailMailmuteTest extends KernelTestBase {
+
+  use DelivererTestTrait;
 
   /**
    * Modules to enable.
@@ -78,10 +82,10 @@ class InmailMailmuteTest extends KernelTestBase {
 
       // Let magic happen.
       // Reset the state to be sure that function is called in the test.
-      \Drupal::state()->set('inmail.test.success', '');
-      $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
+      TestDeliverer::resetSuccess();
+      $processor->process('unique_key', $raw, $this->createTestDeliverer());
       // Assert that success function is called.
-      $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+      $this->assertSuccess('unique_key');
 
       // Reload user.
       $this->user = User::load($this->user->id());
@@ -176,9 +180,9 @@ class InmailMailmuteTest extends KernelTestBase {
     for ($count = 1; $count < 3; $count++) {
       // Process a soft bounce from the user.
       $raw = $this->getMessageFileContents('full.eml');
-      \Drupal::state()->set('inmail.test.success', '');
-      $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
-      $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+      TestDeliverer::resetSuccess();
+      $processor->process('unique_key', $raw, $this->createTestDeliverer());
+      $this->assertSuccess('unique_key');
 
       // Reload user and check the count.
       $this->user = User::load($this->user->id());
@@ -188,9 +192,9 @@ class InmailMailmuteTest extends KernelTestBase {
 
     // Process another one and check that the user is now muted.
     $raw = $this->getMessageFileContents('full.eml');
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $raw, $this->createTestDeliverer());
+    $this->assertSuccess('unique_key');
     $this->user = User::load($this->user->id());
     $this->assertEqual($this->user->sendstate->plugin_id, 'inmail_temporarily_unreachable');
   }

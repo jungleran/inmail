@@ -3,10 +3,11 @@
 namespace Drupal\inmail_collect\Tests;
 
 use Drupal\collect\Entity\Container;
-use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\MIME\Header;
 use Drupal\inmail\MIME\Message;
 use Drupal\inmail\ProcessorResult;
+use Drupal\inmail\Tests\DelivererTestTrait;
+use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -16,12 +17,14 @@ use Drupal\simpletest\WebTestBase;
  */
 class InmailCollectWebTest extends WebTestBase {
 
+  use DelivererTestTrait;
+
   /**
    * Modules to enable.
    *
    * @var array
    */
-  public static $modules = array('inmail_collect', 'block');
+  public static $modules = array('inmail_test', 'inmail_collect', 'block');
 
   /**
    * Tests the user interface.
@@ -36,10 +39,10 @@ class InmailCollectWebTest extends WebTestBase {
     /** @var \Drupal\inmail\MessageProcessor $processor */
     $processor = \Drupal::service('inmail.processor');
     $raw = file_get_contents(\Drupal::root() . '/' . drupal_get_path('module', 'inmail_test') . '/eml/nouser.eml');
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $raw, $this->createTestDeliverer());
     // Assert success function is called.
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+    $this->assertSuccess('unique_key');
     // Log in and view the list.
     $user = $this->drupalCreateUser(array('administer collect'));
     $this->drupalLogin($user);
@@ -101,7 +104,7 @@ class InmailCollectWebTest extends WebTestBase {
     /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
     $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
     $processor_result = new ProcessorResult();
-    $processor_result->setDeliverer(DelivererConfig::create(array('id' => 'test')));
+    $processor_result->setDeliverer($this->createTestDeliverer());
     // Creating Message which contains invalid UTF-8 character.
     $message = new Message(new Header([
       ['name' => 'Message-ID', 'body' => "\x80"],

@@ -2,6 +2,8 @@
 
 namespace Drupal\inmail\Plugin\inmail\Deliverer;
 
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**
@@ -11,7 +13,7 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
  *
  * @ingroup deliverer
  */
-interface DelivererInterface extends PluginInspectionInterface {
+interface DelivererInterface extends ConfigurablePluginInterface, PluginFormInterface, PluginInspectionInterface {
 
   /**
    * Returns the deliverer label.
@@ -20,6 +22,22 @@ interface DelivererInterface extends PluginInspectionInterface {
    *   The deliverer label.
    */
   public function getLabel();
+
+  /**
+   * Returns the number of processed messages.
+   *
+   * @return int|null
+   *   Number of processed messages, or NULL if it is unknown.
+   */
+  public function getProcessedCount();
+
+  /**
+   * Sets the number of processed messages.
+   *
+   * @param int $count
+   *   The number of messages.
+   */
+  public function setProcessedCount($count);
 
   /**
    * Notify deliverer about successful processing of the message.

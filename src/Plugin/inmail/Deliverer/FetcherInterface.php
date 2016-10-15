@@ -12,7 +12,7 @@ use Drupal\Core\Plugin\PluginFormInterface;
  *
  * @ingroup deliverer
  */
-interface FetcherInterface extends DelivererInterface, ConfigurablePluginInterface, PluginFormInterface {
+interface FetcherInterface extends DelivererInterface {
 
   /**
    * Connects to the configured mailbox and fetches new mail.
@@ -28,7 +28,15 @@ interface FetcherInterface extends DelivererInterface, ConfigurablePluginInterfa
    * @return int|null
    *   Number of remaining messages, or NULL if it is unknown.
    */
-  public function getCountUnprocessedMessages();
+  public function getUnprocessedCount();
+
+  /**
+   * Return the total number of messages.
+   *
+   * @return int|null
+   *   Total number of messages, or NULL if it is unknown.
+   */
+  public function getTotalCount();
 
   /**
    * Updates the remaining messages count.

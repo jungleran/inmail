@@ -5,6 +5,8 @@ namespace Drupal\Tests\inmail\Kernel;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
+use Drupal\inmail\Tests\DelivererTestTrait;
+use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\KernelTests\KernelTestBase;
 
@@ -14,6 +16,8 @@ use Drupal\KernelTests\KernelTestBase;
  * @group inmail
  */
 class ProcessorTest extends KernelTestBase {
+
+  use DelivererTestTrait;
 
   public static $modules = array('inmail', 'inmail_test', 'dblog', 'user', 'system');
 
@@ -35,11 +39,11 @@ class ProcessorTest extends KernelTestBase {
     $path = drupal_get_path('module', 'inmail_test') . '/eml/malformed/headerbody.eml';
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
     // Reset the state to be sure that function is called in the test.
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', $raw, DelivererConfig::create(array('id' => 'test')));
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $raw, $this->createTestDeliverer());
     // Since the message is invalid, success in processing is never called
     // and state never got changed.
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), '');
+    $this->assertSuccess('');
 
     // Check last DbLog message.
     $dblog_statement = \Drupal::database()->select('watchdog', 'w')
@@ -76,10 +80,10 @@ EOF;
     $unavailable_analyzer->save();
 
     HandlerConfig::create(['id' => 'result_keeper', 'plugin' => 'result_keeper'])->save();
-    \Drupal::state()->set('inmail.test.success', '');
-    $processor->process('unique_key', $raw, DelivererConfig::create(['id' => 'test']));
+    TestDeliverer::resetSuccess();
+    $processor->process('unique_key', $raw, $this->createTestDeliverer());
     // Assert that success function is called.
-    $this->assertEqual(\Drupal::state()->get('inmail.test.success'), 'unique_key');
+    $this->assertSuccess('unique_key');
 
     $processor_result = ResultKeeperHandler::getResult();
     /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
