@@ -51,17 +51,14 @@ class InmailMessage extends RenderElement {
    * @return array
    *   The passed-in element.
    */
-  public static function preRenderMessage($element) {
+  public static function preRenderMessage(array $element) {
     if ($element['#message'] && $element['#message'] instanceof MultipartMessage) {
-      $multipart_message = $element['#message'];
-      $view_mode = $element['#view_mode'];
       $element = [
         'multipart_message' => [
           '#theme' => 'inmail_multipart_message',
-          '#message' => $multipart_message,
-          '#view_mode' => $view_mode,
+          '#message' => $element['#message'],
+          '#view_mode' => $element['#view_mode'],
         ],
-        'multipart_message_parts' => static::getRenderableParts($multipart_message, $view_mode),
       ];
     }
 
@@ -69,37 +66,50 @@ class InmailMessage extends RenderElement {
   }
 
   /**
-   * Returns a renderable array of MIME entities.
+   * Returns a filtered array of MIME entities separated by their types.
    *
    * @param \Drupal\inmail\MIME\MultipartEntity $multipart_entity
    *   The multipart entity.
-   * @param string $view_mode
-   *   The view mode to render the message part.
    *
    * @return array
-   *   An renderable array of MIME entities.
+   *   An array of MIME entities separated by the following keys:
+   *      - attachments
+   *      - inline
+   *      - related
+   *      - unknown
    */
-  public static function getRenderableParts(MultipartEntity $multipart_entity, $view_mode) {
-    $elements = [];
+  public static function filterMessageParts(MultipartEntity $multipart_entity) {
+    $elements = [
+      'attachments' => [],
+      'inline' => [],
+      'related' => [],
+      'unknown' => [],
+    ];
 
     // Iterate over message parts.
-    foreach ($multipart_entity->getParts() as $message_part) {
+    foreach ($multipart_entity->getParts() as $index => $message_part) {
       // In case the message part is a multipart entity, recurse until we get
       // a non-multipart entity.
       if ($message_part instanceof MultipartEntity) {
-        $elements = array_merge($elements, static::getRenderableParts($message_part, $view_mode));
+        $elements = array_merge($elements, static::filterMessageParts($message_part));
       }
       else {
-        // Otherwise, build an array to render MIME entity.
-        $elements[] = [
-          '#type' => 'fieldset',
-          '#title' => $message_part->getType(),
-          'message_part' => [
-            '#theme' => 'inmail_message',
-            '#message' => $message_part,
-            '#view_mode' => $view_mode,
-          ],
-        ];
+        // Otherwise, filter the message part based on its type.
+        switch ($message_part->getType()) {
+          case 'attachment':
+            $elements['attachments'][$index] = $message_part;
+            break;
+
+          case 'inline':
+            // @todo: Add multi-level references for related and inline parts
+            //    https://www.drupal.org/node/2819713
+            $elements['inline'][$index] = $message_part;
+            break;
+
+          // @todo: Handle plain/html (related) message parts.
+          default:
+            $elements['unknown'][$index] = $message_part;
+        }
       }
     }
 

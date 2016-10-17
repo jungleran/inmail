@@ -5,7 +5,11 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\inmail\Element\InmailMessage;
 use Drupal\inmail\Entity\AnalyzerConfig;
+use Drupal\inmail\MIME\Encodings;
+use Drupal\inmail\MIME\EntityInterface;
+use Drupal\inmail\MIME\MultipartMessage;
 use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 
@@ -363,7 +367,90 @@ function inmail_theme() {
       'variables' => [
         'view_mode' => '',
         'message' => '',
+        'body' => [],
+        'attachments' => [],
+        'unknown' => [],
       ],
     ],
   ];
+}
+
+/**
+ * Implements hook_preprocess_inmail_message().
+ */
+function inmail_preprocess_inmail_multipart_message(&$variables) {
+  $message = $variables['message'];
+  // Build attachments for multipart messages in 'full' mode.
+  if ($message instanceof MultipartMessage && $variables['view_mode'] == 'full') {
+    foreach (InmailMessage::filterMessageParts($message) as $type => $message_parts) {
+      switch ($type) {
+        // Build an array of Twig variables for inline images and attachments.
+        case 'inline':
+        case 'attachments':
+          foreach ($message_parts as $message_part) {
+            $variables['attachments'][] = inmail_message_build_attachment($message_part);
+          }
+          break;
+
+        // @todo: Identify the body (plain/html) and return it.
+        case 'body':
+        case 'unknown':
+        default:
+          // @todo: Build a Twig variables array for the unknown parts.
+          $variables['unknown'] = [];
+      }
+    }
+  }
+}
+
+/**
+ * Builds an array of attachment properties.
+ *
+ * @param \Drupal\inmail\MIME\EntityInterface $attachment
+ *   The message part containing an attachment.
+ *
+ * @return array
+ *   An array of attachment properties:
+ *      - type: The attachment type (image, audio...)
+ *      - content_type: The content type
+ *      - filename: The attachment file name
+ *      - encoding: Content transfer encoding
+ *      - content: Raw encoded content.
+ */
+function inmail_message_build_attachment(EntityInterface $attachment) {
+  return [
+    'type' => $attachment->getContentType()['type'],
+    'content_type' => $attachment->getContentType()['type'] . '/' . $attachment->getContentType()['subtype'],
+    'filename' => !empty($attachment->getContentType()['parameters']['name']) ? $attachment->getContentType()['parameters']['name'] : '',
+    'encoding' => $attachment->getContentTransferEncoding(),
+    'content' => $attachment->getBody(),
+    'filesize' => inmail_message_get_attachment_file_size($attachment->getBody(), $attachment->getContentTransferEncoding()),
+  ];
+}
+
+/**
+ * Returns the attachment file size based on the given content.
+ *
+ * This method uses Chris Jester-Young's implementation of the file size format.
+ *
+ * @param string $content
+ *   The encoded attachment content.
+ * @param string $encoding
+ *   The content transfer encoding.
+ * @param int $precision
+ *   The precision.
+ *
+ * @return string
+ *   Returns the formatted file size.
+ */
+function inmail_message_get_attachment_file_size($content, $encoding, $precision = 2) {
+  // Add a list of suffixes.
+  $suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+  // If decoding fails, use the original body content to get the size in B.
+  $decoded_content = Encodings::decode($content, $encoding);
+  $size = $decoded_content ? strlen($decoded_content) : strlen($content);
+  $base = log($size, 1024);
+
+  return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
 }

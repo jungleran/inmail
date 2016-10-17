@@ -8,6 +8,7 @@
  *    An instance of \Drupal\inmail\MIME\MultipartMessage.
  * - view_mode: View mode; for example, "teaser" or "full".
  * - attributes: HTML attributes for the containing element.
+ * - attachments: A list of elements representing attachments.
  *
  * @ingroup themeable
  */
@@ -65,5 +66,14 @@
             {# Use getPlainText() after https://www.drupal.org/node/2405069. #}
         </header>
         <div class="inmail-message--body">{{ message.getDecodedBody() }}</div>
+        {% if attachments %}
+            <footer>
+                <ul>
+                {% for attachment in attachments %}
+                    <li>{{ attachment.filename }} ({{ attachment.filesize }})</li>
+                {% endfor %}
+                </ul>
+            </footer>
+        {% endif %}
     </section>
 {% endif %}
