@@ -70,4 +70,12 @@ interface FetcherInterface extends DelivererInterface {
    */
   public function getLastCheckedTime();
 
+  /**
+   * Gets the fetcher connection host name.
+   *
+   * @return string|null
+   *   Named host name, otherwise NULL.
+   */
+  public function getHost();
+
 }

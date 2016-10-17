@@ -14,14 +14,17 @@ trait DelivererTestTrait {
   /**
    * Creates a Deliverer.
    *
+   * @param string $plugin
+   *   The plugin name.
+   *
    * @return DelivererConfig
    *   The deliverer.
    */
-  protected function createTestDeliverer() {
+  protected function createTestDeliverer($plugin = 'test_deliverer') {
     $id = $this->randomMachineName();
     $deliverer = DelivererConfig::create([
       'id' => $id,
-      'plugin' => 'test_deliverer',
+      'plugin' => $plugin,
     ]);
     $deliverer->setConfiguration(['config_id' => $id]);
 

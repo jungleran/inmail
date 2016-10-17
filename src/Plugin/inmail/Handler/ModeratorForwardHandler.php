@@ -6,6 +6,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\inmail\MIME\MessageInterface;
+use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 use Drupal\inmail\ProcessorResultInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -96,11 +97,15 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
     // Send forward.
     // DirectMail is set as mail plugin on install.
     // Message is composed in inmail_mail().
+    $plugin_instance = $processor_result->getDeliverer()->getPluginInstance();
     $params = array(
       'original' => $message,
       'plugin_id' => $processor_result->getDeliverer()->getPluginId(),
       'deliverer_id' => $processor_result->getDeliverer()->id(),
     );
+    if ($plugin_instance instanceof FetcherInterface) {
+      $params['host_name'] = $plugin_instance->getHost();
+    }
     $this->mailManager->mail('inmail', 'handler_moderator_forward', $moderator, \Drupal::languageManager()->getDefaultLanguage(), $params);
   }
 

@@ -42,8 +42,7 @@ class TestFetcher extends FetcherBase {
    */
   public function success($key) {
     parent::success($key);
-
-    \Drupal::state()->set('inmail.test.success', $key);
+    $this->setSuccess($key);
   }
 
   /**
@@ -77,6 +76,14 @@ class TestFetcher extends FetcherBase {
 
     $this->setUnprocessedCount(static::$remaining);
     $this->setLastCheckedTime($time);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getHost() {
+    // For purpose of testing, value is hardcoded.
+    return 'localhost';
   }
 
 }

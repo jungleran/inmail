@@ -466,4 +466,11 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
     return $requirements;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getHost() {
+    return $this->configuration['host'];
+  }
+
 }
