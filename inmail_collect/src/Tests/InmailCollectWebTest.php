@@ -64,7 +64,7 @@ class InmailCollectWebTest extends WebTestBase {
     $this->assertText('&quot;header-from&quot;: &quot;Postmaster@acacia.example.org&quot;');
     // '<' and '>' are converted to /u003C and /u003E entities by the formatter.
     $this->assertText('&quot;header-message-id&quot;: &quot;\u003C21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031=EC2C+@acacia.example.org\u003E&quot;');
-    $this->assertText('&quot;deliverer&quot;: &quot;test&quot;');
+    $this->assertText('&quot;deliverer&quot;: &quot;' . $deliverer->id() . '&quot;');
     // Last line of the raw message.
     $this->assertText('--==IFJRGLKFGIR25201654UHRUHIHD--');
 
