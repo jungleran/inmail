@@ -38,7 +38,7 @@ class TestDeliverer extends DelivererBase implements ContainerFactoryPluginInter
   public function success($key) {
     parent::success($key);
 
-    \Drupal::state()->set('inmail.test.success', $key);
+    $this->setSuccess($key);
   }
 
 }

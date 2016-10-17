@@ -63,10 +63,10 @@ class VerpTest extends KernelTestBase {
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
     // Reset the state to be sure that function success is called in the test.
-    TestDeliverer::resetSuccess();
-    $processor->process('unique_key', $raw, $this->createTestDeliverer());
+    $deliverer = $this->createTestDeliverer();
+    $processor->process('unique_key', $raw, $deliverer);
     // Assert that success function is called.
-    $this->assertEqual(TestDeliverer::getSuccess(), 'unique_key');
+    $this->assertSuccess($deliverer, 'unique_key');
 
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
     $result = ResultKeeperHandler::getResult()->getAnalyzerResult();

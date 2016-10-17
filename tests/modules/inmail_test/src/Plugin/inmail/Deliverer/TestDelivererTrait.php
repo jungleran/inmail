@@ -7,24 +7,26 @@ namespace Drupal\inmail_test\Plugin\inmail\Deliverer;
  */
 trait TestDelivererTrait {
 
+  abstract function makeStateKey($key);
+
   /**
    * Returns success state.
    *
    * @return string
    *   The succeeded message key.
    */
-  public static function getSuccess() {
-    return \Drupal::state()->get('inmail.test.success');
+  public function getSuccess() {
+    return \Drupal::state()->get($this->makeStateKey('success'));
   }
 
   /**
-   * Resets success state.
+   * Sets success state.
    *
-   * @return string
+   * @param string $key
    *   The succeeded message key.
    */
-  public static function resetSuccess() {
-    return \Drupal::state()->set('inmail.test.success', '');
+  public function setSuccess($key) {
+    \Drupal::state()->set($this->makeStateKey('success'), $key);
   }
 
 }

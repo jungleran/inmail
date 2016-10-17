@@ -82,10 +82,10 @@ class InmailMailmuteTest extends KernelTestBase {
 
       // Let magic happen.
       // Reset the state to be sure that function is called in the test.
-      TestDeliverer::resetSuccess();
-      $processor->process('unique_key', $raw, $this->createTestDeliverer());
+      $deliverer = $this->createTestDeliverer();
+      $processor->process('unique_key', $raw, $deliverer);
       // Assert that success function is called.
-      $this->assertSuccess('unique_key');
+      $this->assertSuccess($deliverer, 'unique_key');
 
       // Reload user.
       $this->user = User::load($this->user->id());
@@ -180,9 +180,9 @@ class InmailMailmuteTest extends KernelTestBase {
     for ($count = 1; $count < 3; $count++) {
       // Process a soft bounce from the user.
       $raw = $this->getMessageFileContents('full.eml');
-      TestDeliverer::resetSuccess();
-      $processor->process('unique_key', $raw, $this->createTestDeliverer());
-      $this->assertSuccess('unique_key');
+      $deliverer = $this->createTestDeliverer();
+      $processor->process('unique_key', $raw, $deliverer);
+      $this->assertSuccess($deliverer, 'unique_key');
 
       // Reload user and check the count.
       $this->user = User::load($this->user->id());
@@ -192,9 +192,9 @@ class InmailMailmuteTest extends KernelTestBase {
 
     // Process another one and check that the user is now muted.
     $raw = $this->getMessageFileContents('full.eml');
-    TestDeliverer::resetSuccess();
-    $processor->process('unique_key', $raw, $this->createTestDeliverer());
-    $this->assertSuccess('unique_key');
+    $deliverer = $this->createTestDeliverer()
+    $processor->process('unique_key', $raw, $deliverer);
+    $this->assertSuccess($deliverer, 'unique_key');
     $this->user = User::load($this->user->id());
     $this->assertEqual($this->user->sendstate->plugin_id, 'inmail_temporarily_unreachable');
   }

@@ -39,10 +39,10 @@ class InmailCollectWebTest extends WebTestBase {
     /** @var \Drupal\inmail\MessageProcessor $processor */
     $processor = \Drupal::service('inmail.processor');
     $raw = file_get_contents(\Drupal::root() . '/' . drupal_get_path('module', 'inmail_test') . '/eml/nouser.eml');
-    TestDeliverer::resetSuccess();
-    $processor->process('unique_key', $raw, $this->createTestDeliverer());
+    $deliverer = $this->createTestDeliverer();
+    $processor->process('unique_key', $raw, $deliverer);
     // Assert success function is called.
-    $this->assertSuccess('unique_key');
+    $this->assertSuccess($deliverer, 'unique_key');
     // Log in and view the list.
     $user = $this->drupalCreateUser(array('administer collect'));
     $this->drupalLogin($user);
@@ -104,7 +104,8 @@ class InmailCollectWebTest extends WebTestBase {
     /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
     $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
     $processor_result = new ProcessorResult();
-    $processor_result->setDeliverer($this->createTestDeliverer());
+    $deliverer = $this->createTestDeliverer();
+    $processor_result->setDeliverer($deliverer);
     // Creating Message which contains invalid UTF-8 character.
     $message = new Message(new Header([
       ['name' => 'Message-ID', 'body' => "\x80"],

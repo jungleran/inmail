@@ -63,7 +63,6 @@ abstract class DelivererBase extends InmailPluginBase implements DelivererInterf
    */
   protected function makeStateKey($key) {
     $config_id = $this->getConfiguration()['config_id'];
-    drupal_set_message('inmail.deliverer.' . $config_id . '.' . $key);
     return 'inmail.deliverer.' . $config_id . '.' . $key;
   }
 

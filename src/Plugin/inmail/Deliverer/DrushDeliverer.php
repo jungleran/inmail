@@ -14,10 +14,4 @@ namespace Drupal\inmail\Plugin\inmail\Deliverer;
  */
 class DrushDeliverer extends DelivererBase {
 
-  /**
-   * {@inheritdoc}
-   */
-  public function success($key) {
-  }
-
 }
