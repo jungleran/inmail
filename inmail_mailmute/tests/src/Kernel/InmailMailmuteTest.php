@@ -192,7 +192,7 @@ class InmailMailmuteTest extends KernelTestBase {
 
     // Process another one and check that the user is now muted.
     $raw = $this->getMessageFileContents('full.eml');
-    $deliverer = $this->createTestDeliverer()
+    $deliverer = $this->createTestDeliverer();
     $processor->process('unique_key', $raw, $deliverer);
     $this->assertSuccess($deliverer, 'unique_key');
     $this->user = User::load($this->user->id());
