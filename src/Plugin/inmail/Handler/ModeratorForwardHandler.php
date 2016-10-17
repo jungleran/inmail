@@ -6,6 +6,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\inmail\MIME\MessageInterface;
+use Drupal\inmail\Plugin\DataType\BounceData;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 use Drupal\inmail\ProcessorResultInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -73,6 +74,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
 
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult();
+    /** @var BounceData $bounce_data */
     $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     // Cancel if the message is successfully classified.
