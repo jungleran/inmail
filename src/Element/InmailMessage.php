@@ -4,7 +4,6 @@ namespace Drupal\inmail\Element;
 
 use Drupal\Core\Render\Element\RenderElement;
 use Drupal\inmail\MIME\MultipartEntity;
-use Drupal\inmail\MIME\MultipartMessage;
 
 /**
  * Provides a render element for displaying Inmail Message.
@@ -13,6 +12,12 @@ use Drupal\inmail\MIME\MultipartMessage;
  * - #message: The parsed message object.
  *    An instance of \Drupal\inmail\MIME\MessageInterface.
  * - #view_mode: The view mode ("teaser" or "full").
+ * - (optional) #body: Identified mail body.
+ *
+ * Properties available for MIME messages:
+ * - (optional) #attachments: A list of mail attachments. The build array
+ *   should follow the structure defined in: inmail_message_build_attachment().
+ * - (optional) #unknown: A list of non-identified mail parts.
  *
  * Usage example:
  * @code
@@ -21,6 +26,8 @@ use Drupal\inmail\MIME\MultipartMessage;
  *   '#type' => 'inmail_message',
  *   '#message' => $message,
  *   '#view_mode' => 'full',
+ *   '#attachments' => $attachments,
+ *   '#body' => $body,
  * ];
  * @endcode
  *
@@ -32,37 +39,7 @@ class InmailMessage extends RenderElement {
    * {@inheritdoc}
    */
   public function getInfo() {
-    return [
-      '#theme' => 'inmail_message',
-      '#pre_render' => [
-        [static::class, 'preRenderMessage'],
-      ],
-    ];
-  }
-
-  /**
-   * Pre-render callback.
-   *
-   * @param array $element
-   *   A structured array:
-   *   - #message: The parsed message object.
-   *   - #view_mode: The view mode ("teaser" or "full").
-   *
-   * @return array
-   *   The passed-in element.
-   */
-  public static function preRenderMessage(array $element) {
-    if ($element['#message'] && $element['#message'] instanceof MultipartMessage) {
-      $element = [
-        'multipart_message' => [
-          '#theme' => 'inmail_multipart_message',
-          '#message' => $element['#message'],
-          '#view_mode' => $element['#view_mode'],
-        ],
-      ];
-    }
-
-    return $element;
+    return ['#theme' => 'inmail_message'];
   }
 
   /**

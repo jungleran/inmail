@@ -359,14 +359,6 @@ function inmail_theme() {
       'variables' => [
         'view_mode' => '',
         'message' => '',
-      ],
-    ],
-    'inmail_multipart_message' => [
-      'render element' => 'inmail_message',
-      'template' => 'inmail-multipart-message',
-      'variables' => [
-        'view_mode' => '',
-        'message' => '',
         'body' => [],
         'attachments' => [],
         'unknown' => [],
@@ -378,7 +370,7 @@ function inmail_theme() {
 /**
  * Implements hook_preprocess_inmail_message().
  */
-function inmail_preprocess_inmail_multipart_message(&$variables) {
+function inmail_preprocess_inmail_message(&$variables) {
   $message = $variables['message'];
   // Build attachments for multipart messages in 'full' mode.
   if ($message instanceof MultipartMessage && $variables['view_mode'] == 'full') {

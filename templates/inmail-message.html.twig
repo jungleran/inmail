@@ -1,13 +1,19 @@
 {#
 /**
  * @file
- * Default theme implementation to display Inmail Message object.
+ * Default theme implementation for Inmail Message element.
  *
  * Available variables:
  * - message: Parsed Inmail Message object.
- *    An instance of \Drupal\inmail\MIME\MessageInterface.
+ *    It could be either \Drupal\inmail\MIME\Message or
+ *    \Drupal\inmail\MIME\MultipartMessage.
  * - view_mode: View mode; for example, "teaser" or "full".
+ * - body: Extracted mail body.
  * - attributes: HTML attributes for the containing element.
+ *
+ * The following variables are available for MIME messages only:
+ * - (optional) attachments: A list of elements representing attachments.
+ * - (optional) unknown: A list of unknown message part elements.
  *
  * @ingroup themeable
  */
@@ -60,10 +66,19 @@
             </div>
             <div class="inmail-message--header-all">
                 <div class="inmail-message--header-label">All Headers</div>
-                <div class="inmail-message--header-all-body">{{ message.header.toString() }}</div>
+                {{ message.header.toString() }}
             </div>
-        {# Use getPlainText() after https://www.drupal.org/node/2405069. #}
         </header>
+        {# Use getPlainText() after https://www.drupal.org/node/2405069. #}
         <div class="inmail-message--body">{{ message.getDecodedBody() }}</div>
+        {% if attachments %}
+            <footer>
+                <ul>
+                {% for attachment in attachments %}
+                    <li>{{ attachment.filename }} ({{ attachment.filesize }})</li>
+                {% endfor %}
+                </ul>
+            </footer>
+        {% endif %}
     </section>
 {% endif %}
