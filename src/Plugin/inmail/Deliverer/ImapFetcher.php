@@ -66,8 +66,9 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    */
   public function fetchUnprocessedMessages() {
     return $this->doImap(function($imap_stream) {
+      // @todo: After release of 8.3, https://www.drupal.org/node/2819597.
       // Capture current timestamp, not the request starting time.
-      $time = \Drupal::time()->getCurrentTime();
+      $time = time();
       // Find IDs of unread messages.
       // @todo Introduce options for message selection, https://www.drupal.org/node/2405767
       $unread_ids = $this->doImapSearch($imap_stream, 'UNSEEN');

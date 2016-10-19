@@ -49,7 +49,7 @@ class TestFetcher extends FetcherBase {
    * {@inheritdoc}
    */
   public function fetchUnprocessedMessages() {
-    $time = \Drupal::time()->getCurrentTime();
+    $time = time();
 
     // Decrement the remaining counter.
     static::$remaining--;
@@ -70,7 +70,7 @@ class TestFetcher extends FetcherBase {
    * {@inheritdoc}
    */
   public function update() {
-    $time = \Drupal::time()->getCurrentTime();
+    $time = time();
 
     $this->setTotalCount(250);
 
