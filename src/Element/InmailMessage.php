@@ -8,6 +8,9 @@ use Drupal\inmail\MIME\MultipartEntity;
 /**
  * Provides a render element for displaying Inmail Message.
  *
+ * If a #download_url url is provided, the element will display attachments
+ * with a download link. Otherwise just attachment labels.
+ *
  * Properties:
  * - #message: The parsed message object.
  *    An instance of \Drupal\inmail\MIME\MessageInterface.
@@ -18,6 +21,9 @@ use Drupal\inmail\MIME\MultipartEntity;
  * - (optional) #attachments: A list of mail attachments. The build array
  *   should follow the structure defined in: inmail_message_build_attachment().
  * - (optional) #unknown: A list of non-identified mail parts.
+ * - (optional) #download_url: An URL object with the attachment download route.
+ *   the object already needs to point to the specific message and maintain a
+ *   parameter named "index" to deal with multipart references.
  *
  * Usage example:
  * @code
@@ -28,6 +34,7 @@ use Drupal\inmail\MIME\MultipartEntity;
  *   '#view_mode' => 'full',
  *   '#attachments' => $attachments,
  *   '#body' => $body,
+ *   '#download_url' => $url,
  * ];
  * @endcode
  *

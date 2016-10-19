@@ -75,7 +75,13 @@
             <footer>
                 <ul>
                 {% for attachment in attachments %}
-                    <li>{{ attachment.filename }} ({{ attachment.filesize }})</li>
+                    <li>
+                        {% if attachment.url %}
+                            <a href="{{ attachment.url }}" title="{{ attachment.filename }}" target="_blank">{{ attachment.filename }}</a> ({{ attachment.filesize }})
+                        {% else %}
+                            {{ attachment.filename }} ({{ attachment.filesize }})
+                        {% endif %}
+                    </li>
                 {% endfor %}
                 </ul>
             </footer>

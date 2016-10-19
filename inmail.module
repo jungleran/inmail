@@ -359,6 +359,7 @@ function inmail_theme() {
       'variables' => [
         'view_mode' => '',
         'message' => '',
+        'download_url' => [],
         'body' => [],
         'attachments' => [],
         'unknown' => [],
@@ -379,8 +380,10 @@ function inmail_preprocess_inmail_message(&$variables) {
         // Build an array of Twig variables for inline images and attachments.
         case 'inline':
         case 'attachments':
-          foreach ($message_parts as $message_part) {
-            $variables['attachments'][] = inmail_message_build_attachment($message_part);
+          /** @var \Drupal\Core\Url $download_url */
+          $download_url = isset($variables['download_url']) ?: NULL;
+          foreach ($message_parts as $index => $message_part) {
+            $variables['attachments'][] = inmail_message_build_attachment($index, $message_part, $download_url);
           }
           break;
 
@@ -398,8 +401,12 @@ function inmail_preprocess_inmail_message(&$variables) {
 /**
  * Builds an array of attachment properties.
  *
+ * @param string $index
+ *   The index of the attachment part.
  * @param \Drupal\inmail\MIME\EntityInterface $attachment
  *   The message part containing an attachment.
+ * @param \Drupal\Core\Url|null $download_url
+ *   (optional) A download URL or null if it does not exist.
  *
  * @return array
  *   An array of attachment properties:
@@ -408,9 +415,10 @@ function inmail_preprocess_inmail_message(&$variables) {
  *      - filename: The attachment file name
  *      - encoding: Content transfer encoding
  *      - content: Raw encoded content.
+ *      - (optional) url: The URL to download the attachment.
  */
-function inmail_message_build_attachment(EntityInterface $attachment) {
-  return [
+function inmail_message_build_attachment($index, EntityInterface $attachment, $download_url = NULL) {
+  $build = [
     'type' => $attachment->getContentType()['type'],
     'content_type' => $attachment->getContentType()['type'] . '/' . $attachment->getContentType()['subtype'],
     'filename' => !empty($attachment->getContentType()['parameters']['name']) ? $attachment->getContentType()['parameters']['name'] : '',
@@ -418,6 +426,17 @@ function inmail_message_build_attachment(EntityInterface $attachment) {
     'content' => $attachment->getBody(),
     'filesize' => inmail_message_get_attachment_file_size($attachment->getBody(), $attachment->getContentTransferEncoding()),
   ];
+
+  // In case there is an implementation of the download attachment integration,
+  // extend the URL with the attachment index. This index is used in
+  // \Drupal\inmail\MIME\MultipartMessage::getPart() to reference the message
+  // parts.
+  if ($download_url) {
+    $download_url->setRouteParameter('index', $index);
+    $build['url'] = $download_url->toString();
+  }
+
+  return $build;
 }
 
 /**
