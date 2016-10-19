@@ -159,8 +159,37 @@ class PasteForm extends FormBase {
    *   Example filenames keyed by file paths.
    */
   protected function getExampleOptions() {
-    $directory = drupal_get_path('module', 'inmail_demo') . '/eml/';
-    $examples = array_keys(file_scan_directory($directory, '/.*/'));
+    $collection = [];
+    // Adding to the list simple mail example.
+    $directory = drupal_get_path('module', 'inmail_demo') . '/eml';
+    $collection += ['Simple email' => $this->getExamples($directory)];
+
+    // Adding attachment and malformed samples.
+    $directory = drupal_get_path('module', 'inmail') . '/tests/modules/inmail_test/eml';
+    $collection += ['Attachment email' => $this->getExamples($directory . '/attachments')];
+    $collection += ['Malformed email' => $this->getExamples($directory . '/malformed')];
+
+    // Adding rest of email samples.
+    $examples = $this->getExamples($directory, FALSE);
+    $collection += ['Others' => $examples];
+
+    return $collection;
+  }
+
+  /**
+   * Returns collection of messages from given directory.
+   *
+   * @param string $directory
+   *   Path from which to load messages.
+   * @param bool $recursion
+   *   Whether to skip folders in search.
+   *
+   * @return array
+   *   Associative array of messages and keyed indexes.
+   */
+  protected function getExamples($directory , $recursion = TRUE) {
+    // Filter only eml files.
+    $examples = array_keys(file_scan_directory($directory, '/.eml/', array('recurse' => $recursion)));
     return array_map('basename', array_combine($examples, $examples));
   }
 
