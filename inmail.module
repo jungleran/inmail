@@ -381,7 +381,7 @@ function inmail_preprocess_inmail_message(&$variables) {
         case 'inline':
         case 'attachments':
           /** @var \Drupal\Core\Url $download_url */
-          $download_url = $download_url = isset($variables['download_url']) ? $variables['download_url'] : NULL;
+          $download_url = isset($variables['download_url']) ? $variables['download_url'] : NULL;
           foreach ($message_parts as $index => $message_part) {
             $variables['attachments'][] = inmail_message_build_attachment($index, $message_part, $download_url);
           }

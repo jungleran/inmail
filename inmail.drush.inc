@@ -65,6 +65,10 @@ function drush_inmail_process() {
 
   // Identify deliverer.
   $deliverer_config_id = array_shift($args);
+  if (empty($deliverer_config_id)) {
+    drush_set_error(dt('You need to specify a Deliverer.'));
+    return;
+  }
   $deliverer = DelivererConfig::load($deliverer_config_id);
   if (empty($deliverer)) {
     drush_set_error(dt('Deliverer "@deliverer_id" not found', ['@deliverer_id' => $deliverer_config_id]));
