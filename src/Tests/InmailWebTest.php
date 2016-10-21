@@ -85,6 +85,8 @@ class InmailWebTest extends WebTestBase {
     // Add an IMAP fetcher.
     $this->clickLink('Add deliverer');
     $this->assertUrl('admin/config/system/inmail/deliverers/add');
+    $this->drupalPostAjaxForm(NULL, NULL, 'plugin');
+    $this->assertText('IMAP / POP3');
     // Select the IMAP plugin.
     $edit = array(
       'label' => 'Test IMAP Fetcher',

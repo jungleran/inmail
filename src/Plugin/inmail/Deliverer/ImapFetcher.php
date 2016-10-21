@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @Deliverer(
  *   id = "imap",
- *   label = @Translation("IMAP")
+ *   label = @Translation("IMAP / POP3")
  * )
  */
 class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface {
