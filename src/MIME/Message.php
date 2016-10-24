@@ -46,24 +46,22 @@ class Message extends Entity implements MessageInterface {
    *   TRUE if message is valid, otherwise FALSE.
    */
   public function validate() {
-    // By RFC 5322 format, Date and From header fields are only required fields.
-    $result = TRUE;
-    foreach (['Received', 'From'] as $key) {
-      $counter = count($this->getHeader()->getFieldBodies($key));
-      // If the field is absent, save error message in array.
-      if (!$this->getHeader()->hasField($key)) {
-        $result = FALSE;
-        $this->error_messages[$key] = 'Missing ' . $key . ' Field';
+    $valid = TRUE;
+    // RFC 5322 specifies Date and From header fields as only required fields.
+    // @See https://tools.ietf.org/html/rfc5322#section-3.6
+    foreach (['Date', 'From'] as $field_name) {
+      // If the field is absent, set the validation error.
+      if (!$this->getHeader()->hasField($field_name)) {
+        $this->setValidationError($field_name, "Missing $field_name field.");
+        $valid = FALSE;
       }
-      // Count number of field bodies. According to RFC, there should be only one
-      // occurrence of fields Received and From.
-      if ($counter > 1) {
-        $result = FALSE;
-        $this->error_messages[$key] = $counter . ' ' . $key . ' Fields';
+      // There should be only one occurrence of Date and From fields.
+      elseif (($count = count($this->getHeader()->getFieldBodies($field_name))) > 1) {
+        $this->setValidationError($field_name, "Only one occurrence of $field_name field is allowed. Found $count.");
+        $valid = FALSE;
       }
-      $counter = 0;
     }
-    return $result;
+    return $valid;
   }
 
   /**

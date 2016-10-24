@@ -3,7 +3,6 @@
 namespace Drupal\Tests\inmail\Unit\MIME;
 
 use Drupal\Component\Datetime\DateTimePlus;
-use Drupal\inmail\MIME\Entity;
 use Drupal\inmail\MIME\Header;
 use Drupal\inmail\MIME\Message;
 use Drupal\Tests\UnitTestCase;
@@ -129,36 +128,47 @@ class MessageTest extends UnitTestCase {
    * Tests the message is valid and contains necessary fields.
    */
   public function testValidation() {
-    // By RFC (https://tools.ietf.org/html/rfc5322#section-3.6, table on p. 21),
-    // the only required Header fields are From and Date. In addition,
-    // the fields can occur only once per message.
-
-    // Message triggers checking for presence of Received and From fields,
+    // By RFC 5322 (https://tools.ietf.org/html/rfc5322#section-3.6,
+    // table on p. 21), the only required Header fields are From and Date.
+    // In addition, the fields can occur only once per message.
+    // Message triggers checking for presence of Date and From fields,
     // as well checking single occurrence of them.
     $message = new Message(new Header([
-      ['name' => 'Received', 'body' => 'Mon, 22 Aug 2016 09:24:00 +0100'],
+      ['name' => 'Delivered-To', 'body' => 'alice@example.com'],
+      ['name' => 'Received', 'body' => 'Thu, 20 Oct 2016 08:45:02 +0100'],
+      ['name' => 'Received', 'body' => 'Fri, 21 Oct 2016 09:55:03 +0200'],
     ]), 'body');
     $this->assertFalse($message->validate());
-    // Check that validation error messages exists and it is as expected.
-    $this->assertEquals('Missing From Field', $message->getValidationErrors()['From']);
+    // Check that validation error messages exist and it is as expected.
+    $this->assertArrayEquals([
+      'From' => 'Missing From field.',
+      'Date' => 'Missing Date field.',
+    ], $message->getValidationErrors());
 
     // Message contains all necessary fields and only one occurrence of each.
     $message = new Message(new Header([
       ['name' => 'From', 'body' => 'Foo'],
-      ['name' => 'Received', 'body' => 'Tue, 23 Aug 2016 17:48:6 +0600'],
+      ['name' => 'Date', 'body' => 'Fri, 21 Oct 2016 09:55:03 +0200'],
     ]), 'body');
     $this->assertTrue($message->validate());
     // Validation error messages should not exist.
-    $this->assertTrue(empty($message->getValidationErrors()));
+    $this->assertEmpty($message->getValidationErrors());
 
     // Message contains all necessary fields but duplicates.
     $message = new Message(new Header([
       ['name' => 'From', 'body' => 'Foo'],
       ['name' => 'From', 'body' => 'Foo2'],
-      ['name' => 'Received', 'body' => 'Tue, 23 Aug 2016 17:48:6 +0600'],
+      ['name' => 'Date', 'body' => 'Thu, 20 Oct 2016 08:45:02 +0100'],
+      ['name' => 'Date', 'body' => 'Fri, 21 Oct 2016 09:55:03 +0200'],
+      ['name' => 'Date', 'body' => 'Sat, 22 Oct 2016 10:55:04 +0300'],
+      ['name' => 'Received', 'body' => 'Thu, 20 Oct 2016 08:45:02 +0100'],
+      ['name' => 'Received', 'body' => 'Fri, 21 Oct 2016 09:55:03 +0200'],
     ]), 'body');
     $this->assertFalse($message->validate());
-    $this->assertEquals('2 From Fields', $message->getValidationErrors()['From']);
+    $this->assertArrayEquals([
+      'From' => 'Only one occurrence of From field is allowed. Found 2.',
+      'Date' => 'Only one occurrence of Date field is allowed. Found 3.',
+    ], $message->getValidationErrors());
   }
 
 }

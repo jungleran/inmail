@@ -1,5 +1,6 @@
 Message-Id: <uHuKgG2zs0XNpLJeOFJx2HyG07lZ8tnC@example.com>
-Received: from mail.example.com; Wed, 27 May 2015 15:42:10 +0200 (CEST)
+Received: from mail.example.com; Wed, 27 May 2015 15:42:10 +0200
+Date: Wed, 27 May 2015 15:42:10 +0200 (CEST)
 From: Bob <bob@example.com>
 To: Alice <alice@example.com>
 Subject: Re: Hello

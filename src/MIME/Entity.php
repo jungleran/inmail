@@ -18,7 +18,7 @@ class Entity implements EntityInterface {
    *
    * @var array
    */
-  protected $error_messages = [];
+  protected $validationErrors = [];
 
   /**
    * The entity header.
@@ -164,18 +164,17 @@ class Entity implements EntityInterface {
   }
 
   /**
-   * Returns error messages from validation.
-   *
-   * @return array
-   *   Associative array with keys and related error messages, or empty array
-   *   if no validation errors exists.
+   * {@inheritdoc}
    */
   public function getValidationErrors() {
-    $errors = $this->error_messages;
-    // Empty the error message array.
-    $this->error_messages = [];
+    return $this->validationErrors;
+  }
 
-    return $errors;
+  /**
+   * {@inheritdoc}
+   */
+  public function setValidationError($field, $error) {
+    $this->validationErrors[$field] = $error;
   }
 
 }

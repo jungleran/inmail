@@ -62,7 +62,7 @@ class TestFetcher extends FetcherBase {
     // Message must be valid, so it can pass all validations and trigger
     // some functions (i.e. success()).
     return [
-      "From: FooBar\nReceived: Tue, 23 Aug 2016 17:48:6 +0600\nSubject: Dummy message\n\nMessage Body"
+      "From: FooBar\nDate: Tue, 23 Aug 2016 17:48:6 +0600\nSubject: Dummy message\n\nMessage Body"
     ];
   }
 

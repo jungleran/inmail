@@ -105,11 +105,20 @@ interface EntityInterface {
   /**
    * Returns validation error messages.
    *
-   * This should only be called after validate().
-   *
    * @return array
-   *   Returns error messages if validation fails, otherwise empty array.
+   *   Associative array with keys and related error messages, or an empty array
+   *   if there are no errors.
    */
   public function getValidationErrors();
+
+  /**
+   * Sets a validation error for the given header field.
+   *
+   * @param string $field
+   *   The header field.
+   * @param string $error
+   *   The error message.
+   */
+  public function setValidationError($field, $error);
 
 }
