@@ -21,70 +21,65 @@
 
 {{ attach_library('inmail/message') }}
 
-{% if view_mode == 'teaser' %}
-    <section class="inmail-message inmail--view-mode-teaser">
-        <header>
-            <div class="inmail-message--header-from">{{ message.from }}</div>
-            {% if message.getTo is not empty %}
-                <div class="inmail-message--header-to">{{ message.getTo | join(', ') }}</div>
-            {% endif %}
-            {% if message.getCc is not empty %}
-                <div class="inmail-message--header-cc">{{ message.getCc | join(', ') }}</div>
-            {% endif %}
-            <div class="inmail-message--header-subject">{{ message.subject }}</div>
-            <div class="inmail-message--header-received-date">{{ message.getReceivedDate() }}</div>
-        </header>
-        <div class="inmail-message--body-plain">{{ message.getPlainText() | slice(0, 1000) }}</div>
-    </section>
-{% endif %}
-{% if view_mode == 'full' %}
-    <section class="inmail-message inmail--view-mode-full">
-        <header>
-            <div class="inmail-message--header-from">
-                <div class="inmail-message--header-label">From</div>
-                {{ message.from }}
-            </div>
-            {% if message.getTo is not empty %}
-                <div class="inmail-message--header-to">
-                    <div class="inmail-message--header-label">To</div>
-                    {{ message.getTo | join(', ') }}
-                </div>
-            {% endif %}
-            {% if message.getCc is not empty %}
-                <div class="inmail-message--header-cc">
-                    <div class="inmail-message--header-label">CC</div>
-                    {{ message.getCc | join(', ') }}
-                </div>
-            {% endif %}
-            <div class="inmail-message--header-received-date">
-                <div class="inmail-message--header-label">Received</div>
-                {{ message.getReceivedDate() }}
-            </div>
-            <div class="inmail-message--header-subject">
-                <div class="inmail-message--header-label">Subject</div>
-                {{ message.subject }}
-            </div>
-            <div class="inmail-message--header-all">
-                <div class="inmail-message--header-label">All Headers</div>
-                {{ message.header.toString() }}
-            </div>
-        </header>
+<section class="inmail-message inmail-message--{{ view_mode }}">
+  <header class="inmail-message__header">
+    <div class="inmail-message__element inmail-message__header__from">
+      <label>From</label>
+      {{ message.from }}
+    </div>
+    {% if message.getTo is not empty %}
+      <div class="inmail-message__element inmail-message__header__to">
+        <label>To</label>
+        {{ message.getTo | join(', ') }}
+      </div>
+    {% endif %}
+    {% if message.getCc is not empty %}
+      <div class="inmail-message__element inmail-message__header__cc">
+        <label>CC</label>
+        {{ message.getCc | join(', ') }}
+      </div>
+    {% endif %}
+    <div class="inmail-message__element inmail-message__header__received-date">
+      <label>Received</label>
+      {{ message.getReceivedDate() }}
+    </div>
+    <div class="inmail-message__element inmail-message__header__subject">
+      <label>Subject</label>
+      {{ message.subject }}
+    </div>
+    <div class="inmail-message__element inmail-message__header__all">
+      <label>All Headers</label>
+      {{ message.header.toString() }}
+    </div>
+  </header>
+  <div class="inmail-message__body">
+    {% if view_mode == 'teaser' %}
+      <div class="inmail-message__element inmail-message__body__subject">{{ message.subject }}</div>
+    {% endif %}
+    <div class="inmail-message__element inmail-message__body__content">
+      {% if view_mode == 'teaser' %}
+        {{ message.getPlainText() | slice(0, 1000) }}
+      {% else %}
         {# Use getPlainText() after https://www.drupal.org/node/2405069. #}
-        <div class="inmail-message--body">{{ message.getDecodedBody() }}</div>
-        {% if attachments %}
-            <footer>
-                <ul>
-                {% for attachment in attachments %}
-                    <li>
-                        {% if attachment.url %}
-                            <a href="{{ attachment.url }}" title="{{ attachment.filename }}" target="_blank">{{ attachment.filename }}</a> ({{ attachment.filesize }})
-                        {% else %}
-                            {{ attachment.filename }} ({{ attachment.filesize }})
-                        {% endif %}
-                    </li>
-                {% endfor %}
-                </ul>
-            </footer>
-        {% endif %}
-    </section>
-{% endif %}
+        {{ message.getDecodedBody() }}
+      {% endif %}
+    </div>
+  </div>
+
+  {% if attachments and view_mode == 'full' %}
+    <footer class="inmail-message__footer">
+      <label>Attachments</label>
+      <ul>
+        {% for attachment in attachments %}
+          <li>
+            {% if attachment.url %}
+              <a href="{{ attachment.url }}" title="{{ attachment.filename }}" target="_blank">{{ attachment.filename }}</a> ({{ attachment.filesize }})
+            {% else %}
+              {{ attachment.filename }} ({{ attachment.filesize }})
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </footer>
+  {% endif %}
+</section>

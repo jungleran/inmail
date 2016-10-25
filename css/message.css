@@ -1,31 +1,81 @@
 /**
- * @file
- * Stylesheet for inmail.
- */
-.inmail-message--header header {
-    display: -webkit-flex;
-    display: flex;
-    flex-wrap: wrap;
+* @file
+* Stylesheet for inmail.
+*/
+
+/* General rules */
+
+.inmail-message {
+  margin: 10px;
 }
 
-.inmail-message--header-from,
-.inmail-message--header-to,
-.inmail-message--header-subject,
-.inmail-message--header-received-date {
-    margin: 10px;
+/* Full view */
+
+.inmail-message--full .inmail-message__header .inmail-message__element {
+  display: flex;
+}
+.inmail-message--full .inmail-message__element label {
+  padding: 0;
+  font-weight: bold;
+  width: 100px;
+}
+.inmail-message--full .inmail-message__header__all {
+  display: none;
+}
+.inmail-message--full .inmail-message__header,
+.inmail-message--full .inmail-message__body,
+.inmail-message--full .inmail-message__footer {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
-.inmail-message--header-label {
-    font-weight: 700;
-}
+/* Teaser view */
 
-.inmail-message--header-all-body{
-    font-family: monospace;
-    white-space: pre;
+.inmail-message--teaser .inmail-message__header,
+.inmail-message--teaser .inmail-message__body {
+  display: -webkit-flex;
+  display: flex;
 }
-
-.inmail--view-mode-teaser .inmail-message--body-plain {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.inmail-message--teaser label {
+  display: none;
+}
+.inmail-message--teaser .inmail-message__element {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.inmail-message--teaser .inmail-message__header__to:before {
+  content: '>';
+  margin: 0 1em 0 1em;
+}
+.inmail-message--teaser .inmail-message__header__cc {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-basis: auto;
+  color: #777;
+}
+.inmail-message--teaser .inmail-message__header__cc:before {
+  content: '|';
+  margin: 0 1em 0 1em;
+}
+.inmail-message--teaser .inmail-message__header__received-date,
+.inmail-message--teaser .inmail-message__header__subject,
+.inmail-message--teaser .inmail-message__header__all {
+  display: none;
+}
+.inmail-message--teaser .inmail-message__body__subject {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-basis: auto;
+  margin-right: 1em;
+}
+.inmail-message--teaser .inmail-message__body__content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-basis: 70%;
+  color: #777;
+  font-size: 88%;
 }

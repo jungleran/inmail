@@ -83,7 +83,6 @@ class IntegrationTest extends WebTestBase {
     $this->assertRaw(htmlspecialchars($message->getTo()[0]));
     $this->assertRaw(htmlspecialchars($message->getCc()[0]));
     $this->assertRaw(htmlspecialchars($message->getSubject()));
-    $this->assertRaw(htmlspecialchars($message->getReceivedDate()));
     $this->assertText(htmlspecialchars($message->getPlainText(), ENT_QUOTES, 'UTF-8'));
 
     // Test "full" view mode of Inmail message element.
