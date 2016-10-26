@@ -3,3 +3,9 @@ message:
   css:
     theme:
       css/message.css: {}
+
+inmail.admin:
+  version: 1.x
+  css:
+    theme:
+      css/inmail.admin.css: {}

@@ -70,6 +70,8 @@ class DelivererListForm extends FormBase {
 
     // Let the list builder render the table.
     $form['table'] = \Drupal::entityManager()->getListBuilder('inmail_deliverer')->render();
+    // Attach css library to the form.
+    $form['#attached']['library'][] = 'inmail/inmail.admin';
 
     return $form;
   }
