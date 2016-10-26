@@ -42,7 +42,7 @@ class ParserTest extends InmailUnitTestBase {
    */
   public function provideMalformedRaws() {
     return [
-      [$this->getRaw('malformed/headerbody.eml')],
+      [$this->getRaw('malformed/unseparated_body.eml')],
       // Message has Content-Length that is larger than actual length of body.
       ["To: sip:j.user@example.com
       From: sip:caller@example.net;tag=93942939o2

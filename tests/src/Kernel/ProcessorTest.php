@@ -36,7 +36,7 @@ class ProcessorTest extends KernelTestBase {
     // Process a malformed message.
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
-    $path = drupal_get_path('module', 'inmail_test') . '/eml/malformed/headerbody.eml';
+    $path = drupal_get_path('module', 'inmail_test') . '/eml/malformed/unseparated_body.eml';
     $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
     // Reset the state to be sure that function is called in the test.
     $deliverer = $this->createTestDeliverer();

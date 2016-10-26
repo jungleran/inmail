@@ -44,7 +44,7 @@ class InmailMessageWebTest extends InmailWebTestBase {
    * Tests the complex attachment variant.
    */
   public function doTestComplexAttachments() {
-    $raw_email_with_attachments = $this->getMessageFileContents('attachments/complex.eml');
+    $raw_email_with_attachments = $this->getMessageFileContents('attachments/multiple-attachments.eml');
 
     // Process the raw multipart mail message.
     $this->processor->process('key', $raw_email_with_attachments, $this->createTestDeliverer());
