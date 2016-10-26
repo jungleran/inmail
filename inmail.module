@@ -4,6 +4,8 @@
  * Main procedural code file for the Inmail module.
  */
 
+use Drupal\Component\Utility\Xss;
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\inmail\Element\InmailMessage;
 use Drupal\inmail\Entity\AnalyzerConfig;
@@ -400,8 +402,13 @@ function inmail_preprocess_inmail_message(&$variables) {
     }
   }
 
+  $view_mode = $variables['view_mode'];
+  $plain_text = trim($message->getPlainText());
+  $filtered_html = Xss::filterAdmin($message->getHtml());
+  $variables['body']['plain'] = $view_mode == 'teaser' ? Markup::create(substr($plain_text, 0, 300)) : Markup::create(nl2br($plain_text));
+  $variables['body']['html'] = $view_mode == 'full' ? Markup::create($filtered_html) : NULL;
   // Build attachments for multipart messages in 'full' mode.
-  if ($message instanceof MultipartMessage && $variables['view_mode'] == 'full') {
+  if ($message instanceof MultipartMessage && $view_mode == 'full') {
     foreach (InmailMessage::filterMessageParts($message) as $type => $message_parts) {
       switch ($type) {
         // Build an array of Twig variables for inline images and attachments.

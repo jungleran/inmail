@@ -62,4 +62,18 @@ class MultipartMessage extends MultipartEntity implements MessageInterface {
     return '';
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getHtml() {
+    foreach ($this->getParts() as $key => $part) {
+      $content_type = $part->getContentType()['type'] . '/' . $part->getContentType()['subtype'];
+      // The first identified HTML part wins.
+      if ($content_type == 'text/html') {
+        // @todo: Consider further parts.
+        return $part->getDecodedBody();
+      }
+    }
+  }
+
 }

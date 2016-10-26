@@ -80,4 +80,12 @@ interface MessageInterface extends EntityInterface {
    */
   public function getPlainText();
 
+  /**
+   * Extracts HTML body representation.
+   *
+   * @return string
+   *   Resulting string contains HTML markup for the message body.
+   */
+  public function getHtml();
+
 }

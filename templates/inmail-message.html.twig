@@ -8,7 +8,7 @@
  *    It could be either \Drupal\inmail\MIME\Message or
  *    \Drupal\inmail\MIME\MultipartMessage.
  * - view_mode: View mode; for example, "teaser" or "full".
- * - body: Extracted mail body.
+ * - body: Plain text and HTML message body representation.
  * - attributes: HTML attributes for the containing element.
  *
  * The following variables are available for MIME messages only:
@@ -52,20 +52,15 @@
       {{ message.header.toString() }}
     </div>
   </header>
-  <div class="inmail-message__body">
+  <main class="inmail-message__body">
     {% if view_mode == 'teaser' %}
       <div class="inmail-message__element inmail-message__body__subject">{{ message.subject }}</div>
     {% endif %}
-    <div class="inmail-message__element inmail-message__body__content">
-      {% if view_mode == 'teaser' %}
-        {{ message.getPlainText() | slice(0, 1000) }}
-      {% else %}
-        {# Use getPlainText() after https://www.drupal.org/node/2405069. #}
-        {{ message.getDecodedBody() }}
-      {% endif %}
-    </div>
-  </div>
-
+    <div class="inmail-message__element inmail-message__body__content">{{ body.plain }}</div>
+    {% if body.html %}
+      <div class="inmail-message__element inmail-message__body__html">{{ body.html }}</div>
+    {% endif %}
+  </main>
   {% if attachments and view_mode == 'full' %}
     <footer class="inmail-message__footer">
       <label>Attachments</label>

@@ -79,4 +79,12 @@ class Message extends Entity implements MessageInterface {
     return '';
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getHtml() {
+    $content_type = $this->getContentType()['type'] . '/' . $this->getContentType()['subtype'];
+    return $content_type == 'text/html' ? $this->getDecodedBody() : '';
+  }
+
 }

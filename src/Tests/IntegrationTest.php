@@ -51,6 +51,8 @@ class IntegrationTest extends WebTestBase {
   public function testEmailDisplay() {
     $regular = drupal_get_path('module', 'inmail_test') . '/eml/normal.eml';
     $raw_multipart = file_get_contents(DRUPAL_ROOT . '/' . $regular);
+    // @todo: Move the XSS part into separate email example.
+    $raw_multipart = str_replace('</div>', "<script>alert('xss_attack')</script></div>", $raw_multipart);
 
     // Create a test user and log in.
     $user = $this->drupalCreateUser([
@@ -98,14 +100,14 @@ class IntegrationTest extends WebTestBase {
     $this->assertText('Cc');
     $this->assertText(htmlspecialchars(implode(', ', $message->getCc())));
     // Assert message parts.
-    $this->assertText('plain');
-    $this->assertText('html');
     $this->assertText('Header');
-    $this->assertText($message->getPart(0)->getHeader()->toString());
     $this->assertText($message->getPart(0)->getDecodedBody());
     $this->assertText('Header');
-    $this->assertText($message->getPart(1)->getHeader()->toString());
-    $this->assertText(htmlspecialchars($message->getPart(1)->getDecodedBody()));
+    $this->assertText(htmlspecialchars($message->getPlainText()));
+    $decoded_body = $message->getPart(1)->getDecodedBody();
+    // Script tags are removed for security reasons.
+    $decoded_body = str_replace("<script>alert('xss_attack')</script></div>", "alert('xss_attack')</div>", $decoded_body);
+    $this->assertRaw($decoded_body);
 
     // By RFC 2822, To header field is not necessary.
     // Load simple malformed message.
