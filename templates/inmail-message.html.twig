@@ -25,20 +25,20 @@
   <header class="inmail-message__header">
     <div class="inmail-message__element inmail-message__header__from">
       <label>From</label>
-      {{ message.from }}
+      {{ addresses_from }}
     </div>
-    {% if message.getTo is not empty %}
+    {% for address_to in addresses_to %}
       <div class="inmail-message__element inmail-message__header__to">
         <label>To</label>
-        {{ message.getTo | join(', ') }}
+        {{ address_to }}
       </div>
-    {% endif %}
-    {% if message.getCc is not empty %}
+    {% endfor %}
+    {% for address_cc in addresses_cc %}
       <div class="inmail-message__element inmail-message__header__cc">
         <label>CC</label>
-        {{ message.getCc | join(', ') }}
+        {{ address_cc }}
       </div>
-    {% endif %}
+    {% endfor %}
     <div class="inmail-message__element inmail-message__header__received-date">
       <label>Received</label>
       {{ message.getReceivedDate() }}

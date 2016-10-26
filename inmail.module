@@ -365,6 +365,13 @@ function inmail_theme() {
         'unknown' => [],
       ],
     ],
+    'inmail_message_address' => [
+      'render element' => 'inmail_message_address',
+      'template' => 'inmail-message-address',
+      'variables' => [
+        'address' => '',
+      ],
+    ],
   ];
 }
 
@@ -372,7 +379,27 @@ function inmail_theme() {
  * Implements hook_preprocess_inmail_message().
  */
 function inmail_preprocess_inmail_message(&$variables) {
+  /** @var \Drupal\inmail\MIME\MessageInterface $message */
   $message = $variables['message'];
+
+  $variables['addresses_from'] = $message->getFrom();
+  if ($message->getTo()) {
+    foreach ($message->getTo() as $key => $address) {
+      $variables['addresses_to'][] = [
+        '#type' => 'inmail_message_address',
+        '#address' => $address,
+      ];
+    }
+  }
+  if ($message->getCc()) {
+    foreach ($message->getCc() as $key => $address) {
+      $variables['addresses_cc'][] = [
+        '#type' => 'inmail_message_address',
+        '#address' => $address,
+      ];
+    }
+  }
+
   // Build attachments for multipart messages in 'full' mode.
   if ($message instanceof MultipartMessage && $variables['view_mode'] == 'full') {
     foreach (InmailMessage::filterMessageParts($message) as $type => $message_parts) {
