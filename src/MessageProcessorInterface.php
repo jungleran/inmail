@@ -24,6 +24,9 @@ interface MessageProcessorInterface {
    *   A raw mail message.
    * @param \Drupal\inmail\Entity\DelivererConfig $deliverer
    *   The Deliverer configuration that delivered the messages.
+   *
+   * @return \Drupal\inmail\ProcessorResultInterface
+   *   The processor result object for logging and reporting results.
    */
   public function process($key, $raw, DelivererConfig $deliverer);
 
@@ -36,6 +39,9 @@ interface MessageProcessorInterface {
    *   A list of raw mail messages.
    * @param \Drupal\inmail\Entity\DelivererConfig $deliverer
    *   The Deliverer configuration that delivered the messages.
+   *
+   * @return \Drupal\inmail\ProcessorResultInterface
+   *   Associative array of keys and processor results.
    *
    * @see MessageProcessorInterface::process()
    */

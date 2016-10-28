@@ -88,6 +88,7 @@ class MessageProcessor implements MessageProcessorInterface {
    */
   public function process($key, $raw, DelivererConfig $deliverer) {
     $event = NULL;
+    $result = NULL;
     // Create a log event.
     if (\Drupal::moduleHandler()->moduleExists('past')) {
       $event = past_event_create('inmail', 'process', 'Incoming mail');
@@ -109,7 +110,8 @@ class MessageProcessor implements MessageProcessorInterface {
           $event->addArgument('validation errors', $message->getValidationErrors());
           $event->setSeverity(RfcLogLevel::ERROR);
         }
-        return;
+        // @todo: Add validation error to processor result https://www.drupal.org/node/2822567.
+        return NULL;
       }
       // Set event message if parsing the message passed.
       if ($event) {
@@ -189,14 +191,17 @@ class MessageProcessor implements MessageProcessorInterface {
         $event->save();
       }
     }
+    return $result;
   }
 
   /**
    * {@inheritdoc}
    */
   public function processMultiple(array $messages, DelivererConfig $deliverer) {
+    $results = [];
     foreach ($messages as $key => $message) {
-      $this->process($key, $message, $deliverer);
+      $results[$key] = $this->process($key, $message, $deliverer);
     }
+    return $results;
   }
 }

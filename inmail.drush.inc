@@ -7,6 +7,8 @@
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
+use Drupal\inmail\ProcessorResultInterface;
+use Drupal\Component\Render\FormattableMarkup;
 
 /**
  * @addtogroup processing
@@ -84,11 +86,31 @@ function drush_inmail_process() {
     foreach ($args as $filename) {
       $raws[] = file_get_contents($filename[0] == '/' ? $filename : __DIR__ . '/' . $filename);
     }
-    $processor->processMultiple($raws, $deliverer);
+    $results = $processor->processMultiple($raws, $deliverer);
+    if (drush_get_option('verbose')) {
+      $processed = 0;
+      foreach ($results as $key => $result) {
+        if ($log_message = inmail_get_log_message($result)) {
+          drush_log(dt('@key: @message', ['@key' => $key, '@message' => $log_message]));
+          $processed++;
+        }
+      }
+      drush_log(dt('@count messages successfully processed.', ['@count' => $processed]));
+    }
   }
   else {
     $raw = _inmail_get_piped_input();
-    $processor->process('unique_key', $raw, $deliverer);
+    /** @var ProcessorResultInterface $result */
+    $result = $processor->process('unique_key', $raw, $deliverer);
+    if (drush_get_option('verbose')) {
+      if ($result) {
+        drush_log(dt('Message successfully processed.'));
+        drush_log(dt(inmail_get_log_message($result)));
+      }
+      else {
+        drush_set_error(dt('Message was not processed.'));
+      }
+    }
   }
 }
 
@@ -156,5 +178,25 @@ function _inmail_get_piped_input() {
 }
 
 /**
- * @}
+ * Returns log message extracted from processor result.
+ *
+ * @param \Drupal\inmail\ProcessorResultInterface $processor_result
+ *   The processor result object for logging and reporting results or null.
+ *
+ * @return string|NULL
+ *   Extracted log message or NULL if processor result is empty.
  */
+function inmail_get_log_message($processor_result) {
+  $messages = [];
+  if ($processor_result) {
+    foreach ($processor_result->readLog() as $source => $log) {
+      foreach ($log as $item) {
+        $formatted_string = new FormattableMarkup($item['message'], $item['placeholders']);
+        // Apply placeholders.
+        $messages[] = $formatted_string->__toString();
+      }
+    }
+    return strip_tags(implode("\n", $messages));
+  }
+  return NULL;
+}
