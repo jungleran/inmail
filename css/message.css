@@ -51,14 +51,13 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
-
-.inmail-message__body .ui-tabs-nav {
-  padding: .2em .2em 0 !important;
+.inmail-message__body .ui-tabs-nav.ui-widget-header {
+  padding: .2em .2em 0;
 }
 .inmail-message__body .ui-tabs-nav li {
   float: right;
 }
-.inmail-message__body .ui-tabs-nav .ui-state-default{
+.inmail-message__body .ui-tabs-nav .ui-state-default {
   background-color: #edede8;
   border-color: #bfbfbf;
 }

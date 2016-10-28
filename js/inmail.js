@@ -32,6 +32,11 @@
     }
   };
 
+  /**
+   * For body tag, adds tabs for selecting how the content will be displayed.
+   *
+   * @type {Drupal~behavior}
+   */
   Drupal.behaviors.bodyTabs = {
     attach: function (context, settings) {
       $('.inmail-message__body ul', context).once('inmail-message').each(function () {
