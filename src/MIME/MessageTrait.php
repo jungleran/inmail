@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\inmail\MIME;
+use Drupal\Component\Datetime\DateTimePlus;
 
 /**
  * Provides common helper methods for MultiPartMessage.
@@ -80,6 +81,21 @@ trait MessageTrait {
       $body = $this->getDecodedAddress($body);
     }
     return $body ? [$body] : NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getReceivedDate() {
+    // A message has one or more Received header fields. The first occurring is
+    // the latest added. Its body has two parts separated by ';', the second
+    // part being a date.
+    $received_body = $this->getHeader()->getFieldBody('Received');
+    list($info, $date_string) = explode(';', $received_body, 2);
+    // By RFC2822 time-zone abbreviation is invalid and needs to be removed.
+    // Match only capital letters within the brackets at the end of string.
+    $date_string = preg_replace('/\(([A-Z]+)\)$/', '', $date_string);
+    return new DateTimePlus($date_string);
   }
 
 }

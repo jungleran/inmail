@@ -118,10 +118,27 @@ class MessageTest extends UnitTestCase {
     $message = new Message(new Header([
       ['name' => 'Received', 'body' => 'blah; Thu, 29 Jan 2015 15:43:04 +0100'],
     ]), 'I am a body');
-
     $expected_date = new DateTimePlus('Thu, 29 Jan 2015 15:43:04 +0100');
-
     $this->assertEquals($expected_date, $message->getReceivedDate());
+    $this->assertEmpty($message->getReceivedDate()->getErrors());
+
+    // By RFC2822 time-zone abbreviation is invalid and needs to be removed.
+    $message = new Message(new Header([
+      ['name' => 'Received', 'body' => 'FooBar; Fri, 21 Oct 2016 11:15:25 +0200 (CEST)'],
+    ]), 'I am a body');
+    $expected_date = new DateTimePlus('Fri, 21 Oct 2016 11:15:25 +0200');
+    $this->assertEquals($expected_date, $message->getReceivedDate());
+    $this->assertEmpty($message->getReceivedDate()->getErrors());
+
+    $received_string = "by (localhost) via (inmail) with test_fetcher dbvMO4Ox id\n <CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.example.com>; Wed, 26 Oct 2016 02:50:11 +1100 (GFT)";
+    $message = new Message(new Header([
+      ['name' => 'Received', 'body' => $received_string],
+    ]), 'I am Body');
+    $expected_date = new DateTimePlus('Wed, 26 Oct 2016 02:50:11 +1100');
+    $this->assertEquals($expected_date, $message->getReceivedDate());
+    // It is parsed time zone, everything else must remain untouched.
+    $this->assertEquals($received_string, $message->getHeader()->getFieldBody('Received'));
+    $this->assertEmpty($message->getReceivedDate()->getErrors());
   }
 
   /**
