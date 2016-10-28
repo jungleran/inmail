@@ -31,4 +31,14 @@
       });
     }
   };
+
+  Drupal.behaviors.bodyTabs = {
+    attach: function (context, settings) {
+      $('.inmail-message__body ul', context).once('inmail-message').each(function () {
+        var $this = $(this);
+        $this.parent().tabs();
+      });
+    }
+  };
+
 })(jQuery, Drupal, drupalSettings);

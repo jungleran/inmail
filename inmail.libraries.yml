@@ -10,6 +10,7 @@ inmail.message:
     js/inmail.js: {}
   dependencies:
     - core/jquery.once
+    - core/jquery.ui.tabs
 
 inmail.admin:
   version: 1.x

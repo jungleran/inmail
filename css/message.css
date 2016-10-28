@@ -52,6 +52,20 @@
   margin-bottom: 20px;
 }
 
+.inmail-message__body .ui-tabs-nav {
+  padding: .2em .2em 0 !important;
+}
+.inmail-message__body .ui-tabs-nav li {
+  float: right;
+}
+.inmail-message__body .ui-tabs-nav .ui-state-default{
+  background-color: #edede8;
+  border-color: #bfbfbf;
+}
+.inmail-message__body .ui-tabs-nav .ui-state-active {
+  background-color: #fff;
+}
+
 /* Teaser view */
 
 .inmail-message--teaser .inmail-message__header,
@@ -92,7 +106,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   flex-basis: auto;
-  margin-right: 1em;
+}
+.inmail-message--teaser .inmail-message__body__subject:after {
+  content: '|';
+  margin: 0 1em 0 1em;
 }
 .inmail-message--teaser .inmail-message__body__content {
   white-space: nowrap;

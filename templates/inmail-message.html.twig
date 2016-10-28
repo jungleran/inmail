@@ -60,9 +60,17 @@
     {% if view_mode == 'teaser' %}
       <div class="inmail-message__element inmail-message__body__subject">{{ message.subject }}</div>
     {% endif %}
-    <div class="inmail-message__element inmail-message__body__content">{{ body.plain }}</div>
+    {% if view_mode == 'full' and body.plain and body.html %}
+      <ul>
+        <li><a href="#inmail-message__body__content">Plain</a></li>
+        <li><a href="#inmail-message__body__html">HTML</a></li>
+      </ul>
+    {% endif %}
+    {% if body.plain %}
+      <div class="inmail-message__element inmail-message__body__content" id="inmail-message__body__content">{{ body.plain }}</div>
+    {% endif %}
     {% if body.html %}
-      <div class="inmail-message__element inmail-message__body__html">{{ body.html }}</div>
+      <div class="inmail-message__element inmail-message__body__html" id="inmail-message__body__html">{{ body.html }}</div>
     {% endif %}
   </main>
   {% if attachments and view_mode == 'full' %}
