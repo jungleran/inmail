@@ -100,9 +100,7 @@ class IntegrationTest extends WebTestBase {
     $this->assertText('Cc');
     $this->assertText(htmlspecialchars(implode(', ', $message->getCc())));
     // Assert message parts.
-    $this->assertText('Header');
     $this->assertText($message->getPart(0)->getDecodedBody());
-    $this->assertText('Header');
     $this->assertText(htmlspecialchars($message->getPlainText()));
     $decoded_body = $message->getPart(1)->getDecodedBody();
     // Script tags are removed for security reasons.

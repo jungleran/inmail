@@ -21,6 +21,10 @@
 
 {{ attach_library('inmail/message') }}
 
+{% if view_mode == 'full' %}
+  {{ attach_library('inmail/inmail.message') }}
+{% endif %}
+
 <section class="inmail-message inmail-message--{{ view_mode }}">
   <header class="inmail-message__header">
     <div class="inmail-message__element inmail-message__header__from">
@@ -49,7 +53,7 @@
     </div>
     <div class="inmail-message__element inmail-message__header__all">
       <label>All Headers</label>
-      {{ message.header.toString() }}
+      <pre>{{ message.header.toString() }}</pre>
     </div>
   </header>
   <main class="inmail-message__body">

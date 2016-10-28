@@ -4,6 +4,13 @@ message:
     theme:
       css/message.css: {}
 
+inmail.message:
+  version: 1.x
+  js:
+    js/inmail.js: {}
+  dependencies:
+    - core/jquery.once
+
 inmail.admin:
   version: 1.x
   css:
