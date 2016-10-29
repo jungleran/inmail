@@ -55,13 +55,13 @@ class InmailMessageWebTest extends InmailWebTestBase {
 
     // Assert attachment file names and size.
     $this->assertLink('hello.txt');
-    $this->assertText('hello.txt (61 B)');
+    $this->assertText('hello.txt (61 bytes)');
     // @todo: Properly assert special characters in file names
     //    https://www.drupal.org/node/2819645.
     $this->assertText('This is a sample image with');
-    $this->assertText('.JPEG.png (94 B)');
+    $this->assertText('.JPEG.png (94 bytes)');
     $this->assertLink('Inline image.png');
-    $this->assertText('Inline image.png (94 B)');
+    $this->assertText('Inline image.png (94 bytes)');
 
     // Assert the download link response.
     $this->clickLink('hello.txt');

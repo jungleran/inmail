@@ -4,6 +4,8 @@ namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\inmail\TypedData\MailboxDefinition;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\inmail\MIME\Entity;
+use Drupal\inmail\MIME\Header;
 
 /**
  * Tests inmail datatypes.
@@ -53,5 +55,43 @@ class InmailDataTypeTest extends KernelTestBase {
     $this->assertEqual(1, $violations->count());
     $this->assertEqual('address', $violations->get(0)->getPropertyPath());
     $this->assertEqual('This value is not a valid email address.', $violations->get(0)->getMessage());
+  }
+
+  /**
+   * Tests the function inmail_message_get_attachment_file_size()
+   *
+   * @dataProvider providedData
+   */
+  public function testAttachmentFileSize($attachment, $size) {
+    self::assertEquals($size, inmail_message_get_attachment_file_size($attachment->getBody(), $attachment->getContentTransferEncoding()));
+  }
+
+  /**
+   * Provides data to test inmail_message_get_attachment_file_size() with.
+   *
+   * @return array
+   */
+  public function providedData() {
+    return
+    [
+      [
+        new Entity(new Header(), $this->randomString(1)),
+        '1 byte',
+      ],
+      [
+        new Entity(new Header(), $this->randomString(1024)),
+        '1 KB',
+      ],
+      [
+        new Entity(new Header(), $this->randomString(2022)),
+        '1.97 KB',
+      ],
+      [
+        new Entity(new Header([
+          ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
+        ]), $this->randomString(20480)),
+        '20 KB',
+      ],
+    ];
   }
 }

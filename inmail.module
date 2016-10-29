@@ -482,20 +482,14 @@ function inmail_message_build_attachment($index, EntityInterface $attachment, $d
  *   The encoded attachment content.
  * @param string $encoding
  *   The content transfer encoding.
- * @param int $precision
- *   The precision.
  *
  * @return string
  *   Returns the formatted file size.
  */
-function inmail_message_get_attachment_file_size($content, $encoding, $precision = 2) {
-  // Add a list of suffixes.
-  $suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
-
+function inmail_message_get_attachment_file_size($content, $encoding) {
   // If decoding fails, use the original body content to get the size in B.
   $decoded_content = Encodings::decode($content, $encoding);
   $size = $decoded_content ? strlen($decoded_content) : strlen($content);
-  $base = log($size, 1024);
 
-  return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
+  return format_size($size);
 }
