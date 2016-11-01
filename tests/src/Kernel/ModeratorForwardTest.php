@@ -94,6 +94,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $processor->process('unique_key', $regular_x, $deliverer);
     $this->assertSuccess($deliverer, 'unique_key');
     $this->assertMailCount(0);
+    $processor->process('unique_key', $regular_x, $deliverer);
 
     // Again check past event log.
     $events = \Drupal::entityTypeManager()->getStorage('past_event')->loadMultiple();
@@ -108,6 +109,31 @@ class ModeratorForwardTest extends KernelTestBase {
     $processor->process('unique_key', $regular, $deliverer);
     $this->assertSuccess($deliverer, 'unique_key');
     $this->assertMailCount(1);
+
+  }
+
+  /**
+   * Tests sending message report after processing message.
+   */
+  public function testSendingReportMessage() {
+    /** @var \Drupal\inmail\MessageProcessor $processor */
+    $processor = \Drupal::service('inmail.processor');
+    $bounce = $this->getMessageFileContents('nouser.eml');
+    $regular = $this->getMessageFileContents('normal.eml');
+    $deliverer = $this->createTestDeliverer();
+    // Testing with bounce.
+    $this->assertMailCount(0);
+    $deliverer->setMessageReport(1);
+    $processor->process('unique_key', $bounce, $deliverer);
+    $this->assertMailCount(0);
+    // Testing with message witch is not bounce.
+    $processor->process('unique_key', $regular, $deliverer);
+    $this->assertMailCount(1);
+    $mails = $this->getMails();
+    $last_mail = $mails[0];
+    $this->assertEquals('bounces@example.com', $last_mail['from']);
+    $this->assertEquals('Re: BMH testing sample', $last_mail['subject']);
+    $this->assertEquals('The message has been processed successfully.', $last_mail['body']);
   }
 
   /**

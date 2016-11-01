@@ -319,6 +319,16 @@ function inmail_mail($key, &$message, $params) {
       $header->addField('X-Inmail-Forwarded', 'handler_moderator_forward');
       $message['raw_headers'] = $header;
       break;
+    case 'success':
+      /** @var \Drupal\contact\MessageInterface $original */
+      $original = $params['original'];
+      $message['subject'] = 'Re: ' . $original->getSubject();
+      $message['headers']['references'] = $original->getMessageId();
+      // Set the mail body.
+      $body [] = 'The message has been processed successfully.';
+      // @todo Add log messages in body https://www.drupal.org/node/2822320
+      $message['body'] = $body;
+      break;
   }
 }
 

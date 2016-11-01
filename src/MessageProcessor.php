@@ -9,6 +9,7 @@ use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\MIME\ParseException;
 use Drupal\inmail\MIME\ParserInterface;
+use Drupal\inmail\Plugin\DataType\BounceData;
 use Drupal\user\Entity\User;
 use Drupal\Core\Logger\RfcLogLevel;
 
@@ -170,6 +171,7 @@ class MessageProcessor implements MessageProcessorInterface {
         }
       }
       $result->success($key);
+      $this->sendMessageReport($result, $message, $deliverer);
     }
     catch (ParseException $e) {
       // Set event message if parsing the message fails.
@@ -192,6 +194,40 @@ class MessageProcessor implements MessageProcessorInterface {
       }
     }
     return $result;
+  }
+
+  /**
+   * Sends message report after processing mail.
+   *
+   * Skip report if processed mail is a bounce.
+   *
+   * @param $result \Drupal\inmail\ProcessorResult
+   *  The processor result object.
+   * @param $message \Drupal\inmail\MIME\MessageInterface $original
+   *   Received message.
+   * @param $deliverer \Drupal\inmail\Entity\DelivererConfig
+   *   The Deliverer configuration that delivered the messages.
+   */
+  public function sendMessageReport($result, $message, $deliverer) {
+    // Make sure to never reply to a bounce to avoid loops.
+    /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
+    $default_result = $result->getAnalyzerResult();
+    if ($default_result->hasContext('bounce')) {
+      /** @var BounceData $bounce_data */
+      $bounce_data = $default_result->getContext('bounce')->getContextData();
+      if ($bounce_data->isBounce()) {
+        return;
+      }
+    }
+
+    if ($deliverer->isMessageReport()) {
+      $params['result'] = $result;
+      $params['original'] = $message;
+      $recipient = $message->getFrom();
+      $mail_manager = \Drupal::service('plugin.manager.mail');
+      $mail_manager->mail('inmail', 'success', $recipient,
+        \Drupal::languageManager()->getDefaultLanguage()->getId(), $params);
+    }
   }
 
   /**

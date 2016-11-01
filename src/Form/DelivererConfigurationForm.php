@@ -35,4 +35,22 @@ class DelivererConfigurationForm extends PluginConfigurationForm {
     $form_state->setRedirect('entity.inmail_deliverer.collection');
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildForm($form, $form_state);
+    $entity = $this->getEntity();
+
+    $form['message_report'] = [
+      '#title' => $this->t('Mail processing report to sender.'),
+      '#type' => 'checkbox',
+      '#default_value' => $entity->isMessageReport(),
+    ];
+
+    return $form;
+
+  }
+
+
 }

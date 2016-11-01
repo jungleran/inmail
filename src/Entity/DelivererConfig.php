@@ -32,6 +32,7 @@ use Drupal\inmail\DelivererConfigInterface;
  *     "label",
  *     "plugin",
  *     "configuration",
+ *     "message_report",
  *   },
  *   links = {
  *     "edit-form" = "/admin/config/system/inmail/analyzers/{inmail_deliverer}",
@@ -49,4 +50,29 @@ class DelivererConfig extends PluginConfigEntity implements DelivererConfigInter
    */
   protected $pluginType = 'deliverer';
 
+  /**
+   *  The enabled/disabled status of the messageReporter.
+   *
+   * @var bool
+   */
+  protected $message_report = FALSE;
+
+  /**
+   * Sets the flag for message report.
+   *
+   * @param bool $messageReport
+   *   Flag of message reporter.
+   */
+  public function setMessageReport($messageReport) {
+   $this->message_report = $messageReport;
+  }
+
+  /**
+   * Returns the flag for message report.
+   *
+   * @return bool
+   */
+  public function isMessageReport() {
+    return $this->message_report;
+  }
 }
