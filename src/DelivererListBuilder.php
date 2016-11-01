@@ -60,9 +60,18 @@ class DelivererListBuilder extends ConfigEntityListBuilder {
   public function buildHeader() {
     $row['label'] = $this->t('Deliverer');
     $row['plugin'] = $this->t('Plugin');
-    $row['processed_count'] = $this->t('Processed');
-    $row['unprocessed_count'] = $this->t('Unprocessed');
-    $row['total_count'] = $this->t('Total');
+    $row['processed_count'] = [
+      'data' => $this->t('Processed'),
+      'class' => ['inmail-deliverer__count'],
+    ];
+    $row['unprocessed_count'] = [
+      'data' => $this->t('Unprocessed'),
+      'class' => ['inmail-deliverer__count'],
+    ];
+    $row['total_count'] = [
+      'data' => $this->t('Total'),
+      'class' => ['inmail-deliverer__count'],
+    ];
     $row['last_checked'] = $this->t('Last checked');
     return $row + parent::buildHeader();
   }
@@ -88,12 +97,22 @@ class DelivererListBuilder extends ConfigEntityListBuilder {
       /** @var DelivererInterface $plugin */
       $plugin = $this->delivererManager->createInstance($plugin_id, $entity->getConfiguration());
 
-      $row['processed_count'] = $plugin->getProcessedCount();
+      $row['processed_count'] = [
+        'data' => $plugin->getProcessedCount(),
+        'class' => ['inmail-deliverer__count'],
+      ];
 
       if ($plugin instanceof FetcherInterface) {
         // Set the "Remaining messages" count.
-        $row['unprocessed_count'] = $plugin->getUnprocessedCount();
-        $row['total_count'] = $plugin->getTotalCount();
+        $row['unprocessed_count'] = [
+          'data' => $plugin->getUnprocessedCount(),
+          'class' => ['inmail-deliverer__count'],
+        ];
+
+        $row['total_count'] = [
+          'data' => $plugin->getTotalCount(),
+          'class' => ['inmail-deliverer__count'],
+        ];
 
         // Set the relative time of last check.
         if ($last_checked = $plugin->getLastCheckedTime()) {

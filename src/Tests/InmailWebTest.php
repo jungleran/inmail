@@ -170,6 +170,9 @@ class InmailWebTest extends WebTestBase {
     $this->assertFieldByXPath('//table/tbody/tr/td[5]', 250);
     $this->assertText('Fetcher state info has been updated.');
     $this->assertFieldByXPath($overview_count_xpath);
+
+    $this->drupalGet('admin/config/system/inmail/deliverers');
+    $this->assertRaw('class="inmail-deliverer__count"');
   }
 
   /**
