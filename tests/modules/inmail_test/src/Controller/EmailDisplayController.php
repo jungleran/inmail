@@ -54,7 +54,12 @@ class EmailDisplayController extends ControllerBase {
 
     // @todo: Extend support for inline elements after
     //    https://www.drupal.org/node/2819713.
-    $attachment = $message->getPart($index);
+    if ($index == 'raw') {
+      $attachment = $message;
+    }
+    else {
+      $attachment = $message->getPart($index);
+    }
     $header = $attachment->getHeader();
 
     // Decode the attachment body.

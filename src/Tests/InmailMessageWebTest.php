@@ -67,6 +67,13 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->clickLink('hello.txt');
     $this->assertResponse(200);
     $this->assertText('Greetings from Inmail attachment display');
+
+    $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');
+    $this->clickLink(t('Download raw message'));
+    $this->assertResponse(200);
+    $this->assertText('This is an email with attachments.');
+    $this->assertText('Content-Type: text/plain');
+
   }
 
 }

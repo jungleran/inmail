@@ -365,6 +365,7 @@ function inmail_theme() {
         'body' => [],
         'attachments' => [],
         'unknown' => [],
+        'download_message' => '',
       ],
     ],
     'inmail_message_address' => [
@@ -429,6 +430,11 @@ function inmail_preprocess_inmail_message(&$variables) {
           $variables['unknown'] = [];
       }
     }
+  }
+  if (isset($variables['download_url'])) {
+    $download_url = $variables['download_url'];
+    $variables['download_url']->setRouteParameter('index', 'raw');
+    $variables['download_message'] = $download_url->toString();
   }
 }
 

@@ -14,6 +14,7 @@
  * The following variables are available for MIME messages only:
  * - (optional) attachments: A list of elements representing attachments.
  * - (optional) unknown: A list of unknown message part elements.
+ * - (optional) download_message: Link to download the raw message.
  *
  * @ingroup themeable
  */
@@ -54,6 +55,9 @@
     <div class="inmail-message__element inmail-message__header__all">
       <label>All Headers</label>
       <pre>{{ message.header.toString() }}</pre>
+      {% if download_message %}
+        <a href="{{ download_message }}" target="_blank">Download raw message</a>
+      {% endif %}
     </div>
   </header>
   <main class="inmail-message__body">
