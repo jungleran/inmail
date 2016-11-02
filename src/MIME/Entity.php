@@ -90,13 +90,10 @@ class Entity implements EntityInterface {
     if ($this->header->hasField('Content-Disposition')) {
       $disposition_field = $this->header->getFieldBody('Content-Disposition');
       $field_parts = preg_split('/\s*;\s*/', $disposition_field, 2);
-      $type = reset($field_parts);
-    }
-    else {
-      $type = $this->getContentType()['subtype'];
+      return reset($field_parts);
     }
 
-    return $type;
+    return $this->getContentType()['type'] . '/' . $this->getContentType()['subtype'];
   }
 
   /**

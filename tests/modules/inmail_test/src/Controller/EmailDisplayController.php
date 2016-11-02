@@ -5,6 +5,7 @@ namespace Drupal\inmail_test\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 use Drupal\inmail\MIME\Encodings;
+use Drupal\inmail\MIME\MultipartMessage;
 use Drupal\past\PastEventInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -35,12 +36,13 @@ class EmailDisplayController extends ControllerBase {
   }
 
   /**
-   * Provides download support for an attachment.
+   * Provides a view support for the given attachment (MIME entity) path.
    *
    * @param \Drupal\past\PastEventInterface $past_event
    *   The past event.
-   * @param string $index
-   *   The index of the attachment message part.
+   * @param string $path
+   *   The path to find a corresponding MIME entity. In case "*" is passed,
+   *   the raw mail message content will be returned.
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   The response.
@@ -48,25 +50,40 @@ class EmailDisplayController extends ControllerBase {
    * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
    *   Throws an exception in case of invalid event.
    */
-  public function getAttachment(PastEventInterface $past_event, $index) {
+  public function getAttachment(PastEventInterface $past_event, $path) {
     /** @var \Drupal\Inmail\Mime\MultipartMessage $message */
     $message = $this->getMessage($past_event);
 
-    // @todo: Extend support for inline elements after
-    //    https://www.drupal.org/node/2819713.
-    if ($index == 'raw') {
-      $attachment = $message;
+    // @todo: Inject the service.
+    /** @var \Drupal\inmail\MIME\MessageDecomposition $message_decomposition */
+    $message_decomposition = \Drupal::service('inmail.message_decomposition');
+
+    // Offer download of the raw email message.
+    if ($path == '~') {
+      $headers = [
+        'Content-Disposition' => 'attachment; filename=original_message.eml',
+        'Content-Type' => 'message/rfc822',
+      ];
+      return new Response($message->toString(), Response::HTTP_OK, $headers);
     }
-    else {
-      $attachment = $message->getPart($index);
+
+    // Filter-out non-multipart messages.
+    if (!$message instanceof MultipartMessage) {
+      return new Response(NULL, Response::HTTP_NOT_FOUND);
     }
-    $header = $attachment->getHeader();
+
+    // @todo: Do not allow direct access to mail parts.
+    // Get the entity from the given path.
+    if (!$entity = $message_decomposition->getEntityByPath($message, $path)) {
+      return new Response(NULL, Response::HTTP_NOT_FOUND);
+    }
 
     // Decode the attachment body.
-    $decoded_body = Encodings::decode($attachment->getBody(), $attachment->getContentTransferEncoding());
+    $decoded_body = Encodings::decode($entity->getBody(), $entity->getContentTransferEncoding());
 
     // Display images in the browser.
-    if ($attachment->getContentType()['type'] == 'image') {
+    $header = $entity->getHeader();
+    if ($entity->getContentType()['type'] == 'image') {
       $header->removeField('Content-Disposition');
     }
 

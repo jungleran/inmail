@@ -24,3 +24,5 @@ services:
     arguments: ['@logger.channel.inmail']
   inmail.mime_renderer:
     class: Drupal\inmail\MIME\Renderer
+  inmail.message_decomposition:
+    class: Drupal\inmail\MIME\MessageDecomposition

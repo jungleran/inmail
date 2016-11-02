@@ -34,10 +34,11 @@ class InmailMessageWebTest extends InmailWebTestBase {
   }
 
   /**
-   * Tests the attachments part of the Inmail Message element.
+   * Tests the message parts of the Inmail Message element.
    */
-  public function testAttachments() {
+  public function testMessageParts() {
     $this->doTestComplexAttachments();
+    $this->doTestUnknownParts();
   }
 
   /**
@@ -71,9 +72,34 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');
     $this->clickLink(t('Download raw message'));
     $this->assertResponse(200);
+    $this->assertHeader('Content-Type', 'message/rfc822');
+    $this->assertHeader('Content-Disposition', 'attachment; filename=original_message.eml');
     $this->assertText('This is an email with attachments.');
     $this->assertText('Content-Type: text/plain');
 
+  }
+
+  /**
+   * Tests unknown parts of an email.
+   */
+  public function doTestUnknownParts() {
+    $raw_email_with_attachments = $this->getMessageFileContents('attachments/multiple-attachments.eml');
+
+    // Process the raw multipart mail message.
+    $this->processor->process('key', $raw_email_with_attachments, $this->createTestDeliverer());
+    $event_id = $this->getLastEventByMachinename('process', TRUE);
+
+    // Go to the "full" view mode page.
+    $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');
+
+    // Assert unknown parts.
+    $this->assertText('Unknown parts');
+    $this->assertLink('multipart/mixed');
+    $this->assertLink('multipart/related');
+    $this->assertLink('multipart/alternative');
+    $this->clickLink('application/x-unknown');
+    $this->assertResponse(200);
+    $this->assertText('Unknown part');
   }
 
 }

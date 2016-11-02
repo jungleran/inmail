@@ -4,13 +4,10 @@
  * Main procedural code file for the Inmail module.
  */
 
-use Drupal\Component\Utility\Xss;
-use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\inmail\Element\InmailMessage;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\MIME\Encodings;
-use Drupal\inmail\MIME\EntityInterface;
 use Drupal\inmail\MIME\MultipartMessage;
 use Drupal\inmail\MIME\Parser;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
@@ -394,6 +391,7 @@ function inmail_theme() {
 function inmail_preprocess_inmail_message(&$variables) {
   /** @var \Drupal\inmail\MIME\MessageInterface $message */
   $message = $variables['message'];
+  $view_mode = $variables['view_mode'];
 
   $variables['addresses_from'] = $message->getFrom();
   if ($message->getTo()) {
@@ -413,80 +411,44 @@ function inmail_preprocess_inmail_message(&$variables) {
     }
   }
 
-  $view_mode = $variables['view_mode'];
-  $plain_text = trim($message->getPlainText());
-  $filtered_html = Xss::filterAdmin($message->getHtml());
-  $variables['body']['plain'] = $view_mode == 'teaser' ? Markup::create(substr($plain_text, 0, 300)) : Markup::create(nl2br($plain_text));
-  $variables['body']['html'] = $view_mode == 'full' ? Markup::create($filtered_html) : NULL;
-  // Build attachments for multipart messages in 'full' mode.
+  /** @var \Drupal\Core\Url $download_url */
+  $download_url = isset($variables['download_url']) ? $variables['download_url'] : NULL;
+  $variables['download_message'] = $download_url ? $download_url->setRouteParameter('path', '~')->toString() : NULL;
+
+  /** @var \Drupal\Inmail\MIME\MessageDecomposition $message_decomposition */
+  $message_decomposition = \Drupal::service('inmail.message_decomposition');
+
+  // Get the flattened list of entities for the processed message.
+  $entities = $message_decomposition->getEntities($message);
+
+  // Get the plain text and HTML body paths for the processed message.
+  $body_paths = $message_decomposition->getBodyPaths($message);
+  $plain_text_path = $body_paths['plain'];
+  $html_path = $body_paths['html'];
+  $variables['body']['plain'] = isset($entities[$plain_text_path]) ? InmailMessage::getPlainTextMarkup($entities[$plain_text_path]->getDecodedBody(), $view_mode) : NULL;
+  $variables['body']['html'] = isset($entities[$html_path]) ? InmailMessage::getHtmlMarkup($entities[$html_path]->getDecodedBody(), $view_mode) : NULL;
+
+  // Build multipart message parts in 'full' view mode.
   if ($message instanceof MultipartMessage && $view_mode == 'full') {
-    foreach (InmailMessage::filterMessageParts($message) as $type => $message_parts) {
-      switch ($type) {
-        // Build an array of Twig variables for inline images and attachments.
+    /** @var \Drupal\Inmail\MIME\Entity $entity */
+    foreach ($entities as $path => $entity) {
+      switch ($entity->getType()) {
         case 'inline':
-        case 'attachments':
-          /** @var \Drupal\Core\Url $download_url */
-          $download_url = isset($variables['download_url']) ? $variables['download_url'] : NULL;
-          foreach ($message_parts as $index => $message_part) {
-            $variables['attachments'][] = inmail_message_build_attachment($index, $message_part, $download_url);
-          }
+        case 'attachment':
+          $variables['attachments'][$path] = $message_decomposition->buildAttachment($path, $entity, $download_url);
           break;
 
-        // @todo: Identify the body (plain/html) and return it.
-        case 'body':
-        case 'unknown':
+        // All unrecognized types should go into the unknown array.
         default:
-          // @todo: Build a Twig variables array for the unknown parts.
-          $variables['unknown'] = [];
+          // Skip Plain/HTML parts as they are already displayed.
+          if (in_array($path, [$plain_text_path, $html_path], TRUE)) {
+            continue;
+          }
+          // @todo: Filter-out entities containing multipart/* content type.
+          $variables['unknown'][$path] = $message_decomposition->buildAttachment($path, $entity, $download_url);
       }
     }
   }
-  if (isset($variables['download_url'])) {
-    $download_url = $variables['download_url'];
-    $variables['download_url']->setRouteParameter('index', 'raw');
-    $variables['download_message'] = $download_url->toString();
-  }
-}
-
-/**
- * Builds an array of attachment properties.
- *
- * @param string $index
- *   The index of the attachment part.
- * @param \Drupal\inmail\MIME\EntityInterface $attachment
- *   The message part containing an attachment.
- * @param \Drupal\Core\Url|null $download_url
- *   (optional) A download URL or null if it does not exist.
- *
- * @return array
- *   An array of attachment properties:
- *      - type: The attachment type (image, audio...)
- *      - content_type: The content type
- *      - filename: The attachment file name
- *      - encoding: Content transfer encoding
- *      - content: Raw encoded content.
- *      - (optional) url: The URL to download the attachment.
- */
-function inmail_message_build_attachment($index, EntityInterface $attachment, $download_url = NULL) {
-  $build = [
-    'type' => $attachment->getContentType()['type'],
-    'content_type' => $attachment->getContentType()['type'] . '/' . $attachment->getContentType()['subtype'],
-    'filename' => !empty($attachment->getContentType()['parameters']['name']) ? $attachment->getContentType()['parameters']['name'] : '',
-    'encoding' => $attachment->getContentTransferEncoding(),
-    'content' => $attachment->getBody(),
-    'filesize' => inmail_message_get_attachment_file_size($attachment->getBody(), $attachment->getContentTransferEncoding()),
-  ];
-
-  // In case there is an implementation of the download attachment integration,
-  // extend the URL with the attachment index. This index is used in
-  // \Drupal\inmail\MIME\MultipartMessage::getPart() to reference the message
-  // parts.
-  if ($download_url) {
-    $download_url->setRouteParameter('index', $index);
-    $build['url'] = $download_url->toString();
-  }
-
-  return $build;
 }
 
 /**

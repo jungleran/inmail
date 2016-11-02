@@ -6,7 +6,10 @@ Message-ID: <CALVQMgDbOBQUAz6=oVBP_jd4oD3xUPcRhVjC6_=auKuHSFu_3g@mail.example.co
 Subject:
 From: Bob <bob@example.com>
 To: Alice <alice@example.com>
-Content-Type: multipart/mixed; boundary=001a1141f8d43cdc22053f0fbc08
+Content-Type: multipart/mixed; boundary=001a1141f8d43cdc22053f0fbc09
+
+--001a1141f8d43cdc22053f0fbc09
+Content-Type: multipart/related; boundary=001a1141f8d43cdc22053f0fbc08
 
 --001a1141f8d43cdc22053f0fbc08
 Content-Type: multipart/related; boundary=001a1141f8d43cdc20053f0fbc07
@@ -64,3 +67,9 @@ X-Attachment-Id: f_iue4056u1
 iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJAQMAAADaX5RTAAAABlBMVEX///9mZmaO7mygAAAAE0lE
 QVQIW2OUecIIQf8boQgmAgCMxwqKxiMgzwAAAABJRU5ErkJggg==
 --001a1141f8d43cdc22053f0fbc08--
+--001a1141f8d43cdc22053f0fbc09
+Content-Type: application/x-unknown
+Content-Transfer-Encoding: base64
+
+VW5rbm93biBwYXJ0Lg==
+--001a1141f8d43cdc22053f0fbc09--

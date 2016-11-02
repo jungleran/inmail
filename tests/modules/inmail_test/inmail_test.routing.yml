@@ -6,7 +6,7 @@ inmail_test.past_email_display:
     _access: 'TRUE'
 
 inmail_test.attachment_download:
-  path: inmail-test/email/{past_event}/{index}/download
+  path: inmail-test/email/{past_event}/{path}/download
   defaults:
     _controller: '\Drupal\inmail_test\Controller\EmailDisplayController::getAttachment'
   requirements:

@@ -64,33 +64,55 @@
     {% if view_mode == 'teaser' %}
       <div class="inmail-message__element inmail-message__body__subject">{{ message.subject }}</div>
     {% endif %}
-    {% if view_mode == 'full' and body.plain and body.html %}
+    {% if view_mode == 'full' and body.html and body.plain %}
       <ul>
-        <li><a href="#inmail-message__body__content">Plain</a></li>
         <li><a href="#inmail-message__body__html">HTML</a></li>
+        <li><a href="#inmail-message__body__content">Plain</a></li>
       </ul>
-    {% endif %}
-    {% if body.plain %}
-      <div class="inmail-message__element inmail-message__body__content" id="inmail-message__body__content">{{ body.plain }}</div>
     {% endif %}
     {% if body.html %}
       <div class="inmail-message__element inmail-message__body__html" id="inmail-message__body__html">{{ body.html }}</div>
     {% endif %}
+    {% if body.plain %}
+      <div class="inmail-message__element inmail-message__body__content" id="inmail-message__body__content">{{ body.plain }}</div>
+    {% endif %}
   </main>
-  {% if attachments and view_mode == 'full' %}
+  {% if view_mode == 'full' %}
     <footer class="inmail-message__footer">
-      <label>Attachments</label>
-      <ul>
-        {% for attachment in attachments %}
-          <li>
-            {% if attachment.url %}
-              <a href="{{ attachment.url }}" title="{{ attachment.filename }}" target="_blank">{{ attachment.filename }}</a> ({{ attachment.filesize }})
-            {% else %}
-              {{ attachment.filename }} ({{ attachment.filesize }})
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
+      {% if attachments %}
+        <div class="inmail-message__element inmail-message__footer__attachments">
+          <label>Attachments</label>
+          <ul>
+            {% for attachment in attachments %}
+              <li>
+                {% if attachment.url %}
+                  <a href="{{ attachment.url }}" title="{{ attachment.filename }}"
+                     target="_blank">{{ attachment.filename }}</a> ({{ attachment.filesize }})
+                {% else %}
+                  {{ attachment.filename }} ({{ attachment.filesize }})
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      {% if unknown %}
+        <div class="inmail-message__element inmail-message__footer__unknown">
+          <label>Unknown parts</label>
+          <ul>
+            {% for unknown_part in unknown %}
+              <li>
+                {% if unknown_part.url %}
+                  <a href="{{ unknown_part.url }}" title="{{ unknown_part.filename }}"
+                     target="_blank">{{ unknown_part.filename }}</a> ({{ unknown_part.filesize }})
+                {% else %}
+                  {{ unknown_part.filename }} ({{ unknown_part.filesize }})
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
     </footer>
   {% endif %}
 </section>

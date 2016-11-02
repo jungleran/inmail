@@ -2,8 +2,9 @@
 
 namespace Drupal\inmail\Element;
 
+use Drupal\Component\Utility\Xss;
 use Drupal\Core\Render\Element\RenderElement;
-use Drupal\inmail\MIME\MultipartEntity;
+use Drupal\Core\Render\Markup;
 
 /**
  * Provides a render element for displaying Inmail Message.
@@ -50,54 +51,45 @@ class InmailMessage extends RenderElement {
   }
 
   /**
-   * Returns a filtered array of MIME entities separated by their types.
+   * Provides markup for the plain text for the given view mode.
    *
-   * @param \Drupal\inmail\MIME\MultipartEntity $multipart_entity
-   *   The multipart entity.
+   * @param string $plain_text
+   *   The raw plain text.
+   * @param string $view_mode
+   *   (optional) The view mode. Defaults to "full".
    *
-   * @return array
-   *   An array of MIME entities separated by the following keys:
-   *      - attachments
-   *      - inline
-   *      - related
-   *      - unknown
+   * @return \Drupal\Component\Render\MarkupInterface
+   *   The markup.
    */
-  public static function filterMessageParts(MultipartEntity $multipart_entity) {
-    $elements = [
-      'attachments' => [],
-      'inline' => [],
-      'related' => [],
-      'unknown' => [],
-    ];
-
-    // Iterate over message parts.
-    foreach ($multipart_entity->getParts() as $index => $message_part) {
-      // In case the message part is a multipart entity, recurse until we get
-      // a non-multipart entity.
-      if ($message_part instanceof MultipartEntity) {
-        $elements = array_merge($elements, static::filterMessageParts($message_part));
-      }
-      else {
-        // Otherwise, filter the message part based on its type.
-        switch ($message_part->getType()) {
-          case 'attachment':
-            $elements['attachments'][$index] = $message_part;
-            break;
-
-          case 'inline':
-            // @todo: Add multi-level references for related and inline parts
-            //    https://www.drupal.org/node/2819713
-            $elements['inline'][$index] = $message_part;
-            break;
-
-          // @todo: Handle plain/html (related) message parts.
-          default:
-            $elements['unknown'][$index] = $message_part;
-        }
-      }
+  public static function getPlainTextMarkup($plain_text, $view_mode = 'full') {
+    $plain_text = trim($plain_text);
+    if ($view_mode == 'teaser') {
+      $plain_text = substr($plain_text, 0, 300);
+    }
+    else {
+      $plain_text = nl2br($plain_text);
     }
 
-    return $elements;
+    return Markup::create($plain_text);
+  }
+
+  /**
+   * Provides HTML markup for the given view mode.
+   *
+   * @param string $html
+   *   The raw HTML.
+   * @param string $view_mode
+   *   (optional) The view mode. Defaults to "full".
+   *
+   * @return \Drupal\Component\Render\MarkupInterface|null
+   *   The markup or null in case of teaser mode.
+   */
+  public static function getHtmlMarkup($html, $view_mode = 'full') {
+    if ($view_mode == 'teaser') {
+      return NULL;
+    }
+    $filtered_html = Xss::filterAdmin($html);
+    return Markup::create($filtered_html);
   }
 
 }
