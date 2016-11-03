@@ -393,6 +393,7 @@ function inmail_preprocess_inmail_message(&$variables) {
   $message = $variables['message'];
   $view_mode = $variables['view_mode'];
 
+  // Preprocess message headers.
   $variables['addresses_from'] = $message->getFrom();
   if ($message->getTo()) {
     foreach ($message->getTo() as $key => $address) {
@@ -410,6 +411,7 @@ function inmail_preprocess_inmail_message(&$variables) {
       ];
     }
   }
+  $variables['message_subject'] = $message->getSubject() ?: t('(no subject)');
 
   /** @var \Drupal\Core\Url $download_url */
   $download_url = isset($variables['download_url']) ? $variables['download_url'] : NULL;

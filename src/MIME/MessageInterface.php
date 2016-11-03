@@ -26,8 +26,8 @@ interface MessageInterface extends EntityInterface {
    * Returns the message subject.
    *
    * @return string|null
-   *   The content of the 'Subject' header field, or null if that field does not
-   *   exist.
+   *   The content of the 'Subject' header field, or null if that field does
+   *   not exist.
    */
   public function getSubject();
 

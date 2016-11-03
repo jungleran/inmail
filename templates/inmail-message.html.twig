@@ -50,7 +50,7 @@
     </div>
     <div class="inmail-message__element inmail-message__header__subject">
       <label>Subject</label>
-      {{ message.subject }}
+      {{ message_subject }}
     </div>
     <div class="inmail-message__element inmail-message__header__all">
       <label>All Headers</label>
@@ -62,7 +62,7 @@
   </header>
   <main class="inmail-message__body">
     {% if view_mode == 'teaser' %}
-      <div class="inmail-message__element inmail-message__body__subject">{{ message.subject }}</div>
+      <div class="inmail-message__element inmail-message__body__subject">{{ message_subject }}</div>
     {% endif %}
     {% if view_mode == 'full' and body.html and body.plain %}
       <ul>

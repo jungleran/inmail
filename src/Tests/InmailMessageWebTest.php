@@ -53,6 +53,8 @@ class InmailMessageWebTest extends InmailWebTestBase {
 
     // Go to the "full" view mode page.
     $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');
+    // Assert the default empty subject text is displayed.
+    $this->assertText('(no subject)');
 
     // Assert attachment file names and size.
     $this->assertLink('hello.txt');
@@ -77,6 +79,10 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->assertText('This is an email with attachments.');
     $this->assertText('Content-Type: text/plain');
 
+    // Go to the "teaser" view mode page.
+    $this->drupalGet('admin/inmail-test/email/' . $event_id . '/teaser');
+    // Assert the default empty subject text is displayed.
+    $this->assertText('(no subject)');
   }
 
   /**
