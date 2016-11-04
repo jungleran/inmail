@@ -6,14 +6,14 @@ use Drupal\Component\Datetime\DateTimePlus;
 /**
  * Provides common helper methods for MultiPartMessage.
  */
-trait MessageTrait {
+trait MimeMessageTrait {
 
   /**
    * Returns the header of the entity.
    *
-   * @see \Drupal\inmail\MIME\EntityInterface
+   * @see \Drupal\inmail\MIME\MimeEntityInterface
    *
-   * @return \Drupal\inmail\MIME\Header
+   * @return \Drupal\inmail\MIME\MimeHeader
    *   The header.
    */
   abstract public function getHeader();

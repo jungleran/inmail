@@ -3,8 +3,8 @@
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\DSNStatus;
-use Drupal\inmail\MIME\DSNEntity;
-use Drupal\inmail\MIME\MessageInterface;
+use Drupal\inmail\MIME\MimeDSNEntity;
+use Drupal\inmail\MIME\MimeMessageInterface;
 use Drupal\inmail\ProcessorResultInterface;
 
 /**
@@ -34,8 +34,8 @@ class StandardDSNAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
-    if (!$message instanceof DSNEntity) {
+  public function analyze(MimeMessageInterface $message, ProcessorResultInterface $processor_result) {
+    if (!$message instanceof MimeDSNEntity) {
       return;
     }
 

@@ -74,7 +74,7 @@ class IntegrationTest extends WebTestBase {
     $event = $this->getLastEventByMachinename('process');
     $this->assertEqual($event->getArgument('email')->getData(), $raw_multipart);
 
-    /** @var \Drupal\inmail\MIME\Parser $parser */
+    /** @var \Drupal\inmail\MIME\MimeParser $parser */
     $parser = \Drupal::service('inmail.mime_parser');
     $message = $parser->parseMessage($raw_multipart);
 

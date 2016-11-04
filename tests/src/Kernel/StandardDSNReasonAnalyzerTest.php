@@ -3,7 +3,7 @@
 namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\Core\Logger\LoggerChannel;
-use Drupal\inmail\MIME\Parser;
+use Drupal\inmail\MIME\MimeParser;
 use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNReasonAnalyzer;
 use Drupal\inmail\ProcessorResult;
 use Drupal\KernelTests\KernelTestBase;
@@ -27,7 +27,7 @@ class StandardDSNReasonAnalyzerTest extends KernelTestBase {
    * @dataProvider provideReasons
    */
   public function testAnalyze($filename, $expected_reason) {
-    $message = (new Parser(new LoggerChannel('test')))->parseMessage($this->getRaw($filename));
+    $message = (new MimeParser(new LoggerChannel('test')))->parseMessage($this->getRaw($filename));
     $analyzer = new StandardDSNReasonAnalyzer(array(), $this->randomMachineName(), array());
     $processor_result = new ProcessorResult();
 

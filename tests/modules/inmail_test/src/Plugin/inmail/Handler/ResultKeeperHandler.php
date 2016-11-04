@@ -2,7 +2,7 @@
 
 namespace Drupal\inmail_test\Plugin\inmail\Handler;
 
-use Drupal\inmail\MIME\MessageInterface;
+use Drupal\inmail\MIME\MimeMessageInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
 use Drupal\inmail\ProcessorResultInterface;
 
@@ -27,7 +27,7 @@ class ResultKeeperHandler extends HandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function invoke(MessageInterface $message, ProcessorResultInterface $processor_result) {
+  public function invoke(MimeMessageInterface $message, ProcessorResultInterface $processor_result) {
     \Drupal::state()->set('inmail_test.result_keeper.message', $message);
     \Drupal::state()->set('inmail_test.result_keeper.result', $processor_result);
     \Drupal::state()->set('inmail_test.result_keeper.account_name', \Drupal::currentUser()->getDisplayName());
@@ -36,7 +36,7 @@ class ResultKeeperHandler extends HandlerBase {
   /**
    * Returns the latest message processed by this handler.
    *
-   * @return \Drupal\inmail\MIME\MessageInterface|null
+   * @return \Drupal\inmail\MIME\MimeMessageInterface|null
    *   The latest message object, or NULL if none has been handled.
    */
   public static function getMessage() {

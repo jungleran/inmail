@@ -4,8 +4,8 @@ namespace Drupal\inmail_test\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
-use Drupal\inmail\MIME\Encodings;
-use Drupal\inmail\MIME\MultipartMessage;
+use Drupal\inmail\MIME\MimeEncodings;
+use Drupal\inmail\MIME\MimeMultipartMessage;
 use Drupal\past\PastEventInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -51,11 +51,11 @@ class EmailDisplayController extends ControllerBase {
    *   Throws an exception in case of invalid event.
    */
   public function getAttachment(PastEventInterface $past_event, $path) {
-    /** @var \Drupal\Inmail\Mime\MultipartMessage $message */
+    /** @var \Drupal\Inmail\MIME\MimeMultipartMessage $message */
     $message = $this->getMessage($past_event);
 
     // @todo: Inject the service.
-    /** @var \Drupal\inmail\MIME\MessageDecomposition $message_decomposition */
+    /** @var \Drupal\inmail\MIME\MimeMessageDecomposition $message_decomposition */
     $message_decomposition = \Drupal::service('inmail.message_decomposition');
 
     // Offer download of the raw email message.
@@ -68,7 +68,7 @@ class EmailDisplayController extends ControllerBase {
     }
 
     // Filter-out non-multipart messages.
-    if (!$message instanceof MultipartMessage) {
+    if (!$message instanceof MimeMultipartMessage) {
       return new Response(NULL, Response::HTTP_NOT_FOUND);
     }
 
@@ -79,7 +79,7 @@ class EmailDisplayController extends ControllerBase {
     }
 
     // Decode the attachment body.
-    $decoded_body = Encodings::decode($entity->getBody(), $entity->getContentTransferEncoding());
+    $decoded_body = MimeEncodings::decode($entity->getBody(), $entity->getContentTransferEncoding());
 
     // Display images in the browser.
     $header = $entity->getHeader();
@@ -96,7 +96,7 @@ class EmailDisplayController extends ControllerBase {
    * @param \Drupal\past\PastEventInterface $past_event
    *   The past event.
    *
-   * @return \Drupal\inmail\MIME\Message|\Drupal\inmail\MIME\MessageInterface
+   * @return \Drupal\inmail\MIME\MimeMessage|\Drupal\inmail\MIME\MimeMessageInterface
    *   Returns the parsed message.
    *
    * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
@@ -110,7 +110,7 @@ class EmailDisplayController extends ControllerBase {
     }
 
     // @todo: Inject the parser service.
-    /** @var \Drupal\inmail\MIME\Parser $parser */
+    /** @var \Drupal\inmail\MIME\MimeParser $parser */
     $parser = \Drupal::service('inmail.mime_parser');
 
     return $parser->parseMessage($raw_email_argument->getData());

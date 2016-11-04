@@ -7,7 +7,7 @@ namespace Drupal\inmail\MIME;
  *
  * @ingroup mime
  */
-class Encodings {
+class MimeEncodings {
 
   /**
    * Decode a string according to a MIME encoding type.

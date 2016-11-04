@@ -3,13 +3,13 @@
 namespace Drupal\Tests\inmail\Unit\MIME;
 
 use Drupal\Core\Logger\LoggerChannel;
-use Drupal\inmail\MIME\Parser;
+use Drupal\inmail\MIME\MimeParser;
 use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 
 /**
- * Tests the MIME Parser class.
+ * Tests the MimeParser class.
  *
- * @coversDefaultClass \Drupal\inmail\MIME\Parser
+ * @coversDefaultClass \Drupal\inmail\MIME\MimeParser
  *
  * @group inmail
  */
@@ -22,10 +22,10 @@ class ParserTest extends InmailUnitTestBase {
    *
    * @dataProvider provideMalformedRaws
    *
-   * @expectedException \Drupal\inmail\MIME\ParseException
+   * @expectedException \Drupal\inmail\MIME\MimeParseException
    */
   public function testParseException($raw) {
-    $message = (new Parser(new LoggerChannel('test')))->parseMessage($raw);
+    $message = (new MimeParser(new LoggerChannel('test')))->parseMessage($raw);
     // The RFC standard 4475 (https://tools.ietf.org/html/rfc4475#section-3.1.2),
     // defines some critical samples of invalid messages.
     \Drupal::logger('test')->log('ParserTest', "Message is missing blank line after header");
@@ -47,16 +47,16 @@ class ParserTest extends InmailUnitTestBase {
       ["To: sip:j.user@example.com
       From: sip:caller@example.net;tag=93942939o2
       Content-Length: 9999"],
-      // Message has Negative value for Content-Length.
+      // MimeMessage has Negative value for Content-Length.
       ["To: sip:j.user@example.com
       From: sip:caller@example.net;tag=32394234
       Content-Length: -999"],
-      // To Header contains undetermined quote string.
+      // To MimeHeader contains undetermined quote string.
       ["To: \"Mr. J. User sip:j.user@example.com
       From: sip:caller@example.net;tag=93334"],
-      // Missing Required Header Fields From, To.
+      // Missing Required MimeHeader Fields From, To.
       ["This is body of message without any headers"],
-      // Date Header contains a non-GMT time zone.
+      // Date MimeHeader contains a non-GMT time zone.
       ["To: sip:user@example.com
       From: sip:caller@example.net;tag=2234923
       Date: Fri, 01 Jan 2010 16:00:00 EST"],
@@ -76,7 +76,7 @@ class ParserTest extends InmailUnitTestBase {
    * @dataProvider provideAddresses
    */
   public function testParseAddress($field, $expected) {
-    $this->assertEquals($expected, Parser::parseAddress($field));
+    $this->assertEquals($expected, MimeParser::parseAddress($field));
   }
 
   /**

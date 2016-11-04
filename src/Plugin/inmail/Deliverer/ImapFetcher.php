@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface {
 
   /**
-   * Message id used for marking and deletion of messages.
+   * MimeMessage id used for marking and deletion of messages.
    */
   protected $message_id;
 

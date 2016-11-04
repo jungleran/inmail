@@ -5,14 +5,15 @@ namespace Drupal\inmail\Plugin\inmail\Handler;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\inmail\MIME\MessageInterface;
+use Drupal\inmail\MIME\MimeMessageInterface;
 use Drupal\inmail\Plugin\DataType\BounceData;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 use Drupal\inmail\ProcessorResultInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Message handler that forwards unclassified bounces by email to a moderator.
+ * MimeMessage handler that forwards unclassified bounces by email to a
+ * moderator.
  *
  * @todo Validate moderator email address https://www.drupal.org/node/2381855
  *
@@ -65,7 +66,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
   /**
    * {@inheritdoc}
    */
-  public function invoke(MessageInterface $message, ProcessorResultInterface $processor_result) {
+  public function invoke(MimeMessageInterface $message, ProcessorResultInterface $processor_result) {
     // Cancel if the moderator email is not set.
     if (!($moderator = $this->getModerator())) {
       $processor_result->log('ModeratorForwardHandler', 'Moderator email address not set');
@@ -98,7 +99,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
 
     // Send forward.
     // DirectMail is set as mail plugin on install.
-    // Message is composed in inmail_mail().
+    // MimeMessage is composed in inmail_mail().
     $plugin_instance = $processor_result->getDeliverer()->getPluginInstance();
     $params = array(
       'original' => $message,

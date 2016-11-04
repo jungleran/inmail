@@ -60,7 +60,7 @@ This part is ignored.
 
 --BOUNDARY
 
-Message bounced because of reasons.
+MimeMessage bounced because of reasons.
 
 --BOUNDARY
 Content-Type: message/delivery-status

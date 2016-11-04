@@ -7,7 +7,7 @@ namespace Drupal\inmail\MIME;
  *
  * @ingroup mime
  */
-interface EntityInterface {
+interface MimeEntityInterface {
 
   /**
    * Returns the header of the entity.
@@ -16,7 +16,7 @@ interface EntityInterface {
    * single entry in the actual header. Those entries are correctly named
    * "fields".
    *
-   * @return \Drupal\inmail\MIME\Header
+   * @return \Drupal\inmail\MIME\MimeHeader
    *   The header.
    */
   public function getHeader();

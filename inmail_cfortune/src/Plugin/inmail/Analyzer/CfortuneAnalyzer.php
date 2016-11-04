@@ -4,12 +4,12 @@ namespace Drupal\inmail_cfortune\Plugin\inmail\Analyzer;
 
 use cfortune\PHPBounceHandler\BounceHandler;
 use Drupal\inmail\DSNStatus;
-use Drupal\inmail\MIME\MessageInterface;
+use Drupal\inmail\MIME\MimeMessageInterface;
 use Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerBase;
 use Drupal\inmail\ProcessorResultInterface;
 
 /**
- * Message Analyzer wrapper for cfortune's BounceHandler class.
+ * MimeMessage Analyzer wrapper for cfortune's BounceHandler class.
  *
  * The BounceHandler class tries to identify a standardized DSN code and the
  * intended recipient of the original message. If the status is not directly
@@ -31,7 +31,7 @@ class CfortuneAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
+  public function analyze(MimeMessageInterface $message, ProcessorResultInterface $processor_result) {
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult();
     $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');

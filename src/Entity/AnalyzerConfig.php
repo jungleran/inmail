@@ -5,7 +5,7 @@ namespace Drupal\inmail\Entity;
 use Drupal\inmail\AnalyzerConfigInterface;
 
 /**
- * Message analyzer configuration entity.
+ * MimeMessage analyzer configuration entity.
  *
  * This entity type is for storing the configuration of an analyzer plugin.
  *
@@ -13,7 +13,7 @@ use Drupal\inmail\AnalyzerConfigInterface;
  *
  * @ConfigEntityType(
  *   id = "inmail_analyzer",
- *   label = @Translation("Message analyzer"),
+ *   label = @Translation("MimeMessage analyzer"),
  *   admin_permission = "administer inmail",
  *   config_prefix = "analyzer",
  *   handlers = {

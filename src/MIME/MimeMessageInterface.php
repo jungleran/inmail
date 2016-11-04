@@ -7,7 +7,7 @@ namespace Drupal\inmail\MIME;
  *
  * @ingroup mime
  */
-interface MessageInterface extends EntityInterface {
+interface MimeMessageInterface extends MimeEntityInterface {
 
   /**
    * Returns the Message-Id.

@@ -2,7 +2,7 @@
 
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
-use Drupal\inmail\MIME\MessageInterface;
+use Drupal\inmail\MIME\MimeMessageInterface;
 use Drupal\inmail\ProcessorResultInterface;
 
 /**
@@ -46,7 +46,7 @@ class VerpAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
+  public function analyze(MimeMessageInterface $message, ProcessorResultInterface $processor_result) {
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult();
     $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');

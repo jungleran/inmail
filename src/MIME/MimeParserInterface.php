@@ -12,17 +12,17 @@ namespace Drupal\inmail\MIME;
  *
  * @ingroup mime
  */
-interface ParserInterface {
+interface MimeParserInterface {
 
   /**
-   * Parses a string message into a Message object.
+   * Parses a string message into a MimeMessage object.
    *
    * @param string $raw
    *
-   * @return \Drupal\inmail\MIME\MessageInterface
-   *   The resulting Message object abstraction.
+   * @return \Drupal\inmail\MIME\MimeMessageInterface
+   *   The resulting MimeMessage object abstraction.
    *
-   * @throws \Drupal\inmail\MIME\ParseException
+   * @throws \Drupal\inmail\MIME\MimeParseException
    *   If parsing fails.
    */
   public function parseMessage($raw);

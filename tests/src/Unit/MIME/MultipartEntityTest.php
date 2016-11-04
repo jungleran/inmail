@@ -3,16 +3,16 @@
 namespace Drupal\Tests\inmail\Unit\MIME;
 
 use Drupal\Core\Logger\LoggerChannel;
-use Drupal\inmail\MIME\Entity;
-use Drupal\inmail\MIME\Header;
-use Drupal\inmail\MIME\MultipartMessage;
-use Drupal\inmail\MIME\Parser;
+use Drupal\inmail\MIME\MimeEntity;
+use Drupal\inmail\MIME\MimeHeader;
+use Drupal\inmail\MIME\MimeMultipartMessage;
+use Drupal\inmail\MIME\MimeParser;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Tests the Parser, Entity and MultipartEntity classes.
+ * Tests the MimeParser, Entity and MultipartEntity classes.
  *
- * @coversDefaultClass \Drupal\inmail\MIME\MultipartEntity
+ * @coversDefaultClass \Drupal\inmail\MIME\MimeMultipartEntity
  *
  * @group inmail
  */
@@ -55,23 +55,23 @@ EOF;
   /**
    * Tests the parser.
    *
-   * @covers \Drupal\inmail\MIME\Parser::parseMessage
+   * @covers \Drupal\inmail\MIME\MimeParser::parseMessage
    */
   public function testParse() {
     // Parse and compare.
-    $parsed_message = (new Parser(new LoggerChannel('test')))->parseMessage(static::MSG_MULTIPART);
+    $parsed_message = (new MimeParser(new LoggerChannel('test')))->parseMessage(static::MSG_MULTIPART);
     $this->assertEquals(static::getMessage(), $parsed_message);
   }
 
   /**
    * Tests header accessors.
    *
-   * @covers \Drupal\inmail\MIME\Entity::getHeader
+   * @covers \Drupal\inmail\MIME\MimeEntity::getHeader
    */
   public function testGetHeader() {
     // Compare the whole header.
     $this->assertEquals(static::getMessageHeader(), static::getMessage()->getHeader());
-    $this->assertEquals(new Header(), static::getFirstPart()->getHeader());
+    $this->assertEquals(new MimeHeader(), static::getFirstPart()->getHeader());
     $this->assertEquals(static::getSecondPartHeader(), static::getSecondPart()->getHeader());
   }
 
@@ -89,7 +89,7 @@ EOF;
   /**
    * Tests the body accessor.
    *
-   * @covers \Drupal\inmail\MIME\Entity::getBody
+   * @covers \Drupal\inmail\MIME\MimeEntity::getBody
    */
   public function testGetBody() {
     $this->assertEquals("This is implicitly typed plain US-ASCII text.\nIt does NOT end with a linebreak.", static::getFirstPart()->getBody());
@@ -100,13 +100,13 @@ EOF;
   /**
    * Tests the body accessors in the context of decoding.
    *
-   * @covers \Drupal\inmail\MIME\Entity::getBody
-   * @covers \Drupal\inmail\MIME\Entity::getDecodedBody
+   * @covers \Drupal\inmail\MIME\MimeEntity::getBody
+   * @covers \Drupal\inmail\MIME\MimeEntity::getDecodedBody
    *
    * @dataProvider provideEncodedEntities
    */
-  public function testGetBodyUndecoded(Header $header, $body, $decoded_body) {
-    $entity = new Entity($header, $body);
+  public function testGetBodyUndecoded(MimeHeader $header, $body, $decoded_body) {
+    $entity = new MimeEntity($header, $body);
     $this->assertEquals($body, $entity->getBody());
     $this->assertEquals($decoded_body, $entity->getDecodedBody());
   }
@@ -114,7 +114,7 @@ EOF;
   /**
    * Tests string serialization.
    *
-   * @covers \Drupal\inmail\MIME\Entity::toString
+   * @covers \Drupal\inmail\MIME\MimeEntity::toString
    */
   public function testToString() {
     $this->assertEquals(static::MSG_MULTIPART, static::getMessage()->toString());
@@ -124,7 +124,7 @@ EOF;
    * Just to make it obvious, test that toString() inverts parseMessage().
    */
   public function testParseToString() {
-    $parser = new Parser(new LoggerChannel('test'));
+    $parser = new MimeParser(new LoggerChannel('test'));
 
     // Parse and back again.
     $parsed = $parser->parseMessage(static::MSG_MULTIPART);
@@ -140,8 +140,8 @@ EOF;
    */
   protected static function getMessage() {
     // The multipart message corresponding to the final parse result.
-    return new MultipartMessage(
-      new Entity(static::getMessageHeader(), static::getBody()),
+    return new MimeMultipartMessage(
+      new MimeEntity(static::getMessageHeader(), static::getBody()),
       [
         static::getFirstPart(),
         static::getSecondPart(),
@@ -153,7 +153,7 @@ EOF;
    * Expected parse result of the header of the message (the outer entity).
    */
   protected static function getMessageHeader() {
-    return new Header([
+    return new MimeHeader([
       ['name' => 'From', 'body' => 'Nathaniel Borenstein <nsb@bellcore.com>'],
       ['name' => 'To', 'body' => 'Ned Freed <ned@innosoft.com>'],
       ['name' => 'Date', 'body' => 'Sun, 21 Mar 1993 23:56:48 -0800 (PST)'],
@@ -190,21 +190,21 @@ This is the epilogue.  It is also to be ignored.';
    * Expected parse result of the first multipart part.
    */
   protected static function getFirstPart() {
-    return new Entity(new Header(), "This is implicitly typed plain US-ASCII text.\nIt does NOT end with a linebreak.");
+    return new MimeEntity(new MimeHeader(), "This is implicitly typed plain US-ASCII text.\nIt does NOT end with a linebreak.");
   }
 
   /**
    * Expected parse result of the second multipart part.
    */
   protected static function getSecondPart() {
-    return new Entity(static::getSecondPartHeader(), "This is explicitly typed plain US-ASCII text.\nIt DOES end with a linebreak.\n");
+    return new MimeEntity(static::getSecondPartHeader(), "This is explicitly typed plain US-ASCII text.\nIt DOES end with a linebreak.\n");
   }
 
   /**
    * Expected parse result of the header of the second multipart part.
    */
   protected static function getSecondPartHeader() {
-    return new Header([
+    return new MimeHeader([
       ['name' => 'Content-type', 'body' => 'text/plain; charset=us-ascii'],
     ]);
   }
@@ -219,7 +219,7 @@ This is the epilogue.  It is also to be ignored.';
   public static function provideEncodedEntities() {
     return [
       [
-        new Header([
+        new MimeHeader([
           ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
           ['name' => 'Content-Transfer-Encoding', 'body' => 'quoted-printable'],
         ]),

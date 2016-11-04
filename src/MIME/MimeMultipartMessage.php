@@ -5,12 +5,12 @@ namespace Drupal\inmail\MIME;
 /**
  * A multipart message.
  *
- * This is the combination of \Drupal\collect\MIME\MultipartEntity and
- * \Drupal\collect\MIME\Message.
+ * This is the combination of \Drupal\collect\MIME\MimeMultipartEntity and
+ * \Drupal\collect\MIME\MimeMessage.
  */
-class MultipartMessage extends MultipartEntity implements MessageInterface {
+class MimeMultipartMessage extends MimeMultipartEntity implements MimeMessageInterface {
 
-  use MessageTrait;
+  use MimeMessageTrait;
 
   /**
    * {@inheritdoc}

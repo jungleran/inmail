@@ -3,14 +3,14 @@
 namespace Drupal\Tests\inmail\Unit\MIME;
 
 use Drupal\Core\Logger\LoggerChannel;
-use Drupal\inmail\MIME\Header;
-use Drupal\inmail\MIME\Parser;
+use Drupal\inmail\MIME\MimeHeader;
+use Drupal\inmail\MIME\MimeParser;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Tests the MIME Header class.
+ * Tests the MimeHeader class.
  *
- * @coversDefaultClass \Drupal\inmail\MIME\Header
+ * @coversDefaultClass \Drupal\inmail\MIME\MimeHeader
  *
  * @group inmail
  */
@@ -23,19 +23,19 @@ class HeaderTest extends UnitTestCase {
    *
    * @dataProvider provideHeaders
    */
-  public function testToString(Header $header, $string) {
+  public function testToString(MimeHeader $header, $string) {
     $this->assertEquals($string, $header->toString());
   }
 
   /**
    * Tests header parsing.
    *
-   * @covers \Drupal\inmail\MIME\Parser::parseHeaderFields
+   * @covers \Drupal\inmail\MIME\MimeParser::parseHeaderFields
    *
    * @dataProvider provideHeaders
    */
-  public function testParse(Header $header, $string) {
-    $this->assertEquals($header, (new Parser(new LoggerChannel('')))->parseHeaderFields($string));
+  public function testParse(MimeHeader $header, $string) {
+    $this->assertEquals($header, (new MimeParser(new LoggerChannel('')))->parseHeaderFields($string));
   }
 
   /**
@@ -45,7 +45,7 @@ class HeaderTest extends UnitTestCase {
    *
    * @dataProvider provideHeadersHasField
    */
-  public function testHasField(Header $header, $expected) {
+  public function testHasField(MimeHeader $header, $expected) {
     $this->assertEquals($expected, $header->hasField('Content-Type'));
   }
 
@@ -53,26 +53,26 @@ class HeaderTest extends UnitTestCase {
    * Provides header objects for testing testHasField().
    *
    * @return array
-   *   Header objects and expected representations.
+   *   MimeHeader objects and expected representations.
    */
   public function provideHeadersHasField() {
     return [
       [
-        new Header([[
+        new MimeHeader([[
           'name' => 'Content-Type',
           'body' => 'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"',
         ]]),
         TRUE,
       ],
       [
-        new Header([[
+        new MimeHeader([[
           'name' => 'content-type',
           'body' => 'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"',
         ]]),
         TRUE,
       ],
       [
-        new Header(),
+        new MimeHeader(),
         FALSE,
       ],
     ];
@@ -82,12 +82,12 @@ class HeaderTest extends UnitTestCase {
    * Provides header objects for testing toString().
    *
    * @return array
-   *   Header objects and equivalent string representations.
+   *   MimeHeader objects and equivalent string representations.
    */
   public function provideHeaders() {
     return [
       [
-        new Header([[
+        new MimeHeader([[
           'name' => 'Content-Type',
           'body' => 'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"',
         ]]),
@@ -98,7 +98,7 @@ class HeaderTest extends UnitTestCase {
         . " boundary=\"========/528515BF03161E46/smtp-in13.han.skanova.net\"",
       ],
       [
-        new Header([[
+        new MimeHeader([[
           'name' => 'Subject',
           // The ü in this string triggers base64 encoding in toString. Encoded
           // string wraps within the 78 char line limit.
@@ -119,9 +119,9 @@ class HeaderTest extends UnitTestCase {
    *
    * @dataProvider provideHeaders
    */
-  public function testAddField(Header $header) {
-    $header->addField('X-Space-Header', 'Alienware');
-    $this->assertTrue($header->hasField('X-Space-Header'));
+  public function testAddField(MimeHeader $header) {
+    $header->addField('X-Space-MimeHeader', 'Alienware');
+    $this->assertTrue($header->hasField('X-Space-MimeHeader'));
   }
 
   /**
@@ -131,7 +131,7 @@ class HeaderTest extends UnitTestCase {
    *
    * @dataProvider provideHeadersHasField
    */
-  public function testRemoveField(Header $header) {
+  public function testRemoveField(MimeHeader $header) {
     $header->removeField('Content-Type');
     $this->assertFalse($header->hasField('Content-Type'));
   }
@@ -142,7 +142,7 @@ class HeaderTest extends UnitTestCase {
    * @covers ::getFieldBodies
    */
   public function testGetFieldBodies() {
-    $header = new Header([[
+    $header = new MimeHeader([[
       'name' => 'Subject',
       'body' => 'I am Your Subject Body',
     ]]);
@@ -158,7 +158,7 @@ class HeaderTest extends UnitTestCase {
    * @dataProvider provideHeaders
    */
   public function testGetFieldBody() {
-    $header = new Header([[
+    $header = new MimeHeader([[
       'name' => 'Content-Type',
       'body' => 'Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren',
     ]]);

@@ -2,14 +2,14 @@
 
 namespace Drupal\Tests\inmail\Unit\MIME;
 
-use Drupal\inmail\MIME\Entity;
-use Drupal\inmail\MIME\Header;
+use Drupal\inmail\MIME\MimeEntity;
+use Drupal\inmail\MIME\MimeHeader;
 use Drupal\Tests\UnitTestCase;
 
 /**
  * Tests the Entity class.
  *
- * @coversDefaultClass \Drupal\inmail\MIME\Entity
+ * @coversDefaultClass \Drupal\inmail\MIME\MimeEntity
  *
  * @group inmail
  */
@@ -18,37 +18,37 @@ class EntityTest extends UnitTestCase {
   /**
    * Tests the body accessors in context of decoding.
    *
-   * @covers \Drupal\inmail\MIME\Entity::getDecodedBody
+   * @covers \Drupal\inmail\MIME\MimeEntity::getDecodedBody
    *
    * @dataProvider stringsProvider
    */
-  public function testGetDecodedBody(Header $header, $body, $decoded_body) {
+  public function testGetDecodedBody(MimeHeader $header, $body, $decoded_body) {
     // Testing quoted-printable.
-    $entity = new Entity($header, $body);
+    $entity = new MimeEntity($header, $body);
     $this->assertEquals($decoded_body, $entity->getDecodedBody());
   }
 
   /**
    * Tests the body accessor.
    *
-   * @covers \Drupal\inmail\MIME\Entity::getBody
+   * @covers \Drupal\inmail\MIME\MimeEntity::getBody
    *
    * @dataProvider stringsProvider
    */
-  public function testGetBody(Header $header, $body) {
-    $entity = new Entity($header, $body);
+  public function testGetBody(MimeHeader $header, $body) {
+    $entity = new MimeEntity($header, $body);
     $this->assertEquals($body, $entity->getBody());
   }
 
   /**
    * Tests the header accessor.
    *
-   * @covers \Drupal\inmail\MIME\Entity::getHeader
+   * @covers \Drupal\inmail\MIME\MimeEntity::getHeader
    *
    * @dataProvider stringsProvider
    */
-  public function testGetHeader(Header $header, $body) {
-    $entity = new Entity($header, $body);
+  public function testGetHeader(MimeHeader $header, $body) {
+    $entity = new MimeEntity($header, $body);
     $this->assertEquals($header, $entity->getHeader());
   }
 
@@ -63,7 +63,7 @@ class EntityTest extends UnitTestCase {
     // Sample data to test UTF-8 and Base64 conversion and decoding.
     return [
       [
-        new Header([
+        new MimeHeader([
           ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
           ['name' => 'Content-Transfer-Encoding', 'body' => 'quoted-printable'],
         ]),
@@ -73,7 +73,7 @@ class EntityTest extends UnitTestCase {
         '木',
       ],
       [
-        new Header([
+        new MimeHeader([
           ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
           ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
         ]),
@@ -83,7 +83,7 @@ class EntityTest extends UnitTestCase {
         'Linux',
       ],
       [
-        new Header([
+        new MimeHeader([
           ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
           ['name' => 'Content-Transfer-Encoding', 'body' => 'binary'],
         ]),
@@ -93,7 +93,7 @@ class EntityTest extends UnitTestCase {
         'Q',
       ],
       [
-        new Header([
+        new MimeHeader([
           ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
           ['name' => 'Content-Transfer-Encoding', 'body' => 'quoted-printable'],
         ]),
@@ -110,14 +110,14 @@ class EntityTest extends UnitTestCase {
    * Data provider.
    *
    * @return array
-   *   A list of triplets containing Header with Content-Type field, and expected
-   *   content-type and charset.
+   *   A list of triplets containing MimeHeader with Content-Type field, and
+   *   expected content-type and charset.
    */
   public function contentTypeProvider() {
     // Sample data to test content-type extraction.
     return [
       [
-        new Header([
+        new MimeHeader([
           ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
         ]),
         // Expected content-type.
@@ -126,14 +126,14 @@ class EntityTest extends UnitTestCase {
         'UTF-8',
       ],
       [
-        new Header([
+        new MimeHeader([
           ['name' => 'Content-Type', 'body' => 'text/html; charset=ASCII'],
         ]),
         'text/html',
         'ASCII',
       ],
       [
-        new Header([
+        new MimeHeader([
           ['name' => 'Content-Type', 'body' => 'multipart/alternative; charset=UTF-32'],
         ]),
         'multipart/alternative',
@@ -145,10 +145,10 @@ class EntityTest extends UnitTestCase {
   /**
    * Tests joining header with body.
    *
-   * @covers \Drupal\inmail\MIME\Entity::toString
+   * @covers \Drupal\inmail\MIME\MimeEntity::toString
    */
   public function testToString() {
-    $entity = new Entity(new Header([[
+    $entity = new MimeEntity(new MimeHeader([[
       'name' => 'Subject', 'body' => 'Foo Bar',
     ]]), 'When I joined them, foobar was already being commonly used as a throw-away file name.');
     $this->assertEquals($entity->toString(), "Subject: Foo Bar\n\nWhen I joined them, foobar was already being commonly used as a throw-away file name.");
@@ -157,12 +157,12 @@ class EntityTest extends UnitTestCase {
   /**
    * Tests content type accessor.
    *
-   * @covers \Drupal\inmail\MIME\Entity::getContentType
+   * @covers \Drupal\inmail\MIME\MimeEntity::getContentType
    *
    * @dataProvider contentTypeProvider
    */
-  public function testGetContentType(Header $header, $content, $charset) {
-    $entity = new Entity($header, 'Message Body');
+  public function testGetContentType(MimeHeader $header, $content, $charset) {
+    $entity = new MimeEntity($header, 'MimeMessage Body');
     $content_type = $entity->getContentType();
     $char_set = $content_type['parameters']['charset'];
     $this->assertEquals($content, $content_type['type'] . '/' . $content_type['subtype']);
@@ -172,10 +172,10 @@ class EntityTest extends UnitTestCase {
   /**
    * Tests the body encoding.
    *
-   * @covers \Drupal\inmail\MIME\Entity::getContentTransferEncoding
+   * @covers \Drupal\inmail\MIME\MimeEntity::getContentTransferEncoding
    */
   public function testGetContentTransferEncoding() {
-    $entity = new Entity(new Header([
+    $entity = new MimeEntity(new MimeHeader([
       ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
     ]), 'Hello World');
     $this->assertEquals('base64', $entity->getContentTransferEncoding());
@@ -184,20 +184,20 @@ class EntityTest extends UnitTestCase {
   /**
    * Tests validation of message.
    *
-   * @covers \Drupal\inmail\MIME\Entity::validate
+   * @covers \Drupal\inmail\MIME\MimeEntity::validate
    */
   public function testValidate() {
-    $entity = new Entity(new Header(), 'Message Body');
+    $entity = new MimeEntity(new MimeHeader(), 'MimeMessage Body');
     $this->assertTrue($entity->validate());
   }
 
   /**
    * Tests accessor of validation errors.
    *
-   * @covers \Drupal\inmail\MIME\Entity::getValidationErrors
+   * @covers \Drupal\inmail\MIME\MimeEntity::getValidationErrors
    */
   public function testGetValidateErrors() {
-    $entity = new Entity(new Header(), 'Message Body');
+    $entity = new MimeEntity(new MimeHeader(), 'MimeMessage Body');
     $this->assertEmpty($entity->getValidationErrors());
   }
 

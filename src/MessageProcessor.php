@@ -7,8 +7,8 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\inmail\Entity\DelivererConfig;
-use Drupal\inmail\MIME\ParseException;
-use Drupal\inmail\MIME\ParserInterface;
+use Drupal\inmail\MIME\MimeParseException;
+use Drupal\inmail\MIME\MimeParserInterface;
 use Drupal\inmail\Plugin\DataType\BounceData;
 use Drupal\user\Entity\User;
 use Drupal\Core\Logger\RfcLogLevel;
@@ -60,7 +60,7 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * The injected parser.
    *
-   * @var \Drupal\inmail\MIME\ParserInterface
+   * @var \Drupal\inmail\MIME\MimeParserInterface
    */
   protected $parser;
 
@@ -74,7 +74,7 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * Constructs a new message processor.
    */
-  public function __construct(EntityManagerInterface $entity_manager, AnalyzerManagerInterface $analyzer_manager, HandlerManagerInterface $handler_manager, LoggerChannelInterface $logger_channel, ParserInterface $parser, AccountSwitcherInterface $account_switcher) {
+  public function __construct(EntityManagerInterface $entity_manager, AnalyzerManagerInterface $analyzer_manager, HandlerManagerInterface $handler_manager, LoggerChannelInterface $logger_channel, MimeParserInterface $parser, AccountSwitcherInterface $account_switcher) {
     $this->analyzerStorage = $entity_manager->getStorage('inmail_analyzer');
     $this->analyzerManager = $analyzer_manager;
     $this->handlerStorage = $entity_manager->getStorage('inmail_handler');
@@ -173,7 +173,7 @@ class MessageProcessor implements MessageProcessorInterface {
       $result->success($key);
       $this->sendMessageReport($result, $message, $deliverer);
     }
-    catch (ParseException $e) {
+    catch (MimeParseException $e) {
       // Set event message if parsing the message fails.
       if ($event) {
         $event->setMessage('Incoming mail, parsing failed with error: ' . $e->getMessage());
@@ -203,7 +203,7 @@ class MessageProcessor implements MessageProcessorInterface {
    *
    * @param $result \Drupal\inmail\ProcessorResult
    *  The processor result object.
-   * @param $message \Drupal\inmail\MIME\MessageInterface $original
+   * @param $message \Drupal\inmail\MIME\MimeMessageInterface $original
    *   Received message.
    * @param $deliverer \Drupal\inmail\Entity\DelivererConfig
    *   The Deliverer configuration that delivered the messages.

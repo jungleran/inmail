@@ -3,8 +3,8 @@
 namespace Drupal\inmail_collect\Tests;
 
 use Drupal\collect\Entity\Container;
-use Drupal\inmail\MIME\Header;
-use Drupal\inmail\MIME\Message;
+use Drupal\inmail\MIME\MimeHeader;
+use Drupal\inmail\MIME\MimeMessage;
 use Drupal\inmail\ProcessorResult;
 use Drupal\inmail\Tests\DelivererTestTrait;
 use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
@@ -80,7 +80,7 @@ class InmailCollectWebTest extends WebTestBase {
     $this->assertEqual((string) $details[0]->div->details[2]->summary, t('Part 3'));
     // Eliminate repeated whitespace to simplify matching.
     $this->setRawContent(preg_replace('/\s+/', ' ', $this->getRawContent()));
-    // Header fields.
+    // MimeHeader fields.
     $this->assertText(t('From') . ' Postmaster@acacia.example.org');
     $this->assertText(t('To') . ' bounces+user=example.org@example.com');
     $this->assertText(t('Subject') . ' DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
@@ -106,8 +106,8 @@ class InmailCollectWebTest extends WebTestBase {
     $processor_result = new ProcessorResult();
     $deliverer = $this->createTestDeliverer();
     $processor_result->setDeliverer($deliverer);
-    // Creating Message which contains invalid UTF-8 character.
-    $message = new Message(new Header([
+    // Creating MimeMessage which contains invalid UTF-8 character.
+    $message = new MimeMessage(new MimeHeader([
       ['name' => 'Message-ID', 'body' => "\x80"],
       ['name' => 'Received', 'body' => 'blah; Thu, 29 Jan 2015 15:43:04 +0100'],
       ['name' => 'Subject', 'body' => 'Foo'],

@@ -7,14 +7,14 @@ use Drupal\Core\Render\Element\RenderElement;
 use Drupal\Core\Render\Markup;
 
 /**
- * Provides a render element for displaying Inmail Message.
+ * Provides a render element for displaying Inmail MimeMessage.
  *
  * If a #download_url url is provided, the element will display attachments
  * with a download link. Otherwise just attachment labels.
  *
  * Properties:
  * - #message: The parsed message object.
- *    An instance of \Drupal\inmail\MIME\MessageInterface.
+ *    An instance of \Drupal\inmail\MIME\MimeMessageInterface.
  * - #view_mode: The view mode ("teaser" or "full").
  * - (optional) #body: Identified mail body.
  *
@@ -29,7 +29,7 @@ use Drupal\Core\Render\Markup;
  * Usage example:
  * @code
  * $build['inmail_message_example'] = [
- *   '#title' => $this->t('Inmail Message Example'),
+ *   '#title' => $this->t('Inmail MimeMessage Example'),
  *   '#type' => 'inmail_message',
  *   '#message' => $message,
  *   '#view_mode' => 'full',

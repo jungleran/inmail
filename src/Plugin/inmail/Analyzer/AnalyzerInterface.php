@@ -5,7 +5,7 @@ namespace Drupal\inmail\Plugin\inmail\Analyzer;
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
-use Drupal\inmail\MIME\MessageInterface;
+use Drupal\inmail\MIME\MimeMessageInterface;
 use Drupal\inmail\ProcessorResultInterface;
 
 /**
@@ -18,12 +18,12 @@ interface AnalyzerInterface extends ConfigurablePluginInterface, PluginFormInter
   /**
    * Analyze the given message.
    *
-   * @param \Drupal\inmail\MIME\MessageInterface $message
+   * @param \Drupal\inmail\MIME\MimeMessageInterface $message
    *   A mail message to be analyzed.
    * @param \Drupal\inmail\ProcessorResultInterface $processor_result
    *   The processor result object for logging and reporting results. Contains
    *   the message deliverer.
    */
-  public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result);
+  public function analyze(MimeMessageInterface $message, ProcessorResultInterface $processor_result);
 
 }

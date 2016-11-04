@@ -2,10 +2,10 @@
 
 namespace Drupal\Tests\inmail\Kernel;
 
+use Drupal\inmail\MIME\MimeEntity;
+use Drupal\inmail\MIME\MimeHeader;
 use Drupal\inmail\TypedData\MailboxDefinition;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\inmail\MIME\Entity;
-use Drupal\inmail\MIME\Header;
 
 /**
  * Tests inmail datatypes.
@@ -75,21 +75,21 @@ class InmailDataTypeTest extends KernelTestBase {
     return
     [
       [
-        new Entity(new Header(), $this->randomString(1)),
+        new MimeEntity(new MimeHeader(), $this->randomString(1)),
         '1 byte',
       ],
       [
-        new Entity(new Header(), $this->randomString(1024)),
+        new MimeEntity(new MimeHeader(), $this->randomString(1024)),
         '1 KB',
       ],
       [
-        new Entity(new Header(), $this->randomString(2022)),
+        new MimeEntity(new MimeHeader(), $this->randomString(2022)),
         '1.97 KB',
       ],
       // Wide range of generated chars results in failing base64 decoding, thus
       // file size remains same.
       [
-        new Entity(new Header([
+        new MimeEntity(new MimeHeader([
           ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
         ]), $this->randomString(20480)),
         '20 KB',
@@ -97,13 +97,13 @@ class InmailDataTypeTest extends KernelTestBase {
       // base64_encode() produces valid base64 alphabet but longer because of
       // encoding. It needs to be created valid base64 string with desired length.
       [
-        new Entity(new Header([
+        new MimeEntity(new MimeHeader([
           ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
         ]), substr(base64_encode($this->randomString(2048)), 0, 2048)),
         '1.5 KB',
       ],
       [
-        new Entity(new Header([
+        new MimeEntity(new MimeHeader([
           ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
         ]), substr(base64_encode($this->randomString(20480)), 0, 20480)),
         '15 KB',

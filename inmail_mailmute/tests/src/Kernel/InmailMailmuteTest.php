@@ -6,8 +6,8 @@ use Drupal\Component\Utility\SafeMarkup;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\inmail\MIME\Header;
-use Drupal\inmail\MIME\Message;
+use Drupal\inmail\MIME\MimeHeader;
+use Drupal\inmail\MIME\MimeMessage;
 use Drupal\inmail\ProcessorResult;
 use Drupal\inmail\Tests\DelivererTestTrait;
 use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
@@ -101,7 +101,7 @@ class InmailMailmuteTest extends KernelTestBase {
     $parsed_message = $parser->parseMessage($this->getMessageFileContents('normal.eml'));
     $this->assertEqual($parsed_message->getPlainText(), "Hey, it would be really bad for a mail handler to classify this as a bounce\njust because I have no mailbox outside my house.\n");
     // Check plaintext extraction for single-part message.
-    $message = new Message(new Header([
+    $message = new MimeMessage(new MimeHeader([
       ['name' => 'From', 'body' => 'Foo'],
       ['name' => 'To', 'body' => 'Bar'],
       ['name' => 'Content-Type', 'body' => 'text/html'],
@@ -151,7 +151,7 @@ class InmailMailmuteTest extends KernelTestBase {
       $handler_config = \Drupal::entityManager()->getStorage('inmail_handler')->load('mailmute');
       /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
       $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
-      $handler->invoke(new Message(new Header(), ''), $processor_result, 'test');
+      $handler->invoke(new MimeMessage(new MimeHeader(), ''), $processor_result, 'test');
 
       // Check that the state did not change.
       $new_state = $sendstate_manager->getState($this->user->getEmail());

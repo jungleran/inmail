@@ -5,7 +5,7 @@ namespace Drupal\inmail\Entity;
 use Drupal\inmail\HandlerConfigInterface;
 
 /**
- * Message handler configuration entity.
+ * MimeMessage handler configuration entity.
  *
  * This entity type is for storing the configuration of a handler plugin.
  *
@@ -13,7 +13,7 @@ use Drupal\inmail\HandlerConfigInterface;
  *
  * @ConfigEntityType(
  *   id = "inmail_handler",
- *   label = @Translation("Message handler"),
+ *   label = @Translation("MimeMessage handler"),
  *   admin_permission = "administer inmail",
  *   config_prefix = "handler",
  *   handlers = {

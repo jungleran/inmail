@@ -22,7 +22,7 @@ use Drupal\Component\Utility\Unicode;
  *
  * @ingroup mime
  */
-class Header {
+class MimeHeader {
 
   /**
    * The fields constituting the header.
@@ -32,7 +32,7 @@ class Header {
   protected $fields = array();
 
   /**
-   * Creates a new Header object containing the optionally given fields.
+   * Creates a new MimeHeader object containing the optionally given fields.
    *
    * @param array $fields
    *   A list of fields, represented by arrays with string elements for the keys
@@ -118,7 +118,7 @@ class Header {
    *   The name of a field to remove. If no field with that name is present,
    *   nothing happens.
    *
-   * @see Header::getFieldbody()
+   * @see MimeHeader::getFieldbody()
    */
   public function removeField($name) {
     $key = $this->findFirstField($name);

@@ -9,7 +9,7 @@ use Drupal\Core\Render\Element\RenderElement;
  *
  * Properties:
  * - #address: The address object.
- *   An instance of \Drupal\inmail\MIME\MessageInterface.
+ *   An instance of \Drupal\inmail\MIME\MimeMessageInterface.
  *
  * Usage example:
  * @code

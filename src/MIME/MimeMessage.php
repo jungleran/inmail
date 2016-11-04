@@ -7,9 +7,9 @@ namespace Drupal\inmail\MIME;
  *
  * @ingroup mime
  */
-class Message extends Entity implements MessageInterface {
+class MimeMessage extends MimeEntity implements MimeMessageInterface {
 
-  use MessageTrait;
+  use MimeMessageTrait;
 
   /**
    * {@inheritdoc}

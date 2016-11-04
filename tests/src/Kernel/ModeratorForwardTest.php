@@ -52,7 +52,7 @@ class ModeratorForwardTest extends KernelTestBase {
     // Reset the state to be sure that function is called in the test.
     $deliverer = $this->createTestDeliverer();
     $processor->process('unique_key', $bounce, $deliverer);
-    // Message passed all tests, parsings and thus success is called.
+    // MimeMessage passed all tests, parsings and thus success is called.
     $this->assertSuccess($deliverer, 'unique_key');
     $this->assertMailCount(0);
 
@@ -86,7 +86,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $this->assertEqual($moderator_message, 'Moderator <em class="placeholder">user@example.org</em> is bouncing.');
 
     // Do not handle, and log an error, if the custom X header is set.
-    // Furthermore, if the Received Header states that message is forwarded,
+    // Furthermore, if the Received MimeHeader states that message is forwarded,
     // do not forward it again. It triggers function invoke().
     $handler_config->setConfiguration(array('moderator' => 'moderator@example.com'))->save();
     $regular_x = "X-Inmail-Forwarded: ModeratorForwardTest\n" . $regular;
@@ -142,7 +142,7 @@ class ModeratorForwardTest extends KernelTestBase {
   public function testModeratorForwardMessage() {
     // Get an original.
     $original = $this->getMessageFileContents('normal.eml');
-    /** @var \Drupal\inmail\MIME\ParserInterface $parser */
+    /** @var \Drupal\inmail\MIME\MimeParserInterface $parser */
     $parser = \Drupal::service('inmail.mime_parser');
     $original_parsed = $parser->parseMessage($original);
 

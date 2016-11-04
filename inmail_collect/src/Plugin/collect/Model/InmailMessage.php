@@ -10,8 +10,8 @@ use Drupal\collect\TypedData\CollectDataInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\ListDataDefinition;
-use Drupal\inmail\MIME\Parser;
-use Drupal\inmail\MIME\Renderer;
+use Drupal\inmail\MIME\MimeParser;
+use Drupal\inmail\MIME\MimeRenderer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -31,21 +31,21 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
   /**
    * The injected MIME parser.
    *
-   * @var \Drupal\inmail\MIME\Parser
+   * @var \Drupal\inmail\MIME\MimeParser
    */
   protected $parser;
 
   /**
    * The injected MIME renderer.
    *
-   * @var \Drupal\inmail\MIME\Renderer
+   * @var \Drupal\inmail\MIME\MimeRenderer
    */
   protected $renderer;
 
   /**
    * Constructs a new InmailMessage plugin instance.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, Parser $parser, Renderer $renderer) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, MimeParser $parser, MimeRenderer $renderer) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->parser = $parser;
     $this->renderer = $renderer;
@@ -83,7 +83,7 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
    * {@inheritdoc}
    */
   public function buildTeaser(CollectDataInterface $data) {
-    /** @var \Drupal\inmail\MIME\MessageInterface $parsed_data */
+    /** @var \Drupal\inmail\MIME\MimeMessageInterface $parsed_data */
     $parsed_data = $data->getParsedData();
     $output = parent::buildTeaser($data);
 
@@ -142,7 +142,7 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
   public function resolveQueryPath($data, array $path) {
     // @todo Define a query format. For To/From/Cc, allow it to specify name, address or both.
     $property_name = reset($path);
-    /** @var \Drupal\inmail\MIME\EntityInterface $message */
+    /** @var \Drupal\inmail\MIME\MimeEntityInterface $message */
     $message = $data;
 
     if ($property_name == '_default_title') {
@@ -158,7 +158,7 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
       $field_body = $message->getHeader()->getFieldBody($property_name);
       // The returned value is an associative array with elements "name" and
       // "address", suitable for the inmail_mailbox datatype.
-      $mailboxes = Parser::parseAddress($field_body);
+      $mailboxes = MimeParser::parseAddress($field_body);
       // Determine whether to return as single or as array.
       if (in_array($property_name, ['to', 'cc', 'bcc'])) {
         return $mailboxes;

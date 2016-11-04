@@ -3,7 +3,7 @@
 namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\Core\Logger\LoggerChannel;
-use Drupal\inmail\MIME\Parser;
+use Drupal\inmail\MIME\MimeParser;
 use Drupal\inmail\Plugin\inmail\Analyzer\StandardDSNAnalyzer;
 use Drupal\inmail\ProcessorResult;
 use Drupal\KernelTests\KernelTestBase;
@@ -48,7 +48,7 @@ class StandardDSNAnalyzerTest extends KernelTestBase {
    */
 
   public function testAnalyze($filename, $expected_code, $expected_recipient) {
-    $message = (new Parser(new LoggerChannel('test')))->parseMessage($this->getRaw($filename));
+    $message = (new MimeParser(new LoggerChannel('test')))->parseMessage($this->getRaw($filename));
     // Run the analyzer.
     $analyzer = new StandardDSNAnalyzer(array(), $this->randomMachineName(), array());
     $processor_result = new ProcessorResult();

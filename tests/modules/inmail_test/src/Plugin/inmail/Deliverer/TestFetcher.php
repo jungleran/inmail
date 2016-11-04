@@ -59,7 +59,7 @@ class TestFetcher extends FetcherBase {
     $this->setUnprocessedCount(static::$remaining);
     $this->setLastCheckedTime($time);
 
-    // Message must be valid, so it can pass all validations and trigger
+    // MimeMessage must be valid, so it can pass all validations and trigger
     // some functions (i.e. success()).
     return [
       "From: FooBar\nDate: Tue, 23 Aug 2016 17:48:6 +0600\nSubject: Dummy message\n\nMessage Body"

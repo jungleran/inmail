@@ -10,7 +10,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  *
  * @ingroup mime
  */
-class Renderer {
+class MimeRenderer {
 
   use StringTranslationTrait;
 
@@ -19,13 +19,13 @@ class Renderer {
    *
    * Multipart entities are rendered recursively.
    *
-   * @param \Drupal\inmail\MIME\EntityInterface $entity
+   * @param \Drupal\inmail\MIME\MimeEntityInterface $entity
    *   The entity to render.
    *
    * @return array
    *   A renderable array of the entity.
    */
-  public function renderEntity(EntityInterface $entity, $index = NULL) {
+  public function renderEntity(MimeEntityInterface $entity, $index = NULL) {
     // Enclose entity in a <details> element.
     $output = array(
       '#type' => 'details',
@@ -50,7 +50,7 @@ class Renderer {
     $content_type = $entity->getContentType();
     $output['header']['content_type']['#markup'] = $content_type['type'] . '/' . $content_type['subtype'];
 
-    if ($entity instanceof MultipartEntity) {
+    if ($entity instanceof MimeMultipartEntity) {
       foreach ($entity->getParts() as $part_index => $part) {
         $output['parts'][] = $this->renderEntity($part, $part_index + 1);
       }
@@ -65,7 +65,7 @@ class Renderer {
   /**
    * Renders each existing header field of the given set.
    */
-  public function renderHeaderFields(EntityInterface $entity, array $field_names) {
+  public function renderHeaderFields(MimeEntityInterface $entity, array $field_names) {
     $headers = array();
     foreach ($field_names as $field_name) {
       if ($entity->getHeader()->getFieldBody($field_name)) {
@@ -79,7 +79,7 @@ class Renderer {
   /**
    * Renders a single header field.
    */
-  public function renderHeaderField(EntityInterface $entity, $field_name) {
+  public function renderHeaderField(MimeEntityInterface $entity, $field_name) {
     $field_body = $entity->getHeader()->getFieldBody($field_name);
     return array(
       '#type' => 'item',
@@ -91,7 +91,7 @@ class Renderer {
   /**
    * Renders the body of a non-multipart entity.
    */
-  public function renderBody(EntityInterface $entity) {
+  public function renderBody(MimeEntityInterface $entity) {
     $content_type = $entity->getContentType();
     switch ($content_type['type']) {
       case 'text':

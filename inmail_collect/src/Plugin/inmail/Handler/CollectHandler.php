@@ -4,7 +4,7 @@ namespace Drupal\inmail_collect\Plugin\inmail\Handler;
 
 use Drupal\collect\Entity\Container;
 use Drupal\Core\Url;
-use Drupal\inmail\MIME\MessageInterface;
+use Drupal\inmail\MIME\MimeMessageInterface;
 use Drupal\inmail\Plugin\inmail\Handler\HandlerBase;
 use Drupal\inmail\ProcessorResultInterface;
 
@@ -44,7 +44,7 @@ class CollectHandler extends HandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function invoke(MessageInterface $message, ProcessorResultInterface $processor_result) {
+  public function invoke(MimeMessageInterface $message, ProcessorResultInterface $processor_result) {
     // For successful processing, a message needs to follow the standards.
     // Some aspects are critical. Check them and cancel otherwise and log.
     if (!$message->getReceivedDate() || !$message->getFrom() || $message->getSubject() === NULL) {

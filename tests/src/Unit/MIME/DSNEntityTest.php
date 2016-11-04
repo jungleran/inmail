@@ -3,17 +3,17 @@
 namespace Drupal\Tests\inmail\Unit\MIME;
 
 use Drupal\Core\Logger\LoggerChannel;
-use Drupal\inmail\MIME\Entity;
-use Drupal\inmail\MIME\Header;
-use Drupal\inmail\MIME\Parser;
-use Drupal\inmail\MIME\DSNEntity;
-use Drupal\inmail\MIME\MultipartEntity;
+use Drupal\inmail\MIME\MimeEntity;
+use Drupal\inmail\MIME\MimeHeader;
+use Drupal\inmail\MIME\MimeParser;
+use Drupal\inmail\MIME\MimeDSNEntity;
+use Drupal\inmail\MIME\MimeMultipartEntity;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Tests the Parser, Entity and DSNEntity classes.
+ * Tests the MimeParser, MimeEntity and MimeDSNEntity classes.
  *
- * @coversDefaultClass \Drupal\inmail\MIME\DSNEntity
+ * @coversDefaultClass \Drupal\inmail\MIME\MimeDSNEntity
  *
  * @group inmail
  */
@@ -50,11 +50,11 @@ EOF;
   /**
    * Tests the parser.
    *
-   * @covers \Drupal\inmail\MIME\Parser::parseMessage
+   * @covers \Drupal\inmail\MIME\MimeParser::parseMessage
    */
   public function testParse() {
     // Parse and compare.
-    $parsed_message = (new Parser(new LoggerChannel('test')))->parseMessage(static::MSG_DSN);
+    $parsed_message = (new MimeParser(new LoggerChannel('test')))->parseMessage(static::MSG_DSN);
     $this->assertEquals(static::getMessage(), $parsed_message);
   }
 
@@ -99,9 +99,9 @@ EOF;
    */
   protected static function getMessage() {
     // The multipart message corresponding to the final parse result.
-    return new DSNEntity(
-      new MultipartEntity(
-        new Entity(
+    return new MimeDSNEntity(
+      new MimeMultipartEntity(
+        new MimeEntity(
           static::getMessageHeader(),
           static::getBody()
         ),
@@ -115,7 +115,7 @@ EOF;
    * Expected parse result of the header of the message (the outer entity).
    */
   protected static function getMessageHeader() {
-    return new Header([
+    return new MimeHeader([
       ['name' => 'Content-type', 'body' => 'multipart/report; report-type=delivery-status; boundary="boundary"'],
     ]);
   }
@@ -159,7 +159,7 @@ Subject: My very urgent message
    * Expected parse result of the first part of the message.
    */
   protected static function getHumanPart() {
-    return new Entity(new Header(), static::getHumanPartBody());
+    return new MimeEntity(new MimeHeader(), static::getHumanPartBody());
   }
 
   /**
@@ -173,14 +173,14 @@ Subject: My very urgent message
    * Expected parse result of the second part of the message.
    */
   protected static function getStatusPart() {
-    return new Entity(static::getStatusPartHeader(), static::getStatusPartBody());
+    return new MimeEntity(static::getStatusPartHeader(), static::getStatusPartBody());
   }
 
   /**
    * Expected parse result of the header of the second part of the message.
    */
   protected static function getStatusPartHeader() {
-    return new Header([
+    return new MimeHeader([
       ['name' => 'Content-Type', 'body' => 'message/delivery-status'],
     ]);
   }
@@ -206,7 +206,7 @@ Subject: My very urgent message
    * Expected parse result of the message status fields in the second part.
    */
   protected static function getPerMessageFields() {
-    return new Header([
+    return new MimeHeader([
       ['name' => 'Reporting-MTA', 'body' => 'dns; example.com'],
     ]);
   }
@@ -215,7 +215,7 @@ Subject: My very urgent message
    * Expected parse result of the receipient status fields in the second part.
    */
   protected static function getPerRecipientField() {
-    return new Header([
+    return new MimeHeader([
       ['name' => 'Final-Recipient', 'body' => 'rfc822; user@example.org'],
       ['name' => 'Action', 'body' => 'failed'],
       ['name' => 'Status', 'body' => '5.0.0'],
@@ -226,14 +226,14 @@ Subject: My very urgent message
    * Expected parse result of the third part of the message.
    */
   protected static function getOriginalPart() {
-    return new Entity(static::getOriginalPartHeader(), static::getOriginalPartBody());
+    return new MimeEntity(static::getOriginalPartHeader(), static::getOriginalPartBody());
   }
 
   /**
    * Expected parse result of the header of the third part of the message.
    */
   protected static function getOriginalPartHeader() {
-    return new Header([
+    return new MimeHeader([
       ['name' => 'Content-Type', 'body' => 'message/rfc822'],
     ]);
   }

@@ -7,65 +7,65 @@ namespace Drupal\inmail\MIME;
  *
  * @ingroup processing
  */
-interface MessageDecompositionInterface {
+interface MimeMessageDecompositionInterface {
 
   /**
    * Returns a flatten array of sub-entities.
    *
-   * @param \Drupal\Inmail\MIME\EntityInterface $entity
+   * @param \Drupal\Inmail\MIME\MimeEntityInterface $entity
    *   An entity to get sub-entities for.
    * @param string $current_path
    *   (optional) The current path. Defaults to empty string.
    *
-   * @return \Drupal\Inmail\MIME\EntityInterface[]
+   * @return \Drupal\Inmail\MIME\MimeEntityInterface[]
    *   A flatten array of sub-entities separated by its paths.
    */
-  public function getEntities(EntityInterface $entity, $current_path = '');
+  public function getEntities(MimeEntityInterface $entity, $current_path = '');
 
   /**
    * Returns a MIME entity for the given path.
    *
-   * @param \Drupal\inmail\MIME\EntityInterface $entity
+   * @param \Drupal\inmail\MIME\MimeEntityInterface $entity
    *   The entity to resolve a path for.
    * @param string $path
    *   The entity path.
    *
-   * @return \Drupal\inmail\MIME\EntityInterface|null
+   * @return \Drupal\inmail\MIME\MimeEntityInterface|null
    *   Returns a MIME entity or null if it fails.
    */
-  public function getEntityByPath(EntityInterface $entity, $path);
+  public function getEntityByPath(MimeEntityInterface $entity, $path);
 
   /**
    * Returns a list of entities that match the given type.
    *
-   * @param \Drupal\inmail\MIME\EntityInterface $entity
+   * @param \Drupal\inmail\MIME\MimeEntityInterface $entity
    *   The main entity.
    * @param string[] $types
    *   The list of types to get entities for.
    *
-   * @return \Drupal\inmail\MIME\EntityInterface[]
+   * @return \Drupal\inmail\MIME\MimeEntityInterface[]
    *   The list of matched entities keyed by the type name or
    *   an empty string if there is no match.
    */
-  public function getEntitiesByType(EntityInterface $entity, array $types);
+  public function getEntitiesByType(MimeEntityInterface $entity, array $types);
 
   /**
    * Returns an array with body paths.
    *
-   * @param \Drupal\inmail\MIME\MessageInterface $message
+   * @param \Drupal\inmail\MIME\MimeMessageInterface $message
    *   The message to get body paths for.
    *
    * @return array
    *   An array containing plain and HTML keys and its paths.
    */
-  public function getBodyPaths(MessageInterface $message);
+  public function getBodyPaths(MimeMessageInterface $message);
 
   /**
    * Builds an array of attachment properties.
    *
    * @param string $path
    *   The path to access the attachment.
-   * @param \Drupal\inmail\MIME\EntityInterface $attachment
+   * @param \Drupal\inmail\MIME\MimeEntityInterface $attachment
    *   The message part that should be displayed as an attachment.
    * @param \Drupal\Core\Url|null $download_url
    *   (optional) A download URL or null if it does not exist.
@@ -79,6 +79,6 @@ interface MessageDecompositionInterface {
    *      - content: Raw encoded content.
    *      - (optional) url: The URL to download the attachment.
    */
-  public function buildAttachment($path, EntityInterface $attachment, $download_url = NULL);
+  public function buildAttachment($path, MimeEntityInterface $attachment, $download_url = NULL);
 
 }

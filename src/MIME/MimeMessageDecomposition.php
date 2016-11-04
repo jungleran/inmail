@@ -7,12 +7,12 @@ namespace Drupal\inmail\MIME;
  *
  * @ingroup processing
  */
-class MessageDecomposition implements MessageDecompositionInterface {
+class MimeMessageDecomposition implements MimeMessageDecompositionInterface {
 
   /**
    * {@inheritdoc}
    */
-  public function getEntities(EntityInterface $entity, $current_path = '') {
+  public function getEntities(MimeEntityInterface $entity, $current_path = '') {
     $entities = [];
     // Add the original message as the first element.
     if ($current_path === '') {
@@ -20,7 +20,7 @@ class MessageDecomposition implements MessageDecompositionInterface {
     }
 
     // In case the message is a multipart entity recurse into the parts.
-    if ($entity instanceof MultipartEntity) {
+    if ($entity instanceof MimeMultipartEntity) {
       foreach ($entity->getParts() as $index => $message_part) {
         // Build an entity path: "{current_path} + underscore + {index}".
         $path = trim($current_path . '_' . $index, '_');
@@ -38,7 +38,7 @@ class MessageDecomposition implements MessageDecompositionInterface {
   /**
    * {@inheritdoc}
    */
-  public function getEntityByPath(EntityInterface $message, $path) {
+  public function getEntityByPath(MimeEntityInterface $message, $path) {
     $path_levels = explode('_', $path);
 
     if (count($path_levels) > 1) {
@@ -53,7 +53,7 @@ class MessageDecomposition implements MessageDecompositionInterface {
   /**
    * {@inheritdoc}
    */
-  public function getEntitiesByType(EntityInterface $entity, array $types) {
+  public function getEntitiesByType(MimeEntityInterface $entity, array $types) {
     $filtered_entities = [];
     foreach ($this->getEntities($entity) as $path => $entity) {
       if (in_array($entity->getType(), $types)) {
@@ -67,7 +67,7 @@ class MessageDecomposition implements MessageDecompositionInterface {
   /**
    * {@inheritdoc}
    */
-  public function buildAttachment($path, EntityInterface $attachment, $download_url = NULL) {
+  public function buildAttachment($path, MimeEntityInterface $attachment, $download_url = NULL) {
     $type = $attachment->getContentType()['type'];
     $content_type = $type . '/' . $attachment->getContentType()['subtype'];
     $filename = !empty($attachment->getContentType()['parameters']['name']) ? $attachment->getContentType()['parameters']['name'] : $content_type;
@@ -99,7 +99,7 @@ class MessageDecomposition implements MessageDecompositionInterface {
   /**
    * {@inheritdoc}
    */
-  public function getBodyPaths(MessageInterface $message) {
+  public function getBodyPaths(MimeMessageInterface $message) {
     // Filter entities by text/plain and text/html types.
     $body_entities = $this->getEntitiesByType($message, ['text/plain', 'text/html']);
 

@@ -19,7 +19,7 @@ namespace Drupal\inmail\MIME;
  *
  * @ingroup mime
  */
-class DSNEntity extends MultipartMessage {
+class MimeDSNEntity extends MimeMultipartMessage {
 
   /**
    * Groups of DSN fields.
@@ -27,24 +27,24 @@ class DSNEntity extends MultipartMessage {
    * The first element contains per-message fields, and subsequent elements
    * contain per-recipient fields.
    *
-   * Representation by the Header class is motivated by the fields following the
+   * Representation by the MimeHeader class is motivated by the fields following the
    * syntax of header fields.
    *
-   * @var \Drupal\inmail\MIME\Header[]
+   * @var \Drupal\inmail\MIME\MimeHeader[]
    */
   protected $dsnFields;
 
   /**
    * Decorates a multipart entity into a DSN entity.
    *
-   * @param \Drupal\inmail\MIME\MultipartEntity $entity
+   * @param \Drupal\inmail\MIME\MimeMultipartEntity $entity
    *   A multipart entity.
-   * @param \Drupal\inmail\MIME\Header[] $dsn_fields
+   * @param \Drupal\inmail\MIME\MimeHeader[] $dsn_fields
    *   A list of associative arrays, the first representing a per-message DSN
    *   field group, and each of the rest representing a per-recipient field
    *   group.
    */
-  public function __construct(MultipartEntity $entity, array $dsn_fields) {
+  public function __construct(MimeMultipartEntity $entity, array $dsn_fields) {
     parent::__construct($entity, $entity->parts);
     $this->dsnFields = $dsn_fields;
   }
@@ -52,7 +52,7 @@ class DSNEntity extends MultipartMessage {
   /**
    * Returns the human-readable explanation part.
    *
-   * @return \Drupal\inmail\MIME\EntityInterface
+   * @return \Drupal\inmail\MIME\MimeEntityInterface
    *   The first part of the DSN.
    */
   public function getHumanPart() {
@@ -62,7 +62,7 @@ class DSNEntity extends MultipartMessage {
   /**
    * Returns the delivery-status part.
    *
-   * @return \Drupal\inmail\MIME\EntityInterface
+   * @return \Drupal\inmail\MIME\MimeEntityInterface
    *   The second part of the DSN.
    */
   public function getStatusPart() {
@@ -76,7 +76,7 @@ class DSNEntity extends MultipartMessage {
    * that the message contained may be partial and not contain the entire
    * original message.
    *
-   * @return \Drupal\inmail\MIME\EntityInterface
+   * @return \Drupal\inmail\MIME\MimeEntityInterface
    *   The third part of the DSN, if it is present.
    */
   public function getOriginalPart() {
@@ -89,7 +89,7 @@ class DSNEntity extends MultipartMessage {
    * This is the first group of fields in the delivery-status part. It is
    * required to contain at least a "Reporting-MTA" field.
    *
-   * @return \Drupal\inmail\MIME\Header
+   * @return \Drupal\inmail\MIME\MimeHeader
    *   The per-message DSN fields.
    */
   public function getPerMessageFields() {
@@ -105,7 +105,7 @@ class DSNEntity extends MultipartMessage {
    *   The index of the field group to get. An $index of 0 refers to the first
    *   per-recipient field group.
    *
-   * @return \Drupal\inmail\MIME\Header
+   * @return \Drupal\inmail\MIME\MimeHeader
    *   The field group at the given index, or NULL if the index is invalid.
    */
   public function getPerRecipientFields($index) {

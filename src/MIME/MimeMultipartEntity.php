@@ -12,24 +12,24 @@ namespace Drupal\inmail\MIME;
  *
  * @ingroup mime
  */
-class MultipartEntity extends Entity {
+class MimeMultipartEntity extends MimeEntity {
 
   /**
    * The constituting parts.
    *
-   * @var \Drupal\inmail\MIME\EntityInterface[]
+   * @var \Drupal\inmail\MIME\MimeEntityInterface[]
    */
   protected $parts;
 
   /**
    * Decorates an entity into a multipart entity object.
    *
-   * @param \Drupal\inmail\MIME\Entity $entity
+   * @param \Drupal\inmail\MIME\MimeEntity $entity
    *   A MIME entity.
-   * @param \Drupal\inmail\MIME\Entity[] $parts
+   * @param \Drupal\inmail\MIME\MimeEntity[] $parts
    *   The parts constituting the body of $entity.
    */
-  public function __construct(Entity $entity, array $parts) {
+  public function __construct(MimeEntity $entity, array $parts) {
     parent::__construct($entity->header, $entity->body);
     $this->parts = $parts;
   }
@@ -40,7 +40,7 @@ class MultipartEntity extends Entity {
    * @param int $index
    *   The index of the part to get.
    *
-   * @return \Drupal\inmail\MIME\EntityInterface
+   * @return \Drupal\inmail\MIME\MimeEntityInterface
    *   The part at the given index, or NULL if the index is invalid.
    */
   public function getPart($index) {
@@ -50,7 +50,7 @@ class MultipartEntity extends Entity {
   /**
    * Returns all contained parts.
    *
-   * @return EntityInterface[]
+   * @return MimeEntityInterface[]
    *   A list of the parts.
    */
   public function getParts() {

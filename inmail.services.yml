@@ -20,9 +20,9 @@ services:
     parent: logger.channel_base
     arguments: ['inmail']
   inmail.mime_parser:
-    class: Drupal\inmail\MIME\Parser
+    class: Drupal\inmail\MIME\MimeParser
     arguments: ['@logger.channel.inmail']
   inmail.mime_renderer:
-    class: Drupal\inmail\MIME\Renderer
+    class: Drupal\inmail\MIME\MimeRenderer
   inmail.message_decomposition:
-    class: Drupal\inmail\MIME\MessageDecomposition
+    class: Drupal\inmail\MIME\MimeMessageDecomposition

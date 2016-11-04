@@ -3,8 +3,8 @@
 namespace Drupal\inmail_phpmailerbmh\Plugin\inmail\Analyzer;
 
 use Drupal\inmail\DSNStatus;
-use Drupal\inmail\MIME\DSNEntity;
-use Drupal\inmail\MIME\MessageInterface;
+use Drupal\inmail\MIME\MimeDSNEntity;
+use Drupal\inmail\MIME\MimeMessageInterface;
 use Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerBase;
 use Drupal\inmail\ProcessorResultInterface;
 
@@ -66,7 +66,7 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
+  public function analyze(MimeMessageInterface $message, ProcessorResultInterface $processor_result) {
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult('bounce', 'inmail_bounce');
     $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
@@ -74,7 +74,7 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
     // The analysis part of the library is in the bmhDSNRules and bmhBodyRules
     // functions.
     require_once $this->getLibraryPath() . '/lib/BounceMailHandler/phpmailer-bmh_rules.php';
-    if ($message instanceof DSNEntity) {
+    if ($message instanceof MimeDSNEntity) {
       // The bmhDSNRules function takes the two report parts as arguments.
       $bmh_result = bmhDSNRules($message->getHumanPart()->toString(), $message->getStatusPart()->toString());
     }

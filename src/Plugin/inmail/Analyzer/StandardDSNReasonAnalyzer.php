@@ -2,8 +2,8 @@
 
 namespace Drupal\inmail\Plugin\inmail\Analyzer;
 
-use Drupal\inmail\MIME\DSNEntity;
-use Drupal\inmail\MIME\MessageInterface;
+use Drupal\inmail\MIME\MimeDSNEntity;
+use Drupal\inmail\MIME\MimeMessageInterface;
 use Drupal\inmail\ProcessorResultInterface;
 
 /**
@@ -23,9 +23,9 @@ class StandardDSNReasonAnalyzer extends AnalyzerBase {
   /**
    * {@inheritdoc}
    */
-  public function analyze(MessageInterface $message, ProcessorResultInterface $processor_result) {
+  public function analyze(MimeMessageInterface $message, ProcessorResultInterface $processor_result) {
     // Ignore messages that are not DSN.
-    if (!$message instanceof DSNEntity) {
+    if (!$message instanceof MimeDSNEntity) {
       return;
     }
 

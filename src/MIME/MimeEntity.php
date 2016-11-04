@@ -9,7 +9,7 @@ use Drupal\Component\Utility\Unicode;
  *
  * @ingroup mime
  */
-class Entity implements EntityInterface {
+class MimeEntity implements MimeEntityInterface {
 
   /**
    * An associative array of keys and corresponding error messages.
@@ -23,7 +23,7 @@ class Entity implements EntityInterface {
   /**
    * The entity header.
    *
-   * @var \Drupal\inmail\MIME\Header
+   * @var \Drupal\inmail\MIME\MimeHeader
    */
   protected $header;
 
@@ -37,14 +37,14 @@ class Entity implements EntityInterface {
   /**
    * Constructs a new Entity.
    *
-   * @param \Drupal\inmail\MIME\Header $header
+   * @param \Drupal\inmail\MIME\MimeHeader $header
    *   The entity header.
    * @param string $body
    *   The entity body. The charset and any encoding of the body must be 7-bit
    *   ASCII and match the Content-Transfer-Encoding and Content-Type fields in
    *   the given header.
    */
-  public function __construct(Header $header, $body) {
+  public function __construct(MimeHeader $header, $body) {
     $this->header = $header;
     $this->body = $body;
   }
@@ -122,7 +122,7 @@ class Entity implements EntityInterface {
     $body = $this->getBody();
 
     // Decode base64/quoted-printable.
-    $body = Encodings::decode($body, $this->getContentTransferEncoding());
+    $body = MimeEncodings::decode($body, $this->getContentTransferEncoding());
     if ($body === NULL || $body === FALSE) {
       // Unrecognized encoding.
       return NULL;
