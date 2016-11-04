@@ -223,7 +223,8 @@ class MessageProcessor implements MessageProcessorInterface {
     if ($deliverer->isMessageReport()) {
       $params['result'] = $result;
       $params['original'] = $message;
-      $recipient = $message->getFrom();
+      $recipient = $message->getFrom()['address'];
+      // @todo consider display name?
       $mail_manager = \Drupal::service('plugin.manager.mail');
       $mail_manager->mail('inmail', 'success', $recipient,
         \Drupal::languageManager()->getDefaultLanguage()->getId(), $params);

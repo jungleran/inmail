@@ -97,6 +97,7 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
       '#title' => $this->t('From'),
       '#markup' => htmlentities($parsed_data->getFrom()),
     );
+    // @todo Fix email display in https://www.drupal.org/node/2824683.
     $output['to'] = array(
       '#type' => 'item',
       '#title' => $this->t('To'),

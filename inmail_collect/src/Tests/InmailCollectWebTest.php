@@ -60,8 +60,14 @@ class InmailCollectWebTest extends WebTestBase {
     $this->assertText(t('There is no plugin configured to display data.'));
     $this->clickLink(t('Raw data'));
     $this->assertText('&quot;header-subject&quot;: &quot;DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory&quot;');
-    $this->assertText('&quot;header-to&quot;: &quot;bounces+user=example.org@example.com&quot;');
-    $this->assertText('&quot;header-from&quot;: &quot;Postmaster@acacia.example.org&quot;');
+    $this->assertText('&quot;header-to&quot;: {
+        &quot;name&quot;: &quot;&quot;,
+        &quot;address&quot;: &quot;bounces+user=example.org@example.com&quot;
+    }');
+    $this->assertText('&quot;header-from&quot;: {
+        &quot;name&quot;: &quot;&quot;,
+        &quot;address&quot;: &quot;Postmaster@acacia.example.org&quot;
+    }');
     // '<' and '>' are converted to /u003C and /u003E entities by the formatter.
     $this->assertText('&quot;header-message-id&quot;: &quot;\u003C21386_1392800717_530473CD_21386_78_1_OF72A6C464.8DF6E397-ONC1257C84.0031EBBB-C1257C84.0031=EC2C+@acacia.example.org\u003E&quot;');
     $this->assertText('&quot;deliverer&quot;: &quot;' . $deliverer->id() . '&quot;');
@@ -111,7 +117,7 @@ class InmailCollectWebTest extends WebTestBase {
       ['name' => 'Message-ID', 'body' => "\x80"],
       ['name' => 'Received', 'body' => 'blah; Thu, 29 Jan 2015 15:43:04 +0100'],
       ['name' => 'Subject', 'body' => 'Foo'],
-      ['name' => 'To', 'body' => 'Bar'],
+      ['name' => 'To', 'body' => 'bar@example.com'],
       ['name' => 'From', 'body' => 'foobar@example.com']
     ]), 'body');
     // Triggering json_encode which should fail.

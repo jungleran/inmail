@@ -37,7 +37,7 @@ interface MimeMessageInterface extends MimeEntityInterface {
    * @param bool $decode
    *   Optional value to indicate if header is in punycode form.
    *
-   * @return string|null
+   * @return array[]|null
    *   The 'From' header field body, or null if inexisting.
    */
   public function getFrom($decode = FALSE);
@@ -48,7 +48,7 @@ interface MimeMessageInterface extends MimeEntityInterface {
    * @param bool $decode
    *   Optional value to indicate if header is in punycode form.
    *
-   * @return string[]|null
+   * @return array[]|null
    *   List of 'To' recipient addresses.
    */
   public function getTo($decode = FALSE);
@@ -59,7 +59,7 @@ interface MimeMessageInterface extends MimeEntityInterface {
    * @param bool $decode
    *   Optional value to indicate if header is in punycode form.
    *
-   * @return string[]|null
+   * @return array[]|null
    *   List of 'Cc' recipient addresses.
    */
   public function getCc($decode = FALSE);

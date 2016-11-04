@@ -30,20 +30,24 @@
   <header class="inmail-message__header">
     <div class="inmail-message__element inmail-message__header__from">
       <label>From</label>
-      {{ addresses_from }}
+      {{ address_from }}
     </div>
-    {% for address_to in addresses_to %}
+    {% if addresses_to %}
       <div class="inmail-message__element inmail-message__header__to">
         <label>To</label>
-        {{ address_to }}
+        {% for address_to in addresses_to %}
+          {{ address_to }}
+        {% endfor %}
       </div>
-    {% endfor %}
-    {% for address_cc in addresses_cc %}
+    {% endif %}
+    {% if addresses_cc %}
       <div class="inmail-message__element inmail-message__header__cc">
         <label>CC</label>
-        {{ address_cc }}
+        {% for address_cc in addresses_cc %}
+          {{ address_cc }}
+        {% endfor %}
       </div>
-    {% endfor %}
+    {% endif %}
     <div class="inmail-message__element inmail-message__header__received-date">
       <label>Received</label>
       {{ message.getReceivedDate() }}

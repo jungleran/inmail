@@ -27,9 +27,7 @@ trait MimeMessageTrait {
    * @return string|null
    *   Decoded UTF8 address if successful decoding, otherwise NULL.
    */
-  protected function getDecodedAddress($body) {
-    //@todo: Properly parse Mail Address https://www.drupal.org/node/2800585.
-
+  protected function decodeAddress($body) {
     // Skip decoding if the intl package is missing.
     if (!function_exists('idn_to_utf8')) {
       return $body;
@@ -46,41 +44,41 @@ trait MimeMessageTrait {
    * {@inheritdoc}
    */
   public function getFrom($decode = FALSE) {
-    //@todo: Properly parse Mail Address https://www.drupal.org/node/2800585.
-
     $body = $this->getHeader()->getFieldBody('From');
+    $mailboxes = MimeParser::parseAddress($body);
+    $mailbox = reset($mailboxes);
     if ($decode) {
-      $body = $this->getDecodedAddress($body);
+      $mailbox['address'] = $this->decodeAddress($mailbox['address']);
     }
-    return $body;
+    return $mailbox;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getTo($decode = FALSE) {
-    //@todo Properly parse Mail Address https://www.drupal.org/node/2800585
-    //@todo Deal with multiple recipients.
-
     $body = $this->getHeader()->getFieldBody('To');
+    $mailboxes = MimeParser::parseAddress($body);
     if ($decode) {
-      $body = $this->getDecodedAddress($body);
+      foreach ($mailboxes as $key => $mailbox) {
+        $mailboxes[$key]['address'] = $this->decodeAddress($mailboxes[$key]['address']);
+      }
     }
-    return $body ? [$body] : NULL;
+    return $body ? $mailboxes : NULL;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCc($decode = FALSE) {
-    //@todo Properly parse Mail Address https://www.drupal.org/node/2800585
-    //@todo Deal with multiple recipients.
-
     $body = $this->getHeader()->getFieldBody('Cc');
+    $mailboxes = MimeParser::parseAddress($body);
     if ($decode) {
-      $body = $this->getDecodedAddress($body);
+      foreach ($mailboxes as $key => $mailbox) {
+        $mailboxes[$key]['address'] = $this->decodeAddress($mailboxes[$key]['address']);
+      }
     }
-    return $body ? [$body] : NULL;
+    return $body ? $mailboxes : NULL;
   }
 
   /**

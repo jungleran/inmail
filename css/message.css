@@ -19,6 +19,12 @@
   font-weight: bold;
   width: 100px;
 }
+.inmail-message__full .inmail-message__element, .inmail-message__address {
+  background-color: #dddddd;
+  margin: 0px 6px 3px 0px;
+  padding: 0px 3px 0px 3px;
+  color: #0074BD;
+}
 .inmail-message--full .inmail-message__header .inmail-message__header__all {
   display: block;
   font-size: 0.9em;

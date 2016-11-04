@@ -10,6 +10,12 @@
  */
 #}
 
-<span class="inmail-message__address">
-    {{ address }}
-</span>
+{% if address.name %}
+    <span class="inmail-message__address" title="{{ address.address }}">
+        {{ address.name }}
+    </span>
+{% else %}
+    <span class="inmail-message__address">
+        {{ address.address }}
+    </span>
+{% endif %}

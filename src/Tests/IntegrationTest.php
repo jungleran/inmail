@@ -81,10 +81,10 @@ class IntegrationTest extends WebTestBase {
     // Test "teaser" view mode of Inmail message element.
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
     $this->assertText('Email display');
-    $this->assertRaw(htmlspecialchars($message->getFrom()));
-    $this->assertRaw(htmlspecialchars($message->getTo()[0]));
-    $this->assertRaw(htmlspecialchars($message->getCc()[0]));
-    $this->assertRaw(htmlspecialchars($message->getSubject()));
+    $this->assertRaw('Arild Matsson');
+    $this->assertRaw('Arild Matsson');
+    $this->assertRaw('Someone Else');
+    $this->assertRaw('BMH testing sample');
     $this->assertText(htmlspecialchars($message->getPlainText(), ENT_QUOTES, 'UTF-8'));
 
     // Test "full" view mode of Inmail message element.
@@ -94,11 +94,13 @@ class IntegrationTest extends WebTestBase {
     $this->assertText('Received');
     $this->assertText($message->getReceivedDate());
     $this->assertText('From');
-    $this->assertText(htmlspecialchars($message->getFrom()));
+    $this->assertText('Arild Matsson');
     $this->assertText('To');
-    $this->assertText(htmlspecialchars(implode(', ', $message->getTo())));
-    $this->assertText('Cc');
-    $this->assertText(htmlspecialchars(implode(', ', $message->getCc())));
+    $this->assertText('Email display');
+    $this->assertRaw('Arild Matsson');
+    $this->assertRaw('Arild Matsson');
+    $this->assertRaw('Someone Else');
+
     // Assert message parts.
     $this->assertText($message->getPart(0)->getDecodedBody());
     $this->assertText(htmlspecialchars($message->getPlainText()));
@@ -202,7 +204,6 @@ class IntegrationTest extends WebTestBase {
    */
   protected static function generateBounceMessage(array $original_message) {
     // Set replacement variables.
-    $from = $original_message['from'];
     $subject = $original_message['subject'];
     $body = $original_message['body'];
     $return_path = $original_message['headers']['Return-Path'];
