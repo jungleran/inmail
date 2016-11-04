@@ -85,6 +85,8 @@ class EmailDisplayController extends ControllerBase {
     $header = $entity->getHeader();
     if ($entity->getContentType()['type'] == 'image') {
       $header->removeField('Content-Disposition');
+      $filename = !empty($entity->getContentType()['parameters']['name']) ? $entity->getContentType()['parameters']['name'] : 'image';
+      $header->addField('Content-Disposition', 'inline; filename="' . $filename . '"');
     }
 
     return new Response($decoded_body, Response::HTTP_OK, $header->toArray());

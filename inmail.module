@@ -427,8 +427,8 @@ function inmail_preprocess_inmail_message(&$variables) {
   $body_paths = $message_decomposition->getBodyPaths($message);
   $plain_text_path = $body_paths['plain'];
   $html_path = $body_paths['html'];
-  $variables['body']['plain'] = isset($entities[$plain_text_path]) ? InmailMessage::getPlainTextMarkup($entities[$plain_text_path]->getDecodedBody(), $view_mode) : NULL;
-  $variables['body']['html'] = isset($entities[$html_path]) ? InmailMessage::getHtmlMarkup($entities[$html_path]->getDecodedBody(), $view_mode) : NULL;
+  $plain_text = isset($entities[$plain_text_path]) ? $entities[$plain_text_path]->getDecodedBody() : '';
+  $html = isset($entities[$html_path]) ? $entities[$html_path]->getDecodedBody() : '';
 
   // Build multipart message parts in 'full' view mode.
   if ($message instanceof MimeMultipartMessage && $view_mode == 'full') {
@@ -436,6 +436,19 @@ function inmail_preprocess_inmail_message(&$variables) {
     foreach ($entities as $path => $entity) {
       switch ($entity->getType()) {
         case 'inline':
+          if ($cid_header = $entity->getHeader()->getFieldBody('Content-ID')) {
+            // Extract the content between "<" and ">".
+            preg_match('/<(.+)>/', $cid_header, $cid_match);
+            // Use the extracted content in case "<" and ">" are matched.
+            // Otherwise, use the original Content-ID header.
+            $cid = $cid_match ? end($cid_match) : $cid_header;
+
+            if ($download_url) {
+              $image_url = clone $download_url;
+              $html = str_replace("cid:$cid", $image_url->setRouteParameter('path', $path)->toString(), $html);
+            }
+            // @todo: Let the browser handle base64-encoded content.
+          }
         case 'attachment':
           $variables['attachments'][$path] = $message_decomposition->buildAttachment($path, $entity, $download_url);
           break;
@@ -451,6 +464,10 @@ function inmail_preprocess_inmail_message(&$variables) {
       }
     }
   }
+
+  // Set the plain and HTML body content.
+  $variables['body']['plain'] = $plain_text ? InmailMessage::getPlainTextMarkup($plain_text, $view_mode) : NULL;
+  $variables['body']['html'] = $html ? InmailMessage::getHtmlMarkup($html, $view_mode) : NULL;
 }
 
 /**

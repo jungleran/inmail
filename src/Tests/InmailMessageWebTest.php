@@ -63,8 +63,12 @@ class InmailMessageWebTest extends InmailWebTestBase {
     //    https://www.drupal.org/node/2819645.
     $this->assertText('This is a sample image with');
     $this->assertText('.JPEG.png (94 bytes)');
-    $this->assertLink('Inline image.png');
     $this->assertText('Inline image.png (94 bytes)');
+    $this->assertRaw('<img src="' . base_path() . 'inmail-test/email/' . $event_id . '/0_0_1/download" width="9" height="9">');
+    $this->clickLink('Inline image.png');
+    $this->assertResponse(200);
+    $this->assertHeader('Content-Disposition', 'inline; filename="Inline image.png"');
+    $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');
 
     // Assert the download link response.
     $this->clickLink('hello.txt');
