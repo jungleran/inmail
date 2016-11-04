@@ -186,6 +186,34 @@ function inmail_help($route_name, RouteMatchInterface $route_match) {
       $help = $handler->help();
       return drupal_render($help);
 
+    case 'entity.inmail_deliverer.collection':
+      $output = '<p>' . t('Each Deliverer is an entry point for mails. Fetchers are special deliverers. They can be actively fetched on button press or on cron run.') . '</p>';
+      return $output;
+
+    case 'entity.inmail_analyzer.collection':
+      $output = '<p>' . t('Each processed mail triggers all enabled Analyzers to enrich the processor result with contexts based on the data processed.') . '</p>';
+      return $output;
+
+    case 'entity.inmail_handler.collection':
+      $output = '<p>' . t('Each processed mail triggers all enabled Handlers. They take action based on the contextual data from the Analyzers') . '</p>';
+      return $output;
+
+    case 'help.page.inmail':
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Inmail module is designed to process any incoming mail messages with pluggability. It contains multiple strategies to classify mails and identify bounce messages. It thus helps to improve mail reputation of a website.') . '</p>';
+      $output .= '<h3>' . t('Uses') . '</h3>';
+      $output .= '<dt>' . t('Fetching messages from IMAP/POP3 server') . '</dt>';
+      $output .= '<dd>' . t('A deliverer can fetch mail "on its own" during cron runs. This requires the IMAP extension to be enabled in your PHP build.') . '</dd>';
+      $output .= '<h3>' . t('Module references') . '</h3>';
+      $output .= '<dt>' . t('Mailmute') . '</dt>';
+      $output .= '<dd>' . t('Delivery to some recipients may fail if a mail address of a registered Drupal user is discontinued. For every unreachable address, a bounce message is generated and sent back to the website. Inmail classifies incoming bounce messages. <a href=":mailmute_help">Mailmute</a> allows muting further outgoing mails for recipients with such a status (i.e. after receiving multiple bounces).', [':mailmute_help' => 'https://drupal.org/project/mailmute']) . '</dd>';
+      $output .= '<dt>' . t('Collect') . '</dt>';
+      $output .= '<dd>' . t('The <a href=":collect_help">Collect</a> module provides storage for data of any kind, to allow subsequent arbitrary processing. To store all incoming email as Collect Containers, simply enable the Inmail Collect submodule.', [':collect_help' => (\Drupal::moduleHandler()->moduleExists('collect')) ? \Drupal::url('help.page', ['name' => 'collect']) : 'https://drupal.org/project/collect']) . '</dd>';
+      $output .= '<dt>' . t('Mailhandler') . '</dt>';
+      $output .= '<dd>' . t('<a href=":mailhandler_help">Mailhandler</a> allows creating contents from the incoming email. It takes email content and imports it as desired content type.', [':mailhandler_help' => 'https://drupal.org/project/mailhandler']) . '</dd>';
+      $output .= '<h3>' . t('Inmail Collect Demo') . '</h3>';
+      $output .= '<dd>' . t('CRM contacts are matched or created based on mail <i>from / to / cc</i> fields. Additionally, each processed mail is stored and attached to a newly added activity record of each contact involved.') . '</dd>';
+      return $output;
   }
 }
 
