@@ -86,12 +86,29 @@ class InmailDataTypeTest extends KernelTestBase {
         new Entity(new Header(), $this->randomString(2022)),
         '1.97 KB',
       ],
+      // Wide range of generated chars results in failing base64 decoding, thus
+      // file size remains same.
       [
         new Entity(new Header([
           ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
         ]), $this->randomString(20480)),
         '20 KB',
       ],
+      // base64_encode() produces valid base64 alphabet but longer because of
+      // encoding. It needs to be created valid base64 string with desired length.
+      [
+        new Entity(new Header([
+          ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
+        ]), substr(base64_encode($this->randomString(2048)), 0, 2048)),
+        '1.5 KB',
+      ],
+      [
+        new Entity(new Header([
+          ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
+        ]), substr(base64_encode($this->randomString(20480)), 0, 20480)),
+        '15 KB',
+      ],
     ];
   }
+
 }
