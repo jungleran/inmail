@@ -14,7 +14,7 @@
 .inmail-message--full .inmail-message__header .inmail-message__element {
   display: flex;
 }
-.inmail-message--full .inmail-message__element label {
+.inmail-message--full .inmail-message__header .inmail-message__element label {
   padding: 0;
   font-weight: bold;
   width: 100px;
