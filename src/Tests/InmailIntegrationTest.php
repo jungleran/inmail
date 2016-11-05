@@ -2,6 +2,7 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\simpletest\WebTestBase;
