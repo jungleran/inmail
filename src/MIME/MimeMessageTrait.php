@@ -44,34 +44,42 @@ trait MimeMessageTrait {
    * {@inheritdoc}
    */
   public function getFrom($decode = FALSE) {
-    $body = $this->getHeader()->getFieldBody('From');
-    $mailboxes = MimeParser::parseAddress($body);
-    $mailbox = reset($mailboxes);
-    if ($decode) {
-      $mailbox['address'] = $this->decodeAddress($mailbox['address']);
-    }
-    return $mailbox;
+    $mailboxes = $this->parseDecodeField('From', $decode);
+    return isset($mailboxes[0]) ? $mailboxes[0] : NULL;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getTo($decode = FALSE) {
-    $body = $this->getHeader()->getFieldBody('To');
-    $mailboxes = MimeParser::parseAddress($body);
-    if ($decode) {
-      foreach ($mailboxes as $key => $mailbox) {
-        $mailboxes[$key]['address'] = $this->decodeAddress($mailboxes[$key]['address']);
-      }
-    }
-    return $body ? $mailboxes : NULL;
+    return $this->parseDecodeField('To', $decode);
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCc($decode = FALSE) {
-    $body = $this->getHeader()->getFieldBody('Cc');
+    return $this->parseDecodeField('Cc', $decode);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getReplyTo($decode = FALSE) {
+    return $this->parseDecodeField('Reply-To', $decode);
+  }
+
+  /**
+   * Parses address field and decodes on request.
+   *
+   * @param $name
+   *   The field name.
+   * @param $decode
+   *
+   * @return \array[]|null
+   */
+  protected function parseDecodeField($name, $decode = FALSE) {
+    $body = $this->getHeader()->getFieldBody($name);
     $mailboxes = MimeParser::parseAddress($body);
     if ($decode) {
       foreach ($mailboxes as $key => $mailbox) {

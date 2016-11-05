@@ -19,8 +19,15 @@
   font-weight: bold;
   width: 100px;
 }
+.inmail-message--full .inmail-message__header .inmail-message__header__reply_to label {
+  font-weight: normal;
+  width: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .inmail-message__full .inmail-message__element, .inmail-message__address {
-  background-color: #dddddd;
+  background-color: #dfdfdf;
   margin: 0px 6px 3px 0px;
   padding: 0px 3px 0px 3px;
   color: #0074BD;

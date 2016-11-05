@@ -436,16 +436,25 @@ function inmail_preprocess_inmail_message(&$variables) {
     '#address' => $message->getFrom(),
   ];
 
-  if ($message->getTo()) {
-    foreach ($message->getTo() as $key => $address) {
+  if ($reply_to = $message->getReplyTo()) {
+    foreach ($reply_to as $key => $address) {
+      $variables['addresses_reply_to'][] = [
+        '#type' => 'inmail_message_address',
+        '#address' => $address,
+      ];
+    }
+  }
+
+  if ($to = $message->getTo()) {
+    foreach ($to as $key => $address) {
       $variables['addresses_to'][] = [
         '#type' => 'inmail_message_address',
         '#address' => $address,
       ];
     }
   }
-  if ($message->getCc()) {
-    foreach ($message->getCc() as $key => $address) {
+  if ($cc = $message->getCc()) {
+    foreach ($cc as $key => $address) {
       $variables['addresses_cc'][] = [
         '#type' => 'inmail_message_address',
         '#address' => $address,

@@ -43,6 +43,18 @@ interface MimeMessageInterface extends MimeEntityInterface {
   public function getFrom($decode = FALSE);
 
   /**
+   * Returns the unique message identifier(s).
+   *
+   * @param bool $decode
+   *   (optional) The value to indicate if the header is in punycode form.
+   *
+   * @return string|null
+   *   The 'References'/'In-Reply-To' header field body, NULL if it does not
+   *   exist or it is the same as 'From'.
+   */
+  public function getReplyTo($decode = FALSE);
+
+  /**
    * Returns the list of message recipients.
    *
    * @param bool $decode

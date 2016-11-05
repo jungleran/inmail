@@ -92,10 +92,10 @@ class InmailIntegrationTest extends WebTestBase {
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
     $this->assertText('Email display');
     // @todo Introduce assert helper for fields + body.
-    $this->assertText('Email display');
     // Parties involved.
     $this->assertText('From');
     $this->assertText('Arild Matsson');
+    $this->assertNoText('reply to');
     $this->assertRaw('Arild Matsson');
     $this->assertText('To');
     $this->assertRaw('Arild Matsson');
@@ -132,6 +132,19 @@ class InmailIntegrationTest extends WebTestBase {
     $this->assertNoText('To');
     // @todo properly assert message fields.
     //$this->assertNoField('To', 'There is no To header field');
+
+    // Test a message with reply to header field.
+    $regular = drupal_get_path('module', 'inmail_test') . '/eml/plain-text-reply-to.eml';
+    $raw = file_get_contents(DRUPAL_ROOT . '/' . $regular);
+    $deliverer = $this->createTestDeliverer();
+    $processor->process('unique_key', $raw, $deliverer);
+    $event = $this->getLastEventByMachinename('process');
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    $this->assertText('Email display');
+    // Reply-To participants.
+    $this->assertText('reply to');
+    $this->assertText('Bobby');
+    $this->assertText('Big Brother');
 
     // Testing the access to past event created by non-inmail module.
     // @see \Drupal\inmail_test\Controller\EmailDisplayController.
