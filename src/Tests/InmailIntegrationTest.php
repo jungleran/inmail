@@ -145,6 +145,11 @@ class InmailIntegrationTest extends WebTestBase {
     $this->assertText('reply to');
     $this->assertText('Bobby');
     $this->assertText('Big Brother');
+    // Do not display Reply-To in teaser.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
+    $this->assertNoText('reply to');
+    // Do not display Date in teaser.
+    $this->assertNoRaw('<label>Date</label>');
 
     // Testing the access to past event created by non-inmail module.
     // @see \Drupal\inmail_test\Controller\EmailDisplayController.
