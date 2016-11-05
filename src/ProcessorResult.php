@@ -3,6 +3,7 @@
 namespace Drupal\inmail;
 
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\inmail\Entity\DelivererConfig;
 
 /**
@@ -91,18 +92,27 @@ class ProcessorResult implements ProcessorResultInterface {
   /**
    * {@inheritdoc}
    */
-  public function log($source, $message, array $placeholders = array()) {
+  public function log($source, $message, array $placeholders = array(), $severity = RfcLogLevel::NOTICE) {
     $this->log[$source][] = [
       'message' => $message,
       'placeholders' => $placeholders,
+      'severity' => $severity,
     ];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function readLog() {
-    return $this->log;
+  public function readLog($max_severity = RfcLogLevel::INFO) {
+    $messages = [];
+    foreach ($this->log as $source => $log) {
+      foreach ($log as $items) {
+        if ($items['severity'] <= $max_severity) {
+          $messages[$source] = $log;
+        }
+      }
+    }
+    return $messages;
   }
 
   /**

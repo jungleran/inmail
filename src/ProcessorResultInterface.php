@@ -2,6 +2,7 @@
 
 namespace Drupal\inmail;
 
+use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\inmail\Entity\DelivererConfig;
 
 /**
@@ -77,8 +78,10 @@ interface ProcessorResultInterface {
    *   The log message.
    * @param array $placeholders
    *   Placeholder substitution map.
+   * @param RfcLogLevel $severity
+   *   (optional) The severity of the message. Defaults to 'RfcLogLevel::NOTICE'.
    */
-  public function log($source, $message, array $placeholders = array());
+  public function log($source, $message, array $placeholders = array(), $severity = RfcLogLevel::NOTICE);
 
   /**
    * Returns the log messages.
@@ -87,12 +90,15 @@ interface ProcessorResultInterface {
    * dependent on analyzer result types, use a dedicated class that implements
    * \Drupal\inmail\AnalyzerResultInterface.
    *
+   * @param RfcLogLevel $max_severity
+   *   (optional) Maximum log message severity. Defaults to 'RfcLogLevel::INFO'.
+   *
    * @return array
    *   A list of log items, each an associative array containing:
    *     - message: The log message.
    *     - placeholders: Placeholder substitution map.
    */
-  public function readLog();
+  public function readLog($max_severity = RfcLogLevel::INFO);
 
   /**
    * Sets the flag of processing to TRUE for specific message.
