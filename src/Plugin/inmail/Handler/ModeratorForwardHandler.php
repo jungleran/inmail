@@ -69,7 +69,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
   public function invoke(MimeMessageInterface $message, ProcessorResultInterface $processor_result) {
     // Cancel if the moderator email is not set.
     if (!($moderator = $this->getModerator())) {
-      $processor_result->log('ModeratorForwardHandler', 'Moderator email address not set');
+      $processor_result->log('ModeratorForwardHandler', 'Moderator email address not set.');
       return;
     }
 

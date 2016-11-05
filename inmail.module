@@ -349,11 +349,18 @@ function inmail_mail($key, &$message, $params) {
     case 'success':
       /** @var \Drupal\contact\MessageInterface $original */
       $original = $params['original'];
+      /** @var \Drupal\inmail\ProcessorResultInterface $result */
+      $result = $params['result'];
       $message['subject'] = 'Re: ' . $original->getSubject();
       $message['headers']['references'] = $original->getMessageId();
       // Set the mail body.
-      $body [] = 'The message has been processed successfully.';
-      // @todo Add log messages in body https://www.drupal.org/node/2822320
+      $body[] = 'The message has been processed successfully.';
+
+      $messages = inmail_get_log_message($result);
+      $body[] = '';
+      $body[] = t('Processing Log');
+      $body[] = implode("\n", $messages);
+
       $message['body'] = $body;
       break;
   }

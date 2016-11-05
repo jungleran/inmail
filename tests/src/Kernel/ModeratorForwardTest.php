@@ -133,7 +133,9 @@ class ModeratorForwardTest extends KernelTestBase {
     $last_mail = $mails[0];
     $this->assertEquals('bounces@example.com', $last_mail['from']);
     $this->assertEquals('Re: BMH testing sample', $last_mail['subject']);
-    $this->assertEquals('The message has been processed successfully.', $last_mail['body']);
+    $this->assertContains('The message has been processed successfully.', $last_mail['body']);
+    $this->assertContains('Processing Log', $last_mail['body']);
+    $this->assertContains('Moderator email address not set.', $last_mail['body']);
   }
 
   /**
