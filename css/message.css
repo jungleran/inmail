@@ -57,6 +57,13 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+.inmail-message--full .inmail-message__header__received-date:before {
+    content: '>';
+    margin: 0 1em 0 1em;
+}
+.inmail-message--full .inmail-message__header__received-date label {
+    display: none;
+}
 .inmail-message__body .ui-tabs-nav.ui-widget-header {
   padding: .2em .2em 0;
 }
@@ -101,7 +108,7 @@
   content: '|';
   margin: 0 1em 0 1em;
 }
-.inmail-message--teaser .inmail-message__header__received-date,
+.inmail-message--teaser .inmail-message__header__date,
 .inmail-message--teaser .inmail-message__header__subject,
 .inmail-message--teaser .inmail-message__header__all {
   display: none;

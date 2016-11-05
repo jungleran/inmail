@@ -48,10 +48,17 @@
         {% endfor %}
       </div>
     {% endif %}
-    <div class="inmail-message__element inmail-message__header__received-date">
-      <label>Received</label>
-      {{ message.getReceivedDate() }}
+    <div class="inmail-message__element inmail-message__header__date">
+        <label>Date</label>
+        {{ message.getDate() }}
+        {% if message.getReceivedDate() %}
+          <div class="inmail-message__element inmail-message__header__received-date">
+            <label>Received</label>
+            {{ message.getReceivedDate() }}
+          </div>
+        {% endif %}
     </div>
+
     <div class="inmail-message__element inmail-message__header__subject">
       <label>Subject</label>
       {{ message_subject }}

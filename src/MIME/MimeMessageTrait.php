@@ -90,6 +90,27 @@ trait MimeMessageTrait {
     // part being a date.
     $received_body = $this->getHeader()->getFieldBody('Received');
     list($info, $date_string) = explode(';', $received_body, 2);
+    return $this->parseTimezone($date_string);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDate() {
+    $date_string = $this->getHeader()->getFieldBody('Date');
+    return $this->parseTimezone($date_string);
+  }
+
+  /**
+   * Returns cleaned and parsed date-time object.
+   *
+   * @param string $date_string.
+   *   The date string.
+   *
+   * @return \Drupal\Component\DateTime\DateTimePlus
+   *   The date object without time zone abbreviation.
+   */
+  protected function parseTimezone($date_string) {
     // By RFC2822 time-zone abbreviation is invalid and needs to be removed.
     // Match only capital letters within the brackets at the end of string.
     $date_string = preg_replace('/\(([A-Z]+)\)$/', '', $date_string);

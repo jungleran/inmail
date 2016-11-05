@@ -471,6 +471,10 @@ function inmail_preprocess_inmail_message(&$variables) {
   $plain_text = isset($entities[$plain_text_path]) ? $entities[$plain_text_path]->getDecodedBody() : '';
   $html = isset($entities[$html_path]) ? $entities[$html_path]->getDecodedBody() : '';
 
+  $date_formatter = \Drupal::service('date.formatter');
+  $variables['sender_date'] = $date_formatter->format($message->getDate()->getTimestamp());
+  $variables['received_date'] = ($message->getReceivedDate()) ? $date_formatter->format($message->getReceivedDate()->getTimestamp()) : '';
+
   // Build multipart message parts in 'full' view mode.
   if ($message instanceof MimeMultipartMessage && $view_mode == 'full') {
     /** @var \Drupal\Inmail\MIME\MimeEntity $entity */

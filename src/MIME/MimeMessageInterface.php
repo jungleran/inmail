@@ -88,4 +88,12 @@ interface MimeMessageInterface extends MimeEntityInterface {
    */
   public function getHtml();
 
+  /**
+   * Returns the date when the message was sent.
+   *
+   * @return string
+   *   The content of the 'Date' header field.
+   */
+  public function getDate();
+
 }

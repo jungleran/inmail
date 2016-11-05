@@ -12,7 +12,7 @@ use Drupal\simpletest\WebTestBase;
  *
  * @group inmail
  */
-class IntegrationTest extends WebTestBase {
+class InmailIntegrationTest extends WebTestBase {
 
   use DelivererTestTrait;
 
@@ -92,15 +92,23 @@ class IntegrationTest extends WebTestBase {
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
     $this->assertText('Email display');
     // @todo Introduce assert helper for fields + body.
-    $this->assertText('Received');
-    $this->assertText($message->getReceivedDate());
+    $this->assertText('Email display');
+    // Parties involved.
     $this->assertText('From');
     $this->assertText('Arild Matsson');
-    $this->assertText('To');
-    $this->assertText('Email display');
     $this->assertRaw('Arild Matsson');
+    $this->assertText('To');
     $this->assertRaw('Arild Matsson');
     $this->assertRaw('Someone Else');
+    // Dates
+    // Date: Tue, 21 Oct 2014 11:21:01 +0200
+    // Received: ...; Tue, 21 Oct 2014 09:21:02 +0000 (UTC)
+    $this->assertText('Date');
+    $this->assertText($message->getDate());
+    $this->assertText('2014-10-21 11:21:01 +02:00');
+    $this->assertText('Received');
+    $this->assertText($message->getReceivedDate());
+    $this->assertText('2014-10-21 09:21:02 +00:00');
 
     // Assert message parts.
     $this->assertText($message->getPart(0)->getDecodedBody());

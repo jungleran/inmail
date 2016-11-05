@@ -191,4 +191,15 @@ class MessageTest extends UnitTestCase {
     ], $message->getValidationErrors());
   }
 
+  /**
+   * Tests the 'Date' header getter.
+   *
+   * @covers::getDate
+   */
+  public function testGetDate() {
+    $message = new MimeMessage(new MimeHeader([['name' => 'Date', 'body' => 'Thu, 27 Oct 2016 13:29:36 +0200 (UTC)']]), 'body');
+    $expected_date = new DateTimePlus('Thu, 27 Oct 2016 13:29:36 +0200');
+    $this->assertEquals($expected_date, $message->getDate());
+  }
+
 }
