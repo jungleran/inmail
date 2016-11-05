@@ -47,10 +47,19 @@ class InmailDemoTest extends WebTestBase {
     $this->drupalLogin($this->drupalCreateUser(['administer inmail']));
     $this->drupalGet('admin/config/system/inmail');
     $this->assertText('Paste email');
+
+    // Test empty submission.
     $this->drupalGet('admin/config/system/inmail/paste');
+    $this->drupalPostForm(NULL, [], t('Process email'));
+    $this->assertText('Error while processing message.');
+    $this->assertText('Unable to process message, parser failed with error: Failed to split header from body');
+
+    // Process default example.
     $this->assertFieldByName('deliverer', 'paste');
     $this->drupalPostAjaxForm(NULL, [], ['op' => t('Load example')]);
     $this->drupalPostForm(NULL, [], t('Process email'));
+    $this->assertText('The message has been processed.');
+    // Check processed result.
     $this->assertEqual('Re: Hello', ResultKeeperHandler::getMessage()->getSubject());
     $this->assertEqual('paste', ResultKeeperHandler::getResult()->getDeliverer()->id());
   }

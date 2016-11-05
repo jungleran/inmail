@@ -11,6 +11,8 @@ use Drupal\inmail\MIME\MimeEncodings;
 use Drupal\inmail\MIME\MimeMultipartMessage;
 use Drupal\inmail\MIME\MimeParser;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
+use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Core\Logger\RfcLogLevel;
 
 /**
  * @mainpage
@@ -521,4 +523,31 @@ function inmail_message_get_attachment_file_size($content, $encoding) {
   $size = $decoded_content ? strlen($decoded_content) : strlen($content);
 
   return format_size($size);
+}
+
+/**
+ * Returns log message extracted from processor result.
+ *
+ * @param \Drupal\inmail\ProcessorResultInterface $processor_result
+ *   The processor result object for logging and reporting results or null.
+ *
+ * @param \Drupal\Core\Logger\RfcLogLevel $max_severity
+ *   (optional) Maximum log message severity. Defaults to 'RfcLogLevel::INFO'.
+ *
+ * @return array|NULL
+ *   Extracted log message or NULL if processor result is empty.
+ */
+function inmail_get_log_message($processor_result, $max_severity = RfcLogLevel::INFO) {
+  $messages = [];
+  if ($processor_result) {
+    foreach ($processor_result->readLog($max_severity) as $source => $log) {
+      foreach ($log as $item) {
+        $formatted_string = new FormattableMarkup($item['message'], $item['placeholders']);
+        // Apply placeholders.
+        $messages[] = $formatted_string->__toString();
+      }
+    }
+    return $messages;
+  }
+  return NULL;
 }

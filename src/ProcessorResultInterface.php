@@ -108,4 +108,12 @@ interface ProcessorResultInterface {
    */
   public function success($key);
 
+  /**
+   * Returns TRUE if message processing was successful.
+   *
+   * @return bool
+   *   TRUE if successful.
+   */
+  public function isSuccess();
+
 }

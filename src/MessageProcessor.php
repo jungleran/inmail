@@ -89,7 +89,9 @@ class MessageProcessor implements MessageProcessorInterface {
    */
   public function process($key, $raw, DelivererConfig $deliverer) {
     $event = NULL;
-    $result = NULL;
+    $result = new ProcessorResult();
+    $result->setDeliverer($deliverer);
+
     // Create a log event.
     if (\Drupal::moduleHandler()->moduleExists('past')) {
       $event = past_event_create('inmail', 'process', 'Incoming mail');
@@ -106,13 +108,13 @@ class MessageProcessor implements MessageProcessorInterface {
       $message = $this->parser->parseMessage($raw);
       // Checks that the message complies to the RFC standard.
       if (!$message->validate()) {
-        $this->loggerChannel->info('Message Validation failed with message %message', ['%message' => implode(', ', $message->getValidationErrors())]);
+        $result->log('processor', 'Message Validation failed with message %message', ['%message' => implode(', ', $message->getValidationErrors())], RfcLogLevel::ERROR);
         if ($event) {
           $event->addArgument('validation errors', $message->getValidationErrors());
           $event->setSeverity(RfcLogLevel::ERROR);
+          $event->save();
         }
-        // @todo: Add validation error to processor result https://www.drupal.org/node/2822567.
-        return NULL;
+        return $result;
       }
       // Set event message if parsing the message passed.
       if ($event) {
@@ -120,8 +122,6 @@ class MessageProcessor implements MessageProcessorInterface {
       }
 
       // Analyze message.
-      $result = new ProcessorResult();
-      $result->setDeliverer($deliverer);
 
       /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
       $default_result = $result->getAnalyzerResult();
@@ -159,17 +159,6 @@ class MessageProcessor implements MessageProcessorInterface {
         }
       }
 
-      if ($event) {
-        // Dump all log items into a past argument per source.
-        foreach ($result->readLog() as $source => $log) {
-          $messages = [];
-          foreach ($log as $item) {
-            // Apply placeholders.
-            $messages[] = SafeMarkup::format($item['message'], $item['placeholders']);
-          }
-          $event->addArgument($source, $messages);
-        }
-      }
       $result->success($key);
       $this->sendMessageReport($result, $message, $deliverer);
     }
@@ -180,7 +169,7 @@ class MessageProcessor implements MessageProcessorInterface {
         $event->addException($e);
       }
 
-      $this->loggerChannel->error('Unable to process message, parser failed with error: ' . $e->getMessage());
+      $result->log('processor', 'Unable to process message, parser failed with error: %error', ['%error' => $e->getMessage()], RfcLogLevel::ERROR);
     }
     finally {
       if ($has_account_changed) {
@@ -188,7 +177,20 @@ class MessageProcessor implements MessageProcessorInterface {
         $this->accountSwitcher->switchBack();
       }
 
-      // Save the log event
+      // Save the log event.
+      foreach ($result->readLog() as $source => $log) {
+        $messages = [];
+        foreach ($log as $item) {
+          if ($item['severity']>=RfcLogLevel::ERROR) {
+            $this->loggerChannel->log($item['severity'], $item['message'], $item['placeholders']);
+          }
+          // Apply placeholders.
+          $messages[] = SafeMarkup::format($item['message'], $item['placeholders']);
+        }
+        if ($event) {
+          $event->addArgument($source, $messages);
+        }
+      }
       if ($event) {
         $event->save();
       }

@@ -35,6 +35,13 @@ class ProcessorResult implements ProcessorResultInterface {
   protected $log = array();
 
   /**
+   * Is success.
+   *
+   * @var bool
+   */
+  protected $success = FALSE;
+
+  /**
    * {@inheritdoc}
    */
   public function setDeliverer(DelivererConfig $deliverer) {
@@ -127,6 +134,14 @@ class ProcessorResult implements ProcessorResultInterface {
     catch (PluginNotFoundException $e) {
       // There is no plugin.
     }
+    $this->success = TRUE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isSuccess() {
+    return $this->success;
   }
 
 }

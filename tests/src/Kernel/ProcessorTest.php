@@ -51,7 +51,7 @@ class ProcessorTest extends KernelTestBase {
       ->fields('w', ['message'])
       ->execute();
     $dblog_entry = $dblog_statement->fetchAssoc();
-    $this->assertEqual('Unable to process message, parser failed with error: Failed to split header from body', $dblog_entry['message']);
+    $this->assertEqual('Unable to process message, parser failed with error: %error', $dblog_entry['message']);
   }
 
   /**

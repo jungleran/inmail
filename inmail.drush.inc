@@ -90,8 +90,8 @@ function drush_inmail_process() {
     if (drush_get_option('verbose')) {
       $processed = 0;
       foreach ($results as $key => $result) {
-        if ($log_message = inmail_get_log_message($result)) {
-          drush_log(dt('@key: @message', ['@key' => $key, '@message' => $log_message]));
+        if ($messages = inmail_get_log_message($result)) {
+          drush_log(dt('@key: @message', ['@key' => $key, '@message' => strip_tags(implode("\n", $messages))]));
           $processed++;
         }
       }
@@ -105,7 +105,8 @@ function drush_inmail_process() {
     if (drush_get_option('verbose')) {
       if ($result) {
         drush_log(dt('Message successfully processed.'));
-        drush_log(dt(inmail_get_log_message($result)));
+        $messages = inmail_get_log_message($result);
+        drush_log(dt(strip_tags(implode("\n", $messages))));
       }
       else {
         drush_set_error(dt('Message was not processed.'));
@@ -175,28 +176,4 @@ function _inmail_get_piped_input() {
     }
   }
   return $data;
-}
-
-/**
- * Returns log message extracted from processor result.
- *
- * @param \Drupal\inmail\ProcessorResultInterface $processor_result
- *   The processor result object for logging and reporting results or null.
- *
- * @return string|NULL
- *   Extracted log message or NULL if processor result is empty.
- */
-function inmail_get_log_message($processor_result) {
-  $messages = [];
-  if ($processor_result) {
-    foreach ($processor_result->readLog() as $source => $log) {
-      foreach ($log as $item) {
-        $formatted_string = new FormattableMarkup($item['message'], $item['placeholders']);
-        // Apply placeholders.
-        $messages[] = $formatted_string->__toString();
-      }
-    }
-    return strip_tags(implode("\n", $messages));
-  }
-  return NULL;
 }

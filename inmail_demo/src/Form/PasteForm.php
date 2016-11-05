@@ -6,10 +6,12 @@ use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Routing\UrlGeneratorInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\MessageProcessorInterface;
+use Drupal\inmail\ProcessorResultInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -242,8 +244,17 @@ class PasteForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $deliverer_config = $this->delivererStorage->load($form_state->getValue('deliverer'));
-    $this->messageProcessor->process('unique_key', $form_state->getValue('text'), $deliverer_config);
-    drupal_set_message($this->t('The message has been processed.'));
+    /** @var ProcessorResultInterface $result */
+    $result = $this->messageProcessor->process('unique_key', $form_state->getValue('text'), $deliverer_config);
+    if ($result->isSuccess()) {
+      drupal_set_message($this->t('The message has been processed.'));
+    }
+    else {
+      drupal_set_message($this->t('Error while processing message.'), 'error');
+      // Display errors from processing.
+      $messages = inmail_get_log_message($result, RfcLogLevel::ERROR);
+      drupal_set_message(strip_tags(implode("\n", $messages)), 'error');
+    }
     if ($this->moduleHandler->moduleExists('past_db')) {
       drupal_set_message($this->t('See the <a href="@log_url">Past log</a> for results.', ['@log_url' => $this->url('view.past_event_log.page_1')]));
     }
