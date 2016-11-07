@@ -11,6 +11,7 @@ inmail.message:
   dependencies:
     - core/jquery.once
     - core/jquery.ui.tabs
+    - core/drupal
 
 inmail.admin:
   version: 1.x
