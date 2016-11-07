@@ -59,11 +59,11 @@
     {% if view_mode == 'full' %}
       <div class="inmail-message__element inmail-message__header__date">
         <label>Date</label>
-        {{ message.getDate() }}
-        {% if message.getReceivedDate() %}
+        {{ sender_date }}
+        {% if received_date %}
           <div class="inmail-message__element inmail-message__header__received-date">
             <label>Received</label>
-            {{ message.getReceivedDate() }}
+            {{ received_date }}
           </div>
         {% endif %}
       </div>

@@ -103,12 +103,11 @@ class InmailIntegrationTest extends WebTestBase {
     // Dates
     // Date: Tue, 21 Oct 2014 11:21:01 +0200
     // Received: ...; Tue, 21 Oct 2014 09:21:02 +0000 (UTC)
+    // Converted to DST (+1100)
     $this->assertText('Date');
-    $this->assertText($message->getDate());
-    $this->assertText('2014-10-21 11:21:01 +02:00');
+    $this->assertText('2014-10-21 20:21:01');
     $this->assertText('Received');
-    $this->assertText($message->getReceivedDate());
-    $this->assertText('2014-10-21 09:21:02 +00:00');
+    $this->assertText('2014-10-21 20:21:02');
 
     // Assert message parts.
     $this->assertText($message->getPart(0)->getDecodedBody());
