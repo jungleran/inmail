@@ -110,6 +110,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
       $params['host_name'] = $plugin_instance->getHost();
     }
     $this->mailManager->mail('inmail', 'handler_moderator_forward', $moderator, \Drupal::languageManager()->getDefaultLanguage(), $params);
+    $processor_result->log('ModeratorForwardHandler', 'Email forwarded to %address.', array('%address' => $moderator));
   }
 
   /**

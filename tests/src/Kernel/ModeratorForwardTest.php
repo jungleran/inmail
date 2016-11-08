@@ -175,6 +175,15 @@ class ModeratorForwardTest extends KernelTestBase {
     $expected_headers = $forward_header . wordwrap($received_header, 78, "\n ") . $expected_headers;
     // Wrap to 78 characters to match original message.
     $this->assertEqual($forward['raw_headers']->toString(), $expected_headers, 'Forwarded message headers have the correct changes.');
+
+    // Check for past event log.
+    $events = \Drupal::entityTypeManager()->getStorage('past_event')->loadMultiple();
+    $last_event = end($events);
+    $event_message = $last_event->getMessage();
+    $this->assertEqual($event_message, 'Incoming mail: <CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.gmail.com>');
+    // Check successful forwarding.
+    $moderator_message = (string) $last_event->getArgument('ModeratorForwardHandler')->getData()[0];
+    $this->assertEqual($moderator_message, 'Email forwarded to <em class="placeholder">moderator@example.com</em>.');
   }
 
   /**

@@ -93,7 +93,7 @@ class InmailMessageWebTest extends InmailWebTestBase {
 
     // Process the raw multipart mail message.
     $this->processor->process('key', $raw_email_with_attachments, $this->createTestDeliverer());
-    $event_id = $this->getLastEventByMachinename('process', TRUE);
+    $event_id = $this->getLastEventIdByMachinename('process');
 
     // Go to the "full" view mode page.
     $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');
@@ -141,7 +141,7 @@ class InmailMessageWebTest extends InmailWebTestBase {
 
     // Process the raw multipart mail message.
     $this->processor->process('key', $raw_email_with_attachments, $this->createTestDeliverer());
-    $event_id = $this->getLastEventByMachinename('process', TRUE);
+    $event_id = $this->getLastEventIdByMachinename('process');
 
     // Go to the "full" view mode page.
     $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');
