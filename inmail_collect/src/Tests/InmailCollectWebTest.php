@@ -6,18 +6,14 @@ use Drupal\collect\Entity\Container;
 use Drupal\inmail\MIME\MimeHeader;
 use Drupal\inmail\MIME\MimeMessage;
 use Drupal\inmail\ProcessorResult;
-use Drupal\inmail\Tests\DelivererTestTrait;
-use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
-use Drupal\simpletest\WebTestBase;
+use Drupal\inmail\Tests\InmailWebTestBase;
 
 /**
  * Tests the presentation of collected messages.
  *
  * @group inmail
  */
-class InmailCollectWebTest extends WebTestBase {
-
-  use DelivererTestTrait;
+class InmailCollectWebTest extends InmailWebTestBase {
 
   /**
    * Modules to enable.
@@ -36,11 +32,9 @@ class InmailCollectWebTest extends WebTestBase {
     $this->drupalPlaceBlock('local_tasks_block');
     $this->drupalPlaceBlock('page_title_block');
     // Process and store a message.
-    /** @var \Drupal\inmail\MessageProcessor $processor */
-    $processor = \Drupal::service('inmail.processor');
-    $raw = file_get_contents(\Drupal::root() . '/' . drupal_get_path('module', 'inmail_test') . '/eml/nouser.eml');
+    $raw = $this->getMessageFileContents('nouser.eml');
     $deliverer = $this->createTestDeliverer();
-    $processor->process('unique_key', $raw, $deliverer);
+    $this->processor->process('unique_key', $raw, $deliverer);
     // Assert success function is called.
     $this->assertSuccess($deliverer, 'unique_key');
     // Log in and view the list.

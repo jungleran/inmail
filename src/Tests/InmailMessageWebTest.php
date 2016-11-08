@@ -14,7 +14,7 @@ class InmailMessageWebTest extends InmailWebTestBase {
    *
    * @var array
    */
-  public static $modules = ['inmail_test', 'block', 'past_db'];
+  public static $modules = ['inmail_test', 'past_db'];
 
   /**
    * {@inheritdoc}
@@ -37,8 +37,52 @@ class InmailMessageWebTest extends InmailWebTestBase {
    * Tests the message parts of the Inmail Message element.
    */
   public function testMessageParts() {
+    $this->doTestHtmlBodyPart();
     $this->doTestComplexAttachments();
     $this->doTestUnknownParts();
+  }
+
+  /**
+   * Tests the HTML body part of the message.
+   */
+  public function doTestHtmlBodyPart() {
+    // Load and process the HTML-only mail message.
+    $raw_html = $this->getMessageFileContents('html-text.eml');
+    $this->processor->process('unique_key', $raw_html, $this->createTestDeliverer());
+    $event = $this->getLastEventByMachinename('process');
+
+    // @todo Test headers for the HTML-only mail example.
+    // Test 'full' view mode of the HTML-only message.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    // There should be two tabs since the plain text is generated from HTML.
+    $this->assertRaw('<a href="#inmail-message__body__html">HTML</a>');
+    $this->assertRaw('<a href="#inmail-message__body__content">Plain</a>');
+    // Assert new line separators are replaced with "<br>" tags.
+    $this->assertRaw('<div class="inmail-message__element inmail-message__body__content" id="inmail-message__body__content">Hey Alice,<br />
+  Skype told me its your birthday today? Congratulations!<br />
+  Wish I could be there and celebrate with you...<br />
+  Sending you virtual cake, french cheese and champagne (without alcohol, just for you!) :P<br />
+  Cheerious,<br />
+  Bob</div>');
+    // Assert the markup inside "HTML" tab.
+    $this->assertRaw('<div class="inmail-message__element inmail-message__body__html" id="inmail-message__body__html"><div dir="ltr">
+  <p>Hey Alice,</p>
+  <p>Skype told me its your birthday today? Congratulations!</p>
+  <p>Wish I could be there and celebrate with you...</p>
+  <p>Sending you virtual cake, french cheese and champagne (without alcohol, just for you!) :P</p>
+  <p>Cheerious,</p>
+  <p>Bob</p>
+</div></div>');
+
+    // Test 'teaser' view mode of the HTML-only message.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
+    $this->assertNoRaw('<div class="inmail-message__element inmail-message__body__html" id="inmail-message__body__html">');
+    $this->assertRaw('<div class="inmail-message__element inmail-message__body__content" id="inmail-message__body__content">Hey Alice,
+  Skype told me its your birthday today? Congratulations!
+  Wish I could be there and celebrate with you...
+  Sending you virtual cake, french cheese and champagne (without alcohol, just for you!) :P
+  Cheerious,
+  Bob</div>');
   }
 
   /**

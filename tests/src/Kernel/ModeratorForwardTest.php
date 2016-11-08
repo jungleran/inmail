@@ -13,9 +13,10 @@ use Drupal\KernelTests\KernelTestBase;
  * Tests the Moderator Forward handler plugin.
  *
  * @group inmail
+ * @requires module past_db
  */
 class ModeratorForwardTest extends KernelTestBase {
-  use AssertMailTrait, DelivererTestTrait;
+  use AssertMailTrait, DelivererTestTrait, InmailTestHelperTrait;
 
   /**
    * Modules to install.
@@ -174,20 +175,6 @@ class ModeratorForwardTest extends KernelTestBase {
     $expected_headers = $forward_header . wordwrap($received_header, 78, "\n ") . $expected_headers;
     // Wrap to 78 characters to match original message.
     $this->assertEqual($forward['raw_headers']->toString(), $expected_headers, 'Forwarded message headers have the correct changes.');
-  }
-
-  /**
-   * Returns the content of a test message.
-   *
-   * @param string $filename
-   *   The name of the file.
-   *
-   * @return string
-   *   The contents of the file.
-   */
-  public function getMessageFileContents($filename) {
-    $path = drupal_get_path('module', 'inmail_test') . '/eml/' . $filename;
-    return file_get_contents(DRUPAL_ROOT . '/' . $path);
   }
 
   /**

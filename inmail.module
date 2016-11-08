@@ -477,8 +477,8 @@ function inmail_preprocess_inmail_message(&$variables) {
   $body_paths = $message_decomposition->getBodyPaths($message);
   $plain_text_path = $body_paths['plain'];
   $html_path = $body_paths['html'];
-  $plain_text = isset($entities[$plain_text_path]) ? $entities[$plain_text_path]->getDecodedBody() : '';
   $html = isset($entities[$html_path]) ? $entities[$html_path]->getDecodedBody() : '';
+  $plain_text = isset($entities[$plain_text_path]) ? $entities[$plain_text_path]->getDecodedBody() : strip_tags($html);
 
   // Format the dates.
   $date_formatter = \Drupal::service('date.formatter');
@@ -523,7 +523,7 @@ function inmail_preprocess_inmail_message(&$variables) {
   }
 
   // Set the plain and HTML body content.
-  $variables['body']['plain'] = $plain_text ? InmailMessage::getPlainTextMarkup($plain_text, $view_mode) : NULL;
+  $variables['body']['plain'] = InmailMessage::getPlainTextMarkup($plain_text, $view_mode);
   $variables['body']['html'] = $html ? InmailMessage::getHtmlMarkup($html, $view_mode) : NULL;
 }
 

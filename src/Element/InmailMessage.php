@@ -2,6 +2,7 @@
 
 namespace Drupal\inmail\Element;
 
+use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Render\Element\RenderElement;
 use Drupal\Core\Render\Markup;
@@ -62,7 +63,7 @@ class InmailMessage extends RenderElement {
    *   The markup.
    */
   public static function getPlainTextMarkup($plain_text, $view_mode = 'full') {
-    $plain_text = trim($plain_text);
+    $plain_text = Html::escape(trim($plain_text));
     if ($view_mode == 'teaser') {
       $plain_text = substr($plain_text, 0, 300);
     }
@@ -88,7 +89,7 @@ class InmailMessage extends RenderElement {
     if ($view_mode == 'teaser') {
       return NULL;
     }
-    $filtered_html = Xss::filterAdmin($html);
+    $filtered_html = Xss::filterAdmin(trim($html));
     return Markup::create($filtered_html);
   }
 

@@ -87,6 +87,10 @@ interface MimeMessageInterface extends MimeEntityInterface {
   /**
    * Extracts plaintext representation of body.
    *
+   * This method is no longer used for the mail display.
+   * Use \Drupal\inmail\MIME\MimeMessageDecompositionInterface::getBodyPaths()
+   * and its "plain" output instead.
+   *
    * @return string
    *   Resulting plain texts of body, otherwise empty string.
    */
@@ -94,6 +98,10 @@ interface MimeMessageInterface extends MimeEntityInterface {
 
   /**
    * Extracts HTML body representation.
+   *
+   * This method is no longer used for the mail display.
+   * Use \Drupal\inmail\MIME\MimeMessageDecompositionInterface::getBodyPaths()
+   * and its "html" output instead.
    *
    * @return string
    *   Resulting string contains HTML markup for the message body.

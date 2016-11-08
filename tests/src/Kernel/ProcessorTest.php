@@ -14,10 +14,11 @@ use Drupal\KernelTests\KernelTestBase;
  * Tests the behaviour of the MessageProcessor class.
  *
  * @group inmail
+ * @requires module past_db
  */
 class ProcessorTest extends KernelTestBase {
 
-  use DelivererTestTrait;
+  use DelivererTestTrait, InmailTestHelperTrait;
 
   public static $modules = array('inmail', 'inmail_test', 'dblog', 'user', 'system');
 
@@ -36,8 +37,7 @@ class ProcessorTest extends KernelTestBase {
     // Process a malformed message.
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
-    $path = drupal_get_path('module', 'inmail_test') . '/eml/malformed/unseparated_body.eml';
-    $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
+    $raw = $this->getMessageFileContents('malformed/unseparated_body.eml');
     // Reset the state to be sure that function is called in the test.
     $deliverer = $this->createTestDeliverer();
     $processor->process('unique_key', $raw, $deliverer);

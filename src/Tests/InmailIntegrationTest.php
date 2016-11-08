@@ -2,19 +2,18 @@
 
 namespace Drupal\inmail\Tests;
 
-use Drupal\Component\Datetime\DateTimePlus;
-use Drupal\inmail\Entity\DelivererConfig;
-use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
 
 /**
  * Tests the general Inmail mechanism in a typical Drupal email workflow case.
  *
  * @group inmail
+ * @requires module past_db
  */
 class InmailIntegrationTest extends WebTestBase {
 
-  use DelivererTestTrait;
+  use DelivererTestTrait, InmailTestHelperTrait;
 
   /**
    * Modules to enable.
@@ -24,7 +23,6 @@ class InmailIntegrationTest extends WebTestBase {
   public static $modules = [
     'inmail_mailmute',
     'field_ui',
-    'past',
     'past_db',
     'past_testhidden',
     'inmail_test',
@@ -36,22 +34,21 @@ class InmailIntegrationTest extends WebTestBase {
   public function setUp() {
     parent::setUp();
 
+    // Set the Inmail processor and parser services.
+    $this->processor = \Drupal::service('inmail.processor');
+    $this->parser = \Drupal::service('inmail.mime_parser');
+
     // Make sure new users are blocked until approved by admin.
-    \Drupal::configFactory()->getEditable('user.settings')
-      ->set('register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL)
-      ->save();
+    $this->config('user.settings')->set('register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL)->save();
     // Enable logging of raw mail messages.
-    \Drupal::configFactory()->getEditable('inmail.settings')
-      ->set('log_raw_emails', TRUE)
-      ->save();
+    $this->config('inmail.settings')->set('log_raw_emails', TRUE)->save();
   }
 
   /**
    * Tests that mails are properly displayed using Inmail message element.
    */
   public function testEmailDisplay() {
-    $regular = drupal_get_path('module', 'inmail_test') . '/eml/normal.eml';
-    $raw_multipart = file_get_contents(DRUPAL_ROOT . '/' . $regular);
+    $raw_multipart = $this->getMessageFileContents('normal.eml');
     // @todo: Move the XSS part into separate email example.
     $raw_multipart = str_replace('</div>', "<script>alert('xss_attack')</script></div>", $raw_multipart);
 
@@ -64,20 +61,17 @@ class InmailIntegrationTest extends WebTestBase {
 
     // In reality the message would be passed to the processor through a drush
     // script or a mail deliverer.
-    /** @var \Drupal\inmail\MessageProcessorInterface $processor */
-    $processor = \Drupal::service('inmail.processor');
     // Process the raw multipart mail message.
     $deliverer = $this->createTestDeliverer();
-    $processor->process('unique_key', $raw_multipart, $deliverer);
+    $this->processor->process('unique_key', $raw_multipart, $deliverer);
 
     // Assert the raw message was logged.
     /** @var \Drupal\past\PastEventInterface $event */
     $event = $this->getLastEventByMachinename('process');
     $this->assertEqual($event->getArgument('email')->getData(), $raw_multipart);
 
-    /** @var \Drupal\inmail\MIME\MimeParser $parser */
-    $parser = \Drupal::service('inmail.mime_parser');
-    $message = $parser->parseMessage($raw_multipart);
+    /** @var \Drupal\Inmail\MIME\MimeMessageInterface $message */
+    $message = $this->parser->parseMessage($raw_multipart);
 
     // Test "teaser" view mode of Inmail message element.
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
@@ -112,20 +106,17 @@ class InmailIntegrationTest extends WebTestBase {
     // Assert message parts.
     $this->assertText($message->getPart(0)->getDecodedBody());
     $this->assertText(htmlspecialchars($message->getPlainText()));
-    $decoded_body = $message->getPart(1)->getDecodedBody();
     // Script tags are removed for security reasons.
-    $decoded_body = str_replace("<script>alert('xss_attack')</script></div>", "alert('xss_attack')</div>", $decoded_body);
-    $this->assertRaw($decoded_body);
+    $this->assertRaw("<div dir=\"ltr\">Hey, it would be really bad for a mail handler to classify this as a bounce just because I have no mailbox outside my house.alert('xss_attack')</div>");
 
     // By RFC 2822, To header field is not necessary.
     // Load simple malformed message.
-    $regular = drupal_get_path('module', 'inmail_test') . '/eml/missing-to-field.eml';
-    $raw = file_get_contents(DRUPAL_ROOT . '/' . $regular);
+    $raw = $this->getMessageFileContents('missing-to-field.eml');
     $deliverer = $this->createTestDeliverer();
-    $processor->process('unique_key', $raw, $deliverer);
+    $this->processor->process('unique_key', $raw, $deliverer);
     $event = $this->getLastEventByMachinename('process');
     $this->assertEqual($event->getArgument('email')->getData(), $raw);
-    $message = $parser->parseMessage($raw);
+    $message = $this->parser->parseMessage($raw);
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
     $this->assertText('Email display');
     $this->assertNoText('To');
@@ -133,10 +124,9 @@ class InmailIntegrationTest extends WebTestBase {
     //$this->assertNoField('To', 'There is no To header field');
 
     // Test a message with reply to header field.
-    $regular = drupal_get_path('module', 'inmail_test') . '/eml/plain-text-reply-to.eml';
-    $raw = file_get_contents(DRUPAL_ROOT . '/' . $regular);
+    $raw = $this->getMessageFileContents('plain-text-reply-to.eml');
     $deliverer = $this->createTestDeliverer();
-    $processor->process('unique_key', $raw, $deliverer);
+    $this->processor->process('unique_key', $raw, $deliverer);
     $event = $this->getLastEventByMachinename('process');
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
     $this->assertText('Email display');
@@ -284,22 +274,6 @@ $body
 
 EOF;
 
-  }
-
-  /**
-   * Returns the last event with a given machine name.
-   *
-   * @param string $machine_name
-   *
-   * @return PastEventInterface
-   */
-  public function getLastEventByMachinename($machine_name) {
-    $event_id = db_query_range('SELECT event_id FROM {past_event} WHERE machine_name = :machine_name ORDER BY event_id DESC', 0, 1, array(':machine_name' => $machine_name))->fetchField();
-    if ($event_id) {
-      return \Drupal::entityManager()
-        ->getStorage('past_event')
-        ->load($event_id);
-    }
   }
 
 }

@@ -6,13 +6,17 @@ use Drupal\collect\Entity\Container;
 use Drupal\collect\Entity\Model;
 use Drupal\inmail\Plugin\DataType\Mailbox;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
 
 /**
  * Tests the Inmail model plugin.
  *
  * @group inmail
+ * @requires module past_db
  */
 class InmailMessageModelTest extends KernelTestBase {
+
+  use InmailTestHelperTrait;
 
   /**
    * Modules to enable.
@@ -36,10 +40,9 @@ class InmailMessageModelTest extends KernelTestBase {
    * @see Drupal\inmail_collect\Plugin\collect\Model\InmailMessage::getStaticPropertyDefinitions()
    */
   public function testProperties() {
-    $raw = file_get_contents(\Drupal::root() . '/' . drupal_get_path('module', 'inmail_test') . '/eml/simple-autoreply.eml');
     $container = Container::create([
       'data' => json_encode([
-        'raw' => $raw,
+        'raw' => $this->getMessageFileContents('simple-autoreply.eml'),
       ]),
       'schema_uri' => 'https://www.drupal.org/project/inmail/schema/message',
       'type' => 'application/json',

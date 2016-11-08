@@ -4,24 +4,24 @@ namespace Drupal\Tests\inmail_mailmute\Kernel;
 
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\inmail\DSNStatus;
-use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\MIME\MimeHeader;
 use Drupal\inmail\MIME\MimeMessage;
 use Drupal\inmail\ProcessorResult;
 use Drupal\inmail\Tests\DelivererTestTrait;
-use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
 use Drupal\user\Entity\User;
 
 /**
  * Tests the Mailmute message handler.
  *
  * @group inmail
+ * @requires module past_db
  */
 class InmailMailmuteTest extends KernelTestBase {
 
-  use DelivererTestTrait;
+  use DelivererTestTrait, InmailTestHelperTrait;
 
   /**
    * Modules to enable.
@@ -197,20 +197,6 @@ class InmailMailmuteTest extends KernelTestBase {
     $this->assertSuccess($deliverer, 'unique_key');
     $this->user = User::load($this->user->id());
     $this->assertEqual($this->user->sendstate->plugin_id, 'inmail_temporarily_unreachable');
-  }
-
-  /**
-   * Returns the content of a test message.
-   *
-   * @param string $filename
-   *   The name of the file.
-   *
-   * @return string
-   *   The contents of the file.
-   */
-  public function getMessageFileContents($filename) {
-    $path = drupal_get_path('module', 'inmail_test') . '/eml/' . $filename;
-    return file_get_contents(DRUPAL_ROOT . '/' . $path);
   }
 
   /**

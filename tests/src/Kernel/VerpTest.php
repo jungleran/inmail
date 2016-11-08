@@ -15,10 +15,11 @@ use Drupal\KernelTests\KernelTestBase;
  * Tests the VERP mechanism.
  *
  * @group inmail
+ * @requires module past_db
  */
 class VerpTest extends KernelTestBase {
 
-  use DelivererTestTrait;
+  use DelivererTestTrait, InmailTestHelperTrait;
 
   /**
    * Modules to enable.
@@ -58,8 +59,7 @@ class VerpTest extends KernelTestBase {
     AnalyzerConfig::load('dsn')->disable()->save();
 
     // Process a bounce message with a VERP-y 'To' header, check the parsing.
-    $path = drupal_get_path('module', 'inmail_test') . '/eml/full.eml';
-    $raw = file_get_contents(DRUPAL_ROOT . '/' . $path);
+    $raw = $this->getMessageFileContents('full.eml');
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
     // Reset the state to be sure that function success is called in the test.
