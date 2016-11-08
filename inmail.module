@@ -485,7 +485,7 @@ function inmail_preprocess_inmail_message(&$variables) {
   // @todo Switch to a better format. This is custom ISO to cover seconds.
   $format = 'Y-m-d H:i:s';
   $variables['sender_date'] = $date_formatter->format($message->getDate()->getTimestamp(), 'custom', $format);
-  $variables['received_date'] = ($message->getReceivedDate()) ? $date_formatter->format($message->getReceivedDate()->getTimestamp(), 'custom', $format) : '';
+  $variables['received_date'] = $message->getReceivedDate() ? $date_formatter->format($message->getReceivedDate()->getTimestamp(), 'custom', $format) : NULL;
 
   // Build multipart message parts in 'full' view mode.
   if ($message instanceof MimeMultipartMessage && $view_mode == 'full') {

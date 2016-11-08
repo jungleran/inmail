@@ -93,10 +93,12 @@ trait MimeMessageTrait {
    * {@inheritdoc}
    */
   public function getReceivedDate() {
-    // A message has one or more Received header fields. The first occurring is
-    // the latest added. Its body has two parts separated by ';', the second
-    // part being a date.
-    $received_body = $this->getHeader()->getFieldBody('Received');
+    // A message can have one or more Received header fields. The first
+    // occurring is the latest added. Its body has two parts separated by ';',
+    // the second part being a date.
+    if (!$received_body = $this->getHeader()->getFieldBody('Received')) {
+      return NULL;
+    }
     list($info, $date_string) = explode(';', $received_body, 2);
     return $this->parseTimezone($date_string);
   }

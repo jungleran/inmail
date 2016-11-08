@@ -141,6 +141,10 @@ class MessageTest extends UnitTestCase {
     // It is parsed time zone, everything else must remain untouched.
     $this->assertEquals($received_string, $message->getHeader()->getFieldBody('Received'));
     $this->assertEmpty($message->getReceivedDate()->getErrors());
+
+    // Assert no "Received" field.
+    $message = new MimeMessage(new MimeHeader(), 'Body');
+    $this->assertEquals(NULL, $message->getReceivedDate());
   }
 
   /**

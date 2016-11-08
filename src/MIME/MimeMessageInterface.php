@@ -79,8 +79,8 @@ interface MimeMessageInterface extends MimeEntityInterface {
   /**
    * Returns the date when the message was received by the recipient.
    *
-   * @return \Drupal\Component\DateTime\DateTimePlus
-   *   The date from the header.
+   * @return \Drupal\Component\Datetime\DateTimePlus|null
+   *   The received date from the header or null if not found.
    */
   public function getReceivedDate();
 
