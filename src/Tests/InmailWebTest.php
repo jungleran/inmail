@@ -108,6 +108,19 @@ class InmailWebTest extends WebTestBase {
     $this->assertUrl('admin/config/system/inmail/deliverers');
     $this->assertText('Test IMAP Fetcher');
 
+    // Add an IMAP fetcher with an existing id.
+    $this->drupalGet('admin/config/system/inmail/deliverers/add');
+    // Select the IMAP plugin.
+    $edit = array(
+      'label' => 'Test IMAP Fetcher',
+      'id' => 'test_imap',
+      'plugin' => 'imap',
+    );
+    $this->drupalPostAjaxForm(NULL, $edit, 'plugin');
+    // Try to save and assert message for existing plugin id.
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->assertText('A plugin with test_imap already exists.');
+
     // Add a Drush deliverer. It implements different interfaces and
     // PluginConfigurationForm has to support that.
     $this->drupalGet('admin/config/system/inmail/deliverers/add');
