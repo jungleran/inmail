@@ -12,15 +12,6 @@ use Drupal\Component\Utility\Unicode;
 class MimeEntity implements MimeEntityInterface {
 
   /**
-   * An associative array of keys and corresponding error messages.
-   *
-   * It contains information that is provided by validate function.
-   *
-   * @var array
-   */
-  protected $validationErrors = [];
-
-  /**
    * The entity header.
    *
    * @var \Drupal\inmail\MIME\MimeHeader
@@ -151,27 +142,6 @@ class MimeEntity implements MimeEntityInterface {
   public function toString() {
     // A blank line terminates the header section and begins the body.
     return $this->getHeader()->toString() . "\n\n" . $this->getBody();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validate() {
-    return TRUE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getValidationErrors() {
-    return $this->validationErrors;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setValidationError($field, $error) {
-    $this->validationErrors[$field] = $error;
   }
 
 }

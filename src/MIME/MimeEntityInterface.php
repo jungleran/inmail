@@ -91,34 +91,4 @@ interface MimeEntityInterface {
    */
   public function toString();
 
-  /**
-   * Check that Entity is valid.
-   *
-   * Implementations must make sure getValidationErrors() returns any errors
-   * found.
-   *
-   * @return bool
-   *   Returns TRUE if valid, otherwise FALSE.
-   */
-  public function validate();
-
-  /**
-   * Returns validation error messages.
-   *
-   * @return array
-   *   Associative array with keys and related error messages, or an empty array
-   *   if there are no errors.
-   */
-  public function getValidationErrors();
-
-  /**
-   * Sets a validation error for the given header field.
-   *
-   * @param string $field
-   *   The header field.
-   * @param string $error
-   *   The error message.
-   */
-  public function setValidationError($field, $error);
-
 }

@@ -149,6 +149,10 @@ class MimeMessageTest extends UnitTestCase {
 
   /**
    * Tests the message is valid and contains necessary fields.
+   *
+   * @covers ::validate
+   * @covers ::getValidationErrors
+   * @covers ::setValidationError
    */
   public function testValidation() {
     // By RFC 5322 (https://tools.ietf.org/html/rfc5322#section-3.6,

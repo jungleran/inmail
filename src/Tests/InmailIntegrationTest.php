@@ -240,6 +240,7 @@ class InmailIntegrationTest extends WebTestBase {
     return <<<EOF
 Return-Path: <>
 Delivered-To: $return_path
+Date: Mon, 19 Sep 2016 14:20:00 +0000
 Received: some info;
   Thu, 29 Jan 2015 15:43:04 +0100
 From: mta@$to_domain

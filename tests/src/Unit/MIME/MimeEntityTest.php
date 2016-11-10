@@ -181,24 +181,4 @@ class MimeEntityTest extends UnitTestCase {
     $this->assertEquals('base64', $entity->getContentTransferEncoding());
   }
 
-  /**
-   * Tests validation of message.
-   *
-   * @covers \Drupal\inmail\MIME\MimeEntity::validate
-   */
-  public function testValidate() {
-    $entity = new MimeEntity(new MimeHeader(), 'MimeMessage Body');
-    $this->assertTrue($entity->validate());
-  }
-
-  /**
-   * Tests accessor of validation errors.
-   *
-   * @covers \Drupal\inmail\MIME\MimeEntity::getValidationErrors
-   */
-  public function testGetValidateErrors() {
-    $entity = new MimeEntity(new MimeHeader(), 'MimeMessage Body');
-    $this->assertEmpty($entity->getValidationErrors());
-  }
-
 }

@@ -53,6 +53,8 @@ class AnalyzerTest extends KernelTestBase {
     // With correct priorities, VerpAnalyzer will come first and set the
     // property using the more reliable VERP address.
     $raw = <<<EOF
+From: Bob <bob@example.com>
+Date: Mon, 19 Sep 2016 14:20:00 +0000
 To: bounces+verp-parsed=example.org@example.com
 Content-Type: multipart/report; report-type=delivery-status; boundary="BOUNDARY"
 
