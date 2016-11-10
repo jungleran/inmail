@@ -40,6 +40,7 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->doTestHtmlBodyPart();
     $this->doTestComplexAttachments();
     $this->doTestUnknownParts();
+    $this->doTestMailAttachmentPdf();
   }
 
   /**
@@ -118,6 +119,9 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->clickLink('hello.txt');
     $this->assertResponse(200);
     $this->assertText('Greetings from Inmail attachment display');
+    $this->assertHeader('Content-Type', 'text/plain; charset=UTF-8; name="hello.txt"');
+    $this->assertHeader('Content-Disposition', 'attachment; filename="hello.txt"');
+    $this->assertHeader('Content-Transfer-Encoding', 'base64');
 
     $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');
     $this->clickLink(t('Download raw message'));
@@ -154,6 +158,23 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->clickLink('application/x-unknown');
     $this->assertResponse(200);
     $this->assertText('Unknown part');
+  }
+
+  /**
+   * Tests pdf attachment of an email.
+   */
+  public function doTestMailAttachmentPdf() {
+    // Test PDF attachment download link response and assert headers.
+    $raw_email_with_attachments = $this->getMessageFileContents('attachments/pdf-attachment.eml');
+    $this->processor->process('key', $raw_email_with_attachments, $this->createTestDeliverer());
+    $event_id = $this->getLastEventIdByMachinename('process');
+    $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');
+    $this->assertText('sample.pdf (1.41 KB)');
+    $this->clickLink('sample.pdf');
+    $this->assertResponse(200);
+    $this->assertHeader('Content-Type', 'application/pdf; name="sample.pdf"');
+    $this->assertHeader('Content-Disposition', 'attachment; filename="sample.pdf"');
+    $this->assertHeader('Content-Transfer-Encoding', 'base64');
   }
 
 }
