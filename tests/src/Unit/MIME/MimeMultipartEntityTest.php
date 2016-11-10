@@ -16,7 +16,7 @@ use Drupal\Tests\UnitTestCase;
  *
  * @group inmail
  */
-class MultipartEntityTest extends UnitTestCase {
+class MimeMultipartEntityTest extends UnitTestCase {
 
   /**
    * Multipart example message copied from RFC 2046.

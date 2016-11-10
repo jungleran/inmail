@@ -14,7 +14,7 @@ use Drupal\Tests\UnitTestCase;
  *
  * @group inmail
  */
-class HeaderTest extends UnitTestCase {
+class MimeHeaderTest extends UnitTestCase {
 
   /**
    * Tests string serialization.

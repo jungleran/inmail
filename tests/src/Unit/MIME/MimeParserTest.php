@@ -13,7 +13,7 @@ use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
  *
  * @group inmail
  */
-class ParserTest extends InmailUnitTestBase {
+class MimeParserTest extends InmailUnitTestBase {
 
   /**
    * Tests that an exception is thrown when parsing fails.

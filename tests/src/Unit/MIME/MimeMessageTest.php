@@ -14,7 +14,7 @@ use Drupal\Tests\UnitTestCase;
  *
  * @group inmail
  */
-class MessageTest extends UnitTestCase {
+class MimeMessageTest extends UnitTestCase {
 
   /**
    * Tests the message ID getter.

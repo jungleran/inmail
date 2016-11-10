@@ -13,7 +13,7 @@ use Drupal\Tests\UnitTestCase;
  *
  * @group inmail
  */
-class EntityTest extends UnitTestCase {
+class MimeEntityTest extends UnitTestCase {
 
   /**
    * Tests the body accessors in context of decoding.

@@ -17,7 +17,7 @@ use Drupal\Tests\UnitTestCase;
  *
  * @group inmail
  */
-class DSNEntityTest extends UnitTestCase {
+class MimeDSNEntityTest extends UnitTestCase {
 
   /**
    * Minimal example DSN message.
