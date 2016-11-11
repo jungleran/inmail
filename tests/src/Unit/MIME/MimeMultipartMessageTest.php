@@ -13,7 +13,7 @@ use Drupal\inmail\MIME\MimeMultipartMessage;
  *
  * @group inmail
  */
-class MimeMultipartMessageTest extends MultipartEntityTest {
+class MimeMultipartMessageTest extends MimeMultipartEntityTest {
 
   /**
    * Tests the multipart message is valid and contains necessary fields.
