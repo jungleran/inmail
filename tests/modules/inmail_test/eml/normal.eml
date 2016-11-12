@@ -21,6 +21,7 @@ Subject: BMH testing sample
 From: Arild Matsson <arild@masked1.se>
 To: Arild Matsson <inmail_test@example.com>
 Cc: Someone Else <inmail_other@example.com>
+List-Unsubscribe: <mailto:unsubscribe-espc-tech-12345N@domain.com>, <http://domain.com/member/unsubscribe/?listname=espc-tech@domain.com?id=12345N>
 Content-Type: multipart/alternative; boundary=047d7bf0d0f694271f0505eb5984
 
 --047d7bf0d0f694271f0505eb5984

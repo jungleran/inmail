@@ -31,6 +31,11 @@
     <div class="inmail-message__element inmail-message__header__from">
       <label>From</label>
       {{ address_from }}
+      {% if message_unsubscribe and view_mode == 'full' %}
+        <div class="inmail-message__element inmail-message__header__unsubscribe">
+          <a href="{{ message_unsubscribe }}" target="_blank">Unsubscribe</a>
+        </div>
+      {% endif %}
       {% if addresses_reply_to and view_mode == 'full' %}
         <div class="inmail-message__element inmail-message__header__reply_to">
           <label>reply to</label>

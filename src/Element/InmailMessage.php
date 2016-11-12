@@ -6,6 +6,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Render\Element\RenderElement;
 use Drupal\Core\Render\Markup;
+use Drupal\inmail\MIME\MimeMessageInterface;
 
 /**
  * Provides a render element for displaying Inmail MimeMessage.
@@ -91,6 +92,30 @@ class InmailMessage extends RenderElement {
     }
     $filtered_html = Xss::filterAdmin(trim($html));
     return Markup::create($filtered_html);
+  }
+
+  /**
+   * Returns the link for unsubscribing if present.
+   *
+   * RFC2369 defines header List-Unsubscribe.
+   * List-Unsubscribe: <mailto:unsubscribe-espc-tech-12345N@domain.com>,
+   * <http://domain.com/member/unsubscribe/?listname=espc-tech@domain.com?id=12345N>
+   *
+   * We only identify http links and skip mailto.
+   *
+   * @param \Drupal\inmail\MIME\MimeMessageInterface $message
+   *   The parsed message object.
+   *
+   * @return string|null
+   *   The link for unsubscribing.
+   */
+  public static function getUnsubsciptionLink(MimeMessageInterface $message) {
+    $unsubsribe_string = $message->getHeader()->getFieldBody('List-Unsubscribe');
+    if (preg_match('/<(http[^>]+)/', $unsubsribe_string, $matches)) {
+      return $matches[1];
+    }
+
+    return NULL;
   }
 
 }

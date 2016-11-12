@@ -462,6 +462,7 @@ function inmail_preprocess_inmail_message(&$variables) {
     }
   }
   $variables['message_subject'] = $message->getSubject() ?: t('(no subject)');
+  $variables['message_unsubscribe'] = InmailMessage::getUnsubsciptionLink($message);
 
   /** @var \Drupal\Core\Url $download_url */
   $download_url = isset($variables['download_url']) ? $variables['download_url'] : NULL;

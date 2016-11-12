@@ -2,6 +2,7 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\inmail\Element\InmailMessage;
 use Drupal\simpletest\WebTestBase;
 use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
 
@@ -108,7 +109,7 @@ class InmailIntegrationTest extends WebTestBase {
     $this->assertText(htmlspecialchars($message->getPlainText()));
     // Script tags are removed for security reasons.
     $this->assertRaw("<div dir=\"ltr\">Hey, it would be really bad for a mail handler to classify this as a bounce just because I have no mailbox outside my house.alert('xss_attack')</div>");
-
+    $this->assertLink('Unsubscribe');
     // By RFC 2822, To header field is not necessary.
     // Load simple malformed message.
     $raw = $this->getMessageFileContents('missing-to-field.eml');

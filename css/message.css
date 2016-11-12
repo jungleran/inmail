@@ -32,6 +32,10 @@
   padding: 0px 3px 0px 3px;
   color: #0074BD;
 }
+.inmail-message__full .inmail-message__element, .inmail-message__header__unsubscribe {
+  margin-left: 20px;
+  margin-right: 30px;
+}
 .inmail-message--full .inmail-message__header .inmail-message__header__all {
   display: block;
   font-size: 0.9em;
