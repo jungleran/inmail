@@ -137,3 +137,18 @@ monitoring.settings.inmail_monitoring_imap_quota:
     imap_fetcher:
       label: Inmail IMAP fetcher to track its quota
       type: string
+
+# Schema for monitoring sensors.
+monitoring.settings.inmail_incoming_mails:
+  type: monitoring.settings_base
+  label: 'Inmail sensor settings'
+  mapping:
+    deliverers:
+      label: Deliverers to track the incoming mails
+      type: sequence
+      sequence:
+        type: string
+        label: 'Deliverer'
+    count_type:
+      label: Mails to count
+      type: string

@@ -72,6 +72,11 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       // Find IDs of unread messages.
       // @todo Introduce options for message selection, https://www.drupal.org/node/2405767
       $unread_ids = $this->doImapSearch($imap_stream, 'UNSEEN');
+
+      // Save number of unread messages.
+      $this->setUnprocessedCount(count($unread_ids));
+      $this->setLastCheckedTime($time);
+
       $batch_ids = array_splice($unread_ids, 0, \Drupal::config('inmail.settings')->get('batch_size'));
 
       // Get the header + body of each message.
@@ -79,10 +84,6 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       foreach ($batch_ids as $unread_id) {
         $raws[$unread_id] = imap_fetchheader($imap_stream, $unread_id) . imap_body($imap_stream, $unread_id);
       }
-
-      // Save number of unread messages.
-      $this->setUnprocessedCount(count($unread_ids));
-      $this->setLastCheckedTime($time);
 
       return $raws;
     }) ?: array();
