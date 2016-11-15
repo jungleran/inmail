@@ -8,6 +8,7 @@ use Drupal\inmail\MIME\MimeHeader;
 use Drupal\inmail\MIME\MimeParser;
 use Drupal\inmail\MIME\MimeDSNEntity;
 use Drupal\inmail\MIME\MimeMultipartEntity;
+use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -19,33 +20,7 @@ use Drupal\Tests\UnitTestCase;
  */
 class MimeDSNEntityTest extends UnitTestCase {
 
-  /**
-   * Minimal example DSN message.
-   *
-   * @var string
-   */
-  const MSG_DSN = <<<EOF
-Content-type: multipart/report; report-type=delivery-status; boundary="boundary"
-
---boundary
-
-Your message could not be delivered.
---boundary
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; example.com
-
-Final-Recipient: rfc822; user@example.org
-Action: failed
-Status: 5.0.0
-
---boundary
-Content-Type: message/rfc822
-
-Subject: My very urgent message
-
---boundary--
-EOF;
+  use InmailTestHelperTrait;
 
   /**
    * Tests the parser.
@@ -54,7 +29,8 @@ EOF;
    */
   public function testParse() {
     // Parse and compare.
-    $parsed_message = (new MimeParser(new LoggerChannel('test')))->parseMessage(static::MSG_DSN);
+    $raw = $this->getMessageFileContents('bounce-nonexistent-address.eml');
+    $parsed_message = (new MimeParser(new LoggerChannel('test')))->parseMessage($raw);
     $this->assertEquals(static::getMessage(), $parsed_message);
   }
 
@@ -141,7 +117,8 @@ Content-Type: message/rfc822
 
 Subject: My very urgent message
 
---boundary--';
+--boundary--
+';
   }
 
   /**

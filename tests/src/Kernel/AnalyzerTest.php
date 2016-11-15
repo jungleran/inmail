@@ -19,7 +19,7 @@ use Drupal\KernelTests\KernelTestBase;
  */
 class AnalyzerTest extends KernelTestBase {
 
-  use DelivererTestTrait;
+  use DelivererTestTrait, InmailTestHelperTrait;
 
   /**
    * Modules to enable.
@@ -52,31 +52,7 @@ class AnalyzerTest extends KernelTestBase {
     // recipient property from the Final-Recipient part of the DSN report.
     // With correct priorities, VerpAnalyzer will come first and set the
     // property using the more reliable VERP address.
-    $raw = <<<EOF
-From: Bob <bob@example.com>
-Date: Mon, 19 Sep 2016 14:20:00 +0000
-To: bounces+verp-parsed=example.org@example.com
-Content-Type: multipart/report; report-type=delivery-status; boundary="BOUNDARY"
-
-This part is ignored.
-
---BOUNDARY
-
-MimeMessage bounced because of reasons.
-
---BOUNDARY
-Content-Type: message/delivery-status
-
-Status: 4.1.1
-Final-Recipient: rfc822; dsn-parsed@example.org
-
---BOUNDARY
-Content-Type: message/rfc822
-
-Subject: Original message.
-
---BOUNDARY--
-EOF;
+    $raw = $this->getMessageFileContents('bounce-invalid-username.eml');
 
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');

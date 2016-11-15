@@ -14,15 +14,13 @@ trait InmailTestHelperTrait {
    *
    * @param string $filename
    *   The name of the file.
-   * @param string $module
-   *   (optional) The module name. Defaults to "inmail_test".
    *
    * @return string
    *   The contents of the file.
    */
-  protected function getMessageFileContents($filename, $module = 'inmail_test') {
-    $path = drupal_get_path('module', $module) . '/eml/' . $filename;
-    return file_get_contents(DRUPAL_ROOT . '/' . $path);
+  protected function getMessageFileContents($filename) {
+    $path = __DIR__ . '/../../modules/inmail_test/eml/' . $filename;
+    return file_get_contents($path);
   }
 
   /**

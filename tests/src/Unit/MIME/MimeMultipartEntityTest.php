@@ -7,6 +7,7 @@ use Drupal\inmail\MIME\MimeEntity;
 use Drupal\inmail\MIME\MimeHeader;
 use Drupal\inmail\MIME\MimeMultipartMessage;
 use Drupal\inmail\MIME\MimeParser;
+use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -18,39 +19,7 @@ use Drupal\Tests\UnitTestCase;
  */
 class MimeMultipartEntityTest extends UnitTestCase {
 
-  /**
-   * Multipart example message copied from RFC 2046.
-   *
-   * @see https://tools.ietf.org/html/rfc2046#page-21
-   *
-   * @var string
-   */
-  const MSG_MULTIPART = <<<EOF
-From: Nathaniel Borenstein <nsb@bellcore.com>
-To: Ned Freed <ned@innosoft.com>
-Date: Sun, 21 Mar 1993 23:56:48 -0800 (PST)
-Subject: Sample message
-MIME-Version: 1.0
-Content-type: multipart/mixed; boundary="simple boundary"
-
-This is the preamble.  It is to be ignored, though it
-is a handy place for composition agents to include an
-explanatory note to non-MIME conformant readers.
-
---simple boundary
-
-This is implicitly typed plain US-ASCII text.
-It does NOT end with a linebreak.
---simple boundary
-Content-type: text/plain; charset=us-ascii
-
-This is explicitly typed plain US-ASCII text.
-It DOES end with a linebreak.
-
---simple boundary--
-
-This is the epilogue.  It is also to be ignored.
-EOF;
+  use InmailTestHelperTrait;
 
   /**
    * Tests the parser.
@@ -59,7 +28,8 @@ EOF;
    */
   public function testParse() {
     // Parse and compare.
-    $parsed_message = (new MimeParser(new LoggerChannel('test')))->parseMessage(static::MSG_MULTIPART);
+    $raw = $this->getMessageFileContents('rfc-simple-multipart.eml');
+    $parsed_message = (new MimeParser(new LoggerChannel('test')))->parseMessage($raw);
     $this->assertEquals(static::getMessage(), $parsed_message);
   }
 
@@ -117,7 +87,8 @@ EOF;
    * @covers \Drupal\inmail\MIME\MimeEntity::toString
    */
   public function testToString() {
-    $this->assertEquals(static::MSG_MULTIPART, static::getMessage()->toString());
+    $raw = $this->getMessageFileContents('rfc-simple-multipart.eml');
+    $this->assertEquals($raw, static::getMessage()->toString());
   }
 
   /**
@@ -127,8 +98,9 @@ EOF;
     $parser = new MimeParser(new LoggerChannel('test'));
 
     // Parse and back again.
-    $parsed = $parser->parseMessage(static::MSG_MULTIPART);
-    $this->assertEquals(static::MSG_MULTIPART, $parsed->toString());
+    $raw = $this->getMessageFileContents('rfc-simple-multipart.eml');
+    $parsed = $parser->parseMessage($raw);
+    $this->assertEquals($raw, $parsed->toString());
 
     // To string and back again.
     $string = static::getMessage()->toString();
@@ -183,7 +155,8 @@ It DOES end with a linebreak.
 
 --simple boundary--
 
-This is the epilogue.  It is also to be ignored.';
+This is the epilogue.  It is also to be ignored.
+';
   }
 
   /**
