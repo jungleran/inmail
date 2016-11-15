@@ -34,47 +34,35 @@ interface MimeMessageInterface extends MimeEntityInterface {
   /**
    * Returns the message sender.
    *
-   * @param bool $decode
-   *   Optional value to indicate if header is in punycode form.
-   *
-   * @return array[]|null
-   *   The 'From' header field body, or null if inexisting.
+   * @return \Drupal\inmail\MIME\Rfc2822Address|null
+   *   The 'From' header field address object, or NULL if it does not exist.
    */
-  public function getFrom($decode = FALSE);
+  public function getFrom();
 
   /**
    * Returns the unique message identifier(s).
    *
-   * @param bool $decode
-   *   (optional) The value to indicate if the header is in punycode form.
-   *
-   * @return string|null
-   *   The 'References'/'In-Reply-To' header field body, NULL if it does not
-   *   exist or it is the same as 'From'.
+   * @return \Drupal\inmail\MIME\Rfc2822Address|\Drupal\inmail\MIME\Rfc2822Address[]
+   *   The 'References'/'In-Reply-To' header field address object(s), NULL if
+   *   it does not exist or it is the same as 'From'.
    */
-  public function getReplyTo($decode = FALSE);
+  public function getReplyTo();
 
   /**
    * Returns the list of message recipients.
    *
-   * @param bool $decode
-   *   Optional value to indicate if header is in punycode form.
-   *
-   * @return array[]|null
-   *   List of 'To' recipient addresses.
+   * @return \Drupal\inmail\MIME\Rfc2822Address[]
+   *   List of 'To' recipient address objects.
    */
-  public function getTo($decode = FALSE);
+  public function getTo();
 
   /**
    * Returns the list of Cc recipients.
    *
-   * @param bool $decode
-   *   Optional value to indicate if header is in punycode form.
-   *
-   * @return array[]|null
-   *   List of 'Cc' recipient addresses.
+   * @return \Drupal\inmail\MIME\Rfc2822Address[]
+   *   List of 'Cc' recipient address objects.
    */
-  public function getCc($decode = FALSE);
+  public function getCc();
 
   /**
    * Returns the date when the message was received by the recipient.

@@ -157,14 +157,22 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
 
     if (in_array($property_name, ['from', 'to', 'cc', 'bcc'])) {
       $field_body = $message->getHeader()->getFieldBody($property_name);
-      // The returned value is an associative array with elements "name" and
-      // "address", suitable for the inmail_mailbox datatype.
+      // The returned value is an array of Rfc2822Address objects.
       $mailboxes = MimeParser::parseAddress($field_body);
+
+      // This associative array with 'name' and 'address' elements is needed
+      // for suitable inmail_mailbox data type reasons.
+      $mailboxes_array = [];
+      foreach ($mailboxes as $key => $mailbox) {
+        $mailboxes_array[$key]['name'] = $mailbox->getName();
+        $mailboxes_array[$key]['address'] = $mailbox->getAddress();
+      }
+
       // Determine whether to return as single or as array.
       if (in_array($property_name, ['to', 'cc', 'bcc'])) {
-        return $mailboxes;
+        return $mailboxes_array;
       }
-      return reset($mailboxes);
+      return reset($mailboxes_array);
     }
     // Many property names are just header field names.
     return $message->getHeader()->getFieldBody($property_name);

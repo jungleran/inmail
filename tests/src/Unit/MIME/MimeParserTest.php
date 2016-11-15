@@ -4,6 +4,7 @@ namespace Drupal\Tests\inmail\Unit\MIME;
 
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\inmail\MIME\MimeParser;
+use Drupal\inmail\MIME\Rfc2822Address;
 use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
 
 /**
@@ -86,48 +87,48 @@ class MimeParserTest extends InmailUnitTestBase {
     return [
       // Spaces.
       [' admin@example.com ', [
-        ['name' => '', 'address' => 'admin@example.com'],
+        new Rfc2822Address('', 'admin@example.com'),
       ]],
       // Multiple.
       ['a@b.c, d.e@f.g.h', [
-        ['name' => '', 'address' => 'a@b.c'],
-        ['name' => '', 'address' => 'd.e@f.g.h'],
+        new Rfc2822Address('', 'a@b.c'),
+        new Rfc2822Address('', 'd.e@f.g.h'),
       ]],
       // With name.
       ['Admin <admin@example.com>', [
-        ['name' => 'Admin', 'address' => 'admin@example.com'],
+        new Rfc2822Address('Admin', 'admin@example.com'),
       ]],
       // With quote-enclosed name.
       ['"Admin" <admin@example.com>', [
-        ['name' => 'Admin', 'address' => 'admin@example.com'],
+        new Rfc2822Address('Admin', 'admin@example.com'),
       ]],
       // Multiple with name.
       ['Admin <admin@example.com>, User <user.name@users.example.com>', [
-        ['name' => 'Admin', 'address' => 'admin@example.com'],
-        ['name' => 'User', 'address' => 'user.name@users.example.com'],
+        new Rfc2822Address('Admin', 'admin@example.com'),
+        new Rfc2822Address('User', 'user.name@users.example.com'),
       ]],
       // Comma in name (resolves to multiple, where first is invalid).
       ['Admin, Bedmin <admin@example.com>', [
-        ['name' => 'Bedmin', 'address' => 'admin@example.com'],
+        new Rfc2822Address('Bedmin', 'admin@example.com'),
       ]],
       // Address in quotes but not after (invalid).
       ['"Admin, Admin <admin@example.com>"', []],
       // @todo Allow comma in name, https://www.drupal.org/node/2475057
 //      // Comma in name (quoted, valid).
 //      ['"Admin, Admin" <admin@example.com>', [
-//        ['name' => 'Admin, Admin', 'address' => 'admin@example.com'],
+//        new Rfc2822Address('Admin, Admin', 'admin@example.com'),
 //      ]],
 //      // Address in quotes and after.
 //      ['"Admin, Admin <admin@example.com>" <admin@example.com>', [
-//        ['name' => 'Admin <admin@example.com>', 'address' => 'admin@example.com'],
+//        new Rfc2822Address('Admin <admin@example.com>', 'admin@example.com'),
 //      ]],
       // Unicode in name.
       ['Admin™ <admin@example.com>', [
-        ['name' => 'Admin™', 'address' => 'admin@example.com'],
+        new Rfc2822Address('Admin™', 'admin@example.com'),
       ]],
       // Sub-address extension pattern.
       ['Admin <admin+admin@example.com>', [
-        ['name' => 'Admin', 'address' => 'admin+admin@example.com'],
+        new Rfc2822Address('Admin', 'admin+admin@example.com'),
       ]],
     ];
   }

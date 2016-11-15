@@ -55,8 +55,8 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
    * @param string $field
    *   The content of a To header or similar.
    *
-   * @return array[]
-   *   A list of associative arrays, each with the following elements:
+   * @return \Drupal\inmail\MIME\Rfc2822Address[]
+   *   A list of MIME address objects, each with the following properties:
    *     - name: the optional name before the address
    *     - address: the email address
    *
@@ -71,11 +71,11 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
     foreach ($parts as $part) {
       if (preg_match('/^\S+@\S+\.\S+$/', $part)) {
         // Match address "foo@example.com".
-        $mailboxes[] = ['name' => '', 'address' => $part];
+        $mailboxes[] = new Rfc2822Address('', $part);
       }
       elseif (preg_match('/(.*)<(\S+@\S+\.\S+)>$/', $part, $matches)) {
         // Match name and address "Foo Bar <foo@example.com>".
-        $mailboxes[] = ['name' => trim(trim($matches[1]), '"'), 'address' => $matches[2]];
+        $mailboxes[] = new Rfc2822Address(trim(trim($matches[1]), '"'), $matches[2]);
       }
     }
     return $mailboxes;

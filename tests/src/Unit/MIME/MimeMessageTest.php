@@ -44,12 +44,12 @@ class MimeMessageTest extends UnitTestCase {
   public function testGetFrom() {
     // Single address.
     $message = new MimeMessage(new MimeHeader([['name' => 'From', 'body' => 'foo@example.com']]), 'Bar');
-    $this->assertEquals('foo@example.com', $message->getFrom()['address']);
+    $this->assertEquals('foo@example.com', $message->getFrom()->getAddress());
 
     if (function_exists('idn_to_utf8')) {
       // Single IDN address.
       $message = new MimeMessage(new MimeHeader([['name' => 'From', 'body' => 'fooBar@xn--oak-ppa56b.ba']]), 'Bar');
-      $this->assertEquals('fooBar@ćošak.ba', $message->getFrom(TRUE)['address']);
+      $this->assertEquals('fooBar@ćošak.ba', $message->getFrom()->getDecodedAddress());
     }
 
   }
@@ -63,25 +63,25 @@ class MimeMessageTest extends UnitTestCase {
     // Empty recipient.
     $message = new MimeMessage(new MimeHeader([[]]), 'I am a body');
     $cc_field = $message->getCC();
-    $this->assertEquals(NULL, $cc_field);
+    $this->assertEquals([], $cc_field);
 
     // Single recipient address.
     $message = new MimeMessage(new MimeHeader([['name' => 'To', 'body' => 'foo@example.com']]), 'Bar');
-    $this->assertEquals('foo@example.com', $message->getTo()[0]['address']);
+    $this->assertEquals('foo@example.com', $message->getTo()[0]->getAddress());
 
     // Multiple recipients.
     // @todo Parse recipients and return list.
     $message = new MimeMessage(new MimeHeader([['name' => 'Cc', 'body' => 'sunshine@example.com, moon@example.com']]), 'I am a body');
     $cc_field = $message->getCC();
     $this->assertEquals(['sunshine@example.com, moon@example.com'],
-      [$cc_field[0]['address'] . ', ' . $cc_field[1]['address']]);
+      [$cc_field[0]->getAddress() . ', ' . $cc_field[1]->getAddress()]);
     // @todo Parse recipients and return list.
     // @todo Test mailbox with display name.
 
     if (function_exists('idn_to_utf8')) {
       // Single IDN recipient address with decoding.
       $message = new MimeMessage(new MimeHeader([['name' => 'To', 'body' => 'helloWorld@xn--xample-9ua.com']]), 'Bar');
-      $this->assertEquals('helloWorld@éxample.com', $message->getTo(TRUE)[0]['address']);
+      $this->assertEquals('helloWorld@éxample.com', $message->getTo()[0]->getDecodedAddress());
     }
   }
 
@@ -94,19 +94,19 @@ class MimeMessageTest extends UnitTestCase {
     // Empty recipient.
     $message = new MimeMessage(new MimeHeader([[]]), 'I am a body');
     $cc_field = $message->getCC();
-    $this->assertEquals(NULL, $cc_field);
+    $this->assertEquals([], $cc_field);
 
     // Single recipient address.
     $message = new MimeMessage(new MimeHeader([['name' => 'Cc', 'body' => 'sunshine@example.com']]), 'I am a body');
     $cc_field = $message->getCC();
-    $this->assertEquals('sunshine@example.com', $cc_field[0]['address']);
+    $this->assertEquals('sunshine@example.com', $cc_field[0]->getAddress());
 
     // Multiple recipients.
     // @todo Parse recipients and return list.
     $message = new MimeMessage(new MimeHeader([['name' => 'Cc', 'body' => 'sunshine@example.com, moon@example.com']]), 'I am a body');
     $cc_field = $message->getCC();
     $this->assertEquals(['sunshine@example.com, moon@example.com'],
-      [$cc_field[0]['address'] . ', ' . $cc_field[1]['address']]);
+      [$cc_field[0]->getAddress() . ', ' . $cc_field[1]->getAddress()]);
 
     // @todo Also test mailbox with display name.
   }

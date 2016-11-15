@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\inmail\MIME;
+
 use Drupal\Component\Datetime\DateTimePlus;
 
 /**
@@ -28,54 +29,32 @@ trait MimeMessageTrait {
   abstract public function getHeader();
 
   /**
-   * Converts body from Puny-code to UTF8.
-   *
-   * @param string $body
-   *   Field body to be decoded.
-   *
-   * @return string|null
-   *   Decoded UTF8 address if successful decoding, otherwise NULL.
-   */
-  protected function decodeAddress($body) {
-    // Skip decoding if the intl package is missing.
-    if (!function_exists('idn_to_utf8')) {
-      return $body;
-    }
-
-    if (strpos($body, '@') !== FALSE) {
-      // Extracting body after '@' sign for proper IDN decoding.
-      $body = explode('@', $body, 2)[0] . '@' . \idn_to_utf8(explode('@', $body, 2)[1]);
-    }
-    return $body;
-  }
-
-  /**
    * {@inheritdoc}
    */
-  public function getFrom($decode = FALSE) {
-    $mailboxes = $this->parseDecodeField('From', $decode);
+  public function getFrom() {
+    $mailboxes = $this->parseDecodeField('From');
     return isset($mailboxes[0]) ? $mailboxes[0] : NULL;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getTo($decode = FALSE) {
-    return $this->parseDecodeField('To', $decode);
+  public function getTo() {
+    return $this->parseDecodeField('To');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getCc($decode = FALSE) {
-    return $this->parseDecodeField('Cc', $decode);
+  public function getCc() {
+    return $this->parseDecodeField('Cc');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getReplyTo($decode = FALSE) {
-    return $this->parseDecodeField('Reply-To', $decode);
+  public function getReplyTo() {
+    return $this->parseDecodeField('Reply-To');
   }
 
   /**
@@ -83,19 +62,13 @@ trait MimeMessageTrait {
    *
    * @param $name
    *   The field name.
-   * @param $decode
    *
-   * @return \array[]|null
+   * @return \Drupal\inmail\MIME\Rfc2822Address[]
+   *   A list of the parsed address objects.
    */
-  protected function parseDecodeField($name, $decode = FALSE) {
+  protected function parseDecodeField($name) {
     $body = $this->getHeader()->getFieldBody($name);
-    $mailboxes = MimeParser::parseAddress($body);
-    if ($decode) {
-      foreach ($mailboxes as $key => $mailbox) {
-        $mailboxes[$key]['address'] = $this->decodeAddress($mailboxes[$key]['address']);
-      }
-    }
-    return $body ? $mailboxes : NULL;
+    return MimeParser::parseAddress($body);
   }
 
   /**
