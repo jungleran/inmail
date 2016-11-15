@@ -38,15 +38,6 @@ class DelivererConfigurationForm extends PluginConfigurationForm {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    if ($this->exists($form_state->getValue('id'))) {
-      $form_state->setErrorByName('id', $this->t('A plugin with @id already exists.', ['@id' => $form_state->getValue('id')]));
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
     $entity = $this->getEntity();
