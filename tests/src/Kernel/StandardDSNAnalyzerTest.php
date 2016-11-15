@@ -81,10 +81,10 @@ class StandardDSNAnalyzerTest extends KernelTestBase {
    */
   public function provideExpectedResults() {
     return [
-      ['accessdenied.eml', '5.0.0', 'user@example.org'],
-      ['full.eml', '4.2.2', 'user@example.org'],
+      ['/bounce/access-denied.eml', '5.0.0', 'user@example.org'],
+      ['/bounce/mailbox-full.eml', '4.2.2', 'user@example.org'],
       ['normal.eml', NULL, NULL],
-      ['nouser.eml', '5.1.1', 'user@example.org'],
+      ['/bounce/bad-destination-address.eml', '5.1.1', 'user@example.org'],
     ];
   }
 

@@ -59,7 +59,7 @@ class VerpTest extends KernelTestBase {
     AnalyzerConfig::load('dsn')->disable()->save();
 
     // Process a bounce message with a VERP-y 'To' header, check the parsing.
-    $raw = $this->getMessageFileContents('full.eml');
+    $raw = $this->getMessageFileContents('bounce/mailbox-full.eml');
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
     // Reset the state to be sure that function success is called in the test.

@@ -32,7 +32,7 @@ class InmailCollectWebTest extends InmailWebTestBase {
     $this->drupalPlaceBlock('local_tasks_block');
     $this->drupalPlaceBlock('page_title_block');
     // Process and store a message.
-    $raw = $this->getMessageFileContents('nouser.eml');
+    $raw = $this->getMessageFileContents('/bounce/bad-destination-address.eml');
     $deliverer = $this->createTestDeliverer();
     $this->processor->process('unique_key', $raw, $deliverer);
     // Assert success function is called.

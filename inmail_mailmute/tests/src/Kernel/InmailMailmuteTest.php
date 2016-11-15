@@ -69,11 +69,11 @@ class InmailMailmuteTest extends KernelTestBase {
       // Normal message should not trigger mute.
       'normal.eml' => 'send',
       // "Mailbox full" bounce should trigger counting.
-      'full.eml' => 'inmail_counting',
+      '/bounce/mailbox-full.eml' => 'inmail_counting',
       // "No such user" bounce should trigger mute.
-      'nouser.eml' => 'inmail_invalid_address',
+      '/bounce/bad-destination-address.eml' => 'inmail_invalid_address',
       // "Access denied" bounce should trigger mute.
-      'accessdenied.eml' => 'inmail_invalid_address',
+      '/bounce/access-denied.eml' => 'inmail_invalid_address',
     ];
 
     foreach ($cases as $filename => $expected) {
@@ -179,7 +179,7 @@ class InmailMailmuteTest extends KernelTestBase {
     // Process the configured number of bounces.
     for ($count = 1; $count < 3; $count++) {
       // Process a soft bounce from the user.
-      $raw = $this->getMessageFileContents('full.eml');
+      $raw = $this->getMessageFileContents('/bounce/mailbox-full.eml');
       $deliverer = $this->createTestDeliverer();
       $processor->process('unique_key', $raw, $deliverer);
       $this->assertSuccess($deliverer, 'unique_key');
@@ -191,7 +191,7 @@ class InmailMailmuteTest extends KernelTestBase {
     }
 
     // Process another one and check that the user is now muted.
-    $raw = $this->getMessageFileContents('full.eml');
+    $raw = $this->getMessageFileContents('/bounce/mailbox-full.eml');
     $deliverer = $this->createTestDeliverer();
     $processor->process('unique_key', $raw, $deliverer);
     $this->assertSuccess($deliverer, 'unique_key');

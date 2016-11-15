@@ -52,7 +52,7 @@ class StandardDSNReasonAnalyzerTest extends KernelTestBase {
    */
   public function provideReasons() {
     return [
-      ['accessdenied.eml',
+      ['/bounce/access-denied.eml',
         "This is the Postfix program at host kyle.greenpeace.org.
 
 I'm sorry to have to inform you that your message could not
@@ -69,14 +69,14 @@ delete your own text from the attached returned message.
     554 5.7.1 <kyle.greenpeace.org[194.0.197.22]>: Client host rejected: Access
     denied (in reply to RCPT TO command)",
       ],
-      ['full.eml',
+      ['/bounce/mailbox-full.eml',
         "- These recipients of your message have been processed by the mail server:
 user@example.org; Failed; 4.2.2 (mailbox full)
 
     Remote MTA ms5.han.skanova.net: SMTP diagnostic: 552 RCPT TO:<masked4@pne.telia.com> Mailbox disk quota exceeded",
       ],
       ['normal.eml', NULL],
-      ['nouser.eml',
+      ['/bounce/bad-destination-address.eml',
         'Your message
 
   Subject: We want a toxic-free future

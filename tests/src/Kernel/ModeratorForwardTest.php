@@ -46,7 +46,7 @@ class ModeratorForwardTest extends KernelTestBase {
   public function testModeratorForwardRules() {
     /** @var \Drupal\inmail\MessageProcessor $processor */
     $processor = \Drupal::service('inmail.processor');
-    $bounce = $this->getMessageFileContents('nouser.eml');
+    $bounce = $this->getMessageFileContents('/bounce/bad-destination-address.eml');
     $regular = $this->getMessageFileContents('normal.eml');
 
     // Do not handle if message is bounce.
@@ -119,7 +119,7 @@ class ModeratorForwardTest extends KernelTestBase {
   public function testSendingReportMessage() {
     /** @var \Drupal\inmail\MessageProcessor $processor */
     $processor = \Drupal::service('inmail.processor');
-    $bounce = $this->getMessageFileContents('nouser.eml');
+    $bounce = $this->getMessageFileContents('/bounce/bad-destination-address.eml');
     $regular = $this->getMessageFileContents('normal.eml');
     $deliverer = $this->createTestDeliverer();
     // Testing with bounce.
