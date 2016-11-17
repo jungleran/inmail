@@ -67,7 +67,7 @@ class InmailMailmuteTest extends KernelTestBase {
     // @todo Extend sample message collection https://www.drupal.org/node/2381029
     $cases = [
       // Normal message should not trigger mute.
-      'normal.eml' => 'send',
+      'normal-forwarded.eml' => 'send',
       // "Mailbox full" bounce should trigger counting.
       '/bounce/mailbox-full.eml' => 'inmail_counting',
       // "No such user" bounce should trigger mute.
@@ -98,7 +98,7 @@ class InmailMailmuteTest extends KernelTestBase {
     // Check that plain text extraction works properly.
     $parser = \Drupal::service('inmail.mime_parser');
     // Assert that we get expected plaintexts message.
-    $parsed_message = $parser->parseMessage($this->getMessageFileContents('normal.eml'));
+    $parsed_message = $parser->parseMessage($this->getMessageFileContents('normal-forwarded.eml'));
     $this->assertEqual($parsed_message->getPlainText(), "Hey, it would be really bad for a mail handler to classify this as a bounce\njust because I have no mailbox outside my house.\n");
     // Check plaintext extraction for single-part message.
     $message = new MimeMessage(new MimeHeader([

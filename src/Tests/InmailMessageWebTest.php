@@ -48,7 +48,7 @@ class InmailMessageWebTest extends InmailWebTestBase {
    */
   public function doTestHtmlBodyPart() {
     // Load and process the HTML-only mail message.
-    $raw_html = $this->getMessageFileContents('html-text.eml');
+    $raw_html = $this->getMessageFileContents('/simple/html-text.eml');
     $this->processor->process('unique_key', $raw_html, $this->createTestDeliverer());
     $event = $this->getLastEventByMachinename('process');
 

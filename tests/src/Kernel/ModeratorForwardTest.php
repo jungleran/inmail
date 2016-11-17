@@ -47,7 +47,7 @@ class ModeratorForwardTest extends KernelTestBase {
     /** @var \Drupal\inmail\MessageProcessor $processor */
     $processor = \Drupal::service('inmail.processor');
     $bounce = $this->getMessageFileContents('/bounce/bad-destination-address.eml');
-    $regular = $this->getMessageFileContents('normal.eml');
+    $regular = $this->getMessageFileContents('normal-forwarded.eml');
 
     // Do not handle if message is bounce.
     // Reset the state to be sure that function is called in the test.
@@ -120,7 +120,7 @@ class ModeratorForwardTest extends KernelTestBase {
     /** @var \Drupal\inmail\MessageProcessor $processor */
     $processor = \Drupal::service('inmail.processor');
     $bounce = $this->getMessageFileContents('/bounce/bad-destination-address.eml');
-    $regular = $this->getMessageFileContents('normal.eml');
+    $regular = $this->getMessageFileContents('normal-forwarded.eml');
     $deliverer = $this->createTestDeliverer();
     // Testing with bounce.
     $this->assertMailCount(0);
@@ -144,7 +144,7 @@ class ModeratorForwardTest extends KernelTestBase {
    */
   public function testModeratorForwardMessage() {
     // Get an original.
-    $original = $this->getMessageFileContents('normal.eml');
+    $original = $this->getMessageFileContents('normal-forwarded.eml');
     /** @var \Drupal\inmail\MIME\MimeParserInterface $parser */
     $parser = \Drupal::service('inmail.mime_parser');
     $original_parsed = $parser->parseMessage($original);

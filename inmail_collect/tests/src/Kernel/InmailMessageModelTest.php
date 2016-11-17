@@ -42,7 +42,7 @@ class InmailMessageModelTest extends KernelTestBase {
   public function testProperties() {
     $container = Container::create([
       'data' => json_encode([
-        'raw' => $this->getMessageFileContents('simple-autoreply.eml'),
+        'raw' => $this->getMessageFileContents('/addresses/simple-autoreply.eml'),
       ]),
       'schema_uri' => 'https://www.drupal.org/project/inmail/schema/message',
       'type' => 'application/json',

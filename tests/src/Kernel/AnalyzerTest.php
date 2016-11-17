@@ -52,7 +52,7 @@ class AnalyzerTest extends KernelTestBase {
     // recipient property from the Final-Recipient part of the DSN report.
     // With correct priorities, VerpAnalyzer will come first and set the
     // property using the more reliable VERP address.
-    $raw = $this->getMessageFileContents('bounce-invalid-username.eml');
+    $raw = $this->getMessageFileContents('/bounce/invalid-username.eml');
 
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');

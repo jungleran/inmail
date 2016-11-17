@@ -57,7 +57,7 @@ class InmailMessageTest extends KernelTestBase {
    */
   public function testProcessHtmlOnly() {
     // Get the body paths for the processed html-only message.
-    $message = $this->parser->parseMessage($this->getMessageFileContents('html-text.eml'));
+    $message = $this->parser->parseMessage($this->getMessageFileContents('/simple/html-text.eml'));
     $body_paths = $this->messageDecomposition->getBodyPaths($message);
     // Assert the html/plain body paths.
     $this->assertEquals('~', $body_paths['html']);

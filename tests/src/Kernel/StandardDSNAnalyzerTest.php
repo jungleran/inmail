@@ -83,7 +83,7 @@ class StandardDSNAnalyzerTest extends KernelTestBase {
     return [
       ['/bounce/access-denied.eml', '5.0.0', 'user@example.org'],
       ['/bounce/mailbox-full.eml', '4.2.2', 'user@example.org'],
-      ['normal.eml', NULL, NULL],
+      ['normal-forwarded.eml', NULL, NULL],
       ['/bounce/bad-destination-address.eml', '5.1.1', 'user@example.org'],
     ];
   }

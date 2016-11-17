@@ -75,7 +75,7 @@ user@example.org; Failed; 4.2.2 (mailbox full)
 
     Remote MTA ms5.han.skanova.net: SMTP diagnostic: 552 RCPT TO:<masked4@pne.telia.com> Mailbox disk quota exceeded",
       ],
-      ['normal.eml', NULL],
+      ['normal-forwarded.eml', NULL],
       ['/bounce/bad-destination-address.eml',
         'Your message
 

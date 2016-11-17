@@ -29,7 +29,7 @@ class MimeDSNEntityTest extends UnitTestCase {
    */
   public function testParse() {
     // Parse and compare.
-    $raw = $this->getMessageFileContents('bounce-nonexistent-address.eml');
+    $raw = $this->getMessageFileContents('/bounce/nonexistent-address.eml');
     $parsed_message = (new MimeParser(new LoggerChannel('test')))->parseMessage($raw);
     $this->assertEquals(static::getMessage(), $parsed_message);
   }

@@ -49,7 +49,7 @@ class InmailIntegrationTest extends WebTestBase {
    * Tests that mails are properly displayed using Inmail message element.
    */
   public function testEmailDisplay() {
-    $raw_multipart = $this->getMessageFileContents('normal.eml');
+    $raw_multipart = $this->getMessageFileContents('normal-forwarded.eml');
     // @todo: Move the XSS part into separate email example.
     $raw_multipart = str_replace('</div>', "<script>alert('xss_attack')</script></div>", $raw_multipart);
 
@@ -125,7 +125,7 @@ class InmailIntegrationTest extends WebTestBase {
     //$this->assertNoField('To', 'There is no To header field');
 
     // Test a message with reply to header field.
-    $raw = $this->getMessageFileContents('plain-text-reply-to.eml');
+    $raw = $this->getMessageFileContents('/addresses/plain-text-reply-to.eml');
     $deliverer = $this->createTestDeliverer();
     $this->processor->process('unique_key', $raw, $deliverer);
     $event = $this->getLastEventByMachinename('process');

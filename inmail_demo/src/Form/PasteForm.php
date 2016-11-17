@@ -164,13 +164,17 @@ class PasteForm extends FormBase {
     $collection = [];
     // Adding to the list simple mail example.
     $directory = drupal_get_path('module', 'inmail_demo') . '/eml';
-    $collection += ['Simple email' => $this->getExamples($directory)];
+    $mail_samples = $this->getExamples($directory);
+    $directory = drupal_get_path('module', 'inmail') . '/tests/modules/inmail_test/eml/simple';
+    $mail_samples += $this->getExamples($directory);
+    $collection += ['Simple email' => $mail_samples];
 
-    // Adding attachment,malformed and bounce samples.
+    // Adding attachment, malformed, bounce, address samples.
     $directory = drupal_get_path('module', 'inmail') . '/tests/modules/inmail_test/eml';
     $collection += ['Attachment email' => $this->getExamples($directory . '/attachments')];
     $collection += ['Malformed email' => $this->getExamples($directory . '/malformed')];
     $collection += ['Bounce' => $this->getExamples($directory . '/bounce')];
+    $collection += ['Addresses' => $this->getExamples($directory . '/addresses')];
 
     // Adding rest of email samples.
     $examples = $this->getExamples($directory, FALSE);
