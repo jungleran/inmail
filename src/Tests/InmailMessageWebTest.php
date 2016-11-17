@@ -157,6 +157,8 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->assertLink('multipart/alternative');
     $this->clickLink('application/x-unknown');
     $this->assertResponse(200);
+    $this->assertHeader('Content-Type', 'application/x-unknown');
+    $this->assertFalse($this->drupalGetHeader('X-Custom'));
     $this->assertText('Unknown part');
   }
 

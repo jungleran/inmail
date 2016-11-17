@@ -154,24 +154,10 @@ class MimeHeader {
    * Returns an associative array of header fields.
    *
    * @return array
-   *   An associative array of header fields keyed by the header name.
+   *   An associative array of header fields.
    */
-  public function toArray() {
-    $headers = [];
-    foreach ($this->fields as $field) {
-      $field_name = $field['name'];
-      if (isset($headers[$field_name])) {
-        // There can be a case of header fields the same name and it's possible
-        // to combine them by adding a comma.
-        // @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
-        $headers[$field_name] .= ',' . $field['body'];
-      }
-      else {
-        $headers[$field_name] = $field['body'];
-      }
-    }
-
-    return $headers;
+  public function getFields() {
+    return $this->fields;
   }
 
   /**

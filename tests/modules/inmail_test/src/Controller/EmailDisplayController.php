@@ -5,6 +5,7 @@ namespace Drupal\inmail_test\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 use Drupal\inmail\MIME\MimeEncodings;
+use Drupal\inmail\MIME\MimeEntityInterface;
 use Drupal\inmail\MIME\MimeMultipartMessage;
 use Drupal\past\PastEventInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -81,15 +82,7 @@ class EmailDisplayController extends ControllerBase {
     // Decode the attachment body.
     $decoded_body = MimeEncodings::decode($entity->getBody(), $entity->getContentTransferEncoding());
 
-    // Display images in the browser.
-    $header = $entity->getHeader();
-    if ($entity->getContentType()['type'] == 'image') {
-      $header->removeField('Content-Disposition');
-      $filename = !empty($entity->getContentType()['parameters']['name']) ? $entity->getContentType()['parameters']['name'] : 'image';
-      $header->addField('Content-Disposition', 'inline; filename="' . $filename . '"');
-    }
-
-    return new Response($decoded_body, Response::HTTP_OK, $header->toArray());
+    return new Response($decoded_body, Response::HTTP_OK, $this->getHeaders($entity));
   }
 
   /**
@@ -116,6 +109,32 @@ class EmailDisplayController extends ControllerBase {
     $parser = \Drupal::service('inmail.mime_parser');
 
     return $parser->parseMessage($raw_email_argument->getData());
+  }
+
+  /**
+   * Returns the HTTP headers for the given entity.
+   *
+   * @param \Drupal\inmail\MIME\MimeEntityInterface $entity
+   *   The entity to get headers for.
+   *
+   * @return string[]
+   *   An array of HTTP headers.
+   */
+  protected function getHeaders(MimeEntityInterface $entity) {
+    // Get the parsed content type.
+    $content_type = $entity->getContentType();
+    // Create the file name.
+    $filename = !empty($content_type['parameters']['name']) ? $content_type['parameters']['name'] : 'mime_entity';
+    // Display images in the browser.
+    $content_disposition = $content_type['type'] == 'image' ? 'inline; filename="' . $filename . '"' : 'attachment; filename="' . $filename . '"';
+    // Use default content type or fallback to one defined in RFC 2045 sec 5.2.
+    $content_type = $entity->getHeader()->getFieldBody('Content-Type') ?: 'text/plain; charset=us-ascii';
+
+    return [
+      'Content-Disposition' => $content_disposition,
+      'Content-Type' => $content_type,
+      'Content-Transfer-Encoding' => $entity->getContentTransferEncoding(),
+    ];
   }
 
 }
