@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Logger\RfcLogLevel;
 
 /**
  * Wraps the deliverer list builder in a form, to enable interactive elements.
@@ -119,8 +120,20 @@ class DelivererListForm extends FormBase {
       if ($deliverer->getPluginInstance() instanceof FetcherInterface && $deliverer->isAvailable()) {
         $fetchers[$deliverer->id()] = $deliverer->label();
         $raws = $deliverer->getPluginInstance()->fetchUnprocessedMessages();
-        $processor->processMultiple($raws, $deliverer);
-        $processed_count += count($raws);
+        $results = $processor->processMultiple($raws, $deliverer);
+        // Loop over processor results and check for failure.
+        foreach ($results as $key => $result) {
+          if (!$result->isSuccess()) {
+            $messages = inmail_get_log_message($result, RfcLogLevel::ERROR);
+            drupal_set_message(t('Message @key: @error', [
+              '@key' => $key,
+              '@error' => strip_tags(implode("\n", $messages))
+            ]), 'error');
+          }
+          else {
+            $processed_count++;
+          }
+        }
 
         // No more messages to process for specific deliverer?
         if ($deliverer->getPluginInstance()->getUnprocessedCount() != 0) {
@@ -138,7 +151,7 @@ class DelivererListForm extends FormBase {
       ]), 'warning');
     }
     else if ($processed_count) {
-      drupal_set_message(t('Processed @count messages by @fetchers.', [
+      drupal_set_message(t('Successfully processed @count messages by @fetchers.', [
         '@count' => $processed_count,
         '@fetchers' => implode(', ', $fetchers),
       ]));

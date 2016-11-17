@@ -57,6 +57,7 @@ class InmailWebTest extends WebTestBase {
     $this->doTestAnalyzerUi();
     $this->doTestHandlerUi();
     $this->doTestSettingsUI();
+    $this->doTestProcessingFailure();
   }
 
   /**
@@ -163,7 +164,7 @@ class InmailWebTest extends WebTestBase {
     $this->assertFieldByXPath('//table/tbody/tr/td[3]', '1');
     $this->assertFieldByXPath('//table/tbody/tr/td[4]', 99);
     $this->assertFieldByXPath('//table/tbody/tr/td[5]', 200);
-    $this->assertText('Processed 1 messages by Test Test Fetcher.');
+    $this->assertText('Successfully processed 1 messages by Test Test Fetcher.');
     $this->drupalPostForm(NULL, array(), 'Check fetcher status');
     $this->assertFieldByXPath('//table/tbody/tr/td[3]', '1');
     $this->assertFieldByXPath('//table/tbody/tr/td[4]', 100);
@@ -335,5 +336,23 @@ class InmailWebTest extends WebTestBase {
     $this->assertText('The configuration options have been saved.');
     $this->assertFieldChecked('edit-log-raw-emails');
 
+  }
+
+  /**
+   * Tests processing of RFC invalid message.
+   */
+  public function doTestProcessingFailure() {
+    $this->drupalGet('admin/config/system/inmail/deliverers/add');
+    $edit = array(
+      'label' => 'Test Test Fetcher',
+      'id' => 'test_123',
+      'plugin' => 'test_fetcher',
+    );
+    $this->drupalPostAjaxForm(NULL, $edit, 'plugin');
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    // Load invalid message and trigger validation failures.
+    \Drupal::state()->set('inmail.test_fetcher.invalid_message', "Date: Thu, 10 Nov 2016 14:23:6 +0200\nSubject: Message is invalid\n\nMessage Body");
+    $this->drupalPostForm(NULL, array(), 'Process fetchers');
+    $this->assertText('Message 0: Message Validation failed with message Missing From field.');
   }
 }

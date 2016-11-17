@@ -59,11 +59,17 @@ class TestFetcher extends FetcherBase {
     $this->setUnprocessedCount(static::$remaining);
     $this->setLastCheckedTime($time);
 
-    // MimeMessage must be valid, so it can pass all validations and trigger
-    // some functions (i.e. success()).
-    return [
-      "From: FooBar\nDate: Tue, 23 Aug 2016 17:48:6 +0600\nSubject: Dummy message\n\nMessage Body"
-    ];
+    if ($message = \Drupal::state()->get('inmail.test_fetcher.invalid_message')) {
+      // Return malformed message that has missing RFC mandatory From field.
+      return [$message];
+    }
+    else {
+      // MimeMessage must be fully valid, so it can pass all validations and trigger
+      // some functions (i.e. success()).
+      return [
+        "From: FooBar\nDate: Tue, 23 Aug 2016 17:48:6 +0600\nSubject: Dummy message\n\nMessage Body"
+      ];
+    }
   }
 
   /**
