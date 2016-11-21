@@ -8,13 +8,34 @@
  *    It could be either \Drupal\inmail\MIME\MimeMessage or
  *    \Drupal\inmail\MIME\MimeMultipartMessage.
  * - view_mode: View mode; for example, "teaser" or "full".
+ * - message_subject: A string element containing the subject of the mail.
  * - body: Plain text and HTML message body representation.
- * - attributes: HTML attributes for the containing element.
+ * - (optional) download_message: Link to download the raw message.
+ *    Download is only possible if the caller passed in a download route.
  *
- * The following variables are available for MIME messages only:
+ * Date related fields:
+ * - sender_date: A date element containing the date on which the mail got sent.
+ * - (optional) received_date: A date element containing the date on which
+ *    the mail got received.
+ *
+ * Address related header fields:
+ * - address_from: A Rfc2822Address element containing the address
+ *    from where the mail got sent.
+ * - (optional) addresses_reply_to: A list of Rfc2822Address elements
+ *    containing addresses to where the mail got replied to.
+ * - (optional) addresses_to: A list of Rfc2822Address elements
+ *    containing addresses to where the mail got sent to.
+ * - (optional) addresses_cc: A list of Rfc2822Address elements
+ *    containing addresses to where a copy of the mail got sent to.
+ *
+ * Only present for MIME messages:
  * - (optional) attachments: A list of elements representing attachments.
  * - (optional) unknown: A list of unknown message part elements.
- * - (optional) download_message: Link to download the raw message.
+ * Download is only possible if the caller passed in a download route.
+ *
+ * Only present for list subscriptions:
+ * - (optional) message_unsubscribe: Link to unsubscribe from receiving
+ *    notifications from the mail.
  *
  * @ingroup themeable
  */
