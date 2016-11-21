@@ -193,18 +193,23 @@ class InmailMessageWebTest extends InmailWebTestBase {
     // Do not display Reply-To in full, if it is the same as From.
     $this->assertNoText('reply to');
     $this->assertNoRaw('inmail-message__header__reply_to');
-    // Do not display Reply-To in teaser.
+    // Never display Reply-To in teaser.
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
     $this->assertNoText('reply to');
-    // Display with multiple reply-to
+
+    // Display with multiple Reply-To including an identical.
     $raw = $this->getMessageFileContents('addresses/plain-text-reply-to-multiple.eml');
     $deliverer = $this->createTestDeliverer();
     $this->processor->process('unique_key', $raw, $deliverer);
     $event = $this->getLastEventByMachinename('process');
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    // Reply-To is visible in full header.
     $this->assertText('reply to');
     $this->assertText('Bob');
     $this->assertText('Alice');
+    // Never display Reply-To in teaser.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
+    $this->assertNoText('reply to');
   }
 
 }
