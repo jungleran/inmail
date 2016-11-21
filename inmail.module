@@ -430,14 +430,17 @@ function inmail_preprocess_inmail_message(&$variables) {
   $message = $variables['message'];
   $view_mode = $variables['view_mode'];
 
-
   $variables['address_from'] = [
     '#type' => 'inmail_message_address',
     '#address' => $message->getFrom(),
   ];
 
   if ($reply_to = $message->getReplyTo()) {
-    foreach ($reply_to as $key => $address) {
+    foreach ($reply_to as $address) {
+      if (count($reply_to) == 1 && $address->getAddress() === $message->getFrom()->getAddress()) {
+        break;
+      }
+
       $variables['addresses_reply_to'][] = [
         '#type' => 'inmail_message_address',
         '#address' => $address,

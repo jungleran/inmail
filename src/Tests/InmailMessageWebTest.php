@@ -41,6 +41,7 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->doTestComplexAttachments();
     $this->doTestUnknownParts();
     $this->doTestMailAttachmentPdf();
+    $this->doTestReplyto();
   }
 
   /**
@@ -177,6 +178,33 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->assertHeader('Content-Type', 'application/pdf; name="sample.pdf"');
     $this->assertHeader('Content-Disposition', 'attachment; filename="sample.pdf"');
     $this->assertHeader('Content-Transfer-Encoding', 'base64');
+  }
+
+  /**
+   * Tests reply to field.
+   */
+  public function doTestReplyTo() {
+    // Test a message with same Reply-To and From header fields.
+    $raw = $this->getMessageFileContents('addresses/plain-text-reply-to-same-as-from.eml');
+    $deliverer = $this->createTestDeliverer();
+    $this->processor->process('unique_key', $raw, $deliverer);
+    $event = $this->getLastEventByMachinename('process');
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    // Do not display Reply-To in full, if it is the same as From.
+    $this->assertNoText('reply to');
+    $this->assertNoRaw('inmail-message__header__reply_to');
+    // Do not display Reply-To in teaser.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
+    $this->assertNoText('reply to');
+    // Display with multiple reply-to
+    $raw = $this->getMessageFileContents('addresses/plain-text-reply-to-multiple.eml');
+    $deliverer = $this->createTestDeliverer();
+    $this->processor->process('unique_key', $raw, $deliverer);
+    $event = $this->getLastEventByMachinename('process');
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    $this->assertText('reply to');
+    $this->assertText('Bob');
+    $this->assertText('Alice');
   }
 
 }
