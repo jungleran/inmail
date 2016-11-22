@@ -32,18 +32,29 @@ class MimeHeader {
   protected $fields = array();
 
   /**
+   * The raw original header from parsing.
+   *
+   * @var string
+   */
+  protected $raw;
+
+  /**
    * Creates a new MimeHeader object containing the optionally given fields.
    *
    * @param array $fields
    *   A list of fields, represented by arrays with string elements for the keys
    *   'name' and 'body'.
+   * @param string $raw
+   *   (optional) raw value, default value is NULL.
    */
-  public function __construct($fields = array()) {
+  public function __construct($fields = array() , $raw = NULL) {
     foreach ($fields as $field) {
       if (isset($field['name']) && isset($field['body'])) {
         $this->addField($field['name'], $field['body'], FALSE);
       }
     }
+
+    $this->raw = $raw;
   }
 
   /**
@@ -163,6 +174,10 @@ class MimeHeader {
   /**
    * Concatenates the fields to a header string.
    *
+   * Fields and bodies are newly encoded based on the values.
+   * This could result in different representation than parsed.
+   * Raw header values are ignored.
+   *
    * @return string
    *   The header as a string, terminated by a newline.
    */
@@ -243,6 +258,15 @@ class MimeHeader {
       }
     }
     return ($filter && $body) ? preg_replace('/\([^)]*\)/', '', $body) : $body;
+  }
+
+  /**
+   * Returns the raw header value.
+   *
+   * @return string
+   */
+  public function getRaw() {
+    return $this->raw;
   }
 
 }

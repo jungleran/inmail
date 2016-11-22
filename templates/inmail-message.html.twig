@@ -101,7 +101,7 @@
     </div>
     <div class="inmail-message__element inmail-message__header__all">
       <label>All Headers</label>
-      <pre>{{ message.header.toString() }}</pre>
+      <pre>{{ message.header.getRaw() }}</pre>
       {% if download_message %}
         <a href="{{ download_message }}" target="_blank">Download raw message</a>
       {% endif %}

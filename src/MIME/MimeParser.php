@@ -361,7 +361,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
    * @see https://tools.ietf.org/html/rfc2822#section-2.2
    */
   public function parseHeaderFields($raw_header) {
-    $header = new MimeHeader();
+    $header = new MimeHeader([], $raw_header);
 
     // In some entities, headers are optional.
     if (empty($raw_header)) {

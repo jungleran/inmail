@@ -90,7 +90,10 @@ class MimeHeaderTest extends UnitTestCase {
         new MimeHeader([[
           'name' => 'Content-Type',
           'body' => 'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"',
-        ]]),
+        ]],
+          "Content-Type: Multipart/Report; report-type=delivery-status;\n"
+          . " boundary=\"========/528515BF03161E46/smtp-in13.han.skanova.net\""
+        ),
         // The 78 char limit is somewhere in the middle of the boundary. The
         // line folding algorithm must break before the last space before that
         // limit.
@@ -103,7 +106,12 @@ class MimeHeaderTest extends UnitTestCase {
           // The ü in this string triggers base64 encoding in toString. Encoded
           // string wraps within the 78 char line limit.
           'body' => "Alle Menschen sind frei und gleich an Würde und Rechten geboren. Sie sind mit Vernunft und Gewissen begabt und sollen einander im Geist der Brüderlichkeit begegnen.",
-        ]]),
+        ]],
+          "Subject: =?UTF-8?B?QWxsZSBNZW5zY2hlbiBzaW5kIGZyZWkgdW5kIGdsZWljaCBhbiBX?=\n"
+          . " =?UTF-8?B?w7xyZGUgdW5kIFJlY2h0ZW4gZ2Vib3Jlbi4gU2llIHNpbmQgbWl0IFZlcm51bmY=?=\n"
+          . " =?UTF-8?B?dCB1bmQgR2V3aXNzZW4gYmVnYWJ0IHVuZCBzb2xsZW4gZWluYW5kZXIgaW0gR2U=?=\n"
+          . " =?UTF-8?B?aXN0IGRlciBCcsO8ZGVybGljaGtlaXQgYmVnZWduZW4u?="
+        ),
         "Subject: =?UTF-8?B?QWxsZSBNZW5zY2hlbiBzaW5kIGZyZWkgdW5kIGdsZWljaCBhbiBX?=\n"
         . " =?UTF-8?B?w7xyZGUgdW5kIFJlY2h0ZW4gZ2Vib3Jlbi4gU2llIHNpbmQgbWl0IFZlcm51bmY=?=\n"
         . " =?UTF-8?B?dCB1bmQgR2V3aXNzZW4gYmVnYWJ0IHVuZCBzb2xsZW4gZWluYW5kZXIgaW0gR2U=?=\n"
@@ -163,6 +171,19 @@ class MimeHeaderTest extends UnitTestCase {
       'body' => 'Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren',
     ]]);
     $this->assertEquals('Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren', $header->getFieldBody('Content-Type'));
+  }
+
+  /**
+   * Tests the getRaw function.
+   */
+  public function testGetRaw() {
+    $header = new MimeHeader([[
+      'name' => 'Content-Type',
+      'body' => 'Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren',
+      ]],
+      'Content-Type: Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren'
+    );
+    $this->assertEquals($header->getRaw(), 'Content-Type: Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren');
   }
 
 }

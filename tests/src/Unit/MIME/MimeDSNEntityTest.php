@@ -93,7 +93,9 @@ class MimeDSNEntityTest extends UnitTestCase {
   protected static function getMessageHeader() {
     return new MimeHeader([
       ['name' => 'Content-type', 'body' => 'multipart/report; report-type=delivery-status; boundary="boundary"'],
-    ]);
+    ],
+      'Content-type: multipart/report; report-type=delivery-status; boundary="boundary"'
+    );
   }
 
   /**
@@ -159,7 +161,9 @@ Subject: My very urgent message
   protected static function getStatusPartHeader() {
     return new MimeHeader([
       ['name' => 'Content-Type', 'body' => 'message/delivery-status'],
-    ]);
+    ],
+      'Content-Type: message/delivery-status'
+    );
   }
 
   /**
@@ -185,7 +189,9 @@ Subject: My very urgent message
   protected static function getPerMessageFields() {
     return new MimeHeader([
       ['name' => 'Reporting-MTA', 'body' => 'dns; example.com'],
-    ]);
+    ],
+      'Reporting-MTA: dns; example.com'
+    );
   }
 
   /**
@@ -196,7 +202,9 @@ Subject: My very urgent message
       ['name' => 'Final-Recipient', 'body' => 'rfc822; user@example.org'],
       ['name' => 'Action', 'body' => 'failed'],
       ['name' => 'Status', 'body' => '5.0.0'],
-    ]);
+    ],
+      "Final-Recipient: rfc822; user@example.org\nAction: failed\nStatus: 5.0.0"
+    );
   }
 
   /**
@@ -212,7 +220,9 @@ Subject: My very urgent message
   protected static function getOriginalPartHeader() {
     return new MimeHeader([
       ['name' => 'Content-Type', 'body' => 'message/rfc822'],
-    ]);
+    ],
+      'Content-Type: message/rfc822'
+    );
   }
 
   /**

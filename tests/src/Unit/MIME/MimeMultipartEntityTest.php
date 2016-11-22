@@ -132,7 +132,11 @@ class MimeMultipartEntityTest extends UnitTestCase {
       ['name' => 'Subject', 'body' => 'Sample message'],
       ['name' => 'MIME-Version', 'body' => '1.0'],
       ['name' => 'Content-type', 'body' => 'multipart/mixed; boundary="simple boundary"'],
-    ]);
+    ],
+      "From: Nathaniel Borenstein <nsb@bellcore.com>\nTo: Ned Freed <ned@innosoft.com>\n" .
+      "Date: Sun, 21 Mar 1993 23:56:48 -0800 (PST)\nSubject: Sample message\n" .
+      "MIME-Version: 1.0\nContent-type: multipart/mixed; boundary=\"simple boundary\""
+  );
   }
 
   /**
@@ -179,7 +183,9 @@ This is the epilogue.  It is also to be ignored.
   protected static function getSecondPartHeader() {
     return new MimeHeader([
       ['name' => 'Content-type', 'body' => 'text/plain; charset=us-ascii'],
-    ]);
+    ],
+      'Content-type: text/plain; charset=us-ascii'
+    );
   }
 
   /**

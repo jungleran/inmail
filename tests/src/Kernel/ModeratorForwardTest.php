@@ -170,7 +170,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $expected_headers = $original_parsed->getHeader()->toString();
     $expected_headers = str_replace("To: Arild Matsson <inmail_test@example.com>\n", '', $expected_headers);
     // Extract the time from original message and append it.
-    $received_header = "Received: by localhost via inmail with test_fetcher " . $deliverer->id() . " id\n <CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.gmail.com>;" . substr($forward['received'], strpos($forward['received'], ';')+1) . "\n";
+    $received_header = "Received: by localhost via inmail with test_fetcher " . $deliverer->id() . " id <CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.gmail.com>;" . substr($forward['received'], strpos($forward['received'], ';')+1) . "\n";
     // Wrap the received header to 78 characters.
     $expected_headers = $forward_header . wordwrap($received_header, 78, "\n ") . $expected_headers;
     // Wrap to 78 characters to match original message.
