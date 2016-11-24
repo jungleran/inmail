@@ -8,7 +8,7 @@
  *    It could be either \Drupal\inmail\MIME\MimeMessage or
  *    \Drupal\inmail\MIME\MimeMultipartMessage.
  * - view_mode: View mode; for example, "teaser" or "full".
- * - message_subject: A string element containing the subject of the mail.
+ * - subject: A string element containing the subject of the mail.
  * - body: Plain text and HTML message body representation.
  * - (optional) download_message: Link to download the raw message.
  *    Download is only possible if the caller passed in a download route.
@@ -29,12 +29,12 @@
  *    containing addresses to where a copy of the mail got sent to.
  *
  * Only present for MIME messages:
- * - (optional) attachments: A list of elements representing attachments.
- * - (optional) unknown: A list of unknown message part elements.
+ * - (optional) mime_attachments: A list of elements representing attachments.
+ * - (optional) mime_unknown: A list of unknown message part elements.
  * Download is only possible if the caller passed in a download route.
  *
  * Only present for list subscriptions:
- * - (optional) message_unsubscribe: Link to unsubscribe from receiving
+ * - (optional) unsubscribe: Link to unsubscribe from receiving
  *    notifications from the mail.
  *
  * @ingroup themeable
@@ -52,9 +52,9 @@
     <div class="inmail-message__element inmail-message__header__from">
       <label>From</label>
       {{ address_from }}
-      {% if message_unsubscribe and view_mode == 'full' %}
+      {% if unsubscribe and view_mode == 'full' %}
         <div class="inmail-message__element inmail-message__header__unsubscribe">
-          <a href="{{ message_unsubscribe }}" target="_blank">Unsubscribe</a>
+          <a href="{{ unsubscribe }}" target="_blank">Unsubscribe</a>
         </div>
       {% endif %}
       {% if addresses_reply_to and view_mode == 'full' %}
@@ -97,7 +97,7 @@
 
     <div class="inmail-message__element inmail-message__header__subject">
       <label>Subject</label>
-      {{ message_subject }}
+      {{ subject }}
     </div>
     <div class="inmail-message__element inmail-message__header__all">
       <label>All Headers</label>
@@ -109,9 +109,9 @@
   </header>
   <main class="inmail-message__body">
     {% if view_mode == 'teaser' %}
-      <div class="inmail-message__element inmail-message__body__subject">{{ message_subject }}</div>
+      <div class="inmail-message__element inmail-message__body__subject">{{ subject }}</div>
     {% endif %}
-    {% if view_mode == 'full' and body.html and body.plain %}
+    {% if view_mode == 'full' and body.html and body.plain_text %}
       <ul>
         <li><a href="#inmail-message__body__html">HTML</a></li>
         <li><a href="#inmail-message__body__content">Plain</a></li>
@@ -120,17 +120,17 @@
     {% if body.html %}
       <div class="inmail-message__element inmail-message__body__html" id="inmail-message__body__html">{{ body.html }}</div>
     {% endif %}
-    {% if body.plain %}
-      <div class="inmail-message__element inmail-message__body__content" id="inmail-message__body__content">{{ body.plain }}</div>
+    {% if body.plain_text %}
+      <div class="inmail-message__element inmail-message__body__content" id="inmail-message__body__content">{{ body.plain_text }}</div>
     {% endif %}
   </main>
   {% if view_mode == 'full' %}
     <footer class="inmail-message__footer">
-      {% if attachments %}
+      {% if mime_attachments %}
         <div class="inmail-message__element inmail-message__footer__attachments">
           <label>Attachments</label>
           <ul>
-            {% for attachment in attachments %}
+            {% for attachment in mime_attachments %}
               <li>
                 {% if attachment.url %}
                   <a href="{{ attachment.url }}" title="{{ attachment.filename }}"
@@ -143,11 +143,11 @@
           </ul>
         </div>
       {% endif %}
-      {% if unknown %}
+      {% if mime_unknown %}
         <div class="inmail-message__element inmail-message__footer__unknown">
           <label>Unknown parts</label>
           <ul>
-            {% for unknown_part in unknown %}
+            {% for unknown_part in mime_unknown %}
               <li>
                 {% if unknown_part.url %}
                   <a href="{{ unknown_part.url }}" title="{{ unknown_part.filename }}"

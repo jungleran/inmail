@@ -406,18 +406,18 @@ function inmail_theme() {
         'message' => '',
         'download_url' => [],
         'view_mode' => '',
-        'message_subject' => '',
+        'subject' => '',
         'body' => [],
         'download_message' => '',
         'sender_date' => '',
         'received_date' => '',
-        'attachments' => [],
-        'unknown' => [],
+        'mime_attachments' => [],
+        'mime_unknown' => [],
         'address_from' => [],
         'addresses_reply_to' => [],
         'addresses_to' => [],
         'addresses_cc' => [],
-        'message_unsubscribe' => '',
+        'unsubscribe' => '',
       ],
     ],
     'inmail_message_address' => [
@@ -472,8 +472,8 @@ function inmail_preprocess_inmail_message(&$variables) {
       ];
     }
   }
-  $variables['message_subject'] = $message->getSubject() ?: t('(no subject)');
-  $variables['message_unsubscribe'] = InmailMessage::getUnsubsciptionLink($message);
+  $variables['subject'] = $message->getSubject() ?: t('(no subject)');
+  $variables['unsubscribe'] = InmailMessage::getUnsubsciptionLink($message);
 
   /** @var \Drupal\Core\Url $download_url */
   $download_url = isset($variables['download_url']) ? $variables['download_url'] : NULL;
@@ -519,7 +519,7 @@ function inmail_preprocess_inmail_message(&$variables) {
             // @todo: Let the browser handle base64-encoded content.
           }
         case 'attachment':
-          $variables['attachments'][$path] = $message_decomposition->buildAttachment($path, $entity, $download_url);
+          $variables['mime_attachments'][$path] = $message_decomposition->buildAttachment($path, $entity, $download_url);
           break;
 
         // All unrecognized types should go into the unknown array.
@@ -529,13 +529,13 @@ function inmail_preprocess_inmail_message(&$variables) {
             continue;
           }
           // @todo: Filter-out entities containing multipart/* content type.
-          $variables['unknown'][$path] = $message_decomposition->buildAttachment($path, $entity, $download_url);
+          $variables['mime_unknown'][$path] = $message_decomposition->buildAttachment($path, $entity, $download_url);
       }
     }
   }
 
   // Set the plain and HTML body content.
-  $variables['body']['plain'] = InmailMessage::getPlainTextMarkup($plain_text, $view_mode);
+  $variables['body']['plain_text'] = InmailMessage::getPlainTextMarkup($plain_text, $view_mode);
   $variables['body']['html'] = $html ? InmailMessage::getHtmlMarkup($html, $view_mode) : NULL;
 }
 
