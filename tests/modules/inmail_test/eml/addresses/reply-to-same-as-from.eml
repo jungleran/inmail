@@ -1,14 +1,14 @@
-Message-Id: <dovecot-sieve-1425425088-363907-0@s482.example.com>
+Message-ID: <dovecot-sieve-1425425088-363907-0@s482.example.com>
 Received: from example.com; Fri, 21 Oct 2016 15:38:40 +0200 (CEST)
 Date: Tue, 25 Oct 2016 17:29:37 +0200
 From: Bob <bob@example.com>
 Reply-To: Bob <bob@example.com>
 To: Alice <alice@example.com>
-Subject: Re: Greetings Mr. Bob
+Subject: Same 'Reply-To' as 'From' mailbox
 
 Hi Alice!
 
-This is email with same reply-to as from address.
+This is fully valid message with same 'Reply-To' as 'From' address.
 
 Sincerely,
 Bob aka still Bob

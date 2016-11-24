@@ -11,7 +11,7 @@
 #}
 
 {% if address.getName %}
-    <span class="inmail-message__address" title="{{ address.getDecodedAddress }}">
+    <span class="inmail-message__address inmail-message__address__display-name" title="{{ address.getDecodedAddress }}">
         {{ address.getName }}
     </span>
 {% else %}

@@ -3,7 +3,7 @@ Received: by 10.31.210.1 with HTTP; Mon, 17 Oct 2016 06:41:38 -0700 (PDT)
 Date: Mon, 17 Oct 2016 15:41:38 +0200
 Delivered-To: alice@example.com
 Message-ID: <CALVQMgDbOBQUAz6=oVBP_jd4oD3xUPcRhVjC6_=auKuHSFu_3g@mail.example.com>
-Subject:
+Subject: Multiple attachments
 From: Bob <bob@example.com>
 To: Alice <alice@example.com>
 Content-Type: multipart/mixed; boundary=001a1141f8d43cdc22053f0fbc09

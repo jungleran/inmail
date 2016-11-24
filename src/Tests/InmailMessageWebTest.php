@@ -41,7 +41,6 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->doTestComplexAttachments();
     $this->doTestUnknownParts();
     $this->doTestMailAttachmentPdf();
-    $this->doTestReplyto();
   }
 
   /**
@@ -99,8 +98,6 @@ class InmailMessageWebTest extends InmailWebTestBase {
 
     // Go to the "full" view mode page.
     $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');
-    // Assert the default empty subject text is displayed.
-    $this->assertText('(no subject)');
 
     // Assert attachment file names and size.
     $this->assertLink('hello.txt');
@@ -131,11 +128,6 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->assertHeader('Content-Disposition', 'attachment; filename=original_message.eml');
     $this->assertText('This is an email with attachments.');
     $this->assertText('Content-Type: text/plain');
-
-    // Go to the "teaser" view mode page.
-    $this->drupalGet('admin/inmail-test/email/' . $event_id . '/teaser');
-    // Assert the default empty subject text is displayed.
-    $this->assertText('(no subject)');
   }
 
   /**
@@ -178,38 +170,6 @@ class InmailMessageWebTest extends InmailWebTestBase {
     $this->assertHeader('Content-Type', 'application/pdf; name="sample.pdf"');
     $this->assertHeader('Content-Disposition', 'attachment; filename="sample.pdf"');
     $this->assertHeader('Content-Transfer-Encoding', 'base64');
-  }
-
-  /**
-   * Tests reply to field.
-   */
-  public function doTestReplyTo() {
-    // Test a message with same Reply-To and From header fields.
-    $raw = $this->getMessageFileContents('addresses/plain-text-reply-to-same-as-from.eml');
-    $deliverer = $this->createTestDeliverer();
-    $this->processor->process('unique_key', $raw, $deliverer);
-    $event = $this->getLastEventByMachinename('process');
-    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
-    // Do not display Reply-To in full, if it is the same as From.
-    $this->assertNoText('reply to');
-    $this->assertNoRaw('inmail-message__header__reply_to');
-    // Never display Reply-To in teaser.
-    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
-    $this->assertNoText('reply to');
-
-    // Display with multiple Reply-To including an identical.
-    $raw = $this->getMessageFileContents('addresses/plain-text-reply-to-multiple.eml');
-    $deliverer = $this->createTestDeliverer();
-    $this->processor->process('unique_key', $raw, $deliverer);
-    $event = $this->getLastEventByMachinename('process');
-    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
-    // Reply-To is visible in full header.
-    $this->assertText('reply to');
-    $this->assertText('Bob');
-    $this->assertText('Alice');
-    // Never display Reply-To in teaser.
-    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
-    $this->assertNoText('reply to');
   }
 
 }
