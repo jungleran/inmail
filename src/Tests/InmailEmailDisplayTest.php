@@ -40,27 +40,27 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
   }
 
   /**
-   * Tests a XSS case and that its raw mail message is logged.
+   * Tests the message Email Display behaviour of the Inmail Message element.
    */
-  public function testXssEmailDisplay() {
-    // @todo: Move the XSS part into separate email example and call it xss.eml?
-    $raw_message = $this->getMessageFileContents('normal-forwarded.eml');
-    $raw_message = str_replace('</div>', "<script>alert('xss_attack')</script></div>", $raw_message);
-
-    // In reality the message would be passed to the processor through a drush
-    // script or a mail deliverer.
-    // Process the raw mail message.
-    $this->processRawMessage($raw_message);
-
-    // Check that the raw message is logged.
-    $event = $this->getLastEventByMachinename('process');
-    $this->assertEqual($event->getArgument('email')->getData(), $raw_message);
+  public function testEmailDisplay() {
+    $this->doTestSimpleEmailDisplay();
+    // Header field tests.
+    $this->doTestMissingToEmailDisplay();
+    $this->doTestSameReplyToAsFromDisplay();
+    $this->doTestMultipleReplyToDisplay();
+    $this->doTestMultipleRecipients();
+    $this->doTestNoSubjectDisplay();
+    // Body message tests.
+    $this->doTestMultipartAlternative();
+    $this->doTestUnknownParts();
+    $this->doTestHtmlOnlyBodyMessage();
+    $this->doTestXssEmailDisplay();
   }
 
   /**
    * Tests simple email message.
    */
-  public function testSimpleEmailDisplay() {
+  public function doTestSimpleEmailDisplay() {
     // @todo rename again normal-forwarded.eml to simple-message.eml?
     $raw_multipart = $this->getMessageFileContents('normal-forwarded.eml');
     $this->processRawMessage($raw_multipart);
@@ -114,7 +114,7 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
   /**
    * Tests an email message without the 'To' header field.
    */
-  public function testMissingToEmailDisplay() {
+  public function doTestMissingToEmailDisplay() {
     // According to RFC 2822, 'To' header field is not strictly necessary.
     $raw_missing_to = $this->getMessageFileContents('/addresses/missing-to-field.eml');
     $this->processRawMessage($raw_missing_to);
@@ -135,7 +135,7 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
   /**
    * Tests an email with same 'Reply-To' and 'From' header fields.
    */
-  public function testSameReplyToAsFromDisplay() {
+  public function doTestSameReplyToAsFromDisplay() {
     $raw_same_reply_to_as_from = $this->getMessageFileContents('/addresses/reply-to-same-as-from.eml');
     $this->processRawMessage($raw_same_reply_to_as_from);
     $event = $this->getLastEventByMachinename('process');
@@ -154,7 +154,7 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
   /**
    * Tests an email with multiple 'Reply-To' mailboxes, including an identical.
    */
-  public function testMultipleReplyToDisplay() {
+  public function doTestMultipleReplyToDisplay() {
     $raw_multiple_reply_to = $this->getMessageFileContents('/addresses/reply-to-multiple.eml');
     $this->processRawMessage($raw_multiple_reply_to);
     $event = $this->getLastEventByMachinename('process');
@@ -178,7 +178,7 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
   /**
    * Tests the proper rendering of an email with multiple recipients.
    */
-  public function testMultipleRecipients() {
+  public function doTestMultipleRecipients() {
     $raw_multipart = $this->getMessageFileContents('/addresses/multiple-recipients.eml');
     \Drupal::state()->set('inmail.test.success', '');
     $this->processRawMessage($raw_multipart);
@@ -209,7 +209,7 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
   /**
    * Tests an email message without the 'Subject' header field.
    */
-  public function testNoSubjectDisplay() {
+  public function doTestNoSubjectDisplay() {
     // According to RFC 2822, 'Subject' header field is not strictly necessary.
     $raw_missing_subject = $this->getMessageFileContents('/simple/missing-subject-field.eml');
     $this->processRawMessage($raw_missing_subject);
@@ -227,22 +227,40 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
   /**
    * Tests proper iteration and rendering of multipart message.
    */
-  public function testMultipartAlternative() {
+  public function doTestMultipartAlternative() {
     // @todo test the plain/html body of a mail message.
   }
 
   /**
-   * Tests proper iteration and rendering of HTML-only multipart message.
+   * Tests proper iteration and rendering of HTML-only message.
    */
-  public function testHtmlOnlyMultipartAlternative() {
+  public function doTestHtmlOnlyBodyMessage() {
     // @todo test the plain/html body of a mail message.
   }
 
   /**
    * Tests proper iteration and rendering of unknown parts message.
    */
-  public function testUnknownParts() {
+  public function doTestUnknownParts() {
     // @todo test the unknown parts of a mail message.
+  }
+
+  /**
+   * Tests a XSS case and that its raw mail message is logged.
+   */
+  public function doTestXssEmailDisplay() {
+    // @todo: Move the XSS part into separate email example and call it xss.eml?
+    $raw_message = $this->getMessageFileContents('normal-forwarded.eml');
+    $raw_message = str_replace('</div>', "<script>alert('xss_attack')</script></div>", $raw_message);
+
+    // In reality the message would be passed to the processor through a drush
+    // script or a mail deliverer.
+    // Process the raw mail message.
+    $this->processRawMessage($raw_message);
+
+    // Check that the raw message is logged.
+    $event = $this->getLastEventByMachinename('process');
+    $this->assertEqual($event->getArgument('email')->getData(), $raw_message);
   }
 
 }
