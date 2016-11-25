@@ -466,7 +466,7 @@ abstract class InmailWebTestBase extends WebTestBase {
   private function getHeaderFieldDivXpath($label) {
     $field = $label;
     if ($label == 'reply to') {
-      $field = 'reply_to';
+      $field = 'reply-to';
     }
     elseif ($label == 'Received') {
       $field = 'received-date';

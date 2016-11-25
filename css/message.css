@@ -19,7 +19,7 @@
   font-weight: bold;
   width: 100px;
 }
-.inmail-message--full .inmail-message__header .inmail-message__header__reply_to label {
+.inmail-message--full .inmail-message__header .inmail-message__header__reply-to label {
   font-weight: normal;
   width: auto;
   padding-left: 10px;
