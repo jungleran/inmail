@@ -1,0 +1,13 @@
+Message-ID: <1479984876@mail.gmail.com>
+References: <1479975011@mail.gmail.com> <1479975484@mail.gmail.com> <1479975856@mail.gmail.com>
+Received: by 10.194.188.75 with HTTP; Wed, 23 Nov 2016 12:49:28 +1100 (PDT)
+Date: Wed, 23 Nov 2016 12:47:56 +1100
+From: Caroline <caroline@example.com>
+Reply-To: Caroline <caroline@example.com>
+To: Bob <bob@example.com>
+Cc: Alice <alice@example.com>
+Subject: Fw: Re: Re: Original conversation message
+Content-Type: text/plain; charset=UTF-8
+
+This is the forwarded message of the reply to the second reply conversation message to the original one: Caroline forwards Alice's reply message to Bob.
+Caroline's mail server provides 'Message-ID' and 'References' fields only.

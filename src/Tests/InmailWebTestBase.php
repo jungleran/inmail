@@ -60,6 +60,84 @@ abstract class InmailWebTestBase extends WebTestBase {
   }
 
   /**
+   * Passes if the identification field IS found on the loaded page.
+   *
+   * @param string $label
+   *   The label of the identification field.
+   * @param string $value
+   *   (optional) The content of the identification field.
+   * Defaults to NULL.
+   * @param string $message
+   *   (optional) A message to display with the assertion. Do not translate
+   *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
+   *   variables in the message text, not t(). If left blank, a default message
+   *   will be displayed.
+   *
+   * @return bool
+   *   TRUE on pass, FALSE on fail.
+   */
+  protected function assertIdentificationField($label, $value = NULL, $message = '') {
+    return $this->assertIdentificationFieldHelper($label, $value, $message, TRUE);
+  }
+
+  /**
+   * Passes if the identification field is NOT found on the loaded page.
+   *
+   * @param string $label
+   *   The label of the identification field.
+   * @param string $value
+   *   (optional) The content of the identification field.
+   * Defaults to NULL.
+   * @param string $message
+   *   (optional) A message to display with the assertion. Do not translate
+   *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
+   *   variables in the message text, not t(). If left blank, a default message
+   *   will be displayed.
+   *
+   * @return bool
+   *   TRUE on pass, FALSE on fail.
+   */
+  protected function assertNoIdentificationField($label, $value = NULL, $message = '') {
+    return $this->assertIdentificationFieldHelper($label, $value, $message, FALSE);
+  }
+
+  /**
+   * Helper for assertIdentificationField and assertNoIdentificationField.
+   *
+   * @param string $label
+   *   The label of the identification field element.
+   * @param string $value
+   *   (optional) The content of the identification field element.
+   * Defaults to NULL.
+   * @param string $message
+   *   (optional) A message to display with the assertion. Do not translate
+   *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
+   *   variables in the message text, not t(). If left blank, a default message
+   *   will be displayed.
+   * @param bool $exists
+   *   (optional) TRUE if this identification field should exist, else FALSE.
+   *   Defaults to TRUE.
+   *
+   * @return bool
+   *   TRUE on pass, FALSE on fail.
+   */
+  protected function assertIdentificationFieldHelper($label, $value = NULL, $message = '', $exists = TRUE) {
+    $xpath_pre = $this->getIdentificationFieldPreXpath();
+    $raw_html_thread = $label . ': ' . htmlentities($value);
+
+    if (!$message) {
+      $message = $this->getFormattedMessage($label, $value, $exists);
+    }
+
+    if ($exists) {
+      $this->assertTrue(strpos($xpath_pre, $raw_html_thread), $message);
+    }
+    else {
+      $this->assertFalse(strpos($xpath_pre, $raw_html_thread), $message);
+    }
+  }
+
+  /**
    * Passes if the rendered header field IS found on the loaded page.
    *
    * @param string $label
@@ -452,6 +530,17 @@ abstract class InmailWebTestBase extends WebTestBase {
     // We only identify http links and skip mailto.
     $this->assertFieldsByValue($xpath_href[0], 'http://domain.com/member/unsubscribe/?listname=espc-tech@domain.com?id=12345N');
     $this->assertFieldByXPath($xpath, 'Unsubscribe', $message);
+  }
+
+  /**
+   * Gets the 'All Headers' field 'pre' Xpath.
+   *
+   * @return string|null
+   *   The 'All Headers' field 'pre' Xpath as a string, NULL otherwise.
+   */
+  private function getIdentificationFieldPreXpath() {
+    $xpath = '//div[@class="inmail-message__element inmail-message__header__all"]/pre';
+    return $this->xpath($xpath) ? $this->xpath($xpath)[0]->asXML() : NULL;
   }
 
   /**
