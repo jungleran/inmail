@@ -21,6 +21,22 @@ class MimeMessage extends MimeEntity implements MimeMessageInterface {
   /**
    * {@inheritdoc}
    */
+  public function getReferences() {
+    $references = $this->getHeader()->getFieldBody('References');
+    return $references ? explode(' ', $references) : NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getInReplyTo() {
+    $in_reply_to = $this->getHeader()->getFieldBody('In-Reply-To');
+    return $in_reply_to ? explode(' ', $in_reply_to) : NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getSubject() {
     return $this->getHeader()->getFieldBody('Subject');
   }

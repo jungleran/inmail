@@ -23,6 +23,48 @@ interface MimeMessageInterface extends MimeEntityInterface {
   public function getMessageId();
 
   /**
+   * Returns the References field.
+   *
+   * The RFC declares the References field "should" occur in some replies,
+   * but it is not required. May be used to identify a thread of conversation.
+   *
+   * Value, one of the following (depending on the available parent's fields):
+   *   - parent's References field body (if any) followed by parent's msg-id
+   *   - parent's In-Reply-To field body followed by parent's mgs-id (if any)
+   *   - none (if parent has no References, In-Reply-To or msg-id fields)
+   * Note: Each identifier are separated by a white space.
+   *
+   * @see http://tools.ietf.org/html/rfc5322#section-3.6.4
+   *
+   * @return string[]|null
+   *   Array of Message-ID's, or NULL if References field is not set.
+   */
+  public function getReferences();
+
+  /**
+   * Returns the In-Reply-To field.
+   *
+   * The RFC declares the In-Reply-To field "should" occur in some replies,
+   * but it is not required. May be used to identify the message to which the
+   * new message is a reply.
+   *
+   * Value, one of the following (depending on the available parent's fields):
+   *   - parent's msg-id
+   *   - all parent's msg-id (if there is more than one parent message)
+   *   - none (if any of the parent message has no msg-id)
+   * Note: The identifier are separated by a white space.
+   * According to RFC, In-Reply-To could have multiple parent's msg-id,
+   * even though many real mail client examples provide just one identifier.
+   * Here we will prevent this special case handling multiple parent's msg-id.
+   *
+   * @see http://tools.ietf.org/html/rfc5322#section-3.6.4
+   *
+   * @return string[]|null
+   *   Array of Message-ID's, or NULL if In-Reply-To field is not set.
+   */
+  public function getInReplyTo();
+
+  /**
    * Returns the message subject.
    *
    * @return string|null

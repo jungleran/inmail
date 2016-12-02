@@ -27,6 +27,47 @@ class MimeMessageTest extends UnitTestCase {
   }
 
   /**
+   * Tests the References getter.
+   *
+   * @covers ::getReferences
+   */
+  public function testGetReferences() {
+    $message = new MimeMessage(new MimeHeader([['name' => 'References', 'body' => '']]), 'Foobar');
+    $this->assertNull($message->getReferences());
+
+    $message = new MimeMessage(new MimeHeader([[
+      'name' => 'References',
+      'body' => '<parent-references@example.com> <parent-msg-id@example.com>',
+    ]]), 'Bar');
+    $references = $message->getReferences();
+    $this->assertEquals('<parent-references@example.com>', $references[0]);
+    $this->assertEquals('<parent-msg-id@example.com>', $references[1]);
+  }
+
+  /**
+   * Tests the In-Reply-To getter.
+   *
+   * @covers ::getInReplyTo
+   */
+  public function testGetInReplyTo() {
+    $message = new MimeMessage(new MimeHeader([['name' => 'In-Reply-To', 'body' => '']]), 'Foobar');
+    $this->assertNull($message->getInReplyTo());
+
+    // Usually real mail client examples provide just one identifier.
+    $message = new MimeMessage(new MimeHeader([['name' => 'In-Reply-To', 'body' => '<parent-in-reply-to@example.com>']]), 'Foo');
+    $this->assertEquals('<parent-in-reply-to@example.com>', $message->getInReplyTo()[0]);
+
+    // According to RFC, In-Reply-To could have multiple parent's msg-id.
+    $message = new MimeMessage(new MimeHeader([[
+      'name' => 'In-Reply-To',
+      'body' => '<grandparent-msg-id@example.com> <parent-msg-id@example.com>',
+    ]]), 'Bar');
+    $in_reply_to = $message->getInReplyTo();
+    $this->assertEquals('<grandparent-msg-id@example.com>', $in_reply_to[0]);
+    $this->assertEquals('<parent-msg-id@example.com>', $in_reply_to[1]);
+  }
+
+  /**
    * Tests the subject getter.
    *
    * @covers ::getSubject
