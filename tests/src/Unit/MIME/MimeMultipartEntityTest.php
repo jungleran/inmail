@@ -16,6 +16,7 @@ use Drupal\Tests\UnitTestCase;
  * @coversDefaultClass \Drupal\inmail\MIME\MimeMultipartEntity
  *
  * @group inmail
+ * @requires module past_db
  */
 class MimeMultipartEntityTest extends UnitTestCase {
 
