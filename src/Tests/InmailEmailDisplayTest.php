@@ -249,9 +249,7 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
    * Tests a XSS case and that its raw mail message is logged.
    */
   public function doTestXssEmailDisplay() {
-    // @todo: Move the XSS part into separate email example and call it xss.eml?
-    $raw_message = $this->getMessageFileContents('normal-forwarded.eml');
-    $raw_message = str_replace('</div>', "<script>alert('xss_attack')</script></div>", $raw_message);
+    $raw_message = $this->getMessageFileContents('simple/xss.eml');
 
     // In reality the message would be passed to the processor through a drush
     // script or a mail deliverer.
@@ -261,6 +259,14 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
     // Check that the raw message is logged.
     $event = $this->getLastEventByMachinename('process');
     $this->assertEqual($event->getArgument('email')->getData(), $raw_message);
+
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+
+    $this->assertNoRaw("<script>alert(");
+    $this->assertNoRaw("<script>alert('xss_attack0')</script>");
+    $this->assertNoRaw("<script>alert('xss_attack1')</script>");
+    $this->assertNoRaw("<script>alert('xss_attack2')</script>");
+    $this->assertNoRaw("<script>alert('xss_attack3')</script>");
   }
 
 }
