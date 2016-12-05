@@ -87,13 +87,24 @@ class MimeMessageTest extends UnitTestCase {
    */
   public function testGetFrom() {
     // Single address.
-    $message = new MimeMessage(new MimeHeader([new MimeHeaderField('From', 'foo@example.com')]), 'Bar');
-    $this->assertEquals('foo@example.com', $message->getFrom()->getAddress());
+    $message = new MimeMessage(new MimeHeader([
+      new MimeHeaderField('From', 'foo@example.com')
+    ]), 'Bar');
+    $this->assertEquals('foo@example.com', $message->getFrom()[0]->getAddress());
+
+    // According to RFC 2822, From field consists of one or more coma separated
+    // list of mailbox specifications.
+    $message = new MimeMessage(new MimeHeader([
+      new MimeHeaderfield('From', 'Foo <foo@example.com>, Bar <bar@example.com>')
+    ]), 'Bar');
+    $this->assertEquals(2, count($message->getFrom()));
+    $this->assertEquals('foo@example.com', $message->getFrom()[0]->getAddress());
+    $this->assertEquals('bar@example.com', $message->getFrom()[1]->getAddress());
 
     if (function_exists('idn_to_utf8')) {
       // Single IDN address.
       $message = new MimeMessage(new MimeHeader([new MimeHeaderField('From', 'fooBar@xn--oak-ppa56b.ba')]), 'Bar');
-      $this->assertEquals('fooBar@ćošak.ba', $message->getFrom()->getDecodedAddress());
+      $this->assertEquals('fooBar@ćošak.ba', $message->getFrom()[0]->getDecodedAddress());
     }
 
   }

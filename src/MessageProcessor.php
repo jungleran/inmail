@@ -225,11 +225,18 @@ class MessageProcessor implements MessageProcessorInterface {
     if ($deliverer->isMessageReport()) {
       $params['result'] = $result;
       $params['original'] = $message;
-      $recipient = $message->getFrom() ? $message->getFrom()->getAddress() : NULL;
-      // @todo consider display name?
-      $mail_manager = \Drupal::service('plugin.manager.mail');
-      $mail_manager->mail('inmail', 'success', $recipient,
-        \Drupal::languageManager()->getDefaultLanguage()->getId(), $params);
+      $from_addresses = [];
+      foreach ($message->getFrom() as $from_address) {
+        $from_addresses[] = $from_address->getAddress();
+      }
+      // Send only if we have From recipient(s).
+      if (!empty($from_addresses)) {
+        $recipients = implode(', ', $from_addresses);
+        // @todo consider display name?
+        $mail_manager = \Drupal::service('plugin.manager.mail');
+        $mail_manager->mail('inmail', 'success', $recipients,
+          \Drupal::languageManager()->getDefaultLanguage()->getId(), $params);
+      }
     }
   }
 

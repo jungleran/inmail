@@ -32,8 +32,7 @@ trait MimeMessageTrait {
    * {@inheritdoc}
    */
   public function getFrom() {
-    $mailboxes = $this->parseDecodeField('From');
-    return isset($mailboxes[0]) ? $mailboxes[0] : NULL;
+    return $this->parseDecodeField('From');
   }
 
   /**

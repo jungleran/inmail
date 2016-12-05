@@ -76,8 +76,8 @@ interface MimeMessageInterface extends MimeEntityInterface {
   /**
    * Returns the message sender.
    *
-   * @return \Drupal\inmail\MIME\Rfc2822Address|null
-   *   The 'From' header field address object, or NULL if it does not exist.
+   * @return \Drupal\inmail\MIME\Rfc2822Address[]|null
+   *   List of 'From' recipient address objects.
    */
   public function getFrom();
 

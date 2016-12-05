@@ -438,21 +438,25 @@ function inmail_preprocess_inmail_message(&$variables) {
   /** @var \Drupal\inmail\MIME\MimeMessageInterface $message */
   $message = $variables['message'];
   $view_mode = $variables['view_mode'];
+  $from_addresses = [];
 
-  $variables['address_from'] = [
-    '#type' => 'inmail_message_address',
-    '#address' => $message->getFrom(),
-  ];
+  foreach ($message->getFrom() as $key => $address) {
+    $from_addresses[] = $address->getAddress();
+    $variables['addresses_from'][$key] = [
+      '#type' => 'inmail_message_address',
+      '#address' => $address,
+    ];
+  }
 
   if ($reply_to = $message->getReplyTo()) {
-    foreach ($reply_to as $key => $address) {
-      if (count($reply_to) == 1 && $address->getAddress() === $message->getFrom()->getAddress()) {
+    foreach ($reply_to as $key => $reply_to_address) {
+      if (count($reply_to) == 1 && in_array($reply_to_address->getAddress(), $from_addresses)) {
         break;
       }
 
       $variables['addresses_reply_to'][$key] = [
         '#type' => 'inmail_message_address',
-        '#address' => $address,
+        '#address' => $reply_to_address,
       ];
     }
   }

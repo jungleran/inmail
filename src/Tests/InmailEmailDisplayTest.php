@@ -49,6 +49,7 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
     $this->doTestSameReplyToAsFromDisplay();
     $this->doTestMultipleReplyToDisplay();
     $this->doTestMultipleRecipients();
+    $this->doTestMultipleFromRecipients();
     $this->doTestNoSubjectDisplay();
     // Body message tests.
     $this->doTestMultipartAlternative();
@@ -267,6 +268,22 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
     $this->assertNoRaw("<script>alert('xss_attack1')</script>");
     $this->assertNoRaw("<script>alert('xss_attack2')</script>");
     $this->assertNoRaw("<script>alert('xss_attack3')</script>");
+  }
+
+  /**
+   * Tests email rendering with multiple 'From' recipients.
+   */
+  public function doTestMultipleFromRecipients() {
+    $raw_missing_subject = $this->getMessageFileContents('/addresses/multiple-from.eml');
+    $this->processRawMessage($raw_missing_subject);
+    $event = $this->getLastEventByMachinename('process');
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    // Assert that we have all From recipients.
+    $this->assertAddressHeaderField('From', 'andy@example.com', 'Andy');
+    $this->assertAddressHeaderField('From', 'roger@example.com', 'Roger', 2);
+    $this->assertAddressHeaderField('From', 'rafael@example.com', 'Rafael', 3);
+    $this->assertAddressHeaderField('To', 'novak@example.com', 'Novak');
+    $this->assertAddressHeaderField('reply to', 'novak@example.com');
   }
 
 }
