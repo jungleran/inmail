@@ -6,6 +6,7 @@ use Drupal\inmail\MIME\MimeEntity;
 use Drupal\inmail\MIME\MimeHeader;
 use Drupal\inmail\TypedData\MailboxDefinition;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\inmail\MIME\MimeHeaderField;
 
 /**
  * Tests inmail datatypes.
@@ -90,7 +91,7 @@ class InmailDataTypeTest extends KernelTestBase {
       // file size remains same.
       [
         new MimeEntity(new MimeHeader([
-          ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
+          new MimeHeaderField('Content-Transfer-Encoding', 'base64'),
         ]), $this->randomString(20480)),
         '20 KB',
       ],
@@ -98,13 +99,13 @@ class InmailDataTypeTest extends KernelTestBase {
       // encoding. It needs to be created valid base64 string with desired length.
       [
         new MimeEntity(new MimeHeader([
-          ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
+          new MimeHeaderField('Content-Transfer-Encoding', 'base64'),
         ]), substr(base64_encode($this->randomString(2048)), 0, 2048)),
         '1.5 KB',
       ],
       [
         new MimeEntity(new MimeHeader([
-          ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
+          new MimeHeaderField('Content-Transfer-Encoding', 'base64'),
         ]), substr(base64_encode($this->randomString(20480)), 0, 20480)),
         '15 KB',
       ],

@@ -7,6 +7,7 @@ use Drupal\inmail\MIME\MimeHeader;
 use Drupal\inmail\MIME\MimeMessage;
 use Drupal\inmail\ProcessorResult;
 use Drupal\inmail\Tests\InmailWebTestBase;
+use Drupal\inmail\MIME\MimeHeaderField;
 
 /**
  * Tests the presentation of collected messages.
@@ -108,11 +109,11 @@ class InmailCollectWebTest extends InmailWebTestBase {
     $processor_result->setDeliverer($deliverer);
     // Creating MimeMessage which contains invalid UTF-8 character.
     $message = new MimeMessage(new MimeHeader([
-      ['name' => 'Message-ID', 'body' => "\x80"],
-      ['name' => 'Received', 'body' => 'blah; Thu, 29 Jan 2015 15:43:04 +0100'],
-      ['name' => 'Subject', 'body' => 'Foo'],
-      ['name' => 'To', 'body' => 'bar@example.com'],
-      ['name' => 'From', 'body' => 'foobar@example.com']
+      new MimeHeaderField('Message-ID', "\x80"),
+      new MimeHeaderField('Received', 'blah; Thu, 29 Jan 2015 15:43:04 +0100'),
+      new MimeHeaderField('Subject', 'Foo'),
+      new MimeHeaderField('To', 'bar@example.com'),
+      new MimeHeaderField('From', 'foobar@example.com'),
     ]), 'body');
     // Triggering json_encode which should fail.
     $handler->invoke($message, $processor_result);

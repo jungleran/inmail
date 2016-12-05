@@ -5,6 +5,7 @@ namespace Drupal\Tests\inmail\Unit\MIME;
 use Drupal\inmail\MIME\MimeEntity;
 use Drupal\inmail\MIME\MimeHeader;
 use Drupal\Tests\UnitTestCase;
+use Drupal\inmail\MIME\MimeHeaderField;
 
 /**
  * Tests the Entity class.
@@ -64,8 +65,8 @@ class MimeEntityTest extends UnitTestCase {
     return [
       [
         new MimeHeader([
-          ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
-          ['name' => 'Content-Transfer-Encoding', 'body' => 'quoted-printable'],
+          new MimeHeaderField('Content-Type', 'text/plain; charset=UTF-8'),
+          new MimeHeaderField('Content-Transfer-Encoding', 'quoted-printable'),
         ]),
         // Encoded body in UTF-8.
         '=E6=9C=A8',
@@ -74,8 +75,8 @@ class MimeEntityTest extends UnitTestCase {
       ],
       [
         new MimeHeader([
-          ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
-          ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
+          new MimeHeaderField('Content-Type', 'text/plain; charset=UTF-8'),
+          new MimeHeaderField('Content-Transfer-Encoding', 'base64'),
         ]),
         // Encoded body in Base64/quoted-printable format.
         'TGludXg',
@@ -84,8 +85,8 @@ class MimeEntityTest extends UnitTestCase {
       ],
       [
         new MimeHeader([
-          ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
-          ['name' => 'Content-Transfer-Encoding', 'body' => 'binary'],
+          new MimeHeaderField('Content-Type', 'text/plain; charset=UTF-8'),
+          new MimeHeaderField('Content-Transfer-Encoding', 'binary'),
         ]),
         // Encoded body to test only domain of data
         // rather than reference to type of encoding.
@@ -94,8 +95,8 @@ class MimeEntityTest extends UnitTestCase {
       ],
       [
         new MimeHeader([
-          ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
-          ['name' => 'Content-Transfer-Encoding', 'body' => 'quoted-printable'],
+          new MimeHeaderField('Content-Type', 'text/plain; charset=UTF-8'),
+          new MimeHeaderField('Content-Transfer-Encoding', 'quoted-printable'),
         ]),
         // Sample of invalid encoded UTF-8 body,
         // four octet sequence (in 3rd octet).
@@ -118,7 +119,7 @@ class MimeEntityTest extends UnitTestCase {
     return [
       [
         new MimeHeader([
-          ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
+          new MimeHeaderField('Content-Type', 'text/plain; charset=UTF-8'),
         ]),
         // Expected content-type.
         'text/plain',
@@ -127,14 +128,14 @@ class MimeEntityTest extends UnitTestCase {
       ],
       [
         new MimeHeader([
-          ['name' => 'Content-Type', 'body' => 'text/html; charset=ASCII'],
+          new MimeHeaderField('Content-Type', 'text/html; charset=ASCII'),
         ]),
         'text/html',
         'ASCII',
       ],
       [
         new MimeHeader([
-          ['name' => 'Content-Type', 'body' => 'multipart/alternative; charset=UTF-32'],
+          new MimeHeaderField('Content-Type', 'multipart/alternative; charset=UTF-32'),
         ]),
         'multipart/alternative',
         'UTF-32',
@@ -148,9 +149,9 @@ class MimeEntityTest extends UnitTestCase {
    * @covers \Drupal\inmail\MIME\MimeEntity::toString
    */
   public function testToString() {
-    $entity = new MimeEntity(new MimeHeader([[
-      'name' => 'Subject', 'body' => 'Foo Bar',
-    ]]), 'When I joined them, foobar was already being commonly used as a throw-away file name.');
+    $entity = new MimeEntity(new MimeHeader([
+      new MimeHeaderField('Subject', 'Foo Bar'),
+    ]), 'When I joined them, foobar was already being commonly used as a throw-away file name.');
     $this->assertEquals($entity->toString(), "Subject: Foo Bar\n\nWhen I joined them, foobar was already being commonly used as a throw-away file name.");
   }
 
@@ -176,7 +177,7 @@ class MimeEntityTest extends UnitTestCase {
    */
   public function testGetContentTransferEncoding() {
     $entity = new MimeEntity(new MimeHeader([
-      ['name' => 'Content-Transfer-Encoding', 'body' => 'base64'],
+      new MimeHeaderField('Content-Transfer-Encoding', 'base64'),
     ]), 'Hello World');
     $this->assertEquals('base64', $entity->getContentTransferEncoding());
   }

@@ -8,6 +8,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\inmail\Element\InmailMessage;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\MIME\MimeEncodings;
+use Drupal\inmail\MIME\MimeHeaderField;
 use Drupal\inmail\MIME\MimeMultipartMessage;
 use Drupal\inmail\MIME\MimeParser;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
@@ -342,8 +343,8 @@ function inmail_mail($key, &$message, $params) {
       // here, and the same is expected by DirectMail.
       $header = clone $original->getHeader();
       $header->removeField('To');
-      $header->addField('Received', $message['received']);
-      $header->addField('X-Inmail-Forwarded', 'handler_moderator_forward');
+      $header->addField(new MimeHeaderField('Received', $message['received']));
+      $header->addField(new MimeHeaderField('X-Inmail-Forwarded', 'handler_moderator_forward'));
       $message['raw_headers'] = $header;
       break;
     case 'success':

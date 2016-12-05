@@ -4,6 +4,7 @@ namespace Drupal\Tests\inmail\Unit\MIME;
 
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\inmail\MIME\MimeHeader;
+use Drupal\inmail\MIME\MimeHeaderField;
 use Drupal\inmail\MIME\MimeParser;
 use Drupal\Tests\UnitTestCase;
 
@@ -58,17 +59,19 @@ class MimeHeaderTest extends UnitTestCase {
   public function provideHeadersHasField() {
     return [
       [
-        new MimeHeader([[
-          'name' => 'Content-Type',
-          'body' => 'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"',
-        ]]),
+        new MimeHeader([
+          new MimeHeaderField(
+            'Content-Type',
+            'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"'
+          )]),
         TRUE,
       ],
       [
-        new MimeHeader([[
-          'name' => 'content-type',
-          'body' => 'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"',
-        ]]),
+        new MimeHeader([
+          new MimeHeaderField(
+            'content-type',
+            'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"'
+          )]),
         TRUE,
       ],
       [
@@ -87,10 +90,12 @@ class MimeHeaderTest extends UnitTestCase {
   public function provideHeaders() {
     return [
       [
-        new MimeHeader([[
-          'name' => 'Content-Type',
-          'body' => 'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"',
-        ]],
+        new MimeHeader([
+          new MimeHeaderField(
+            'Content-Type',
+            'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"'
+          )
+        ],
           "Content-Type: Multipart/Report; report-type=delivery-status;\n"
           . " boundary=\"========/528515BF03161E46/smtp-in13.han.skanova.net\""
         ),
@@ -101,12 +106,13 @@ class MimeHeaderTest extends UnitTestCase {
         . " boundary=\"========/528515BF03161E46/smtp-in13.han.skanova.net\"",
       ],
       [
-        new MimeHeader([[
-          'name' => 'Subject',
-          // The ü in this string triggers base64 encoding in toString. Encoded
-          // string wraps within the 78 char line limit.
-          'body' => "Alle Menschen sind frei und gleich an Würde und Rechten geboren. Sie sind mit Vernunft und Gewissen begabt und sollen einander im Geist der Brüderlichkeit begegnen.",
-        ]],
+        new MimeHeader([
+          new MimeHeaderField(
+            'Subject',
+            // The ü in this string triggers base64 encoding in toString. Encoded
+            // string wraps within the 78 char line limit.
+            "Alle Menschen sind frei und gleich an Würde und Rechten geboren. Sie sind mit Vernunft und Gewissen begabt und sollen einander im Geist der Brüderlichkeit begegnen."
+          )],
           "Subject: =?UTF-8?B?QWxsZSBNZW5zY2hlbiBzaW5kIGZyZWkgdW5kIGdsZWljaCBhbiBX?=\n"
           . " =?UTF-8?B?w7xyZGUgdW5kIFJlY2h0ZW4gZ2Vib3Jlbi4gU2llIHNpbmQgbWl0IFZlcm51bmY=?=\n"
           . " =?UTF-8?B?dCB1bmQgR2V3aXNzZW4gYmVnYWJ0IHVuZCBzb2xsZW4gZWluYW5kZXIgaW0gR2U=?=\n"
@@ -128,7 +134,7 @@ class MimeHeaderTest extends UnitTestCase {
    * @dataProvider provideHeaders
    */
   public function testAddField(MimeHeader $header) {
-    $header->addField('X-Space-MimeHeader', 'Alienware');
+    $header->addField(new MimeHeaderField('X-Space-MimeHeader', 'Alienware'));
     $this->assertTrue($header->hasField('X-Space-MimeHeader'));
   }
 
@@ -150,10 +156,11 @@ class MimeHeaderTest extends UnitTestCase {
    * @covers ::getFieldBodies
    */
   public function testGetFieldBodies() {
-    $header = new MimeHeader([[
-      'name' => 'Subject',
-      'body' => 'I am Your Subject Body',
-    ]]);
+    $header = new MimeHeader([
+      new MimeHeaderField(
+        'Subject',
+        'I am Your Subject Body'
+      )]);
     $this->assertEquals($header->getFieldBodies('Subject')[0], "I am Your Subject Body");
     $this->assertEquals(count($header->getFieldBodies('Subject')), 1);
   }
@@ -166,10 +173,11 @@ class MimeHeaderTest extends UnitTestCase {
    * @dataProvider provideHeaders
    */
   public function testGetFieldBody() {
-    $header = new MimeHeader([[
-      'name' => 'Content-Type',
-      'body' => 'Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren',
-    ]]);
+    $header = new MimeHeader([
+      new MimeHeaderField(
+        'Content-Type',
+        'Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren'
+      )]);
     $this->assertEquals('Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren', $header->getFieldBody('Content-Type'));
   }
 
@@ -177,13 +185,31 @@ class MimeHeaderTest extends UnitTestCase {
    * Tests the getRaw function.
    */
   public function testGetRaw() {
-    $header = new MimeHeader([[
-      'name' => 'Content-Type',
-      'body' => 'Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren',
-      ]],
+    $header = new MimeHeader([
+      new MimeHeaderField(
+        'Content-Type',
+        'Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren'
+      )],
       'Content-Type: Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren'
     );
     $this->assertEquals($header->getRaw(), 'Content-Type: Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren');
+  }
+
+  /**
+   * Tests getting header fields.
+   *
+   * @covers ::getFields
+   */
+  public function testGetFields() {
+    $headers = new MimeHeader([
+      new MimeHeaderField('From', 'Foo'),
+      new MimeHeaderField('To', 'Bar'),
+      new MimeHeaderField('Content-Type', 'text/html'),
+    ], 'From: Foo\nTo: Bar\nContent-Type:text/html');
+    $this->assertEquals(3, count($headers->getFields()));
+    $this->assertEquals(new MimeHeaderField('From', 'Foo'), $headers->getFields()[0]);
+    $this->assertEquals(new MimeHeaderField('To', 'Bar'), $headers->getFields()[1]);
+    $this->assertEquals(new MimeHeaderField('Content-Type', 'text/html'), $headers->getFields()[2]);
   }
 
 }

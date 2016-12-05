@@ -27,9 +27,9 @@ class MimeHeader {
   /**
    * The fields constituting the header.
    *
-   * @var array
+   * @var \Drupal\inmail\MIME\MimeHeaderField[]
    */
-  protected $fields = array();
+  protected $fields = [];
 
   /**
    * The raw original header from parsing.
@@ -41,7 +41,7 @@ class MimeHeader {
   /**
    * Creates a new MimeHeader object containing the optionally given fields.
    *
-   * @param array $fields
+   * @param \Drupal\inmail\MIME\MimeHeaderField[] $fields
    *   A list of fields, represented by arrays with string elements for the keys
    *   'name' and 'body'.
    * @param string $raw
@@ -49,8 +49,8 @@ class MimeHeader {
    */
   public function __construct($fields = array() , $raw = NULL) {
     foreach ($fields as $field) {
-      if (isset($field['name']) && isset($field['body'])) {
-        $this->addField($field['name'], $field['body'], FALSE);
+      if (!empty($field->getName()) && !empty($field->getBody())) {
+        $this->addField($field, FALSE);
       }
     }
 
@@ -66,20 +66,16 @@ class MimeHeader {
    *
    * @param string $name
    *   The name of a header field.
-   * @param bool $filter
-   *   Whether '(comments)' should be filtered from the content.
    *
    * @return null|string
    *   The body of the field or NULL if the field is not present.
    */
-  public function getFieldBody($name, $filter = FALSE) {
+  public function getFieldBody($name) {
     $key = $this->findFirstField($name);
     if ($key === FALSE) {
       return NULL;
     }
-    $body = trim($this->fields[$key]['body']);
-
-    return $filter ? preg_replace('/\([^)]*\)/', '', $body) : $body;
+    return trim($this->fields[$key]->getBody());
   }
 
   /**
@@ -103,21 +99,19 @@ class MimeHeader {
    * usually added to the beginning rather than the end. It is up to the caller
    * of this method to ensure that added fields conform to standards as desired.
    *
-   * @param string $name
-   *   The name (key) of the field.
-   * @param string $body
-   *   The body (value) of the field.
+   * @param \Drupal\inmail\MIME\MimeHeaderField $field
+   *   The Field
    * @param bool $prepend
    *   If TRUE, the header is added to the beginning of the header, otherwise it
    *   is added to the end. Defaults to TRUE.
    */
-  public function addField($name, $body, $prepend = TRUE) {
-    if (!empty($name) && !empty($body)) {
+  public function addField(MimeHeaderField $field, $prepend = TRUE) {
+    if (!empty($field->getName()) && !empty($field->getBody())) {
       if ($prepend) {
-        array_unshift($this->fields, ['name' => $name, 'body' => $body]);
+        array_unshift($this->fields, $field);
       }
       else {
-        $this->fields[] = ['name' => $name, 'body' => $body];
+        $this->fields[] = $field;
       }
     }
   }
@@ -154,7 +148,7 @@ class MimeHeader {
     // Iterate through headers and find the first match.
     foreach ($this->fields as $key => $field) {
       // Field name is case-insensitive.
-      if (strcasecmp($field['name'], $name) == 0) {
+      if (strcasecmp($field->getName(), $name) == 0) {
         return $key;
       }
     }
@@ -164,7 +158,7 @@ class MimeHeader {
   /**
    * Returns an associative array of header fields.
    *
-   * @return array
+   * @return \Drupal\inmail\MIME\MimeHeaderField[]
    *   An associative array of header fields.
    */
   public function getFields() {
@@ -185,10 +179,10 @@ class MimeHeader {
     $header = array();
     foreach ($this->fields as $field) {
       // Encode non-7bit body. If body is 7bit, mimeHeaderEncode() does nothing.
-      $body = static::mimeHeaderEncode($field['body'], strlen($field['name']));
-      $encoded = $body != $field['body'];
+      $body = static::mimeHeaderEncode($field->getBody(), strlen($field->getName()));
+      $encoded = $body != $field->getBody();
 
-      $field_string = "{$field['name']}: $body";
+      $field_string = "{$field->getName()}: $body";
       // Fold to match 78 char length limit, and append. The encoding includes
       // folding, so only do it for unencoded body. The \h matches whitespace
       // except newline.
@@ -253,8 +247,8 @@ class MimeHeader {
     // Iterate through headers and find the matches.
     $body = [];
     foreach ($this->fields as $key => $field) {
-      if (strcasecmp($field['name'], $name) == 0) {
-        $body[] = trim($this->fields[$key]['body']);
+      if (strcasecmp($field->getName(), $name) == 0) {
+        $body[] = trim($this->fields[$key]->getBody());
       }
     }
     return ($filter && $body) ? preg_replace('/\([^)]*\)/', '', $body) : $body;

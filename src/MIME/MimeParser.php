@@ -379,7 +379,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
 
       // Decode and unfold lines.
       $decoded_body = str_replace("\n", '', Unicode::mimeHeaderDecode(trim($body)));
-      $header->addField(trim($name), $decoded_body, FALSE);
+      $header->addField(new MimeHeaderField(trim($name), $decoded_body), FALSE);
     }
     return $header;
   }

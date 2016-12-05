@@ -5,6 +5,7 @@ namespace Drupal\Tests\inmail\Unit\MIME;
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\inmail\MIME\MimeEntity;
 use Drupal\inmail\MIME\MimeHeader;
+use Drupal\inmail\MIME\MimeHeaderField;
 use Drupal\inmail\MIME\MimeMultipartMessage;
 use Drupal\inmail\MIME\MimeParser;
 use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
@@ -127,12 +128,12 @@ class MimeMultipartEntityTest extends UnitTestCase {
    */
   protected static function getMessageHeader() {
     return new MimeHeader([
-      ['name' => 'From', 'body' => 'Nathaniel Borenstein <nsb@bellcore.com>'],
-      ['name' => 'To', 'body' => 'Ned Freed <ned@innosoft.com>'],
-      ['name' => 'Date', 'body' => 'Sun, 21 Mar 1993 23:56:48 -0800 (PST)'],
-      ['name' => 'Subject', 'body' => 'Sample message'],
-      ['name' => 'MIME-Version', 'body' => '1.0'],
-      ['name' => 'Content-type', 'body' => 'multipart/mixed; boundary="simple boundary"'],
+      new MimeHeaderField('From', 'Nathaniel Borenstein <nsb@bellcore.com>'),
+      new MimeHeaderField('To', 'Ned Freed <ned@innosoft.com>'),
+      new MimeHeaderField('Date', 'Sun, 21 Mar 1993 23:56:48 -0800 (PST)'),
+      new MimeHeaderField('Subject', 'Sample message'),
+      new MimeHeaderField('MIME-Version', '1.0'),
+      new MimeHeaderField('Content-type', 'multipart/mixed; boundary="simple boundary"'),
     ],
       "From: Nathaniel Borenstein <nsb@bellcore.com>\nTo: Ned Freed <ned@innosoft.com>\n" .
       "Date: Sun, 21 Mar 1993 23:56:48 -0800 (PST)\nSubject: Sample message\n" .
@@ -183,7 +184,7 @@ This is the epilogue.  It is also to be ignored.
    */
   protected static function getSecondPartHeader() {
     return new MimeHeader([
-      ['name' => 'Content-type', 'body' => 'text/plain; charset=us-ascii'],
+      new MimeHeaderField('Content-type', 'text/plain; charset=us-ascii'),
     ],
       'Content-type: text/plain; charset=us-ascii'
     );
@@ -200,8 +201,8 @@ This is the epilogue.  It is also to be ignored.
     return [
       [
         new MimeHeader([
-          ['name' => 'Content-Type', 'body' => 'text/plain; charset=UTF-8'],
-          ['name' => 'Content-Transfer-Encoding', 'body' => 'quoted-printable'],
+          new MimeHeaderField('Content-Type', 'text/plain; charset=UTF-8'),
+          new MimeHeaderField('Content-Transfer-Encoding', 'quoted-printable'),
         ]),
         '=E6=97=A5=E6=9C=AC=E5=9B=BD',
         '日本国',

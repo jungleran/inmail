@@ -6,6 +6,7 @@ use Drupal\Component\Utility\SafeMarkup;
 use Drupal\inmail\DSNStatus;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\MIME\MimeHeader;
+use Drupal\inmail\MIME\MimeHeaderField;
 use Drupal\inmail\MIME\MimeMessage;
 use Drupal\inmail\ProcessorResult;
 use Drupal\inmail\Tests\DelivererTestTrait;
@@ -102,9 +103,9 @@ class InmailMailmuteTest extends KernelTestBase {
     $this->assertEqual($parsed_message->getPlainText(), "Hey, it would be really bad for a mail handler to classify this as a bounce\njust because I have no mailbox outside my house.\n");
     // Check plaintext extraction for single-part message.
     $message = new MimeMessage(new MimeHeader([
-      ['name' => 'From', 'body' => 'Foo'],
-      ['name' => 'To', 'body' => 'Bar'],
-      ['name' => 'Content-Type', 'body' => 'text/html'],
+      new MimeHeaderField('From', 'Foo'),
+      new MimeHeaderField('To', 'Bar'),
+      new MimeHeaderField('Content-Type', 'text/html'),
     ]), '<p>This is test paragraph for plaintext extraction</p>');
     $this->assertEqual($message->getPlainText(), 'This is test paragraph for plaintext extraction');
   }

@@ -4,6 +4,7 @@ namespace Drupal\Tests\inmail\Unit\MIME;
 
 use Drupal\inmail\MIME\MimeEntity;
 use Drupal\inmail\MIME\MimeHeader;
+use Drupal\inmail\MIME\MimeHeaderField;
 use Drupal\inmail\MIME\MimeMultipartMessage;
 
 /**
@@ -35,8 +36,8 @@ class MimeMultipartMessageTest extends MimeMultipartEntityTest {
     // Message triggers checking for presence of Date and From fields,
     // as well checking single occurrence of them.
     $missing_fields_header = new MimeHeader([
-      ['name' => 'Delivered-To', 'body' => 'alice@example.com'],
-      ['name' => 'Received', 'body' => 'Fri, 21 Oct 2016 09:55:03 +0200'],
+      new MimeHeaderField('Delivered-To', 'alice@example.com'),
+      new MimeHeaderField('Received', 'body', 'Fri, 21 Oct 2016 09:55:03 +0200'),
     ]);
     $multipart_message = new MimeMultipartMessage(new MimeEntity($missing_fields_header, static::getBody()), []);
     $this->assertFalse($multipart_message->validate());
@@ -48,13 +49,13 @@ class MimeMultipartMessageTest extends MimeMultipartEntityTest {
 
     // Message contains all necessary fields but duplicates.
     $duplicate_fields_header = new MimeHeader([
-      ['name' => 'From', 'body' => 'Foo'],
-      ['name' => 'From', 'body' => 'Foo2'],
-      ['name' => 'Date', 'body' => 'Thu, 20 Oct 2016 08:45:02 +0100'],
-      ['name' => 'Date', 'body' => 'Fri, 21 Oct 2016 09:55:03 +0200'],
-      ['name' => 'Date', 'body' => 'Sat, 22 Oct 2016 10:55:04 +0300'],
-      ['name' => 'Received', 'body' => 'Thu, 20 Oct 2016 08:45:02 +0100'],
-      ['name' => 'Received', 'body' => 'Fri, 21 Oct 2016 09:55:03 +0200'],
+      new MimeHeaderField('From', 'Foo'),
+      new MimeHeaderField('From', 'Foo2'),
+      new MimeHeaderField('Date', 'Thu, 20 Oct 2016 08:45:02 +0100'),
+      new MimeHeaderField('Date', 'Fri, 21 Oct 2016 09:55:03 +0200'),
+      new MimeHeaderField('Date', 'Sat, 22 Oct 2016 10:55:04 +0300'),
+      new MimeHeaderField('Received', 'Thu, 20 Oct 2016 08:45:02 +0100'),
+      new MimeHeaderField('Received', 'Fri, 21 Oct 2016 09:55:03 +0200'),
     ]);
     $multipart_message = new MimeMultipartMessage(new MimeEntity($duplicate_fields_header, static::getBody()), []);
     $this->assertFalse($multipart_message->validate());

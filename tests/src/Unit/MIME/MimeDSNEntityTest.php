@@ -10,6 +10,7 @@ use Drupal\inmail\MIME\MimeDSNEntity;
 use Drupal\inmail\MIME\MimeMultipartEntity;
 use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
 use Drupal\Tests\UnitTestCase;
+use Drupal\inmail\MIME\MimeHeaderField;
 
 /**
  * Tests the MimeParser, MimeEntity and MimeDSNEntity classes.
@@ -93,7 +94,9 @@ class MimeDSNEntityTest extends UnitTestCase {
    */
   protected static function getMessageHeader() {
     return new MimeHeader([
-      ['name' => 'Content-type', 'body' => 'multipart/report; report-type=delivery-status; boundary="boundary"'],
+      new MimeHeaderField(
+      'Content-type', 'multipart/report; report-type=delivery-status; boundary="boundary"'
+      ),
     ],
       'Content-type: multipart/report; report-type=delivery-status; boundary="boundary"'
     );
@@ -161,7 +164,7 @@ Subject: My very urgent message
    */
   protected static function getStatusPartHeader() {
     return new MimeHeader([
-      ['name' => 'Content-Type', 'body' => 'message/delivery-status'],
+      new MimeHeaderField('Content-Type', 'message/delivery-status'),
     ],
       'Content-Type: message/delivery-status'
     );
@@ -189,7 +192,7 @@ Subject: My very urgent message
    */
   protected static function getPerMessageFields() {
     return new MimeHeader([
-      ['name' => 'Reporting-MTA', 'body' => 'dns; example.com'],
+      new MimeHeaderField('Reporting-MTA', 'dns; example.com'),
     ],
       'Reporting-MTA: dns; example.com'
     );
@@ -200,15 +203,15 @@ Subject: My very urgent message
    */
   protected static function getPerRecipientField() {
     return new MimeHeader([
-      ['name' => 'Final-Recipient', 'body' => 'rfc822; user@example.org'],
-      ['name' => 'Action', 'body' => 'failed'],
-      ['name' => 'Status', 'body' => '5.0.0'],
+      new MimeHeaderField('Final-Recipient', 'rfc822; user@example.org'),
+      new MimeHeaderField('Action', 'failed'),
+      new MimeHeaderField('Status', '5.0.0'),
     ],
       "Final-Recipient: rfc822; user@example.org\nAction: failed\nStatus: 5.0.0"
     );
   }
 
-  /**
+  /**`
    * Expected parse result of the third part of the message.
    */
   protected static function getOriginalPart() {
@@ -220,7 +223,9 @@ Subject: My very urgent message
    */
   protected static function getOriginalPartHeader() {
     return new MimeHeader([
-      ['name' => 'Content-Type', 'body' => 'message/rfc822'],
+      new MimeHeaderField(
+        'Content-Type', 'message/rfc822'
+      ),
     ],
       'Content-Type: message/rfc822'
     );
