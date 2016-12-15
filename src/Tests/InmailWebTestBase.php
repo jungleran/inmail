@@ -680,4 +680,50 @@ abstract class InmailWebTestBase extends WebTestBase {
     return $message;
   }
 
+  /**
+   * Asserts a raw mail body.
+   *
+   * @param string $machine_name
+   *   The machine name to identify the value.
+   * @param string $value
+   *   The content of the raw body element.
+   * @param string $message
+   *   (optional) A message to display with the assertion. Do not translate
+   *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
+   *   variables in the message text, not t(). If left blank, a default message
+   *   will be displayed.
+   *
+   * @return bool
+   *   TRUE in case there is a raw email body present. Otherwise, FALSE.
+   */
+  protected function assertRawBody($machine_name, $value, $message = '') {
+    $xpath_div = $this->getBodyDivXpath($machine_name);
+    $message_values = ['@machine_name' => $machine_name, '@value' => $value];
+
+    $value_message = $message ?: new FormattableMarkup('@machine_name body message "@value" found.', $message_values);
+    return $this->assertTrue(strpos($this->xpath($xpath_div)[0]->asXML(), $value) !== FALSE, $value_message);
+  }
+
+  /**
+   * Gets the XPath of the mail body message element.
+   *
+   * @param string $machine_name
+   *   The machine name to identify the value.
+   *
+   * @return string
+   *   The XPath of the mail body message element.
+   */
+  private function getBodyDivXpath($machine_name) {
+    $field = $machine_name;
+    if ($machine_name == 'HTML') {
+      $field = 'html';
+    }
+    elseif ($machine_name == 'Plain') {
+      $field = 'content';
+    }
+    $xpath_div = '//div[contains(@class, "inmail-message__element inmail-message__body__' . strtolower($field) . '")]';
+
+    return $xpath_div;
+  }
+
 }

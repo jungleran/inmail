@@ -77,12 +77,15 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
     $this->assertNoElementHeaderField('Received', '2014-10-21 20:21:02');
     $this->assertElementHeaderField('Subject', 'BMH testing sample');
     $this->assertNoLink('Unsubscribe');
-    $this->assertRaw('Hey, it would be really bad for a mail handler to classify this as a bounce');
-    $this->assertRaw('just because I have no mailbox outside my house.');
+
+    // Check if there is a plain and no HTML message in 'teaser' view mode.
+    $this->assertNoText('just because I have no HTML mailbox');
+    $this->assertRawBody('Plain', 'Hey, it would be really bad for a mail handler to classify this as a bounce
+just because I have no mailbox outside my house.');
 
     // Check if the header fields are properly displayed in 'full' view mode.
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
-    // @todo Introduce assert helper for body.
+
     // Parties involved.
     $this->assertAddressHeaderField('From', 'arild@masked1.se', 'Arild Matsson');
     $this->assertAddressHeaderField('To', 'inmail_test@example.com', 'Arild Matsson');
@@ -93,14 +96,19 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
     // @todo use assertUnsubscribeHeaderField()/assertNoUnsubscribeHeaderField()?
     $this->assertLink('Unsubscribe');
 
+    // Check if the body messages are properly displayed in 'full' view mode.
+    $this->assertRawBody('HTML', '<div dir="ltr">Hey, it would be really bad for a mail handler to classify this as a bounce just because I have no HTML mailbox outside my house.</div>');
+    $this->assertRawBody('Plain', 'Hey, it would be really bad for a mail handler to classify this as a bounce<br/>
+just because I have no mailbox outside my house.');
+
     // @todo separate this (multi)part to another method?
     // Assert message plain-text/HTML parts.
     $this->assertText($message->getPart(0)->getDecodedBody());
     $this->assertText(htmlspecialchars($message->getPlainText()));
     // Script tags are removed for security reasons.
-    $this->assertRaw('<div dir="ltr">Hey, it would be really bad for a mail handler to classify this as a bounce just because I have no mailbox outside my house.</div>');
-    $this->assertRaw('Hey, it would be really bad for a mail handler to classify this as a bounce<br />');
-    $this->assertRaw('just because I have no mailbox outside my house.');
+    $this->assertRawBody('HTML', '<div dir="ltr">Hey, it would be really bad for a mail handler to classify this as a bounce just because I have no HTML mailbox outside my house.</div>');
+    $this->assertRawBody('Plain', 'Hey, it would be really bad for a mail handler to classify this as a bounce<br/>
+just because I have no mailbox outside my house.');
     // @todo add test for unknown parts?
     // Testing the access to past event created by non-inmail module.
     // @see \Drupal\inmail_test\Controller\EmailDisplayController.
