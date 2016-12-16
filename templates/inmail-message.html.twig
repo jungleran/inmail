@@ -27,6 +27,8 @@
  *    containing addresses to where the mail got sent to.
  * - (optional) addresses_cc: A list of Rfc2822Address elements
  *    containing addresses to where a copy of the mail got sent to.
+ * - (optional) addresses_bcc: A list of Rfc2822Address elements
+ *    containing tertiary addresses to where the email got sent to.
  *
  * Only present for MIME messages:
  * - (optional) mime_attachments: A list of elements representing attachments.
@@ -93,6 +95,14 @@
           </div>
         {% endif %}
       </div>
+      {% if addresses_bcc %}
+        <div class="inmail-message__element inmail-message__header__bcc">
+          <label>Bcc</label>
+            {% for address_bcc in addresses_bcc %}
+              {{ address_bcc }}
+            {% endfor %}
+        </div>
+      {% endif %}
     {% endif %}
 
     <div class="inmail-message__element inmail-message__header__subject">

@@ -107,6 +107,14 @@ interface MimeMessageInterface extends MimeEntityInterface {
   public function getCc();
 
   /**
+   * Returns the list of Bcc recipients.
+   *
+   * @return \Drupal\inmail\MIME\Rfc2822Address[]
+   *   List of 'Bcc' recipient address objects.
+   */
+  public function getBcc();
+
+  /**
    * Returns the date when the message was received by the recipient.
    *
    * @return \Drupal\Component\Datetime\DateTimePlus|null

@@ -51,6 +51,7 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
     $this->doTestMultipleRecipients();
     $this->doTestMultipleFromRecipients();
     $this->doTestNoSubjectDisplay();
+    $this->doTestMultipleBccRecipients();
     // Body message tests.
     $this->doTestMultipartAlternative();
     $this->doTestUnknownParts();
@@ -292,6 +293,28 @@ just because I have no mailbox outside my house.');
     $this->assertAddressHeaderField('From', 'rafael@example.com', 'Rafael', 3);
     $this->assertAddressHeaderField('To', 'novak@example.com', 'Novak');
     $this->assertAddressHeaderField('reply to', 'novak@example.com');
+  }
+
+  /**
+   * Tests the email with multiple Bcc recipients.
+   */
+  public function doTestMultipleBccRecipients() {
+    $raw_multipart = $this->getMessageFileContents('/addresses/multiple-bcc-recipients.eml');
+    \Drupal::state()->set('inmail.test.success', '');
+    $this->processRawMessage($raw_multipart);
+    $event = $this->getLastEventByMachinename('process');
+
+    // Assert all recipients are properly displayed in 'full' view mode.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    $this->assertAddressHeaderField('From', 'bob@example.com', 'Bob');
+    $this->assertAddressHeaderField('To', 'alice@example.com', 'Alice');
+    $this->assertAddressHeaderField('Bcc', 'big_brother@example.com', 'BigBrother');
+    $this->assertAddressHeaderField('Bcc', 'president@example.com', 'President', 2);
+    $this->assertAddressHeaderField('Bcc', 'vp@example.com', 'ViceP', 3);
+
+    // Check that we are not displaying Bcc in teaser mode.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
+    $this->assertNoElementHeaderField('Bcc');
   }
 
 }

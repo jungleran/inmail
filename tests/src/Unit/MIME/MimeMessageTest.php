@@ -167,6 +167,20 @@ class MimeMessageTest extends UnitTestCase {
   }
 
   /**
+   * Tests the Bcc recipient getter.
+   *
+   * @covers ::getBcc
+   */
+  public function testGetBcc() {
+    $message = new MimeMessage(new MimeHeader([
+      new MimeHeaderField('Bcc', 'Modern Mantra <modern_mantra@example.com>'),
+    ]), 'Message body');
+    $bcc_field = $message->getBcc();
+    $this->assertEquals('modern_mantra@example.com', $bcc_field[0]->getAddress());
+    $this->assertEquals('Modern Mantra', $bcc_field[0]->getName());
+  }
+
+  /**
    * Tests the 'Received' date getter.
    *
    * @covers ::getReceivedDate

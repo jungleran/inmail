@@ -52,6 +52,13 @@ trait MimeMessageTrait {
   /**
    * {@inheritdoc}
    */
+  public function getBcc() {
+    return $this->parseDecodeField('Bcc');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getReplyTo() {
     return $this->parseDecodeField('Reply-To');
   }

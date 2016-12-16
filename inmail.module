@@ -477,6 +477,14 @@ function inmail_preprocess_inmail_message(&$variables) {
       ];
     }
   }
+  if ($bcc = $message->getBcc()) {
+    foreach ($bcc as $key => $address) {
+      $variables['addresses_bcc'][$key] = [
+        '#type' => 'inmail_message_address',
+        '#address' => $address,
+      ];
+    }
+  }
   $variables['subject'] = $message->getSubject() ?: t('(no subject)');
   $variables['unsubscribe'] = InmailMessage::getUnsubsciptionLink($message);
 
