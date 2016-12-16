@@ -90,7 +90,7 @@ class InmailMessageWebTest extends InmailWebTestBase {
    * Tests the complex attachment variant.
    */
   public function doTestComplexAttachments() {
-    $raw_email_with_attachments = $this->getMessageFileContents('attachments/multiple-attachments.eml');
+    $raw_email_with_attachments = $this->getMessageFileContents('multipart-attachment/attachment-multiple.eml');
 
     // Process the raw multipart mail message.
     $this->processor->process('key', $raw_email_with_attachments, $this->createTestDeliverer());
@@ -134,7 +134,7 @@ class InmailMessageWebTest extends InmailWebTestBase {
    * Tests unknown parts of an email.
    */
   public function doTestUnknownParts() {
-    $raw_email_with_attachments = $this->getMessageFileContents('attachments/multiple-attachments.eml');
+    $raw_email_with_attachments = $this->getMessageFileContents('multipart-attachment/attachment-multiple.eml');
 
     // Process the raw multipart mail message.
     $this->processor->process('key', $raw_email_with_attachments, $this->createTestDeliverer());
@@ -160,7 +160,7 @@ class InmailMessageWebTest extends InmailWebTestBase {
    */
   public function doTestMailAttachmentPdf() {
     // Test PDF attachment download link response and assert headers.
-    $raw_email_with_attachments = $this->getMessageFileContents('attachments/pdf-attachment.eml');
+    $raw_email_with_attachments = $this->getMessageFileContents('multipart-attachment/attachment-pdf.eml');
     $this->processor->process('key', $raw_email_with_attachments, $this->createTestDeliverer());
     $event_id = $this->getLastEventIdByMachinename('process');
     $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');

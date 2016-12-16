@@ -30,7 +30,7 @@ class MimeMultipartEntityTest extends UnitTestCase {
    */
   public function testParse() {
     // Parse and compare.
-    $raw = $this->getMessageFileContents('rfc-simple-multipart.eml');
+    $raw = $this->getMessageFileContents('/multipart-attachment/simple-multipart-created-by-rfc.eml');
     $parsed_message = (new MimeParser(new LoggerChannel('test')))->parseMessage($raw);
     $this->assertEquals(static::getMessage(), $parsed_message);
   }
@@ -89,7 +89,7 @@ class MimeMultipartEntityTest extends UnitTestCase {
    * @covers \Drupal\inmail\MIME\MimeEntity::toString
    */
   public function testToString() {
-    $raw = $this->getMessageFileContents('rfc-simple-multipart.eml');
+    $raw = $this->getMessageFileContents('/multipart-attachment/simple-multipart-created-by-rfc.eml');
     $this->assertEquals($raw, static::getMessage()->toString());
   }
 
@@ -100,7 +100,7 @@ class MimeMultipartEntityTest extends UnitTestCase {
     $parser = new MimeParser(new LoggerChannel('test'));
 
     // Parse and back again.
-    $raw = $this->getMessageFileContents('rfc-simple-multipart.eml');
+    $raw = $this->getMessageFileContents('/multipart-attachment/simple-multipart-created-by-rfc.eml');
     $parsed = $parser->parseMessage($raw);
     $this->assertEquals($raw, $parsed->toString());
 
