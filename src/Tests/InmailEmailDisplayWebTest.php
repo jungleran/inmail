@@ -8,7 +8,7 @@ namespace Drupal\inmail\Tests;
  * @group inmail
  * @requires module past_db
  */
-class InmailEmailDisplayTest extends InmailWebTestBase {
+class InmailEmailDisplayWebTest extends InmailWebTestBase {
 
   /**
    * Modules to enable.
@@ -45,16 +45,16 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
   public function testEmailDisplay() {
     $this->doTestSimpleEmailDisplay();
     // Header field tests.
+    $this->doTestMultipleFromRecipients();
     $this->doTestMissingToEmailDisplay();
     $this->doTestSameReplyToAsFromDisplay();
     $this->doTestMultipleReplyToDisplay();
     $this->doTestMultipleRecipients();
-    $this->doTestMultipleFromRecipients();
-    $this->doTestNoSubjectDisplay();
     $this->doTestMultipleBccRecipients();
+    $this->doTestNoSubjectDisplay();
+    $this->doTestHtmlOnlyHeaderFields();
     // Body message tests.
     $this->doTestMultipartAlternative();
-    $this->doTestUnknownParts();
     $this->doTestHtmlOnlyBodyMessage();
     $this->doTestXssEmailDisplay();
   }
@@ -63,7 +63,6 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
    * Tests simple email message.
    */
   public function doTestSimpleEmailDisplay() {
-    // @todo rename again normal-forwarded.eml to simple-message.eml?
     $raw_multipart = $this->getMessageFileContents('normal-forwarded.eml');
     $this->processRawMessage($raw_multipart);
     $event = $this->getLastEventByMachinename('process');
@@ -74,8 +73,8 @@ class InmailEmailDisplayTest extends InmailWebTestBase {
     $this->assertAddressHeaderField('From', 'arild@masked1.se', 'Arild Matsson');
     $this->assertAddressHeaderField('To', 'inmail_test@example.com', 'Arild Matsson');
     $this->assertAddressHeaderField('CC', 'inmail_other@example.com', 'Someone Else');
-    $this->assertNoElementHeaderField('Date', '2014-10-21 20:21:01');
-    $this->assertNoElementHeaderField('Received', '2014-10-21 20:21:02');
+    $this->assertNoElementHeaderField('Date', '2014-10-21 11:21:01');
+    $this->assertNoElementHeaderField('Received', '2014-10-21 11:21:02');
     $this->assertElementHeaderField('Subject', 'BMH testing sample');
     $this->assertNoLink('Unsubscribe');
 
@@ -119,6 +118,32 @@ just because I have no mailbox outside my house.');
     // Should throw a NotFoundHttpException.
     $this->assertResponse(404);
     $this->assertText('Page not found');
+  }
+
+  /**
+ * Tests email rendering with multiple 'From' recipients.
+ */
+  public function doTestMultipleFromRecipients() {
+    $raw_multiple_from = $this->getMessageFileContents('/addresses/multiple-from.eml');
+    $this->processRawMessage($raw_multiple_from);
+    $event = $this->getLastEventByMachinename('process');
+
+    // Assert all 'From' recipients are properly shown in 'full' view mode.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    $this->assertAddressHeaderField('From', 'andy@example.com', 'Andy', 1);
+    $this->assertAddressHeaderField('From', 'roger@example.com', 'Roger', 2);
+    $this->assertAddressHeaderField('From', 'rafael@example.com', 'Rafael', 3);
+    $this->assertAddressHeaderField('reply to', 'novak@example.com');
+    $this->assertAddressHeaderField('To', 'novak@example.com', 'Novak');
+
+    // Assert all 'From' recipients are properly shown in 'teaser' view mode.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
+    $this->assertAddressHeaderField('From', 'andy@example.com', 'Andy', 1);
+    $this->assertAddressHeaderField('From', 'roger@example.com', 'Roger', 2);
+    $this->assertAddressHeaderField('From', 'rafael@example.com', 'Rafael', 3);
+    // Never display 'Reply-To' in 'teaser'.
+    $this->assertNoAddressHeaderField('reply to', 'novak@example.com');
+    $this->assertAddressHeaderField('To', 'novak@example.com', 'Novak');
   }
 
   /**
@@ -217,6 +242,28 @@ just because I have no mailbox outside my house.');
   }
 
   /**
+   * Tests the email with multiple Bcc recipients.
+   */
+  public function doTestMultipleBccRecipients() {
+    $raw_multipart = $this->getMessageFileContents('/addresses/multiple-bcc-recipients.eml');
+    \Drupal::state()->set('inmail.test.success', '');
+    $this->processRawMessage($raw_multipart);
+    $event = $this->getLastEventByMachinename('process');
+
+    // Assert all recipients are properly displayed in 'full' view mode.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    $this->assertAddressHeaderField('From', 'bob@example.com', 'Bob');
+    $this->assertAddressHeaderField('To', 'alice@example.com', 'Alice');
+    $this->assertAddressHeaderField('Bcc', 'big_brother@example.com', 'BigBrother', 1);
+    $this->assertAddressHeaderField('Bcc', 'president@example.com', 'President', 2);
+    $this->assertAddressHeaderField('Bcc', 'vp@example.com', 'ViceP', 3);
+
+    // Assert that 'Bcc' is not displayed in 'teaser' view mode.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
+    $this->assertNoElementHeaderField('Bcc');
+  }
+
+  /**
    * Tests an email message without the 'Subject' header field.
    */
   public function doTestNoSubjectDisplay() {
@@ -235,24 +282,84 @@ just because I have no mailbox outside my house.');
   }
 
   /**
+   * Tests the header fields for HTML-only email message example.
+   */
+  public function doTestHtmlOnlyHeaderFields() {
+    $raw_html_only = $this->getMessageFileContents('/simple/html-text.eml');
+    $this->processRawMessage($raw_html_only);
+    $event = $this->getLastEventByMachinename('process');
+
+    // Check the HTML-only header fields for 'full' view mode.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    $this->assertAddressHeaderField('From', 'bob@example.com', 'Bob');
+    $this->assertAddressHeaderField('To', 'alice@example.com', 'Alice');
+    $this->assertElementHeaderField('Date', '2016-10-29 00:32:00');
+    $this->assertElementHeaderField('Received', '2016-10-28 23:41:00');
+    $this->assertElementHeaderField('Subject', 'Happy Birthday!');
+
+    // Check the HTML-only header fields for 'teaser' view mode.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
+    $this->assertAddressHeaderField('From', 'bob@example.com', 'Bob');
+    $this->assertAddressHeaderField('To', 'alice@example.com', 'Alice');
+    $this->assertNoElementHeaderField('Date', '2016-10-29 00:32:00');
+    $this->assertNoElementHeaderField('Received', '2016-10-28 23:41:00');
+  }
+
+  /**
    * Tests proper iteration and rendering of multipart message.
    */
   public function doTestMultipartAlternative() {
-    // @todo test the plain/html body of a mail message.
+    // @todo test the plain/html multipart body of a mail message.
+    // Move code from doTestSimpleEmailDisplay().
   }
 
   /**
    * Tests proper iteration and rendering of HTML-only message.
    */
   public function doTestHtmlOnlyBodyMessage() {
-    // @todo test the plain/html body of a mail message.
-  }
+    $raw_html_only = $this->getMessageFileContents('/simple/html-text.eml');
+    $this->processRawMessage($raw_html_only);
+    $event = $this->getLastEventByMachinename('process');
 
-  /**
-   * Tests proper iteration and rendering of unknown parts message.
-   */
-  public function doTestUnknownParts() {
-    // @todo test the unknown parts of a mail message.
+    // Check the HTML-only body fields for 'full' view mode.
+    // There should be two tabs since the plain text is generated from HTML.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    $this->assertRaw('<a href="#inmail-message__body__html">HTML</a>');
+    $this->assertRaw('<a href="#inmail-message__body__content">Plain</a>');
+    // Assert the markup inside 'HTML' tab.
+    $this->assertRawBody('HTML', '<div dir="ltr">
+  <p>Hey Alice,</p>
+  <p>Skype told me its your birthday today? Congratulations!</p>
+  <p>Wish I could be there and celebrate with you...</p>
+  <p>Sending you virtual cake, french cheese and champagne (without alcohol, just for you!) :P</p>
+  <p>Cheerious,</p>
+  <p>Bob</p>
+</div>');
+    // Assert new line separators are replaced with '<br />' tags.
+    $this->assertRawBody('Plain', 'Hey Alice,<br/>
+  Skype told me its your birthday today? Congratulations!<br/>
+  Wish I could be there and celebrate with you...<br/>
+  Sending you virtual cake, french cheese and champagne (without alcohol, just for you!) :P<br/>
+  Cheerious,<br/>
+  Bob');
+
+    // Check the HTML-only body fields for 'teaser' view mode.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
+    $this->assertRawBody('Subject', 'Happy Birthday!');
+    $this->assertNoRawBody('HTML', '<div dir="ltr">
+  <p>Hey Alice,</p>
+  <p>Skype told me its your birthday today? Congratulations!</p>
+  <p>Wish I could be there and celebrate with you...</p>
+  <p>Sending you virtual cake, french cheese and champagne (without alcohol, just for you!) :P</p>
+  <p>Cheerious,</p>
+  <p>Bob</p>
+</div>');
+    $this->assertRawBody('Plain', 'Hey Alice,
+  Skype told me its your birthday today? Congratulations!
+  Wish I could be there and celebrate with you...
+  Sending you virtual cake, french cheese and champagne (without alcohol, just for you!) :P
+  Cheerious,
+  Bob');
   }
 
   /**
@@ -277,44 +384,6 @@ just because I have no mailbox outside my house.');
     $this->assertNoRaw("<script>alert('xss_attack1')</script>");
     $this->assertNoRaw("<script>alert('xss_attack2')</script>");
     $this->assertNoRaw("<script>alert('xss_attack3')</script>");
-  }
-
-  /**
-   * Tests email rendering with multiple 'From' recipients.
-   */
-  public function doTestMultipleFromRecipients() {
-    $raw_missing_subject = $this->getMessageFileContents('/addresses/multiple-from.eml');
-    $this->processRawMessage($raw_missing_subject);
-    $event = $this->getLastEventByMachinename('process');
-    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
-    // Assert that we have all From recipients.
-    $this->assertAddressHeaderField('From', 'andy@example.com', 'Andy');
-    $this->assertAddressHeaderField('From', 'roger@example.com', 'Roger', 2);
-    $this->assertAddressHeaderField('From', 'rafael@example.com', 'Rafael', 3);
-    $this->assertAddressHeaderField('To', 'novak@example.com', 'Novak');
-    $this->assertAddressHeaderField('reply to', 'novak@example.com');
-  }
-
-  /**
-   * Tests the email with multiple Bcc recipients.
-   */
-  public function doTestMultipleBccRecipients() {
-    $raw_multipart = $this->getMessageFileContents('/addresses/multiple-bcc-recipients.eml');
-    \Drupal::state()->set('inmail.test.success', '');
-    $this->processRawMessage($raw_multipart);
-    $event = $this->getLastEventByMachinename('process');
-
-    // Assert all recipients are properly displayed in 'full' view mode.
-    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
-    $this->assertAddressHeaderField('From', 'bob@example.com', 'Bob');
-    $this->assertAddressHeaderField('To', 'alice@example.com', 'Alice');
-    $this->assertAddressHeaderField('Bcc', 'big_brother@example.com', 'BigBrother');
-    $this->assertAddressHeaderField('Bcc', 'president@example.com', 'President', 2);
-    $this->assertAddressHeaderField('Bcc', 'vp@example.com', 'ViceP', 3);
-
-    // Check that we are not displaying Bcc in teaser mode.
-    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
-    $this->assertNoElementHeaderField('Bcc');
   }
 
 }
