@@ -54,7 +54,7 @@ class InmailEmailDisplayWebTest extends InmailWebTestBase {
     $this->doTestNoSubjectDisplay();
     $this->doTestHtmlOnlyHeaderFields();
     // Body message tests.
-    $this->doTestMultipartAlternative();
+    $this->doTestMultipartAlternativeHtmlPlaintext();
     $this->doTestHtmlOnlyBodyMessage();
     $this->doTestXssEmailDisplay();
   }
@@ -66,7 +66,6 @@ class InmailEmailDisplayWebTest extends InmailWebTestBase {
     $raw_multipart = $this->getMessageFileContents('normal-forwarded.eml');
     $this->processRawMessage($raw_multipart);
     $event = $this->getLastEventByMachinename('process');
-    $message = $this->parser->parseMessage($raw_multipart);
 
     // Check if the header fields are properly displayed in 'teaser' view mode.
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
@@ -77,16 +76,13 @@ class InmailEmailDisplayWebTest extends InmailWebTestBase {
     $this->assertNoElementHeaderField('Received', '2014-10-21 11:21:02');
     $this->assertElementHeaderField('Subject', 'BMH testing sample');
     $this->assertNoLink('Unsubscribe');
-
-    // Check if there is a plain and no HTML message in 'teaser' view mode.
+    // Assert only 'plain-text' raw element is present.
     $this->assertNoText('just because I have no HTML mailbox');
     $this->assertRawBody('Plain', 'Hey, it would be really bad for a mail handler to classify this as a bounce
 just because I have no mailbox outside my house.');
 
     // Check if the header fields are properly displayed in 'full' view mode.
     $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
-
-    // Parties involved.
     $this->assertAddressHeaderField('From', 'arild@masked1.se', 'Arild Matsson');
     $this->assertAddressHeaderField('To', 'inmail_test@example.com', 'Arild Matsson');
     $this->assertAddressHeaderField('CC', 'inmail_other@example.com', 'Someone Else');
@@ -95,22 +91,15 @@ just because I have no mailbox outside my house.');
     $this->assertElementHeaderField('Subject', 'BMH testing sample');
     // @todo use assertUnsubscribeHeaderField()/assertNoUnsubscribeHeaderField()?
     $this->assertLink('Unsubscribe');
-
-    // Check if the body messages are properly displayed in 'full' view mode.
-    $this->assertRawBody('HTML', '<div dir="ltr">Hey, it would be really bad for a mail handler to classify this as a bounce just because I have no HTML mailbox outside my house.</div>');
-    $this->assertRawBody('Plain', 'Hey, it would be really bad for a mail handler to classify this as a bounce<br/>
-just because I have no mailbox outside my house.');
-
-    // @todo separate this (multi)part to another method?
-    // Assert message plain-text/HTML parts.
-    $this->assertText($message->getPart(0)->getDecodedBody());
-    $this->assertText(htmlspecialchars($message->getPlainText()));
+    // Assert both 'plain-text' and 'HTML' body parts in 'full' view mode.
+    $this->assertRaw('<a href="#inmail-message__body__html">HTML</a>');
+    $this->assertRaw('<a href="#inmail-message__body__content">Plain</a>');
     // Script tags are removed for security reasons.
     $this->assertRawBody('HTML', '<div dir="ltr">Hey, it would be really bad for a mail handler to classify this as a bounce just because I have no HTML mailbox outside my house.</div>');
     $this->assertRawBody('Plain', 'Hey, it would be really bad for a mail handler to classify this as a bounce<br/>
 just because I have no mailbox outside my house.');
-    // @todo add test for unknown parts?
-    // Testing the access to past event created by non-inmail module.
+
+    // Test the access to past event created by non-inmail module.
     // @see \Drupal\inmail_test\Controller\EmailDisplayController.
     $event = past_event_create('past', 'test1', 'Test log entry');
     $event->save();
@@ -308,9 +297,28 @@ just because I have no mailbox outside my house.');
   /**
    * Tests proper iteration and rendering of multipart message.
    */
-  public function doTestMultipartAlternative() {
-    // @todo test the plain/html multipart body of a mail message.
-    // Move code from doTestSimpleEmailDisplay().
+  public function doTestMultipartAlternativeHtmlPlaintext() {
+    $raw_multipart = $this->getMessageFileContents('/simple/multipart-alternative-html-plaintext.eml');
+    $this->processRawMessage($raw_multipart);
+    $event = $this->getLastEventByMachinename('process');
+
+    // Check message plain-text/HTML body parts in 'full' view mode.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/full');
+    $this->assertRaw('<a href="#inmail-message__body__html">HTML</a>');
+    $this->assertRaw('<a href="#inmail-message__body__content">Plain</a>');
+    // Assert the markup inside 'HTML' tab.
+    $this->assertRawBody('HTML', '<div dir="ltr"><div>Hello my dear Alice! I am sending you this wonderful HTML greeting from El Dorado.</div></div>');
+    // Assert new line separator is replaced with '<br/>' tag in 'Plain' tab.
+    $this->assertRawBody('Plain', 'Hello my dear Alice! I am sending you this wonderful greeting from El<br/>
+Dorado.');
+
+    // Check message plain-text/HTML body parts in 'teaser' view mode.
+    $this->drupalGet('admin/inmail-test/email/' . $event->id() . '/teaser');
+    $this->assertRawBody('Subject', 'Multipart-alternative HTML');
+    // Assert only 'plain-text' raw element is present.
+    $this->assertNoRawBody('HTML', 'this wonderful HTML greeting from El Dorado');
+    $this->assertRawBody('Plain', 'Hello my dear Alice! I am sending you this wonderful greeting from El
+Dorado.');
   }
 
   /**
