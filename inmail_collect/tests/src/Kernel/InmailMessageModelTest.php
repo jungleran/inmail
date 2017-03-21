@@ -29,6 +29,7 @@ class InmailMessageModelTest extends KernelTestBase {
     'collect',
     'collect_common',
     'inmail_test',
+    'hal',
     'rest',
     'serialization',
   ];
