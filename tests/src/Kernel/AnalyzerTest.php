@@ -104,13 +104,12 @@ class AnalyzerTest extends KernelTestBase {
     }
 
     // Try to ensure context on non-existing context with invalid data type.
-    $exception_message = 'The "invalid_data_type" plugin does not exist.';
+    $exception_message_prefix = 'The "invalid_data_type" plugin does not exist. Valid plugin IDs for Drupal\Core\TypedData\TypedDataManager are:';
     try {
       $result->ensureContext('non_existing_context', 'invalid_data_type');
-      $this->fail($exception_message);
     }
     catch (\Exception $e) {
-      $this->assertEquals($exception_message, $e->getMessage());
+      $this->assertStringStartsWith($exception_message_prefix, $e->getMessage());
     }
   }
 
