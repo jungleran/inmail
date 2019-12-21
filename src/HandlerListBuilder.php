@@ -78,4 +78,5 @@ class HandlerListBuilder extends ConfigEntityListBuilder {
     $operations['edit']['title'] = $this->t('Configure');
     return $operations;
   }
+
 }

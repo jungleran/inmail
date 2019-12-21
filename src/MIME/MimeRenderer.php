@@ -27,11 +27,11 @@ class MimeRenderer {
    */
   public function renderEntity(MimeEntityInterface $entity, $index = NULL) {
     // Enclose entity in a <details> element.
-    $output = array(
+    $output = [
       '#type' => 'details',
       '#title' => $this->t('(No subject)'),
       '#open' => TRUE,
-    );
+    ];
 
     // Set the details summary.
     if ($subject = $entity->getHeader()->getFieldBody('Subject')) {
@@ -66,7 +66,7 @@ class MimeRenderer {
    * Renders each existing header field of the given set.
    */
   public function renderHeaderFields(MimeEntityInterface $entity, array $field_names) {
-    $headers = array();
+    $headers = [];
     foreach ($field_names as $field_name) {
       if ($entity->getHeader()->getFieldBody($field_name)) {
         $field_name_clean = str_replace('-', '_', strtolower($field_name));
@@ -81,11 +81,11 @@ class MimeRenderer {
    */
   public function renderHeaderField(MimeEntityInterface $entity, $field_name) {
     $field_body = $entity->getHeader()->getFieldBody($field_name);
-    return array(
+    return [
       '#type' => 'item',
       '#title' => $this->t($field_name),
       '#markup' => htmlentities($field_body),
-    );
+    ];
   }
 
   /**
@@ -96,15 +96,15 @@ class MimeRenderer {
     switch ($content_type['type']) {
       case 'text':
         if ($content_type['subtype'] == 'html') {
-          // Content-Type: text/html
-          return array('#markup' => Xss::filter($entity->getDecodedBody(), $this->getAllowedHtmlTags()));
+          // Content-Type: text/html.
+          return ['#markup' => Xss::filter($entity->getDecodedBody(), $this->getAllowedHtmlTags())];
         }
-        // Content-Type: text/*
-        return array(
+        // Content-Type: text/*.
+        return [
           '#prefix' => '<pre>',
           '#markup' => htmlentities($entity->getDecodedBody()),
           '#suffix' => '</pre>',
-        );
+        ];
 
       default:
         return $this->renderHeaderFields($entity, ['Content-Id']);
@@ -118,12 +118,12 @@ class MimeRenderer {
    *   A list of HTML element names.
    */
   public function getAllowedHtmlTags() {
-    return array(
+    return [
       // Tags in Xss::filter() default parameters.
       'a', 'em', 'strong', 'cite', 'blockquote', 'code', 'ul', 'ol', 'li', 'dl', 'dt', 'dd',
       // Additionally allowed tags.
       'table', 'tr', 'th', 'td', 'img', 'style',
-    );
+    ];
   }
 
 }

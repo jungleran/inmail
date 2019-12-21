@@ -9,6 +9,7 @@ use Drupal\Core\TypedData\DataDefinition;
  * Data definition class for the inmail_mailbox datatype.
  */
 class MailboxDefinition extends ComplexDataDefinitionBase {
+
   /**
    * {@inheritdoc}
    */

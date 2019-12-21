@@ -3,7 +3,6 @@
 namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\inmail\Entity\DelivererConfig;
-use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 use Drupal\inmail\Tests\DelivererTestTrait;
 use Drupal\KernelTests\KernelTestBase;
 
@@ -35,14 +34,14 @@ class DelivererTest extends KernelTestBase {
     // Setup fetcher.
     $id = $this->randomMachineName();
     $deliverer_config = DelivererConfig::create(
-      array(
+      [
         'id' => $id,
         'plugin' => 'test_fetcher',
-      ));
+      ]);
     $deliverer_config->setConfiguration(['config_id' => $id]);
     $deliverer_config->save();
 
-    /** @var FetcherInterface $plugin */
+    /** @var \Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface $plugin */
     $plugin = $deliverer_config->getPluginInstance();
 
     // Check numbers after update.
@@ -50,7 +49,7 @@ class DelivererTest extends KernelTestBase {
     $plugin = DelivererConfig::load($deliverer_config->id())->getPluginInstance();
     $this->assertEquals(250, $plugin->getTotalCount());
     $this->assertEquals(100, $plugin->getUnprocessedCount());
-    $this->assertEquals(null, $plugin->getProcessedCount());
+    $this->assertEquals(NULL, $plugin->getProcessedCount());
 
     // Cron should trigger the fetcher.
     /** @var \Drupal\Core\CronInterface $cron */

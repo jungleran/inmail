@@ -21,7 +21,7 @@ class ResultKeeperHandler extends HandlerBase {
    * {@inheritdoc}
    */
   public function help() {
-    return array();
+    return [];
   }
 
   /**

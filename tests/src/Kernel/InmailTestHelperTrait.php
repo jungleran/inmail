@@ -5,7 +5,7 @@ namespace Drupal\Tests\inmail\Kernel;
 /**
  * Provides common helper methods for Inmail testing.
  *
- * All classes using this trait should annotate @requires module past_db
+ * All classes using this trait should annotate @requires module past_db.
  */
 trait InmailTestHelperTrait {
 

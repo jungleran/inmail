@@ -120,14 +120,14 @@ class InmailMailmuteTest extends KernelTestBase {
 
     // Some bounce result statuses to test.
     /** @var \Drupal\inmail\DSNStatus[] $statuses */
-    $statuses = array(
+    $statuses = [
       // Not a bounce.
       new DSNStatus(2, 0, 0),
       // Soft bounce (temporarily unavailable).
       new DSNStatus(4, 0, 0),
       // Hard bounce (unexisting addres etc).
       new DSNStatus(5, 0, 0),
-    );
+    ];
 
     foreach ($statuses as $status) {
       // Set the user's state to Persistent send.
@@ -156,7 +156,7 @@ class InmailMailmuteTest extends KernelTestBase {
 
       // Check that the state did not change.
       $new_state = $sendstate_manager->getState($this->user->getEmail());
-      $message = SafeMarkup::format('Status %status results in state %state', array('%status' => $status->getCode(), '%state' => $new_state->getPluginId()));
+      $message = SafeMarkup::format('Status %status results in state %state', ['%status' => $status->getCode(), '%state' => $new_state->getPluginId()]);
       $this->assertEqual($new_state->getPluginId(), 'persistent_send', $message);
     }
   }
@@ -175,7 +175,7 @@ class InmailMailmuteTest extends KernelTestBase {
     // Set soft_threshold to non-default value.
     /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
     $handler_config = HandlerConfig::load('mailmute');
-    $handler_config->setConfiguration(array('soft_threshold' => 3))->save();
+    $handler_config->setConfiguration(['soft_threshold' => 3])->save();
 
     // Process the configured number of bounces.
     for ($count = 1; $count < 3; $count++) {
@@ -212,10 +212,10 @@ class InmailMailmuteTest extends KernelTestBase {
       $this->user->delete();
     }
     // Create new user.
-    $this->user = User::create(array(
+    $this->user = User::create([
       'name' => 'user',
       'mail' => 'user@example.org',
-    ));
+    ]);
     $this->user->save();
   }
 

@@ -40,7 +40,7 @@ class IncomingMailsSensorPlugin extends SensorPluginBase {
       if ($this->sensorConfig->getSetting('count_type') == 'processed') {
         $total += $deliverer->getPluginInstance()->getProcessedCount();
       }
-      else if ($deliverer->getPluginInstance() instanceof FetcherInterface){
+      elseif ($deliverer->getPluginInstance() instanceof FetcherInterface) {
         $total += $deliverer->getPluginInstance()->getUnprocessedCount();
       }
     }
@@ -60,7 +60,7 @@ class IncomingMailsSensorPlugin extends SensorPluginBase {
     if ($this->sensorConfig->getSetting('count_type') == 'unprocessed') {
       // Find active fetchers.
       $fetchers_ids = [];
-      foreach ($deliverers as $deliverer){
+      foreach ($deliverers as $deliverer) {
         if ($deliverer->getPluginInstance() instanceof FetcherInterface) {
           $fetchers_ids[$deliverer->id()] = $deliverer->label();
         }

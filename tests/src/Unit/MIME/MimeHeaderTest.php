@@ -63,7 +63,8 @@ class MimeHeaderTest extends UnitTestCase {
           new MimeHeaderField(
             'Content-Type',
             'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"'
-          )]),
+          ),
+        ]),
         TRUE,
       ],
       [
@@ -71,7 +72,8 @@ class MimeHeaderTest extends UnitTestCase {
           new MimeHeaderField(
             'content-type',
             'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"'
-          )]),
+          ),
+        ]),
         TRUE,
       ],
       [
@@ -94,7 +96,7 @@ class MimeHeaderTest extends UnitTestCase {
           new MimeHeaderField(
             'Content-Type',
             'Multipart/Report; report-type=delivery-status; boundary="========/528515BF03161E46/smtp-in13.han.skanova.net"'
-          )
+          ),
         ],
           "Content-Type: Multipart/Report; report-type=delivery-status;\n"
           . " boundary=\"========/528515BF03161E46/smtp-in13.han.skanova.net\""
@@ -112,7 +114,8 @@ class MimeHeaderTest extends UnitTestCase {
             // The ü in this string triggers base64 encoding in toString. Encoded
             // string wraps within the 78 char line limit.
             "Alle Menschen sind frei und gleich an Würde und Rechten geboren. Sie sind mit Vernunft und Gewissen begabt und sollen einander im Geist der Brüderlichkeit begegnen."
-          )],
+          ),
+        ],
           "Subject: =?UTF-8?B?QWxsZSBNZW5zY2hlbiBzaW5kIGZyZWkgdW5kIGdsZWljaCBhbiBX?=\n"
           . " =?UTF-8?B?w7xyZGUgdW5kIFJlY2h0ZW4gZ2Vib3Jlbi4gU2llIHNpbmQgbWl0IFZlcm51bmY=?=\n"
           . " =?UTF-8?B?dCB1bmQgR2V3aXNzZW4gYmVnYWJ0IHVuZCBzb2xsZW4gZWluYW5kZXIgaW0gR2U=?=\n"
@@ -160,7 +163,8 @@ class MimeHeaderTest extends UnitTestCase {
       new MimeHeaderField(
         'Subject',
         'I am Your Subject Body'
-      )]);
+      ),
+    ]);
     $this->assertEquals($header->getFieldBodies('Subject')[0], "I am Your Subject Body");
     $this->assertEquals(count($header->getFieldBodies('Subject')), 1);
   }
@@ -177,7 +181,8 @@ class MimeHeaderTest extends UnitTestCase {
       new MimeHeaderField(
         'Content-Type',
         'Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren'
-      )]);
+      ),
+    ]);
     $this->assertEquals('Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren', $header->getFieldBody('Content-Type'));
   }
 
@@ -189,7 +194,8 @@ class MimeHeaderTest extends UnitTestCase {
       new MimeHeaderField(
         'Content-Type',
         'Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren'
-      )],
+      ),
+    ],
       'Content-Type: Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren'
     );
     $this->assertEquals($header->getRaw(), 'Content-Type: Gruezi ! Alle Menschen sind frei und gleich an Würde und Rechten geboren');

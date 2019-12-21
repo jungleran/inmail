@@ -2,11 +2,7 @@
 
 namespace Drupal\inmail_test\Plugin\inmail\Deliverer;
 
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherBase;
-use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Delivers a dummy message and counts invocations.
@@ -67,7 +63,7 @@ class TestFetcher extends FetcherBase {
       // MimeMessage must be fully valid, so it can pass all validations and trigger
       // some functions (i.e. success()).
       return [
-        "From: FooBar\nDate: Tue, 23 Aug 2016 17:48:6 +0600\nSubject: Dummy message\n\nMessage Body"
+        "From: FooBar\nDate: Tue, 23 Aug 2016 17:48:6 +0600\nSubject: Dummy message\n\nMessage Body",
       ];
     }
   }

@@ -26,7 +26,7 @@ class AnalyzerController extends ControllerBase {
    * Returns a title for the analyzer configuration edit page.
    */
   public function titleEdit(AnalyzerConfigInterface $inmail_analyzer) {
-    return $this->t('Configure %label analyzer', array('%label' => $inmail_analyzer->label()));
+    return $this->t('Configure %label analyzer', ['%label' => $inmail_analyzer->label()]);
   }
 
   /**

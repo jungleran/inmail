@@ -25,14 +25,14 @@ class ProcessorResult implements ProcessorResultInterface {
    *
    * @var \Drupal\inmail\AnalyzerResultInterface[]
    */
-  protected $analyzerResults = array();
+  protected $analyzerResults = [];
 
   /**
    * Logged messages.
    *
    * @var array[][]
    */
-  protected $log = array();
+  protected $log = [];
 
   /**
    * Is success.
@@ -58,7 +58,7 @@ class ProcessorResult implements ProcessorResultInterface {
   /**
    * Creates a new analyzer result instance.
    */
-  public function __construct () {
+  public function __construct() {
     $this->analyzerResults[DefaultAnalyzerResult::TOPIC] = new DefaultAnalyzerResult();
   }
 
@@ -99,7 +99,7 @@ class ProcessorResult implements ProcessorResultInterface {
   /**
    * {@inheritdoc}
    */
-  public function log($source, $message, array $placeholders = array(), $severity = RfcLogLevel::NOTICE) {
+  public function log($source, $message, array $placeholders = [], $severity = RfcLogLevel::NOTICE) {
     $this->log[$source][] = [
       'message' => $message,
       'placeholders' => $placeholders,

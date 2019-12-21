@@ -138,7 +138,7 @@ class MimeMultipartEntityTest extends UnitTestCase {
       "From: Nathaniel Borenstein <nsb@bellcore.com>\nTo: Ned Freed <ned@innosoft.com>\n" .
       "Date: Sun, 21 Mar 1993 23:56:48 -0800 (PST)\nSubject: Sample message\n" .
       "MIME-Version: 1.0\nContent-type: multipart/mixed; boundary=\"simple boundary\""
-  );
+    );
   }
 
   /**

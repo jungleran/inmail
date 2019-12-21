@@ -9,7 +9,6 @@ use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\MIME\MimeParseException;
 use Drupal\inmail\MIME\MimeParserInterface;
-use Drupal\inmail\Plugin\DataType\BounceData;
 use Drupal\user\Entity\User;
 use Drupal\Core\Logger\RfcLogLevel;
 
@@ -129,7 +128,7 @@ class MessageProcessor implements MessageProcessorInterface {
       $default_result->setAccount(User::getAnonymousUser());
 
       $analyzer_configs = $this->analyzerStorage->loadMultiple();
-      uasort($analyzer_configs, array($this->analyzerStorage->getEntityType()->getClass(), 'sort'));
+      uasort($analyzer_configs, [$this->analyzerStorage->getEntityType()->getClass(), 'sort']);
       foreach ($analyzer_configs as $analyzer_config) {
         /** @var \Drupal\inmail\Entity\AnalyzerConfig $analyzer_config */
         if ($analyzer_config->status() && $analyzer_config->isAvailable()) {
@@ -181,7 +180,7 @@ class MessageProcessor implements MessageProcessorInterface {
       foreach ($result->readLog() as $source => $log) {
         $messages = [];
         foreach ($log as $item) {
-          if ($item['severity']>=RfcLogLevel::ERROR) {
+          if ($item['severity'] >= RfcLogLevel::ERROR) {
             $this->loggerChannel->log($item['severity'], $item['message'], $item['placeholders']);
           }
           // Apply placeholders.
@@ -203,11 +202,12 @@ class MessageProcessor implements MessageProcessorInterface {
    *
    * Skip report if processed mail is a bounce.
    *
-   * @param $result \Drupal\inmail\ProcessorResult
-   *  The processor result object.
-   * @param $message \Drupal\inmail\MIME\MimeMessageInterface $original
+   * @param \Drupal\inmail\ProcessorResult $result
+   *   The processor result object.
+   * @param $message
+   *   \Drupal\inmail\MIME\MimeMessageInterface $original
    *   Received message.
-   * @param $deliverer \Drupal\inmail\Entity\DelivererConfig
+   * @param \Drupal\inmail\Entity\DelivererConfig $deliverer
    *   The Deliverer configuration that delivered the messages.
    */
   public function sendMessageReport($result, $message, $deliverer) {
@@ -215,7 +215,7 @@ class MessageProcessor implements MessageProcessorInterface {
     /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
     $default_result = $result->getAnalyzerResult();
     if ($default_result->hasContext('bounce')) {
-      /** @var BounceData $bounce_data */
+      /** @var \Drupal\inmail\Plugin\DataType\BounceData $bounce_data */
       $bounce_data = $default_result->getContext('bounce')->getContextData();
       if ($bounce_data->isBounce()) {
         return;
@@ -250,4 +250,5 @@ class MessageProcessor implements MessageProcessorInterface {
     }
     return $results;
   }
+
 }

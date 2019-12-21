@@ -31,13 +31,13 @@ class CountingBounces extends BounceSendstateBase {
   public function display() {
     $display = parent::display();
 
-    $display['label'] = array(
-      '#markup' => $this->t($this->getThreshold() ? '@label (@count of @threshold received)' : '@label (@count received, no threshold set)', array(
+    $display['label'] = [
+      '#markup' => $this->t($this->getThreshold() ? '@label (@count of @threshold received)' : '@label (@count received, no threshold set)', [
         '@label' => $this->getPluginDefinition()['label'],
         '@count' => $this->getUnprocessedCount(),
         '@threshold' => $this->getThreshold(),
-      )),
-    );
+      ]),
+    ];
 
     return $display;
   }

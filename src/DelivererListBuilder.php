@@ -8,7 +8,6 @@ use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -94,7 +93,7 @@ class DelivererListBuilder extends ConfigEntityListBuilder {
     $plugin_id = $entity->getPluginId();
     if ($this->delivererManager->hasDefinition($plugin_id)) {
       $row['plugin'] = $this->delivererManager->getDefinition($plugin_id)['label'];
-      /** @var DelivererInterface $plugin */
+      /** @var \Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface $plugin */
       $plugin = $this->delivererManager->createInstance($plugin_id, $entity->getConfiguration());
 
       $row['processed_count'] = [
@@ -133,4 +132,5 @@ class DelivererListBuilder extends ConfigEntityListBuilder {
     $operations['edit']['title'] = $this->t('Configure');
     return $operations;
   }
+
 }

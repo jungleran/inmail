@@ -49,7 +49,7 @@ class InmailConversationWebTest extends InmailWebTestBase {
    * 05 --- 1479984876@mail.gmail.com, Re: Re: Re: Original conversation message
    * 06 --- 1479984891@mail.gmail.com, Fw: Re: Re: Original conversation message
    * 01 - 1479975222@mail.gmail.com, Re: Original conversation message
-   * 04 -- 1479975856@mail.gmail.com, Re: Re: Original conversation message
+   * 04 -- 1479975856@mail.gmail.com, Re: Re: Original conversation message.
    */
   public function testConversationsEmailDisplay() {
     // Alice sends the original email conversation message to Bob and Caroline.

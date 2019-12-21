@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Drush commands for the Inmail module.
@@ -7,8 +8,6 @@
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\inmail\ProcessorResultInterface;
-use Drupal\Component\Render\FormattableMarkup;
 
 /**
  * @addtogroup processing
@@ -28,26 +27,26 @@ use Drupal\Component\Render\FormattableMarkup;
  * Implements hook_drush_commands().
  */
 function inmail_drush_command() {
-  $items = array();
+  $items = [];
 
   // @todo Drush command option to specify analyzers/handlers https://www.drupal.org/node/2379927
-  $items['inmail-process'] = array(
+  $items['inmail-process'] = [
     'description' => 'Process a mail message provided through STDIN, or one or more mail messages by filename.',
-    'arguments' => array(
+    'arguments' => [
       'deliverer' => 'The ID of a Drush Deliverer plugin configuration.',
       'file [file2 ...]' => 'One or more file names to parse as messages. If no filenames are given, a message is read from STDIN.',
-    ),
-    'examples' => array(
+    ],
+    'examples' => [
       'cat 1.eml | drush inmail-process drush_deliverer' => 'Process a message through STDIN',
       'drush inmail-process drush_deliverer 1.eml 2.eml 3.eml' => 'Process each of the messages contained by the three files',
-    ),
-    'drupal dependencies' => array('inmail'),
-  );
+    ],
+    'drupal dependencies' => ['inmail'],
+  ];
 
-  $items['inmail-plugins'] = array(
+  $items['inmail-plugins'] = [
     'description' => 'Tell which plugins are being used for message delivery, analysis and handling.',
-    'drupal dependencies' => array('inmail'),
-  );
+    'drupal dependencies' => ['inmail'],
+  ];
 
   return $items;
 }
@@ -82,7 +81,7 @@ function drush_inmail_process() {
   }
 
   if (count($args) > 0) {
-    $raws = array();
+    $raws = [];
     foreach ($args as $filename) {
       $raws[] = file_get_contents($filename[0] == '/' ? $filename : __DIR__ . '/' . $filename);
     }
@@ -100,7 +99,7 @@ function drush_inmail_process() {
   }
   else {
     $raw = _inmail_get_piped_input();
-    /** @var ProcessorResultInterface $result */
+    /** @var \Drupal\inmail\ProcessorResultInterface $result */
     $result = $processor->process('unique_key', $raw, $deliverer);
     if (drush_get_option('verbose')) {
       if ($result) {

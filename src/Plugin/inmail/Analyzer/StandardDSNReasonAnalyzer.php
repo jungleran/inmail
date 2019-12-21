@@ -36,4 +36,5 @@ class StandardDSNReasonAnalyzer extends AnalyzerBase {
     // Save the human-readable bounce reason.
     $bounce_data->setReason(trim($message->getHumanPart()->getDecodedBody()));
   }
+
 }

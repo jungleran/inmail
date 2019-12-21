@@ -63,24 +63,24 @@ class InmailIntegrationTest extends WebTestBase {
    */
   public function testBounceFlow() {
     // A new user registers.
-    $register_edit = array(
+    $register_edit = [
       // Oh no, the email address was misspelled!
       'mail' => 'usre@example.org',
       'name' => 'user',
-    );
+    ];
     $this->drupalPostForm('user/register', $register_edit, 'Create new account');
     $this->assertText('Your account is currently pending approval by the site administrator.');
 
     // Admin activates the user, thereby sending an approval email.
-    $admin = $this->drupalCreateUser(array(
+    $admin = $this->drupalCreateUser([
       'administer users',
       'administer user display',
       'administer mailmute',
-    ));
+    ]);
     $this->drupalLogin($admin);
-    $approve_edit = array(
+    $approve_edit = [
       'status' => '1',
-    );
+    ];
     $this->drupalPostForm('user/2/edit', $approve_edit, 'Save');
     $this->assertMail('subject', 'Account details for user at Drupal (approved)');
 
@@ -133,10 +133,10 @@ class InmailIntegrationTest extends WebTestBase {
     $to_domain = explode('@', $to)[1];
 
     // Put together the headers.
-    $headers = $original_message['headers'] + array(
+    $headers = $original_message['headers'] + [
       'To' => $to,
       'Subject' => $subject,
-    );
+    ];
     foreach ($headers as $name => $body) {
       $headers[$name] = "$name: $body";
     }

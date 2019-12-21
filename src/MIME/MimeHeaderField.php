@@ -1,13 +1,10 @@
 <?php
-/**
- * A value object for header field instances.
- *
- * @ingroup mime
- */
 
 namespace Drupal\inmail\MIME;
 
-
+/**
+ *
+ */
 class MimeHeaderField {
 
   /**
@@ -30,7 +27,7 @@ class MimeHeaderField {
    * @param string $name
    *   Name of the header.
    * @param string $body
-   *   Body of the header
+   *   Body of the header.
    */
   public function __construct($name, $body) {
     $this->name = $name;

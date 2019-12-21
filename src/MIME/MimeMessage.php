@@ -46,11 +46,11 @@ class MimeMessage extends MimeEntity implements MimeMessageInterface {
    */
   public function getPlainText() {
     $content_fields = $this->getContentType();
-    $content_type = $content_fields['type'] . '/' . $content_fields['subtype'] ;
+    $content_type = $content_fields['type'] . '/' . $content_fields['subtype'];
     if ($content_type == 'text/plain') {
       return $this->getDecodedBody();
     }
-    else if ($content_type == 'text/html') {
+    elseif ($content_type == 'text/html') {
       return strip_tags($this->getDecodedBody());
     }
     return '';

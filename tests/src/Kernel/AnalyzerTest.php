@@ -5,10 +5,8 @@ namespace Drupal\Tests\inmail\Kernel;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\inmail\Entity\AnalyzerConfig;
-use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\Tests\DelivererTestTrait;
-use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\KernelTests\KernelTestBase;
 
@@ -26,7 +24,7 @@ class AnalyzerTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail', 'inmail_test', 'user', 'system');
+  public static $modules = ['inmail', 'inmail_test', 'user', 'system'];
 
   /**
    * {@inheritdoc}
@@ -58,7 +56,7 @@ class AnalyzerTest extends KernelTestBase {
     $processor = \Drupal::service('inmail.processor');
 
     AnalyzerConfig::create(['id' => 'test_analyzer', 'plugin' => 'test_analyzer'])->save();
-    HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
+    HandlerConfig::create(['id' => 'result_keeper', 'plugin' => 'result_keeper'])->save();
     // Reset the state to be sure that function is called in the test.
     $deliverer = $this->createTestDeliverer();
     $processor->process('unique_key', $raw, $deliverer);

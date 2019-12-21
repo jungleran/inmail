@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\inmail\Plugin\inmail\Deliverer;
+
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\inmail\InmailPluginBase;
 
@@ -41,7 +42,7 @@ abstract class DelivererBase extends InmailPluginBase implements DelivererInterf
    * {@inheritdoc}
    */
   public function calculateDependencies() {
-    return array();
+    return [];
   }
 
   /**
@@ -109,4 +110,5 @@ abstract class DelivererBase extends InmailPluginBase implements DelivererInterf
     $form_object = $form_state->getFormObject();
     $this->configuration['config_id'] = $form_object->getEntity()->id();
   }
+
 }

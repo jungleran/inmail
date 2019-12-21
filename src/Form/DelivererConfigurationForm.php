@@ -52,5 +52,4 @@ class DelivererConfigurationForm extends PluginConfigurationForm {
 
   }
 
-
 }

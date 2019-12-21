@@ -5,7 +5,7 @@ namespace Drupal\inmail;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 
 /**
- * Interface for Plugin configuration
+ * Interface for Plugin configuration.
  *
  * @package Drupal\inmail
  */

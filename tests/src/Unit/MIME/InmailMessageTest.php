@@ -90,7 +90,7 @@ class InmailMessageTest extends InmailUnitTestBase {
           ),
         ]),
         NULL,
-      ]
+      ],
     ];
   }
 

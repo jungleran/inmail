@@ -47,7 +47,7 @@ class MimeHeader {
    * @param string $raw
    *   (optional) raw value, default value is NULL.
    */
-  public function __construct($fields = array() , $raw = NULL) {
+  public function __construct($fields = [], $raw = NULL) {
     foreach ($fields as $field) {
       if (!empty($field->getName()) && !empty($field->getBody())) {
         $this->addField($field, FALSE);
@@ -100,7 +100,7 @@ class MimeHeader {
    * of this method to ensure that added fields conform to standards as desired.
    *
    * @param \Drupal\inmail\MIME\MimeHeaderField $field
-   *   The Field
+   *   The Field.
    * @param bool $prepend
    *   If TRUE, the header is added to the beginning of the header, otherwise it
    *   is added to the end. Defaults to TRUE.
@@ -176,7 +176,7 @@ class MimeHeader {
    *   The header as a string, terminated by a newline.
    */
   public function toString() {
-    $header = array();
+    $header = [];
     foreach ($this->fields as $field) {
       // Encode non-7bit body. If body is 7bit, mimeHeaderEncode() does nothing.
       $body = static::mimeHeaderEncode($field->getBody(), strlen($field->getName()));
@@ -213,7 +213,8 @@ class MimeHeader {
    */
   public static function mimeHeaderEncode($string, $field_name_length = 0) {
     if (preg_match('/[^\x20-\x7E]/', $string)) {
-      $chunk_size_full = 47; // floor((75 - strlen("=?UTF-8?B??=")) * 0.75);
+      // floor((75 - strlen("=?UTF-8?B??=")) * 0.75);.
+      $chunk_size_full = 47;
       // Adapt chunk size to field name.
       $chunk_size = max(0, $chunk_size_full - $field_name_length);
       $len = strlen($string);

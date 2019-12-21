@@ -64,7 +64,7 @@ class AnalyzerListBuilder extends DraggableListBuilder {
     }
 
     $row['label'] = $this->getLabel($entity);
-    $row['plugin'] = array('#markup' => $plugin_label);
+    $row['plugin'] = ['#markup' => $plugin_label];
     return $row + parent::buildRow($entity);
   }
 
@@ -83,4 +83,5 @@ class AnalyzerListBuilder extends DraggableListBuilder {
   public function getFormId() {
     return 'inmail_analyzer_list';
   }
+
 }

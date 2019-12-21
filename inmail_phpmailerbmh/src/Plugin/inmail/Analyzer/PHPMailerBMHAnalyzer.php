@@ -37,7 +37,7 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
    *   An associative array with rule_cat values as keys and DSN status codes
    *   (strings) as keys.
    */
-  protected static $rulecatStatusMap = array(
+  protected static $rulecatStatusMap = [
     // Sender blocked.
     'antispam' => '5.7.1',
     // "AutoReply message from...".
@@ -61,7 +61,7 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
     // Unknown user.
     'unknown' => '5.1.1',
     // Deliberately excluding 'unrecognized'.
-  );
+  ];
 
   /**
    * {@inheritdoc}

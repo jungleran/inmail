@@ -6,7 +6,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\inmail\MIME\MimeMessageInterface;
-use Drupal\inmail\Plugin\DataType\BounceData;
 use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 use Drupal\inmail\ProcessorResultInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -57,10 +56,10 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
    * {@inheritdoc}
    */
   public function help() {
-    return array(
+    return [
       '#type' => 'item',
       '#markup' => $this->t('Messages are forwarded with minimal modification. The header <code>X-Inmail-Forwarded</code> is added, and the <code>To</code> is changed to match the moderator address. Note that the Mail Transfer Agent (MTA) may add a few more headers when sending the message.'),
-    );
+    ];
   }
 
   /**
@@ -75,7 +74,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
 
     /** @var \Drupal\inmail\DefaultAnalyzerResult $result */
     $result = $processor_result->getAnalyzerResult();
-    /** @var BounceData $bounce_data */
+    /** @var \Drupal\inmail\Plugin\DataType\BounceData $bounce_data */
     $bounce_data = $result->ensureContext('bounce', 'inmail_bounce');
 
     // Cancel if the message is successfully classified.
@@ -87,13 +86,13 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
     // This is for the off chance that we identified the intended recipient
     // but not a bounce status code.
     if ($bounce_data->getRecipient() == $moderator) {
-      $processor_result->log('ModeratorForwardHandler', 'Moderator %address is bouncing.', array('%address' => $moderator));
+      $processor_result->log('ModeratorForwardHandler', 'Moderator %address is bouncing.', ['%address' => $moderator]);
       return;
     }
 
     // Cancel and make noise if this message rings a bell.
     if ($message->getHeader()->getFieldBody('X-Inmail-Forwarded')) {
-      $processor_result->log('ModeratorForwardHandler', 'Refused to forward the same email twice (%subject).', array('%subject' => $message->getSubject()));
+      $processor_result->log('ModeratorForwardHandler', 'Refused to forward the same email twice (%subject).', ['%subject' => $message->getSubject()]);
       return;
     }
 
@@ -101,16 +100,16 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
     // DirectMail is set as mail plugin on install.
     // MimeMessage is composed in inmail_mail().
     $plugin_instance = $processor_result->getDeliverer()->getPluginInstance();
-    $params = array(
+    $params = [
       'original' => $message,
       'plugin_id' => $processor_result->getDeliverer()->getPluginId(),
       'deliverer_id' => $processor_result->getDeliverer()->id(),
-    );
+    ];
     if ($plugin_instance instanceof FetcherInterface) {
       $params['host_name'] = $plugin_instance->getHost();
     }
     $this->mailManager->mail('inmail', 'handler_moderator_forward', $moderator, \Drupal::languageManager()->getDefaultLanguage(), $params);
-    $processor_result->log('ModeratorForwardHandler', 'Email forwarded to %address.', array('%address' => $moderator));
+    $processor_result->log('ModeratorForwardHandler', 'Email forwarded to %address.', ['%address' => $moderator]);
   }
 
   /**
@@ -137,9 +136,9 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'moderator' => '',
-    );
+    ];
   }
 
   /**
@@ -149,13 +148,13 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
     $form = parent::buildConfigurationForm($form, $form_state);
 
     // @todo Validate email: https://www.drupal.org/node/2381855
-    $form['moderator'] = array(
+    $form['moderator'] = [
       '#type' => 'email',
       '#title' => $this->t('Moderator address'),
       '#description' => $this->t('Unclassified bounce messages are forwarded to this email address. <strong>Important:</strong> If using <em>Mailmute</em>, make sure this address does not belong to a user, since that will make the forward subject to that user\'s send state.'),
       '#description_position' => 'after',
       '#default_value' => $this->getModerator(),
-    );
+    ];
 
     return $form;
   }

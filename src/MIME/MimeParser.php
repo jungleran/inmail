@@ -231,7 +231,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
   protected function parseDsn(MimeMultipartEntity $multipart_entity) {
     // Parse the second part, which contains groups of fields having the
     // same syntax as header fields.
-    $dsn_fields = array();
+    $dsn_fields = [];
     $body = trim($multipart_entity->getPart(1)->getBody());
     if (strpos($body, "\n\n") === FALSE) {
       throw new MimeParseException('Blank line missing in delivery-status part');

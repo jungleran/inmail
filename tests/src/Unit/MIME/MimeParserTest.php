@@ -47,25 +47,30 @@ class MimeParserTest extends InmailUnitTestBase {
       // Message has Content-Length that is larger than actual length of body.
       ["To: sip:j.user@example.com
       From: sip:caller@example.net;tag=93942939o2
-      Content-Length: 9999"],
+      Content-Length: 9999",
+      ],
       // MimeMessage has Negative value for Content-Length.
       ["To: sip:j.user@example.com
       From: sip:caller@example.net;tag=32394234
-      Content-Length: -999"],
+      Content-Length: -999",
+      ],
       // To MimeHeader contains undetermined quote string.
       ["To: \"Mr. J. User sip:j.user@example.com
-      From: sip:caller@example.net;tag=93334"],
+      From: sip:caller@example.net;tag=93334",
+      ],
       // Missing Required MimeHeader Fields From, To.
       ["This is body of message without any headers"],
       // Date MimeHeader contains a non-GMT time zone.
       ["To: sip:user@example.com
       From: sip:caller@example.net;tag=2234923
-      Date: Fri, 01 Jan 2010 16:00:00 EST"],
+      Date: Fri, 01 Jan 2010 16:00:00 EST",
+      ],
       // Multiple To, From fields that should occur once.
       ["From: sip:caller@example.com;tag=3413415
       To: sip:user@example.com
       To: sip:other@example.net
-      From: sip:caller@example.net;tag=2923420123"],
+      From: sip:caller@example.net;tag=2923420123",
+      ],
     ];
   }
 
@@ -88,48 +93,56 @@ class MimeParserTest extends InmailUnitTestBase {
       // Spaces.
       [' admin@example.com ', [
         new Rfc2822Address('', 'admin@example.com'),
-      ]],
+      ],
+      ],
       // Multiple.
       ['a@b.c, d.e@f.g.h', [
         new Rfc2822Address('', 'a@b.c'),
         new Rfc2822Address('', 'd.e@f.g.h'),
-      ]],
+      ],
+      ],
       // With name.
       ['Admin <admin@example.com>', [
         new Rfc2822Address('Admin', 'admin@example.com'),
-      ]],
+      ],
+      ],
       // With quote-enclosed name.
       ['"Admin" <admin@example.com>', [
         new Rfc2822Address('Admin', 'admin@example.com'),
-      ]],
+      ],
+      ],
       // Multiple with name.
       ['Admin <admin@example.com>, User <user.name@users.example.com>', [
         new Rfc2822Address('Admin', 'admin@example.com'),
         new Rfc2822Address('User', 'user.name@users.example.com'),
-      ]],
+      ],
+      ],
       // Comma in name (resolves to multiple, where first is invalid).
       ['Admin, Bedmin <admin@example.com>', [
         new Rfc2822Address('Bedmin', 'admin@example.com'),
-      ]],
+      ],
+      ],
       // Address in quotes but not after (invalid).
       ['"Admin, Admin <admin@example.com>"', []],
       // @todo Allow comma in name, https://www.drupal.org/node/2475057
-//      // Comma in name (quoted, valid).
-//      ['"Admin, Admin" <admin@example.com>', [
-//        new Rfc2822Address('Admin, Admin', 'admin@example.com'),
-//      ]],
-//      // Address in quotes and after.
-//      ['"Admin, Admin <admin@example.com>" <admin@example.com>', [
-//        new Rfc2822Address('Admin <admin@example.com>', 'admin@example.com'),
-//      ]],
+      //   Comma in name (quoted, valid).
+      //      ['"Admin, Admin" <admin@example.com>', [
+      //        new Rfc2822Address('Admin, Admin', 'admin@example.com'),
+      //      ]],
+      //      // Address in quotes and after.
+      //      ['"Admin, Admin <admin@example.com>" <admin@example.com>', [
+      //        new Rfc2822Address('Admin <admin@example.com>', 'admin@example.com'),
+      //      ]],
       // Unicode in name.
       ['Admin™ <admin@example.com>', [
         new Rfc2822Address('Admin™', 'admin@example.com'),
-      ]],
+      ],
+      ],
       // Sub-address extension pattern.
       ['Admin <admin+admin@example.com>', [
         new Rfc2822Address('Admin', 'admin+admin@example.com'),
-      ]],
+      ],
+      ],
     ];
   }
 

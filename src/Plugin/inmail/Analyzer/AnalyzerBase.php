@@ -31,7 +31,7 @@ abstract class AnalyzerBase extends InmailPluginBase implements AnalyzerInterfac
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array();
+    return [];
   }
 
   /**
@@ -39,7 +39,7 @@ abstract class AnalyzerBase extends InmailPluginBase implements AnalyzerInterfac
    */
   public function calculateDependencies() {
     // @todo Implement HandlerConfig::calculateDependencies() https://www.drupal.org/node/2379929
-    return array();
+    return [];
   }
 
   /**

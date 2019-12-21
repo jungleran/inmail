@@ -60,18 +60,18 @@ class MimeEntity implements MimeEntityInterface {
 
     list($type, $subtype) = explode('/', array_shift($field_parts));
 
-    $parameters = array();
+    $parameters = [];
     foreach ($field_parts as $part) {
       list($attribute, $value) = preg_split('/\s*=\s*/', $part, 2);
       // Trim surrounding quotes.
       $parameters[strtolower($attribute)] = trim($value, '"');
     }
 
-    return array(
+    return [
       'type' => $type,
       'subtype' => $subtype,
       'parameters' => $parameters,
-    );
+    ];
   }
 
   /**

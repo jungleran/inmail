@@ -66,7 +66,7 @@ abstract class InmailWebTestBase extends WebTestBase {
    *   The label of the identification field.
    * @param string $value
    *   (optional) The content of the identification field.
-   * Defaults to NULL.
+   *   Defaults to NULL.
    * @param string $message
    *   (optional) A message to display with the assertion. Do not translate
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
@@ -87,7 +87,7 @@ abstract class InmailWebTestBase extends WebTestBase {
    *   The label of the identification field.
    * @param string $value
    *   (optional) The content of the identification field.
-   * Defaults to NULL.
+   *   Defaults to NULL.
    * @param string $message
    *   (optional) A message to display with the assertion. Do not translate
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
@@ -108,7 +108,7 @@ abstract class InmailWebTestBase extends WebTestBase {
    *   The label of the identification field element.
    * @param string $value
    *   (optional) The content of the identification field element.
-   * Defaults to NULL.
+   *   Defaults to NULL.
    * @param string $message
    *   (optional) A message to display with the assertion. Do not translate
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed

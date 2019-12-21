@@ -26,7 +26,7 @@ class HandlerController extends ControllerBase {
    * Returns a title for the handler configuration edit page.
    */
   public function titleEdit(HandlerConfigInterface $inmail_handler) {
-    return $this->t('Configure %label handler', array('%label' => $inmail_handler->label()));
+    return $this->t('Configure %label handler', ['%label' => $inmail_handler->label()]);
   }
 
   /**

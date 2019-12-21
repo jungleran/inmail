@@ -21,7 +21,7 @@ class BounceData extends Map {
    */
   public function setRecipient($recipient) {
     if (!$this->getRecipient()) {
-      $this->set('recipient',$recipient);
+      $this->set('recipient', $recipient);
     }
   }
 
@@ -41,7 +41,7 @@ class BounceData extends Map {
     $current_code = $this->getStatusCode();
     if ($current_code->getSubject() == 0 && $current_code->getDetail() == 0) {
       $new_code = new DSNStatus($current_code->getClass(), $code->getSubject(), $code->getDetail());
-      $this->set('status_code',$new_code->getCode());
+      $this->set('status_code', $new_code->getCode());
     }
   }
 
@@ -53,7 +53,7 @@ class BounceData extends Map {
    */
   public function setReason($reason) {
     if (!$this->getReason()) {
-      $this->set('reason',$reason);
+      $this->set('reason', $reason);
     }
   }
 

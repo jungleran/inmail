@@ -28,7 +28,7 @@ class StandardDSNReasonAnalyzerTest extends KernelTestBase {
    */
   public function testAnalyze($filename, $expected_reason) {
     $message = (new MimeParser(new LoggerChannel('test')))->parseMessage($this->getRaw($filename));
-    $analyzer = new StandardDSNReasonAnalyzer(array(), $this->randomMachineName(), array());
+    $analyzer = new StandardDSNReasonAnalyzer([], $this->randomMachineName(), []);
     $processor_result = new ProcessorResult();
 
     $analyzer->analyze($message, $processor_result);

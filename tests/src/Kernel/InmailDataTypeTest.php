@@ -73,8 +73,7 @@ class InmailDataTypeTest extends KernelTestBase {
    * @return array
    */
   public function providedData() {
-    return
-    [
+    return [
       [
         new MimeEntity(new MimeHeader(), $this->randomString(1)),
         '1 byte',

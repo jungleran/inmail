@@ -51,7 +51,7 @@ class DelivererConfig extends PluginConfigEntity implements DelivererConfigInter
   protected $pluginType = 'deliverer';
 
   /**
-   *  The enabled/disabled status of the messageReporter.
+   * The enabled/disabled status of the messageReporter.
    *
    * @var bool
    */
@@ -64,7 +64,7 @@ class DelivererConfig extends PluginConfigEntity implements DelivererConfigInter
    *   Flag of message reporter.
    */
   public function setMessageReport($messageReport) {
-   $this->message_report = $messageReport;
+    $this->message_report = $messageReport;
   }
 
   /**
@@ -75,4 +75,5 @@ class DelivererConfig extends PluginConfigEntity implements DelivererConfigInter
   public function isMessageReport() {
     return $this->message_report;
   }
+
 }

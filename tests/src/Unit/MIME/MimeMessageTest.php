@@ -40,7 +40,8 @@ class MimeMessageTest extends UnitTestCase {
       new MimeHeaderField(
         'References',
         '<parent-references@example.com> <parent-msg-id@example.com>'
-      )]), 'Bar');
+      ),
+    ]), 'Bar');
     $references = $message->getReferences();
     $this->assertEquals('<parent-references@example.com>', $references[0]);
     $this->assertEquals('<parent-msg-id@example.com>', $references[1]);
@@ -64,7 +65,8 @@ class MimeMessageTest extends UnitTestCase {
       new MimeHeaderField(
         'In-Reply-To',
         '<grandparent-msg-id@example.com> <parent-msg-id@example.com>'
-      )]), 'Bar');
+      ),
+    ]), 'Bar');
     $in_reply_to = $message->getInReplyTo();
     $this->assertEquals('<grandparent-msg-id@example.com>', $in_reply_to[0]);
     $this->assertEquals('<parent-msg-id@example.com>', $in_reply_to[1]);
@@ -88,14 +90,14 @@ class MimeMessageTest extends UnitTestCase {
   public function testGetFrom() {
     // Single address.
     $message = new MimeMessage(new MimeHeader([
-      new MimeHeaderField('From', 'foo@example.com')
+      new MimeHeaderField('From', 'foo@example.com'),
     ]), 'Bar');
     $this->assertEquals('foo@example.com', $message->getFrom()[0]->getAddress());
 
     // According to RFC 2822, From field consists of one or more coma separated
     // list of mailbox specifications.
     $message = new MimeMessage(new MimeHeader([
-      new MimeHeaderfield('From', 'Foo <foo@example.com>, Bar <bar@example.com>')
+      new MimeHeaderfield('From', 'Foo <foo@example.com>, Bar <bar@example.com>'),
     ]), 'Bar');
     $this->assertEquals(2, count($message->getFrom()));
     $this->assertEquals('foo@example.com', $message->getFrom()[0]->getAddress());
@@ -132,7 +134,6 @@ class MimeMessageTest extends UnitTestCase {
       [$cc_field[0]->getAddress() . ', ' . $cc_field[1]->getAddress()]);
     // @todo Parse recipients and return list.
     // @todo Test mailbox with display name.
-
     if (function_exists('idn_to_utf8')) {
       // Single IDN recipient address with decoding.
       $message = new MimeMessage(new MimeHeader([new MimeHeaderField('To', 'helloWorld@xn--xample-9ua.com')]), 'Bar');
@@ -275,7 +276,8 @@ class MimeMessageTest extends UnitTestCase {
    */
   public function testGetDate() {
     $message = new MimeMessage(new MimeHeader([
-      new MimeHeaderField('Date', 'Thu, 27 Oct 2016 13:29:36 +0200 (UTC)')]), 'body');
+      new MimeHeaderField('Date', 'Thu, 27 Oct 2016 13:29:36 +0200 (UTC)'),
+    ]), 'body');
     $expected_date = new DateTimePlus('Thu, 27 Oct 2016 13:29:36 +0200');
     $this->assertEquals($expected_date, $message->getDate());
   }

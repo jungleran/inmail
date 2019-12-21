@@ -11,7 +11,6 @@ use Drupal\Core\Routing\UrlGeneratorInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\MessageProcessorInterface;
-use Drupal\inmail\ProcessorResultInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -86,7 +85,7 @@ class PasteForm extends FormBase {
    *   The form structure.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $deliverer_options = array_map(function(DelivererConfig $deliverer_config) {
+    $deliverer_options = array_map(function (DelivererConfig $deliverer_config) {
       return $deliverer_config->label();
     }, $this->getDelivererConfigs());
 
@@ -154,6 +153,7 @@ class PasteForm extends FormBase {
 
     return $form;
   }
+
   /**
    * Returns a properly formatted list of examples for the #options.
    *
@@ -194,9 +194,9 @@ class PasteForm extends FormBase {
    * @return array
    *   Associative array of messages and keyed indexes.
    */
-  protected function getExamples($directory , $recursion = TRUE) {
+  protected function getExamples($directory, $recursion = TRUE) {
     // Filter only eml files.
-    $examples = array_keys(file_scan_directory($directory, '/.eml/', array('recurse' => $recursion)));
+    $examples = array_keys(file_scan_directory($directory, '/.eml/', ['recurse' => $recursion]));
     return array_map('basename', array_combine($examples, $examples));
   }
 
@@ -249,7 +249,7 @@ class PasteForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $deliverer_config = $this->delivererStorage->load($form_state->getValue('deliverer'));
-    /** @var ProcessorResultInterface $result */
+    /** @var \Drupal\inmail\ProcessorResultInterface $result */
     $result = $this->messageProcessor->process('unique_key', $form_state->getValue('text'), $deliverer_config);
     if ($result->isSuccess()) {
       drupal_set_message($this->t('The message has been processed.'));

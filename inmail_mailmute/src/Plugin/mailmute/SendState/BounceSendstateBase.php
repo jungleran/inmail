@@ -67,7 +67,7 @@ abstract class BounceSendstateBase extends SendStateBase {
    */
   public function getCodeString() {
     if ($status = $this->getStatus()) {
-      $args = array('@code' => $status->getCode(), '@label' => $status->getLabel());
+      $args = ['@code' => $status->getCode(), '@label' => $status->getLabel()];
       return $this->t($status->getLabel() ? '@code @label' : '@code', $args);
     }
     return NULL;
@@ -102,31 +102,31 @@ abstract class BounceSendstateBase extends SendStateBase {
   public function display() {
     $display['label'] = parent::display();
 
-    $display['bounce'] = array(
+    $display['bounce'] = [
       '#type' => 'details',
       '#title' => $this->t('Triggering bounce'),
       '#access' => $this->getStatus() || $this->getReason(),
-    );
+    ];
 
-    $display['bounce']['code'] = array(
+    $display['bounce']['code'] = [
       '#type' => 'item',
       '#title' => $this->t('Status code'),
       '#markup' => $this->getCodeString(),
       '#access' => (bool) $this->getStatus(),
-    );
+    ];
 
-    $display['bounce']['date'] = array(
+    $display['bounce']['date'] = [
       '#type' => 'item',
       '#title' => $this->t('Received'),
       '#markup' => $this->getDate(),
-    );
+    ];
 
-    $display['bounce']['reason'] = array(
+    $display['bounce']['reason'] = [
       '#type' => 'item',
       '#title' => $this->t('Reason message'),
       '#markup' => '<pre>' . $this->getReason() . '</pre>',
       '#access' => (bool) $this->getReason(),
-    );
+    ];
 
     return $display;
   }

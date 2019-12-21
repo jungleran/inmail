@@ -110,8 +110,8 @@ just because I have no mailbox outside my house.');
   }
 
   /**
- * Tests email rendering with multiple 'From' recipients.
- */
+   * Tests email rendering with multiple 'From' recipients.
+   */
   public function doTestMultipleFromRecipients() {
     $raw_multiple_from = $this->getMessageFileContents('/addresses/multiple-from.eml');
     $this->processRawMessage($raw_multiple_from);

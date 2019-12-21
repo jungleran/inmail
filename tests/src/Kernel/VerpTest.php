@@ -3,10 +3,8 @@
 namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\inmail\Entity\AnalyzerConfig;
-use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\Tests\DelivererTestTrait;
-use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\KernelTests\KernelTestBase;
@@ -26,7 +24,7 @@ class VerpTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail', 'inmail_test', 'system', 'dblog', 'user');
+  public static $modules = ['inmail', 'inmail_test', 'system', 'dblog', 'user'];
 
   /**
    * {@inheritdoc}
@@ -53,7 +51,7 @@ class VerpTest extends KernelTestBase {
     $this->assertTrue($message['send']);
 
     // Enable ResultKeeperHandler.
-    HandlerConfig::create(array('id' => 'result_keeper', 'plugin' => 'result_keeper'))->save();
+    HandlerConfig::create(['id' => 'result_keeper', 'plugin' => 'result_keeper'])->save();
     // Disable the StandardDSNAnalyzer because it also reports the correct
     // recipient address.
     AnalyzerConfig::load('dsn')->disable()->save();

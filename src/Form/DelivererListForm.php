@@ -49,25 +49,25 @@ class DelivererListForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form = array();
+    $form = [];
 
     // Add update button.
-    $form['check'] = array(
+    $form['check'] = [
       '#type' => 'details',
       '#title' => $this->t('Operations'),
       '#open' => TRUE,
-    );
-    $form['check']['check_button'] = array(
+    ];
+    $form['check']['check_button'] = [
       '#type' => 'submit',
       '#value' => $this->t('Check fetcher status'),
-    );
-    $form['check']['process_button'] = array(
+    ];
+    $form['check']['process_button'] = [
       '#type' => 'submit',
       '#value' => $this->t('Process fetchers'),
-      '#submit' => array(
-        array($this, 'submitFetchProcessing'),
-      ),
-    );
+      '#submit' => [
+        [$this, 'submitFetchProcessing'],
+      ],
+    ];
 
     // Let the list builder render the table.
     $form['table'] = \Drupal::entityManager()->getListBuilder('inmail_deliverer')->render();
@@ -127,7 +127,7 @@ class DelivererListForm extends FormBase {
             $messages = inmail_get_log_message($result, RfcLogLevel::ERROR);
             drupal_set_message(t('Message @key: @error', [
               '@key' => $key,
-              '@error' => strip_tags(implode("\n", $messages))
+              '@error' => strip_tags(implode("\n", $messages)),
             ]), 'error');
           }
           else {
@@ -147,10 +147,10 @@ class DelivererListForm extends FormBase {
     // Processing finished, show final message.
     if (empty($fetchers)) {
       drupal_set_message(t('There are no active fetchers. Please enable or <a href=":url">add</a> one.', [
-        ':url' => '/admin/config/system/inmail/deliverers/add'
+        ':url' => '/admin/config/system/inmail/deliverers/add',
       ]), 'warning');
     }
-    else if ($processed_count) {
+    elseif ($processed_count) {
       drupal_set_message(t('Successfully processed @count messages by @fetchers.', [
         '@count' => $processed_count,
         '@fetchers' => implode(', ', $fetchers),

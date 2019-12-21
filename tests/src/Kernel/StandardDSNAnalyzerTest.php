@@ -46,11 +46,10 @@ class StandardDSNAnalyzerTest extends KernelTestBase {
    *
    * @dataProvider provideExpectedResults
    */
-
   public function testAnalyze($filename, $expected_code, $expected_recipient) {
     $message = (new MimeParser(new LoggerChannel('test')))->parseMessage($this->getRaw($filename));
     // Run the analyzer.
-    $analyzer = new StandardDSNAnalyzer(array(), $this->randomMachineName(), array());
+    $analyzer = new StandardDSNAnalyzer([], $this->randomMachineName(), []);
     $processor_result = new ProcessorResult();
 
     $analyzer->analyze($message, $processor_result);

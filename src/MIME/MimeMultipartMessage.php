@@ -49,7 +49,7 @@ class MimeMultipartMessage extends MimeMultipartEntity implements MimeMessageInt
     $message_parts = $this->getParts();
     foreach ($message_parts as $key => $part) {
       $content_fields = $part->getContentType();
-      $content_type = $content_fields['type'] . '/' . $content_fields['subtype'] ;
+      $content_type = $content_fields['type'] . '/' . $content_fields['subtype'];
       $body = $part->getDecodedBody();
 
       // The first plaintext or HTML part wins.
@@ -57,7 +57,7 @@ class MimeMultipartMessage extends MimeMultipartEntity implements MimeMessageInt
       if ($content_type == 'text/plain') {
         return $body;
       }
-      else if ($content_type == 'text/html') {
+      elseif ($content_type == 'text/html') {
         return strip_tags($body);
       }
     }

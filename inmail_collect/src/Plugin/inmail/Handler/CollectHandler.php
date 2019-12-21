@@ -26,9 +26,9 @@ class CollectHandler extends HandlerBase {
    * {@inheritdoc}
    */
   public function help() {
-    return array(
+    return [
       '#markup' => $this->t('The Collect handler stores all messages.'),
-    );
+    ];
   }
 
   /**
@@ -56,7 +56,7 @@ class CollectHandler extends HandlerBase {
     // field is guaranteed by the host that generates it. While uuid offers
     // more robust uniqueness, Message-Id is preferred because it is defined
     // also outside the domains of Inmail and Collect.
-    // Remove brackets from RFC822 message-id format "<" addr-spec ">"
+    // Remove brackets from RFC822 message-id format "<" addr-spec ">".
     $message_id = trim($message->getMessageId(), '<>');
 
     if (!empty($message_id)) {
@@ -75,7 +75,7 @@ class CollectHandler extends HandlerBase {
 
     // The data to store. Includes the whole message string for completeness,
     // and a few regular and useful header fields.
-    $data = array(
+    $data = [
       // Note the Subject field is optional by RFC882.
       'header-subject' => $message->getSubject(),
       'header-to' => $message->getTo()[0],
@@ -83,7 +83,7 @@ class CollectHandler extends HandlerBase {
       'header-message-id' => $message->getMessageId(),
       'deliverer' => $processor_result->getDeliverer()->id(),
       'raw' => $message->toString(),
-    );
+    ];
 
     // Handling json encoding with binary data/invalid UTF-8.
     // If the json_encode fails abort operation, otherwise continue.
@@ -93,13 +93,14 @@ class CollectHandler extends HandlerBase {
       return;
     }
 
-    Container::create(array(
+    Container::create([
       'origin_uri' => $origin_uri,
       // @todo Formally document this schema with present fields.
       'schema_uri' => static::SCHEMA_URI,
       'type' => 'application/json',
       'data' => $json,
       'date' => $message->getReceivedDate()->getTimestamp(),
-    ))->save();
+    ])->save();
   }
+
 }

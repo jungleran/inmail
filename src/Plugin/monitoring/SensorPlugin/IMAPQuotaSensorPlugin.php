@@ -42,16 +42,16 @@ class IMAPQuotaSensorPlugin extends SensorPluginBase {
     }
 
     $has_fetchers = (bool) $imap_fetchers;
-    $form['imap_fetcher'] = array(
+    $form['imap_fetcher'] = [
       '#type' => 'select',
       '#options' => $imap_fetchers,
       '#title' => t('IMAP Fetchers'),
       '#description' => t('Select a fetcher to track its IMAP quota.'),
       '#default_value' => $this->sensorConfig->getSetting('imap_fetcher'),
       '#access' => $has_fetchers,
-    );
+    ];
     if (!$has_fetchers) {
-      drupal_set_message(t('There are no IMAP fetchers. Please <a href=":url">add</a> one.', array(':url' => '/admin/config/system/inmail/deliverers/add')), 'warning');
+      drupal_set_message(t('There are no IMAP fetchers. Please <a href=":url">add</a> one.', [':url' => '/admin/config/system/inmail/deliverers/add']), 'warning');
     }
 
     return $form;
@@ -67,7 +67,7 @@ class IMAPQuotaSensorPlugin extends SensorPluginBase {
     $sensor_config->settings['imap_fetcher'] = $form_state->getValue(['settings', 'imap_fetcher']);
   }
 
-    /**
+  /**
    * {@inheritdoc}
    */
   public function runSensor(SensorResultInterface $result) {
@@ -84,12 +84,12 @@ class IMAPQuotaSensorPlugin extends SensorPluginBase {
     if ($quota = $imap_fetcher->getPluginInstance()->getQuota()) {
       $usage = $quota['STORAGE']['usage'];
       $limit = $quota['STORAGE']['limit'];
-      $percentage = round($usage/$limit * 100);
+      $percentage = round($usage / $limit * 100);
       $result->setValue($percentage);
       $result->addStatusMessage('@usage/@limit used by @fetcher', [
         '@usage' => $usage,
         '@limit' => $limit,
-        '@fetcher' => $imap_fetcher->id()
+        '@fetcher' => $imap_fetcher->id(),
       ]);
     }
     else {
@@ -97,4 +97,5 @@ class IMAPQuotaSensorPlugin extends SensorPluginBase {
       $result->setStatus(SensorResultInterface::STATUS_WARNING);
     }
   }
+
 }

@@ -47,11 +47,11 @@ class DSNStatus {
    *
    * @var array
    */
-  private static $classMap = array(
+  private static $classMap = [
     '2' => 'Success',
     '4' => 'Persistent Transient Failure',
     '5' => 'Permanent Failure',
-  );
+  ];
 
   /**
    * Labels for the subject sub-codes specified in RFC 3463.
@@ -61,7 +61,7 @@ class DSNStatus {
    *
    * @var array
    */
-  private static $subjectMap = array(
+  private static $subjectMap = [
     '0' => 'Other or Undefined Status',
     '1' => 'Addressing Status',
     '2' => 'Mailbox Status',
@@ -70,18 +70,18 @@ class DSNStatus {
     '5' => 'Mail Delivery Protocol Status',
     '6' => 'Message Content or Media Status',
     '7' => 'Security or Policy Status',
-  );
+  ];
 
   /**
    * Labels for the detail sub-codes specified in RFC 3463.
    *
    * @var array
    */
-  private static $detailMap = array(
-    '0' => array(
+  private static $detailMap = [
+    '0' => [
       '0' => 'Other undefined status',
-    ),
-    '1' => array(
+    ],
+    '1' => [
       '0' => 'Other address status',
       '1' => 'Bad destination mailbox address',
       '2' => 'Bad destination system address',
@@ -91,23 +91,23 @@ class DSNStatus {
       '6' => 'Destination mailbox has moved, No forwarding address',
       '7' => 'Bad sender\'s mailbox address syntax',
       '8' => 'Bad sender\'s system address',
-    ),
-    '2' => array(
+    ],
+    '2' => [
       '0' => 'Other or undefined mailbox status',
       '1' => 'Mailbox disabled, not accepting messages',
       '2' => 'Mailbox full',
       '3' => 'Message length exceeds administrative limit',
       '4' => 'Mailing list expansion problem',
-    ),
-    '3' => array(
+    ],
+    '3' => [
       '0' => 'Other or undefined mail system status',
       '1' => 'Mail system full',
       '2' => 'System not accepting network messages',
       '3' => 'System not capable of selected features',
       '4' => 'Message too big for system',
       '5' => 'System incorrectly configured',
-    ),
-    '4' => array(
+    ],
+    '4' => [
       '0' => 'Other or undefined network or routing status',
       '1' => 'No answer from host',
       '2' => 'Bad connection',
@@ -116,24 +116,24 @@ class DSNStatus {
       '5' => 'Mail system congestion',
       '6' => 'Routing loop detected',
       '7' => 'Delivery time expired',
-    ),
-    '5' => array(
+    ],
+    '5' => [
       '0' => 'Other or undefined protocol status',
       '1' => 'Invalid command',
       '2' => 'Syntax error',
       '3' => 'Too many recipients',
       '4' => 'Invalid command arguments',
       '5' => 'Wrong protocol version',
-    ),
-    '6' => array(
+    ],
+    '6' => [
       '0' => 'Other or undefined media error',
       '1' => 'Media not supported',
       '2' => 'Conversion required and prohibited',
       '3' => 'Conversion required but not supported',
       '4' => 'Conversion with loss performed',
       '5' => 'Conversion Failed',
-    ),
-    '7' => array(
+    ],
+    '7' => [
       '0' => 'Other or undefined security status',
       '1' => 'Delivery not authorized, message refused',
       '2' => 'Mailing list expansion prohibited',
@@ -142,8 +142,8 @@ class DSNStatus {
       '5' => 'Cryptographic failure',
       '6' => 'Cryptographic algorithm not supported',
       '7' => 'Message integrity failure',
-    ),
-  );
+    ],
+  ];
 
   /**
    * Constructs a DSNStatus object.
@@ -261,12 +261,12 @@ class DSNStatus {
    *   the RFC, this returns NULL.
    */
   public function getDetailLabel() {
-    // A known status code, e.g. 5.1.1
+    // A known status code, e.g. 5.1.1.
     if (isset(static::$detailMap[$this->subject][$this->detail])) {
       return static::$detailMap[$this->subject][$this->detail];
     }
 
-    // Didn't recognize detail sub-code (last number), e.g. 4.1.162
+    // Didn't recognize detail sub-code (last number), e.g. 4.1.162.
     if (isset(static::$subjectMap[$this->subject])) {
       return static::$subjectMap[$this->subject];
     }
@@ -321,4 +321,5 @@ class DSNStatus {
   public function getLabel() {
     return $this->getClassLabel() . ($this->getDetailLabel() ? ': ' . $this->getDetailLabel() : '');
   }
+
 }

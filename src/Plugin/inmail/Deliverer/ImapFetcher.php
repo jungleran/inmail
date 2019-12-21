@@ -65,7 +65,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function fetchUnprocessedMessages() {
-    return $this->doImap(function($imap_stream) {
+    return $this->doImap(function ($imap_stream) {
       // @todo: After release of 8.3, https://www.drupal.org/node/2819597.
       // Capture current timestamp, not the request starting time.
       $time = time();
@@ -80,13 +80,13 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       $batch_ids = array_splice($unread_ids, 0, \Drupal::config('inmail.settings')->get('batch_size'));
 
       // Get the header + body of each message.
-      $raws = array();
+      $raws = [];
       foreach ($batch_ids as $unread_id) {
         $raws[$unread_id] = imap_fetchheader($imap_stream, $unread_id) . imap_body($imap_stream, $unread_id);
       }
 
       return $raws;
-    }) ?: array();
+    }) ?: [];
   }
 
   /**
@@ -100,7 +100,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
     // Delete fetched messages if it is specified in configuration, and
     // after successful processing.
     if ($this->configuration['delete_processed']) {
-      $this->doImap(function($imap_stream) {
+      $this->doImap(function ($imap_stream) {
         // Key of the message is ID for deletion process.
         // Mark the messages for deletion.
         imap_delete($imap_stream, $this->message_id);
@@ -126,7 +126,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function update() {
-    $this->doImap(function($imap_stream) {
+    $this->doImap(function ($imap_stream) {
       $unread_ids = $this->doImapSearch($imap_stream, 'UNSEEN');
       $this->setUnprocessedCount(count($unread_ids));
       $read_ids = $this->doImapSearch($imap_stream, 'SEEN');
@@ -139,7 +139,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function getQuota() {
-    return $this->doImap(function($imap_stream) {
+    return $this->doImap(function ($imap_stream) {
       $quota = imap_get_quotaroot($imap_stream, 'INBOX');
       if (!empty($quota) && is_array($quota)) {
         return $quota;
@@ -206,7 +206,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
   /**
    * Returns the port number depending on protocol.
    *
-   * @return integer
+   * @return int
    *   Port number.
    */
   protected function getPort() {
@@ -228,7 +228,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
     $flags = $this->configuration['ssl'] ? '/ssl' : '';
 
     if ($this->configuration['protocol'] === 'pop3') {
-      $flags.= '/pop3';
+      $flags .= '/pop3';
     }
 
     if ($this->configuration['novalidate_ssl']) {
@@ -260,22 +260,22 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['account'] = array(
+    $form['account'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Account'),
-    );
+    ];
 
-    $form['account']['info'] = array(
+    $form['account']['info'] = [
       '#type' => 'item',
       '#markup' => $this->t('Please refer to your email provider for the appropriate values for these fields.'),
-    );
+    ];
 
-    $form['account']['delete_processed'] = array(
+    $form['account']['delete_processed'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Delete fetched'),
       '#default_value' => $this->configuration['delete_processed'],
       '#description' => $this->t('Makes Expunge of messages after fetching and successful processing.'),
-    );
+    ];
 
     $form['account']['protocol'] = [
       '#type' => 'select',
@@ -287,11 +287,11 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       '#default_value' => $this->configuration['protocol'],
     ];
 
-    $form['account']['host'] = array(
+    $form['account']['host'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Host'),
       '#default_value' => $this->configuration['host'],
-    );
+    ];
 
     $form['account']['imap_port'] = [
       '#type' => 'number',
@@ -300,8 +300,8 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       '#description' => t('The standard port number for IMAP is 143 (SSL:993)'),
       '#states' => [
         'visible' => [
-          ':input[name = "protocol"]' => ['value' => 'imap']
-        ]
+          ':input[name = "protocol"]' => ['value' => 'imap'],
+        ],
       ],
     ];
 
@@ -312,16 +312,16 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       '#description' => t('The standard port number for POP3 is 110 (SSL: 995).'),
       '#states' => [
         'visible' => [
-          ':input[name = "protocol"]' => ['value' => 'pop3']
-        ]
+          ':input[name = "protocol"]' => ['value' => 'pop3'],
+        ],
       ],
     ];
 
-    $form['account']['ssl'] = array(
+    $form['account']['ssl'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Use SSL'),
       '#default_value' => $this->configuration['ssl'],
-    );
+    ];
 
     $form['account']['novalidate_ssl'] = [
       '#type' => 'checkbox',
@@ -334,34 +334,34 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       ],
     ];
 
-    $form['account']['username'] = array(
+    $form['account']['username'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Username'),
       '#default_value' => $this->configuration['username'],
-    );
+    ];
 
     // Password field cannot have #default_value. To avoid forcing user to
     // re-enter password with each save, password updating is conditional on
     // this checkbox.
-    $form['account']['password_update'] = array(
+    $form['account']['password_update'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Update password'),
-    );
+    ];
 
-    $form['account']['password'] = array(
+    $form['account']['password'] = [
       '#type' => 'password',
       '#title' => $this->t('Password'),
-      '#states' => array(
-        'visible' => array(
-          ':input[name=password_update]' => array('checked' => TRUE),
-        ),
-      ),
-    );
+      '#states' => [
+        'visible' => [
+          ':input[name=password_update]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
 
     // Always show password field if configuration is new.
     if ($form_state->getFormObject()->getEntity()->isNew()) {
       $form['account']['password_update']['#access'] = FALSE;
-      $form['account']['password']['#states']['visible'] = array();
+      $form['account']['password']['#states']['visible'] = [];
     }
 
     // Add a "Test connection" button.
@@ -383,7 +383,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       'pop3_port' => $form_state->getValue('pop3_port'),
       'ssl' => $form_state->getValue('ssl'),
       'novalidate_ssl' =>
-        $form_state->getValue('ssl') ? $form_state->getValue('novalidate_ssl') : FALSE,
+      $form_state->getValue('ssl') ? $form_state->getValue('novalidate_ssl') : FALSE,
       'protocol' => $form_state->getValue('protocol'),
       'username' => $form_state->getValue('username'),
       'delete_processed' => $form_state->getValue('delete_processed'),
@@ -458,7 +458,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       'title' => t('PHP IMAP'),
       'severity' => REQUIREMENT_OK,
     ];
-    if(!function_exists('imap_open')) {
+    if (!function_exists('imap_open')) {
       $requirements['severity'] = REQUIREMENT_ERROR;
       $requirements['description'] = t('The <a href=":imap">PHP IMAP</a> extension is missing, it must be enabled.', [':imap' => 'http://www.php.net/imap']);
     }

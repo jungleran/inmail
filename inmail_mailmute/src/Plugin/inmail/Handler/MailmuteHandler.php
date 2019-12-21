@@ -54,10 +54,10 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
    * {@inheritdoc}
    */
   public function help() {
-    return array(
+    return [
       '#type' => 'item',
       '#markup' => $this->t('<p>Soft bounces trigger a transition to the <em>Counting bounces</em> state. After a number of bounces, the state transitions to <em>Temporarily unreachable</em>.</p> <p>Hard bounces cause the send state to transition to <em>Invalid address</em>.</p>'),
-    );
+    ];
   }
 
   /**
@@ -99,11 +99,11 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
       return;
     }
 
-    $state_configuration = array(
+    $state_configuration = [
       'code' => $bounce_data->getStatusCode(),
       'reason' => $bounce_data->getReason(),
       'date' => $message->getReceivedDate(),
-    );
+    ];
 
     // In the case of a "hard bounce", set the send state to a muting state.
     if ($status_code->isPermanentFailure()) {
@@ -131,7 +131,7 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
 
     // If still sending, start counting bounces.
     if (!$state->isMute()) {
-      $this->sendstateManager->transition($address, 'inmail_counting', array('count' => 1, 'threshold' => $this->configuration['soft_threshold']) + $state_configuration);
+      $this->sendstateManager->transition($address, 'inmail_counting', ['count' => 1, 'threshold' => $this->configuration['soft_threshold']] + $state_configuration);
       $processor_result->log('MailmuteHandler', 'Bounce with status %code triggered send state transition of %address to %new_state', $log_context + ['%new_state' => 'inmail_counting']);
       return;
     }
@@ -141,9 +141,9 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'soft_threshold' => 5,
-    );
+    ];
   }
 
   /**
@@ -152,13 +152,13 @@ class MailmuteHandler extends HandlerBase implements ContainerFactoryPluginInter
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 
-    $form['soft_threshold'] = array(
+    $form['soft_threshold'] = [
       '#title' => 'Soft bounce tolerance',
       '#type' => 'number',
       '#default_value' => $this->configuration['soft_threshold'],
       '#description' => $this->t('This defines how many soft bounces may be received from an address before its state is transitioned to "Temporarily unreachable".'),
       '#description_display' => 'after',
-    );
+    ];
 
     return $form;
   }

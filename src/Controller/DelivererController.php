@@ -4,10 +4,8 @@ namespace Drupal\inmail\Controller;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\inmail\Entity\DelivererConfig;
-use Drupal\inmail\Plugin\inmail\Deliverer\FetcherInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\Core\Url;
@@ -46,7 +44,7 @@ class DelivererController extends ControllerBase implements ContainerInjectionIn
    * Returns a title for the deliverer configuration edit page.
    */
   public function titleEdit(DelivererConfig $inmail_deliverer) {
-    return $this->t('Configure deliverer %label', array('%label' => $inmail_deliverer->label()));
+    return $this->t('Configure deliverer %label', ['%label' => $inmail_deliverer->label()]);
   }
 
   /**

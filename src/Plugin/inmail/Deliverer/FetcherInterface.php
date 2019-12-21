@@ -2,9 +2,6 @@
 
 namespace Drupal\inmail\Plugin\inmail\Deliverer;
 
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
-use Drupal\Core\Plugin\PluginFormInterface;
-
 /**
  * A Fetcher is a Deliverer that can be executed.
  *
@@ -49,7 +46,7 @@ interface FetcherInterface extends DelivererInterface {
    * Retrieves the quota settings for "INBOX".
    *
    * @return array|null
-   *    An array of usage and limit or null if quota is not available.
+   *   An array of usage and limit or null if quota is not available.
    */
   public function getQuota();
 

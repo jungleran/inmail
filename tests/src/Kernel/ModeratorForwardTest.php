@@ -3,10 +3,8 @@
 namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\Core\Test\AssertMailTrait;
-use Drupal\inmail\Entity\DelivererConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\Tests\DelivererTestTrait;
-use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
@@ -23,21 +21,21 @@ class ModeratorForwardTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail', 'inmail_test', 'system', 'user', 'past', 'past_db', 'options');
+  public static $modules = ['inmail', 'inmail_test', 'system', 'user', 'past', 'past_db', 'options'];
 
   /**
    * {@inheritdoc}
    */
   public function setUp() {
     parent::setUp();
-    $this->installConfig(array('inmail'));
+    $this->installConfig(['inmail']);
     $this->installEntitySchema('inmail_handler');
     $GLOBALS['config']['system.mail']['interface']['default'] = 'inmail_test_mail_collector';
     \Drupal::configFactory()->getEditable('system.site')
       ->set('mail', 'bounces@example.com')
       ->save();
     $this->installEntitySchema('past_event');
-    $this->installSchema('past_db', array('past_event_argument', 'past_event_data'));
+    $this->installSchema('past_db', ['past_event_argument', 'past_event_data']);
   }
 
   /**
@@ -69,7 +67,7 @@ class ModeratorForwardTest extends KernelTestBase {
 
     // Do not handle, and log an error, if moderator address is same as intended
     // recipient.
-    $handler_config->setConfiguration(array('moderator' => 'user@example.org'))->save();
+    $handler_config->setConfiguration(['moderator' => 'user@example.org'])->save();
     // Forge a mail where we recognize recipient but not status.
     $bounce_no_status = str_replace('Status:', 'Foo:', $bounce);
     $deliverer = $this->createTestDeliverer();
@@ -89,7 +87,7 @@ class ModeratorForwardTest extends KernelTestBase {
     // Do not handle, and log an error, if the custom X header is set.
     // Furthermore, if the Received MimeHeader states that message is forwarded,
     // do not forward it again. It triggers function invoke().
-    $handler_config->setConfiguration(array('moderator' => 'moderator@example.com'))->save();
+    $handler_config->setConfiguration(['moderator' => 'moderator@example.com'])->save();
     $regular_x = "X-Inmail-Forwarded: ModeratorForwardTest\n" . $regular;
     $deliverer = $this->createTestDeliverer();
     $processor->process('unique_key', $regular_x, $deliverer);
@@ -151,7 +149,7 @@ class ModeratorForwardTest extends KernelTestBase {
 
     // Conceive a forward.
     HandlerConfig::load('moderator_forward')
-      ->set('configuration', array('moderator' => 'moderator@example.com'))
+      ->set('configuration', ['moderator' => 'moderator@example.com'])
       ->save();
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
     $processor = \Drupal::service('inmail.processor');
@@ -170,7 +168,7 @@ class ModeratorForwardTest extends KernelTestBase {
     $expected_headers = $original_parsed->getHeader()->toString();
     $expected_headers = str_replace("To: Arild Matsson <inmail_test@example.com>\n", '', $expected_headers);
     // Extract the time from original message and append it.
-    $received_header = "Received: by localhost via inmail with test_fetcher " . $deliverer->id() . " id <CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.gmail.com>;" . substr($forward['received'], strpos($forward['received'], ';')+1) . "\n";
+    $received_header = "Received: by localhost via inmail with test_fetcher " . $deliverer->id() . " id <CAFZOsfMjtXehXPGxbiLjydzCY0gCkdngokeQACWQOw+9W5drqQ@mail.gmail.com>;" . substr($forward['received'], strpos($forward['received'], ';') + 1) . "\n";
     // Wrap the received header to 78 characters.
     $expected_headers = $forward_header . wordwrap($received_header, 78, "\n ") . $expected_headers;
     // Wrap to 78 characters to match original message.

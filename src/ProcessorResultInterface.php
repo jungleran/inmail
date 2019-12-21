@@ -78,10 +78,10 @@ interface ProcessorResultInterface {
    *   The log message.
    * @param array $placeholders
    *   Placeholder substitution map.
-   * @param RfcLogLevel $severity
+   * @param \Drupal\Core\Logger\RfcLogLevel $severity
    *   (optional) The severity of the message. Defaults to 'RfcLogLevel::NOTICE'.
    */
-  public function log($source, $message, array $placeholders = array(), $severity = RfcLogLevel::NOTICE);
+  public function log($source, $message, array $placeholders = [], $severity = RfcLogLevel::NOTICE);
 
   /**
    * Returns the log messages.
@@ -90,7 +90,7 @@ interface ProcessorResultInterface {
    * dependent on analyzer result types, use a dedicated class that implements
    * \Drupal\inmail\AnalyzerResultInterface.
    *
-   * @param RfcLogLevel $max_severity
+   * @param \Drupal\Core\Logger\RfcLogLevel $max_severity
    *   (optional) Maximum log message severity. Defaults to 'RfcLogLevel::INFO'.
    *
    * @return array

@@ -18,7 +18,7 @@ class InmailWebTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail', 'inmail_test', 'block');
+  public static $modules = ['inmail', 'inmail_test', 'block'];
 
   /**
    * {@inheritdoc}
@@ -44,10 +44,10 @@ class InmailWebTest extends WebTestBase {
    */
   public function testAdminUi() {
     // Create a test user and log in.
-    $user = $this->drupalCreateUser(array(
+    $user = $this->drupalCreateUser([
       'access administration pages',
       'administer inmail',
-    ));
+    ]);
     $this->drupalLogin($user);
 
     // Check other parts of UI. Saving some time by not implementing them as
@@ -89,19 +89,19 @@ class InmailWebTest extends WebTestBase {
     $this->drupalPostAjaxForm(NULL, NULL, 'plugin');
     $this->assertText('IMAP / POP3');
     // Select the IMAP plugin.
-    $edit = array(
+    $edit = [
       'label' => 'Test IMAP Fetcher',
       'id' => 'test_imap',
       'plugin' => 'imap',
-    );
+    ];
     $this->drupalPostAjaxForm(NULL, $edit, 'plugin');
     $this->assertText('Account');
     $this->assertRaw('<input data-drupal-selector="edit-test-connection" type="submit"');
-    $edit += array(
+    $edit += [
       'host' => 'imap.example.com',
       'username' => 'user',
       'password' => 'pass',
-    );
+    ];
     // Check there is option to delete messages after fetching and processing.
     $this->assertFieldByName('delete_processed');
     $this->assertText('Makes Expunge of messages after fetching and successful processing.');
@@ -112,11 +112,11 @@ class InmailWebTest extends WebTestBase {
     // Add a Drush deliverer. It implements different interfaces and
     // PluginConfigurationForm has to support that.
     $this->drupalGet('admin/config/system/inmail/deliverers/add');
-    $edit = array(
+    $edit = [
       'label' => 'Test Drush Deliverer',
       'id' => 'test_drush',
       'plugin' => 'drush',
-    );
+    ];
     $this->drupalPostAjaxForm(NULL, $edit, 'plugin');
     $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertText('Test Drush Deliverer');
@@ -131,7 +131,7 @@ class InmailWebTest extends WebTestBase {
     // Test 'Delete' link.
     $this->clickLink('Delete');
     $this->assertText('Are you sure you want to delete the deliverer configuration Test Drush Deliverer?');
-    $this->drupalPostForm(NULL, array(), 'Delete');
+    $this->drupalPostForm(NULL, [], 'Delete');
     $this->assertText('The Test Drush Deliverer deliverer has been deleted.');
     $this->assertUrl('admin/config/system/inmail/deliverers');
     // Drush item should be removed. Cannot check for config label because it is
@@ -140,32 +140,32 @@ class InmailWebTest extends WebTestBase {
     // Also test deleting fetcher, may be significant because its interface is
     // different.
     $this->clickLink('Delete');
-    $this->drupalPostForm(NULL, array(), 'Delete');
+    $this->drupalPostForm(NULL, [], 'Delete');
     $this->assertText('There is no Mail deliverer yet.');
     // Add test fetcher.
     $this->drupalGet('admin/config/system/inmail/deliverers/add');
-    $edit = array(
+    $edit = [
       'label' => 'Test Test Fetcher',
       'id' => 'test_test',
       'plugin' => 'test_fetcher',
-    );
+    ];
     $this->drupalPostAjaxForm(NULL, $edit, 'plugin');
     $this->drupalPostForm(NULL, $edit, 'Save');
     $overview_count_xpath = '//td[text()="100"]';
     $this->assertNoFieldByXPath($overview_count_xpath);
     $this->assertFieldById('edit-process-button');
     $this->assertFieldByXPath('//table/tbody/tr/td[5]', '');
-    $this->drupalPostForm(NULL, array(), 'Check fetcher status');
+    $this->drupalPostForm(NULL, [], 'Check fetcher status');
     $this->assertFieldByXPath('//table/tbody/tr/td[3]', '');
     $this->assertFieldByXPath('//table/tbody/tr/td[4]', 100);
     $this->assertFieldByXPath('//table/tbody/tr/td[5]', 250);
     $this->assertText('Fetcher state info has been updated.');
-    $this->drupalPostForm(NULL, array(), 'Process fetchers');
+    $this->drupalPostForm(NULL, [], 'Process fetchers');
     $this->assertFieldByXPath('//table/tbody/tr/td[3]', '1');
     $this->assertFieldByXPath('//table/tbody/tr/td[4]', 99);
     $this->assertFieldByXPath('//table/tbody/tr/td[5]', 200);
     $this->assertText('Successfully processed 1 messages by Test Test Fetcher.');
-    $this->drupalPostForm(NULL, array(), 'Check fetcher status');
+    $this->drupalPostForm(NULL, [], 'Check fetcher status');
     $this->assertFieldByXPath('//table/tbody/tr/td[3]', '1');
     $this->assertFieldByXPath('//table/tbody/tr/td[4]', 100);
     $this->assertFieldByXPath('//table/tbody/tr/td[5]', 250);
@@ -199,7 +199,10 @@ class InmailWebTest extends WebTestBase {
     $this->assertText('IMAP');
   }
 
-  function testPOP3PortAndProtocol() {
+  /**
+   *
+   */
+  public function testPOP3PortAndProtocol() {
     $this->drupalGet('admin/config/system/inmail/deliverers/add');
     $edit = [
       'label' => 'Test POP3 Fetcher',
@@ -218,6 +221,7 @@ class InmailWebTest extends WebTestBase {
     $this->assertFieldById('edit-pop3-port', 110);
     $this->assertText('POP3');
   }
+
   /**
    * Tests the listing and configuration form of analyzers.
    *
@@ -258,11 +262,11 @@ class InmailWebTest extends WebTestBase {
 
     // Configs referring to missing plugins should not cause errors, but show a
     // message.
-    AnalyzerConfig::create(array(
+    AnalyzerConfig::create([
       'id' => 'unicorn',
       'plugin_id' => 'unicorn',
       'label' => 'Unicorn',
-    ))->save();
+    ])->save();
     $this->drupalGet('admin/config/system/inmail/analyzers');
     $this->assertText('Unicorn');
     // @todo Improve style for "broken" plugin https://www.drupal.org/node/2379777
@@ -290,11 +294,11 @@ class InmailWebTest extends WebTestBase {
 
     // Configs referring to missing plugins should not cause errors, but show a
     // message.
-    HandlerConfig::create(array(
+    HandlerConfig::create([
       'id' => 'unicorn',
       'plugin_id' => 'unicorn',
       'label' => 'Unicorn',
-    ))->save();
+    ])->save();
     $this->drupalGet('admin/config/system/inmail/handlers');
     $this->assertText('Unicorn');
     // @todo Improve style for "broken" plugin https://www.drupal.org/node/2379777
@@ -343,16 +347,17 @@ class InmailWebTest extends WebTestBase {
    */
   public function doTestProcessingFailure() {
     $this->drupalGet('admin/config/system/inmail/deliverers/add');
-    $edit = array(
+    $edit = [
       'label' => 'Test Test Fetcher',
       'id' => 'test_123',
       'plugin' => 'test_fetcher',
-    );
+    ];
     $this->drupalPostAjaxForm(NULL, $edit, 'plugin');
     $this->drupalPostForm(NULL, $edit, 'Save');
     // Load invalid message and trigger validation failures.
     \Drupal::state()->set('inmail.test_fetcher.invalid_message', "Date: Thu, 10 Nov 2016 14:23:6 +0200\nSubject: Message is invalid\n\nMessage Body");
-    $this->drupalPostForm(NULL, array(), 'Process fetchers');
+    $this->drupalPostForm(NULL, [], 'Process fetchers');
     $this->assertText('Message 0: Message Validation failed with message Missing From field.');
   }
+
 }

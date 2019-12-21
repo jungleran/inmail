@@ -25,4 +25,5 @@ class BounceDataDefinition extends ComplexDataDefinitionBase {
       'reason' => DataDefinition::create('string'),
     ];
   }
+
 }

@@ -56,7 +56,7 @@ class VerpAnalyzer extends AnalyzerBase {
     $return_path_split = explode('@', $return_path);
 
     if (count($return_path_split) != 2) {
-      $processor_result->log('VerpAnalyzer', 'VERP Analyzer found invalid Return-Path address "%return_path"', array('%return_path' => $return_path));
+      $processor_result->log('VerpAnalyzer', 'VERP Analyzer found invalid Return-Path address "%return_path"', ['%return_path' => $return_path]);
       return;
     }
 

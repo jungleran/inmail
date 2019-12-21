@@ -44,59 +44,59 @@ class PluginConfigurationForm extends EntityForm {
     /** @var \Drupal\inmail\Entity\PluginConfigEntity $entity */
     $entity = $this->getEntity();
 
-    $form['label'] = array(
+    $form['label'] = [
       '#title' => $this->t('Label'),
       '#type' => 'textfield',
       '#default_value' => $entity->label(),
       '#required' => TRUE,
-    );
+    ];
 
-    $form['id'] = array(
+    $form['id'] = [
       '#type' => 'machine_name',
       '#default_value' => $entity->id(),
       '#disabled' => !$entity->isNew(),
-      '#machine_name' => array(
-        'exists' => array($this, 'exists'),
-      ),
-    );
+      '#machine_name' => [
+        'exists' => [$this, 'exists'],
+      ],
+    ];
 
-    $form['status'] = array(
+    $form['status'] = [
       '#title' => $this->t('Enabled'),
       '#type' => 'checkbox',
       '#default_value' => $entity->status(),
-    );
+    ];
 
-    $form['plugin_container'] = array(
+    $form['plugin_container'] = [
       '#type' => 'container',
       '#prefix' => '<div id="inmail-plugin">',
       '#suffix' => '</div>',
-    );
+    ];
 
     // Unless editing an existing plugin config, show plugin select field.
     if ($entity->isNew()) {
-      $form['plugin_container']['plugin'] = array(
+      $form['plugin_container']['plugin'] = [
         '#type' => 'select',
         '#title' => $this->t('Plugin'),
-        '#options' => array_map(function(array $plugin_definition) {
+        '#options' => array_map(function (array $plugin_definition) {
           return $plugin_definition['label'];
         }, $this->pluginManager->getDefinitions()),
         '#default_value' => $entity->getPluginId(),
         '#required' => TRUE,
-        '#ajax' => array(
+        '#ajax' => [
           'callback' => '::getPluginContainerFormChild',
           'wrapper' => 'inmail-plugin',
-        ),
-        '#submit' => array('::submitSelectPlugin'),
+        ],
+        '#submit' => ['::submitSelectPlugin'],
         '#executes_submit_callback' => TRUE,
-        '#limit_validation_errors' => array(array('plugin')),
-      );
+        '#limit_validation_errors' => [['plugin']],
+      ];
 
-      $form['plugin_container']['plugin_submit'] = array(
+      $form['plugin_container']['plugin_submit'] = [
         '#type' => 'submit',
         '#value' => $this->t('Select plugin'),
-        '#submit' => array('::submitSelectPlugin'),
-        '#attributes' => array('class' => array('js-hide')),
-      );
+        '#submit' => ['::submitSelectPlugin'],
+        '#attributes' => ['class' => ['js-hide']],
+      ];
     }
 
     // Load plugin instance.
@@ -106,7 +106,7 @@ class PluginConfigurationForm extends EntityForm {
 
       // Load plugin form if it has one.
       if ($plugin instanceof PluginFormInterface) {
-        $form['plugin_container']['configuration'] = $plugin->buildConfigurationForm(array(), $form_state);
+        $form['plugin_container']['configuration'] = $plugin->buildConfigurationForm([], $form_state);
       }
     }
 

@@ -34,7 +34,7 @@ abstract class HandlerBase extends InmailPluginBase implements HandlerInterface 
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array();
+    return [];
   }
 
   /**
@@ -42,14 +42,14 @@ abstract class HandlerBase extends InmailPluginBase implements HandlerInterface 
    */
   public function calculateDependencies() {
     // @todo Implement HandlerConfig::calculateDependencies() https://www.drupal.org/node/2379929
-    return array();
+    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    return array();
+    return [];
   }
 
   /**

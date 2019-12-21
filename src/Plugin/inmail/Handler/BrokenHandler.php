@@ -24,10 +24,10 @@ class BrokenHandler extends HandlerBase {
    * {@inheritdoc}
    */
   public function help() {
-    return array(
+    return [
       '#type' => 'item',
       '#markup' => $this->t('The actual handler plugin used with this configuration entry is missing. Perhaps you uninstalled the module that provided it.'),
-    );
+    ];
   }
 
   /**

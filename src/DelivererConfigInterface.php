@@ -7,7 +7,6 @@ namespace Drupal\inmail;
  *
  * @package Drupal\inmail
  */
-
 interface DelivererConfigInterface extends InmailPluginConfigInterface {
 
 }

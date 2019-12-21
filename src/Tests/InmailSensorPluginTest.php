@@ -2,10 +2,6 @@
 
 namespace Drupal\inmail\Tests;
 
-use Drupal\inmail\Entity\AnalyzerConfig;
-use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDelivererTrait;
-use Drupal\inmail_test\Plugin\inmail\Deliverer\TestFetcher;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -26,7 +22,7 @@ class InmailSensorPluginTest extends WebTestBase {
     'inmail',
     'inmail_test',
     'monitoring',
-    'node'
+    'node',
   ];
 
   /**
@@ -110,4 +106,5 @@ class InmailSensorPluginTest extends WebTestBase {
     $this->assertNoText('Test Drush Deliverer');
     $this->assertText('Test Test Fetcher');
   }
+
 }

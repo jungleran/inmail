@@ -21,7 +21,7 @@ class InmailCollectWebTest extends InmailWebTestBase {
    *
    * @var array
    */
-  public static $modules = array('inmail_test', 'inmail_collect', 'block');
+  public static $modules = ['inmail_test', 'inmail_collect', 'block'];
 
   /**
    * Tests the user interface.
@@ -39,7 +39,7 @@ class InmailCollectWebTest extends InmailWebTestBase {
     // Assert success function is called.
     $this->assertSuccess($deliverer, 'unique_key');
     // Log in and view the list.
-    $user = $this->drupalCreateUser(array('administer collect'));
+    $user = $this->drupalCreateUser(['administer collect']);
     $this->drupalLogin($user);
     $this->drupalGet('admin/content/collect');
     $this->assertText('https://www.drupal.org/project/inmail/schema/message');
@@ -74,9 +74,9 @@ class InmailCollectWebTest extends InmailWebTestBase {
     // Create suggested Inmail model and view details as rendered.
     $this->drupalGet($container_url);
     $this->clickLink(t('Set up a @label model', ['@label' => 'Email message']));
-    $this->drupalPostForm(NULL, array('id' => 'email_message'), t('Save'));
+    $this->drupalPostForm(NULL, ['id' => 'email_message'], t('Save'));
     // Details summaries of each part.
-    $details= $this->xpath('//div[@class="field__item"]//details');
+    $details = $this->xpath('//div[@class="field__item"]//details');
     $this->assertEqual((string) $details[0]->summary, 'DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
     $this->assertEqual((string) $details[0]->div->details[0]->summary, t('Part 1'));
     $this->assertEqual((string) $details[0]->div->details[1]->summary, t('Part 2'));

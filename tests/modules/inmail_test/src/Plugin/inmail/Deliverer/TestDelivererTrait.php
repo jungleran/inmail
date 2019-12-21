@@ -7,7 +7,10 @@ namespace Drupal\inmail_test\Plugin\inmail\Deliverer;
  */
 trait TestDelivererTrait {
 
-  abstract function makeStateKey($key);
+  /**
+   *
+   */
+  abstract public function makeStateKey($key);
 
   /**
    * Returns success state.

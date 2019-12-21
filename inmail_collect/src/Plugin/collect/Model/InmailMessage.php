@@ -87,23 +87,23 @@ class InmailMessage extends ModelPluginBase implements ContainerFactoryPluginInt
     $parsed_data = $data->getParsedData();
     $output = parent::buildTeaser($data);
 
-    $output['subject'] = array(
+    $output['subject'] = [
       '#type' => 'item',
       '#title' => $this->t('Subject'),
       '#markup' => htmlentities($parsed_data->getSubject()),
-    );
-    $output['from'] = array(
+    ];
+    $output['from'] = [
       '#type' => 'item',
       '#title' => $this->t('From'),
       '#markup' => htmlentities(implode(', ', $parsed_data->getFrom())),
-    );
+    ];
     // @todo Fix email display in https://www.drupal.org/node/2824683.
-    $output['to'] = array(
+    $output['to'] = [
       '#type' => 'item',
       '#title' => $this->t('To'),
       // By RFC 2822, addresses are comma-separated list.
       '#markup' => htmlentities(implode(', ', $parsed_data->getTo())),
-    );
+    ];
 
     return $output;
   }

@@ -55,7 +55,7 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface {
   protected $body;
 
   /**
-   * The message footer
+   * The message footer.
    *
    * @var string
    */
@@ -83,7 +83,7 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface {
    *   when called.
    */
   public static function createFactory() {
-    return function() {
+    return function () {
       return new static();
     };
   }

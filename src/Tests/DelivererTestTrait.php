@@ -3,8 +3,6 @@
 namespace Drupal\inmail\Tests;
 
 use Drupal\inmail\Entity\DelivererConfig;
-use Drupal\inmail_test\Plugin\inmail\Deliverer\TestDeliverer;
-use Drupal\inmail_test\Plugin\inmail\Deliverer\TestFetcher;
 
 /**
  * Provides common helper methods for Deliverer testing.
@@ -17,7 +15,7 @@ trait DelivererTestTrait {
    * @param string $plugin
    *   The plugin name.
    *
-   * @return DelivererConfig
+   * @return \Drupal\inmail\Entity\DelivererConfig
    *   The deliverer.
    */
   protected function createTestDeliverer($plugin = 'test_deliverer') {
@@ -34,7 +32,7 @@ trait DelivererTestTrait {
   /**
    * Asserts success report with $key.
    *
-   * @param DelivererConfig $deliverer
+   * @param \Drupal\inmail\Entity\DelivererConfig $deliverer
    *   The deliverer.
    *
    * @param string $key

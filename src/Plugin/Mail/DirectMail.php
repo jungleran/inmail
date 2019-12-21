@@ -8,6 +8,7 @@ use Drupal\Core\Mail\MailInterface;
  * Sends a message with the native mail() function and without modification.
  *
  * This allows forwarding of a message similar to MTA behaviour.
+ *
  * @see Drupal\inmail\Plugin\inmail\Handler\ModeratorForwardHandler
  *
  * DirectMail is needed because PhpMail modifies header contents.
@@ -41,7 +42,6 @@ class DirectMail implements MailInterface {
   public function mail(array $message) {
     // Headers are passed in $message['raw_headers'], see explanation in
     // inmail_mail().
-
     $headers = NULL;
     if (isset($message['raw_headers'])) {
       // Cleanup the Subject as it's added when sending.
@@ -56,4 +56,5 @@ class DirectMail implements MailInterface {
       $headers
     );
   }
+
 }

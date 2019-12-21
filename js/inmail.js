@@ -1,3 +1,7 @@
+/**
+ * @file
+ */
+
 (function ($, Drupal, drupalSettings) {
   /**
    * For all header tag, add more/less UI logic.

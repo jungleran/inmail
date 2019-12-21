@@ -49,7 +49,7 @@ abstract class PluginConfigEntity extends ConfigEntityBase implements InmailPlug
    * Returns the plugin instance.
    *
    * @return \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface|\Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface|\Drupal\inmail\Plugin\inmail\Handler\HandlerInterface The instantiated plugin.
-   * The instantiated plugin.
+   *   The instantiated plugin.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    *   Throws an exception in case of missing plugin.
@@ -97,7 +97,7 @@ abstract class PluginConfigEntity extends ConfigEntityBase implements InmailPlug
   /**
    * {@inheritdoc}
    */
-  public function setConfiguration(array $configuration ) {
+  public function setConfiguration(array $configuration) {
     $this->configuration = $configuration;
     return $this;
   }

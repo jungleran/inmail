@@ -102,7 +102,7 @@ trait MimeMessageTrait {
   /**
    * Returns cleaned and parsed date-time object.
    *
-   * @param string $date_string.
+   * @param string $date_string
    *   The date string.
    *
    * @return \Drupal\Component\DateTime\DateTimePlus
