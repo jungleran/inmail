@@ -4,7 +4,6 @@ namespace Drupal\inmail\Controller;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\inmail\Entity\DelivererConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -15,7 +14,7 @@ use Drupal\Core\Url;
  *
  * @ingroup deliverer
  */
-class DelivererController extends ControllerBase implements ContainerInjectionInterface {
+class DelivererController extends ControllerBase {
 
   /**
    * The injected deliverer plugin manager.
