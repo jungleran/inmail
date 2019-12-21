@@ -35,7 +35,8 @@ class DSNStatusTest extends UnitTestCase {
    * @dataProvider provideValidCodes
    */
   public function testParse($class, $subject, $detail) {
-    DSNStatus::parse("$class.$subject.$detail");
+    $object = DSNStatus::parse("$class.$subject.$detail");
+    $this->assertInstanceOf(DSNStatus::class, $object);
   }
 
   /**
