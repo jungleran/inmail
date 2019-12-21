@@ -531,6 +531,8 @@ function inmail_preprocess_inmail_message(&$variables) {
             }
             // @todo: Let the browser handle base64-encoded content.
           }
+          break;
+
         case 'attachment':
           $variables['mime_attachments'][$path] = $message_decomposition->buildAttachment($path, $entity, $download_url);
           break;
@@ -539,7 +541,7 @@ function inmail_preprocess_inmail_message(&$variables) {
         default:
           // Skip Plain/HTML parts as they are already displayed.
           if (in_array($path, [$plain_text_path, $html_path], TRUE)) {
-            continue;
+            continue 2;
           }
           // @todo: Filter-out entities containing multipart/* content type.
           $variables['mime_unknown'][$path] = $message_decomposition->buildAttachment($path, $entity, $download_url);
