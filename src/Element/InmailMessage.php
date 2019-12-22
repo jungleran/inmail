@@ -65,7 +65,7 @@ class InmailMessage extends RenderElement {
    */
   public static function getPlainTextMarkup($plain_text, $view_mode = 'full') {
     $plain_text = Html::escape(trim($plain_text));
-    if ($view_mode == 'teaser') {
+    if ($view_mode === 'teaser') {
       $plain_text = substr($plain_text, 0, 300);
     }
     else {
@@ -87,7 +87,7 @@ class InmailMessage extends RenderElement {
    *   The markup or null in case of teaser mode.
    */
   public static function getHtmlMarkup($html, $view_mode = 'full') {
-    if ($view_mode == 'teaser') {
+    if ($view_mode === 'teaser') {
       return NULL;
     }
     $filtered_html = Xss::filterAdmin(trim($html));
