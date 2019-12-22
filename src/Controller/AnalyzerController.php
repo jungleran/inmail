@@ -4,6 +4,7 @@ namespace Drupal\inmail\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\inmail\AnalyzerConfigInterface;
+use Drupal\inmail\AnalyzerManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\Core\Url;
@@ -14,6 +15,23 @@ use Drupal\Core\Url;
  * @ingroup analyzer
  */
 class AnalyzerController extends ControllerBase {
+
+  /**
+   * The Analyzer manager.
+   *
+   * @var \Drupal\inmail\AnalyzerManager
+   */
+  protected $analyzerManager;
+
+  /**
+   * AnalyzerController constructor.
+   *
+   * @param \Drupal\inmail\AnalyzerManager $analyzer_manager
+   *   The Analyzer manager.
+   */
+  public function __construct(AnalyzerManager $analyzer_manager) {
+    $this->analyzerManager = $analyzer_manager;
+  }
 
   /**
    * {@inheritdoc}

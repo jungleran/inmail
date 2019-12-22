@@ -4,6 +4,7 @@ namespace Drupal\inmail\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\inmail\HandlerConfigInterface;
+use Drupal\inmail\HandlerManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\Core\Url;
@@ -14,6 +15,23 @@ use Drupal\Core\Url;
  * @ingroup handler
  */
 class HandlerController extends ControllerBase {
+
+  /**
+   * The handler manger.
+   *
+   * @var \Drupal\inmail\HandlerManager
+   */
+  protected $handlerManager;
+
+  /**
+   * HandlerController constructor.
+   *
+   * @param \Drupal\inmail\HandlerManager $handler_manager
+   *   The handler manger.
+   */
+  public function __construct(HandlerManager $handler_manager) {
+    $this->handlerManager = $handler_manager;
+  }
 
   /**
    * {@inheritdoc}
