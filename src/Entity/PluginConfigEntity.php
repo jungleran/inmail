@@ -77,6 +77,8 @@ abstract class PluginConfigEntity extends ConfigEntityBase implements InmailPlug
    *
    * @return bool
    *   TRUE if the plugin is available. Otherwise, FALSE.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
   public function isAvailable() {
     $is_available = FALSE;

@@ -22,7 +22,7 @@ class HandlerConfigurationForm extends PluginConfigurationForm {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('plugin.manager.inmail.handler'),
-      $container->get('entity.manager')->getStorage('inmail_handler')
+      $container->get('entity_type.manager')->getStorage('inmail_handler')
     );
   }
 

@@ -22,7 +22,7 @@ class DelivererConfigurationForm extends PluginConfigurationForm {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('plugin.manager.inmail.deliverer'),
-      $container->get('entity.manager')->getStorage('inmail_deliverer')
+      $container->get('entity_type.manager')->getStorage('inmail_deliverer')
     );
   }
 
