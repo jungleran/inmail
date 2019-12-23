@@ -6,6 +6,9 @@ configure: inmail.settings
 version: 8.x-1.x
 core: 8.x
 
+dependencies:
+  - jquery_ui_tabs:jquery_ui_tabs
+
 test_dependencies:
   - past
   - monitoring

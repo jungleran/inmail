@@ -10,7 +10,7 @@ inmail.message:
     js/inmail.js: {}
   dependencies:
     - core/jquery.once
-    - core/jquery.ui.tabs
+    - jquery_ui_tabs/tabs
     - core/drupal
 
 inmail.admin:
