@@ -179,7 +179,7 @@ class InmailWebTest extends WebTestBase {
   /**
    * Test if form save value correctly for IMAP port number and protocol.
    */
-  public function testIMAPPortAndProtocol() {
+  public function testImapPortAndProtocol() {
     $this->drupalGet('admin/config/system/inmail/deliverers/add');
     $edit = [
       'label' => 'Test IMAP Fetcher',
@@ -200,9 +200,11 @@ class InmailWebTest extends WebTestBase {
   }
 
   /**
+   * Test pop3 port and protocol.
    *
+   * @throws \Exception
    */
-  public function testPOP3PortAndProtocol() {
+  public function testPop3PortAndProtocol() {
     $this->drupalGet('admin/config/system/inmail/deliverers/add');
     $edit = [
       'label' => 'Test POP3 Fetcher',
@@ -316,7 +318,7 @@ class InmailWebTest extends WebTestBase {
   /**
    * Tests configuration form of settings.
    */
-  public function doTestSettingsUI() {
+  public function doTestSettingsUi() {
     $this->drupalGet('/admin/config/system/inmail');
     $this->assertField('return_path');
     $this->assertNoField('edit-log-raw-emails');

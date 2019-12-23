@@ -6,6 +6,8 @@ use Drupal\Core\TypedData\Plugin\DataType\Map;
 use Drupal\inmail\DSNStatus;
 
 /**
+ * Bounce Data.
+ *
  * @DataType(
  *   id = "inmail_bounce",
  *   definition_class = "Drupal\inmail\BounceDataDefinition"
@@ -76,7 +78,7 @@ class BounceData extends Map {
    */
   public function getStatusCode() {
     if ($code = $this->get('status_code')->getValue()) {
-      return DSNStatus::parse($this->get('status_code')->getValue());
+      return DSNStatus::parse($code);
     }
 
     return NULL;

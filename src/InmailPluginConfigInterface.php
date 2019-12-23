@@ -23,6 +23,7 @@ interface InmailPluginConfigInterface extends ConfigEntityInterface {
    * Sets the plugin ID.
    *
    * @param string $plugin
+   *   The plugin ID.
    */
   public function setPluginId($plugin);
 
@@ -37,7 +38,7 @@ interface InmailPluginConfigInterface extends ConfigEntityInterface {
   /**
    * Sets the configuration stored for this plugin.
    *
-   * @param array
+   * @param array $configuration
    *   New plugin configuration. Should match the properties defined by the
    *   plugin referenced by ::$plugin.
    */

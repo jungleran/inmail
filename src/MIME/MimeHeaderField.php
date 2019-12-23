@@ -3,7 +3,9 @@
 namespace Drupal\inmail\MIME;
 
 /**
+ * Class MimeHeaderField.
  *
+ * @package Drupal\inmail\MIME
  */
 class MimeHeaderField {
 

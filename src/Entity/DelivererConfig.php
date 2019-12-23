@@ -71,6 +71,7 @@ class DelivererConfig extends PluginConfigEntity implements DelivererConfigInter
    * Returns the flag for message report.
    *
    * @return bool
+   *   The flag of message report.
    */
   public function isMessageReport() {
     return $this->message_report;

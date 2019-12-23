@@ -11,8 +11,7 @@ use Drupal\inmail\ProcessorResultInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * MimeMessage handler that forwards unclassified bounces by email to a
- * moderator.
+ * MimeMessage handler forwards unclassified bounces by email to a moderator.
  *
  * @todo Validate moderator email address https://www.drupal.org/node/2381855
  *
@@ -151,7 +150,7 @@ class ModeratorForwardHandler extends HandlerBase implements ContainerFactoryPlu
     $form['moderator'] = [
       '#type' => 'email',
       '#title' => $this->t('Moderator address'),
-      '#description' => $this->t('Unclassified bounce messages are forwarded to this email address. <strong>Important:</strong> If using <em>Mailmute</em>, make sure this address does not belong to a user, since that will make the forward subject to that user\'s send state.'),
+      '#description' => $this->t("Unclassified bounce messages are forwarded to this email address. <strong>Important:</strong> If using <em>Mailmute</em>, make sure this address does not belong to a user, since that will make the forward subject to that user's send state."),
       '#description_position' => 'after',
       '#default_value' => $this->getModerator(),
     ];

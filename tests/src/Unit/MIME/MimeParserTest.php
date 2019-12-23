@@ -3,6 +3,7 @@
 namespace Drupal\Tests\inmail\Unit\MIME;
 
 use Drupal\Core\Logger\LoggerChannel;
+use Drupal\inmail\MIME\MimeParseException;
 use Drupal\inmail\MIME\MimeParser;
 use Drupal\inmail\MIME\Rfc2822Address;
 use Drupal\Tests\inmail\Unit\InmailUnitTestBase;
@@ -22,12 +23,13 @@ class MimeParserTest extends InmailUnitTestBase {
    * @covers ::parseMessage
    *
    * @dataProvider provideMalformedRaws
-   *
-   * @expectedException \Drupal\inmail\MIME\MimeParseException
    */
   public function testParseException($raw) {
+    $this->expectException(MimeParseException::class);
+    // phpcs:ignore
     $message = (new MimeParser(new LoggerChannel('test')))->parseMessage($raw);
-    // The RFC standard 4475 (https://tools.ietf.org/html/rfc4475#section-3.1.2),
+    // The RFC standard 4475
+    // (https://tools.ietf.org/html/rfc4475#section-3.1.2),
     // defines some critical samples of invalid messages.
     \Drupal::logger('test')->log('ParserTest', "Message is missing blank line after header");
     \Drupal::logger('test')->log('ParserTest', "Content Length Larger than Message");
@@ -124,6 +126,7 @@ class MimeParserTest extends InmailUnitTestBase {
       ],
       // Address in quotes but not after (invalid).
       ['"Admin, Admin <admin@example.com>"', []],
+      // phpcs:disable
       // @todo Allow comma in name, https://www.drupal.org/node/2475057
       //   Comma in name (quoted, valid).
       //      ['"Admin, Admin" <admin@example.com>', [
@@ -134,6 +137,7 @@ class MimeParserTest extends InmailUnitTestBase {
       //        new Rfc2822Address('Admin <admin@example.com>', 'admin@example.com'),
       //      ]],
       // Unicode in name.
+      // phpcs:enable
       ['Admin™ <admin@example.com>', [
         new Rfc2822Address('Admin™', 'admin@example.com'),
       ],

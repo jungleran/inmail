@@ -67,8 +67,12 @@ abstract class BounceSendstateBase extends SendStateBase {
    */
   public function getCodeString() {
     if ($status = $this->getStatus()) {
-      $args = ['@code' => $status->getCode(), '@label' => $status->getLabel()];
-      return $this->t($status->getLabel() ? '@code @label' : '@code', $args);
+      $label = $status->getLabel();
+      $code = $status->getCode();
+      if ($label !== '') {
+        return $this->t('@code @label', ['@code' => $code, '@label' => $label]);
+      }
+      return $this->t('@code', ['@code' => $code]);
     }
     return NULL;
   }

@@ -17,6 +17,11 @@ use Drupal\KernelTests\KernelTestBase;
  */
 class StandardDSNReasonAnalyzerTest extends KernelTestBase {
 
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
   public static $modules = ['inmail'];
 
   /**

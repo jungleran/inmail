@@ -8,7 +8,14 @@ namespace Drupal\inmail_test\Plugin\inmail\Deliverer;
 trait TestDelivererTrait {
 
   /**
+   * Returns a state key appropriate for the given state property.
    *
+   * @param string $key
+   *   Name of key.
+   *
+   * @return string
+   *   An appropriate name for a state property of the deliverer config
+   *   associated with this fetcher.
    */
   abstract public function makeStateKey($key);
 

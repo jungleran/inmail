@@ -110,7 +110,7 @@ class PasteForm extends FormBase {
 
     $form['example_load_button'] = [
       '#type' => 'submit',
-      '#value' => t('Load example'),
+      '#value' => $this->t('Load example'),
       '#ajax' => [
         'wrapper' => 'raw-edit',
         'callback' => [$this, 'rawReplace'],

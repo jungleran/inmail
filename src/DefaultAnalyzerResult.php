@@ -5,6 +5,7 @@ namespace Drupal\inmail;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\Context\ContextInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\user\UserInterface;
 
 /**
@@ -13,6 +14,8 @@ use Drupal\user\UserInterface;
  * @ingroup analyzer
  */
 class DefaultAnalyzerResult implements AnalyzerResultInterface {
+
+  use StringTranslationTrait;
 
   /**
    * Identifies this class in relation to other analyzer results.
@@ -72,7 +75,7 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface {
    * {@inheritdoc}
    */
   public function label() {
-    return t('Default Result');
+    return $this->t('Default Result');
   }
 
   /**
@@ -150,7 +153,7 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface {
       $summary['subject'] = $this->getSubject();
     }
     if ($this->getAllContexts()) {
-      $summary['contexts'] = t('The result contains @contexts contexts.', ['@contexts' => implode(', ', array_keys($this->getAllContexts()))]);
+      $summary['contexts'] = $this->t('The result contains @contexts contexts.', ['@contexts' => implode(', ', array_keys($this->getAllContexts()))]);
     }
 
     return $summary;

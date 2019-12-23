@@ -18,6 +18,7 @@ interface MimeParserInterface {
    * Parses a string message into a MimeMessage object.
    *
    * @param string $raw
+   *   The raw message.
    *
    * @return \Drupal\inmail\MIME\MimeMessageInterface
    *   The resulting MimeMessage object abstraction.

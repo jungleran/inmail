@@ -22,8 +22,10 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
 
   /**
    * MimeMessage id used for marking and deletion of messages.
+   *
+   * @var string
    */
-  protected $message_id;
+  protected $messageId;
 
   /**
    * Injected Inmail logger channel.
@@ -96,14 +98,14 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    *   Key of the message.
    */
   public function deleteMessage($key) {
-    $this->message_id = $key;
+    $this->messageId = $key;
     // Delete fetched messages if it is specified in configuration, and
     // after successful processing.
     if ($this->configuration['delete_processed']) {
       $this->doImap(function ($imap_stream) {
         // Key of the message is ID for deletion process.
         // Mark the messages for deletion.
-        imap_delete($imap_stream, $this->message_id);
+        imap_delete($imap_stream, $this->messageId);
         // Delete all messages marked for deletion.
         imap_expunge($imap_stream);
         $unread_ids = $this->doImapSearch($imap_stream, 'UNSEEN');
@@ -190,7 +192,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
   /**
    * Performs an IMAP Search with empty handling.
    *
-   * @param $imap_res
+   * @param resource $imap_res
    *   IMAP connection.
    * @param string $type
    *   Type of message, e.g. 'UNSEEN' or 'SEEN'.
@@ -297,7 +299,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       '#type' => 'number',
       '#title' => $this->t('Port'),
       '#default_value' => $this->configuration['imap_port'],
-      '#description' => t('The standard port number for IMAP is 143 (SSL:993)'),
+      '#description' => $this->t('The standard port number for IMAP is 143 (SSL:993)'),
       '#states' => [
         'visible' => [
           ':input[name = "protocol"]' => ['value' => 'imap'],
@@ -309,7 +311,7 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
       '#type' => 'number',
       '#title' => $this->t('Port'),
       '#default_value' => $this->configuration['pop3_port'],
-      '#description' => t('The standard port number for POP3 is 110 (SSL: 995).'),
+      '#description' => $this->t('The standard port number for POP3 is 110 (SSL: 995).'),
       '#states' => [
         'visible' => [
           ':input[name = "protocol"]' => ['value' => 'pop3'],
@@ -426,10 +428,10 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    */
   public function submitTestConnection(array $form, FormStateInterface $form_state) {
     if ($this->hasValidCredentials($form_state)) {
-      drupal_set_message(t('Valid credentials!'));
+      drupal_set_message($this->t('Valid credentials!'));
     }
     else {
-      drupal_set_message(t('Invalid credentials!'), 'error');
+      drupal_set_message($this->t('Invalid credentials!'), 'error');
     }
   }
 

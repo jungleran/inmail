@@ -104,7 +104,8 @@ class InmailIntegrationTest extends WebTestBase {
 
     $deliverer = $this->createTestDeliverer();
     $this->processor->process('unique_key', NULL, $deliverer);
-    // Success function is never called since we pass NULL, thus state is unchanged.
+    // Success function is never called since we pass NULL,
+    // thus state is unchanged.
     $this->assertSuccess($deliverer, '');
     $event = $this->getLastEventByMachinename('process');
     $this->assertNotNull($event);

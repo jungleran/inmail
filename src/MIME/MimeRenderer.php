@@ -21,6 +21,8 @@ class MimeRenderer {
    *
    * @param \Drupal\inmail\MIME\MimeEntityInterface $entity
    *   The entity to render.
+   * @param int|null $index
+   *   The index.
    *
    * @return array
    *   A renderable array of the entity.
@@ -45,7 +47,12 @@ class MimeRenderer {
     }
 
     // Render header.
-    $output['header'] = $this->renderHeaderFields($entity, ['From', 'To', 'Subject', 'Content-Type']);
+    $output['header'] = $this->renderHeaderFields($entity, [
+      'From',
+      'To',
+      'Subject',
+      'Content-Type',
+    ]);
     // The Content-Type header needs some cleaning.
     $content_type = $entity->getContentType();
     $output['header']['content_type']['#markup'] = $content_type['type'] . '/' . $content_type['subtype'];
@@ -83,7 +90,7 @@ class MimeRenderer {
     $field_body = $entity->getHeader()->getFieldBody($field_name);
     return [
       '#type' => 'item',
-      '#title' => $this->t($field_name),
+      '#title' => $this->t(':field_name', [":field_name" => $field_name]),
       '#markup' => htmlentities($field_body),
     ];
   }

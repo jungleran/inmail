@@ -85,11 +85,11 @@ class PHPMailerBMHAnalyzer extends AnalyzerBase {
     // The analysis returns an associative array designed for the library to
     // handle. It contains the following keys, of which rule_cat is the most
     // specific and usable:
-    //   - remove: indicates that the message should be removed.
-    //   - bounce_type: groups rule_cat values.
-    //   - rule_cat: a string identifier for the reason for the bounce.
-    //   - rule_no: references a single match condition in the code.
-    //   - email: the recipient causing the bounce, if identifiable.
+    // - remove: indicates that the message should be removed.
+    // - bounce_type: groups rule_cat values.
+    // - rule_cat: a string identifier for the reason for the bounce.
+    // - rule_no: references a single match condition in the code.
+    // - email: the recipient causing the bounce, if identifiable.
     if (isset($bmh_result['email'])) {
       $bounce_data->setRecipient($bmh_result['email']);
     }

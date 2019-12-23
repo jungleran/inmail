@@ -212,7 +212,6 @@ Subject: My very urgent message
   }
 
   /**
-   * `
    * Expected parse result of the third part of the message.
    */
   protected static function getOriginalPart() {

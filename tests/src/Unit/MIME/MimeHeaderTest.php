@@ -111,8 +111,8 @@ class MimeHeaderTest extends UnitTestCase {
         new MimeHeader([
           new MimeHeaderField(
             'Subject',
-            // The ü in this string triggers base64 encoding in toString. Encoded
-            // string wraps within the 78 char line limit.
+            // The ü in this string triggers base64 encoding in toString.
+            // Encoded string wraps within the 78 char line limit.
             "Alle Menschen sind frei und gleich an Würde und Rechten geboren. Sie sind mit Vernunft und Gewissen begabt und sollen einander im Geist der Brüderlichkeit begegnen."
           ),
         ],

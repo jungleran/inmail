@@ -21,23 +21,28 @@ class CountingBounces extends BounceSendstateBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function display() {
     $display = parent::display();
 
-    $display['label'] = [
-      '#markup' => $this->t($this->getThreshold() ? '@label (@count of @threshold received)' : '@label (@count received, no threshold set)', [
-        '@label' => $this->getPluginDefinition()['label'],
-        '@count' => $this->getUnprocessedCount(),
-        '@threshold' => $this->getThreshold(),
-      ]),
-    ];
+    $threshold = $this->getThreshold();
+
+    if ($threshold !== NULL) {
+      $display['label'] = [
+        '#markup' => $this->t('@label (@count of @threshold received)', [
+          '@label' => $this->getPluginDefinition()['label'],
+          '@count' => $this->getUnprocessedCount(),
+          '@threshold' => $threshold,
+        ]),
+      ];
+    }
+    else {
+      $display['label'] = [
+        '#markup' => $this->t('@label (@count received, no threshold set)', [
+          '@label' => $this->getPluginDefinition()['label'],
+          '@count' => $this->getUnprocessedCount(),
+        ]),
+      ];
+    }
 
     return $display;
   }

@@ -10,12 +10,14 @@ use Drupal\Core\TypedData\DataDefinition;
  */
 class MailboxDefinition extends ComplexDataDefinitionBase {
 
+  // phpcs:disable
   /**
    * {@inheritdoc}
    */
   public static function create($type = 'inmail_mailbox') {
     return parent::create($type);
   }
+  // phpcs:enable
 
   /**
    * {@inheritdoc}

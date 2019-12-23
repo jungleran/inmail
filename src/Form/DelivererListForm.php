@@ -69,8 +69,8 @@ class DelivererListForm extends FormBase {
       ],
     ];
 
-    // Let the list builder render the table.
-    $form['table'] = \Drupal::entityManager()->getListBuilder('inmail_deliverer')->render();
+    // phpcs:ignore -- Let the list builder render the table.
+    $form['table'] = \Drupal::entityTypeManager()->getListBuilder('inmail_deliverer')->render();
     // Attach css library to the form.
     $form['#attached']['library'][] = 'inmail/inmail.admin';
 
@@ -95,10 +95,10 @@ class DelivererListForm extends FormBase {
 
     // Set a message and redirect to overview.
     if ($fetchers_count > 0) {
-      drupal_set_message('Fetcher state info has been updated.');
+      drupal_set_message($this->t('Fetcher state info has been updated.'));
     }
     else {
-      drupal_set_message('There are no configured fetchers, nothing to update.');
+      drupal_set_message($this->t('There are no configured fetchers, nothing to update.'));
     }
   }
 
@@ -106,11 +106,13 @@ class DelivererListForm extends FormBase {
    * Trigger processing of an active fetcher.
    */
   public function submitFetchProcessing(array &$form, FormStateInterface $form_state) {
-    // Find active deliverers.
+    // phpcs:ignore -- Find active deliverers.
     $deliverer_ids = \Drupal::entityQuery('inmail_deliverer')->condition('status', TRUE)->execute();
     /** @var \Drupal\inmail\Entity\DelivererConfig[] $deliverers */
+    // phpcs:ignore
     $deliverers = \Drupal::entityTypeManager()->getStorage('inmail_deliverer')->loadMultiple($deliverer_ids);
     /** @var \Drupal\inmail\MessageProcessorInterface $processor */
+    // phpcs:ignore
     $processor = \Drupal::service('inmail.processor');
     $fetchers = [];
     $processed_count = 0;
@@ -125,7 +127,7 @@ class DelivererListForm extends FormBase {
         foreach ($results as $key => $result) {
           if (!$result->isSuccess()) {
             $messages = inmail_get_log_message($result, RfcLogLevel::ERROR);
-            drupal_set_message(t('Message @key: @error', [
+            drupal_set_message($this->t('Message @key: @error', [
               '@key' => $key,
               '@error' => strip_tags(implode("\n", $messages)),
             ]), 'error');
@@ -138,7 +140,7 @@ class DelivererListForm extends FormBase {
         // No more messages to process for specific deliverer?
         if ($deliverer->getPluginInstance()->getUnprocessedCount() != 0) {
           // @todo This message could be repeating.
-          drupal_set_message(t('There are more messages to process.'));
+          drupal_set_message($this->t('There are more messages to process.'));
         }
         // @todo Add Batch API. https://www.drupal.org/node/2804337.
       }
@@ -146,18 +148,18 @@ class DelivererListForm extends FormBase {
 
     // Processing finished, show final message.
     if (empty($fetchers)) {
-      drupal_set_message(t('There are no active fetchers. Please enable or <a href=":url">add</a> one.', [
+      drupal_set_message($this->t('There are no active fetchers. Please enable or <a href=":url">add</a> one.', [
         ':url' => '/admin/config/system/inmail/deliverers/add',
       ]), 'warning');
     }
     elseif ($processed_count) {
-      drupal_set_message(t('Successfully processed @count messages by @fetchers.', [
+      drupal_set_message($this->t('Successfully processed @count messages by @fetchers.', [
         '@count' => $processed_count,
         '@fetchers' => implode(', ', $fetchers),
       ]));
     }
     else {
-      drupal_set_message(t('No messages to process.'));
+      drupal_set_message($this->t('No messages to process.'));
     }
   }
 

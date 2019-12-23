@@ -293,7 +293,7 @@ function inmail_mail_alter_verp(&$message) {
  * @return string
  *   The modified Return-Path address.
  *
- * @see \Drupal\inmail\MessageAnalyzer\VERPAnalyzer
+ * @see \Drupal\inmail\Plugin\inmail\Analyzer\VerpAnalyzer
  */
 function inmail_generate_verp($return_path, $recipient) {
   $to = str_replace('@', '=', $recipient);

@@ -27,8 +27,8 @@ class MimeDSNEntity extends MimeMultipartMessage {
    * The first element contains per-message fields, and subsequent elements
    * contain per-recipient fields.
    *
-   * Representation by the MimeHeader class is motivated by the fields following the
-   * syntax of header fields.
+   * Representation by the MimeHeader class is motivated by the fields
+   * following the syntax of header fields.
    *
    * @var \Drupal\inmail\MIME\MimeHeader[]
    */

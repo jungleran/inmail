@@ -3,6 +3,7 @@
 namespace Drupal\inmail_collect\Tests;
 
 use Drupal\collect\Entity\Container;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\inmail\MIME\MimeHeader;
 use Drupal\inmail\MIME\MimeMessage;
 use Drupal\inmail\ProcessorResult;
@@ -15,6 +16,8 @@ use Drupal\inmail\MIME\MimeHeaderField;
  * @group inmail
  */
 class InmailCollectWebTest extends InmailWebTestBase {
+
+  use StringTranslationTrait;
 
   /**
    * Modules to enable.
@@ -52,8 +55,8 @@ class InmailCollectWebTest extends InmailWebTestBase {
     $this->clickLink('View');
     $container_url = $this->getUrl();
     $this->assertText($origin_uri);
-    $this->assertText(t('There is no plugin configured to display data.'));
-    $this->clickLink(t('Raw data'));
+    $this->assertText($this->t('There is no plugin configured to display data.'));
+    $this->clickLink($this->t('Raw data'));
     $this->assertText('&quot;header-subject&quot;: &quot;DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory&quot;');
     $this->assertText('&quot;header-to&quot;: {
         &quot;name&quot;: &quot;&quot;,
@@ -73,24 +76,24 @@ class InmailCollectWebTest extends InmailWebTestBase {
 
     // Create suggested Inmail model and view details as rendered.
     $this->drupalGet($container_url);
-    $this->clickLink(t('Set up a @label model', ['@label' => 'Email message']));
-    $this->drupalPostForm(NULL, ['id' => 'email_message'], t('Save'));
+    $this->clickLink($this->t('Set up a @label model', ['@label' => 'Email message']));
+    $this->drupalPostForm(NULL, ['id' => 'email_message'], $this->t('Save'));
     // Details summaries of each part.
     $details = $this->xpath('//div[@class="field__item"]//details');
     $this->assertEqual((string) $details[0]->summary, 'DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
-    $this->assertEqual((string) $details[0]->div->details[0]->summary, t('Part 1'));
-    $this->assertEqual((string) $details[0]->div->details[1]->summary, t('Part 2'));
-    $this->assertEqual((string) $details[0]->div->details[2]->summary, t('Part 3'));
+    $this->assertEqual((string) $details[0]->div->details[0]->summary, $this->t('Part 1'));
+    $this->assertEqual((string) $details[0]->div->details[1]->summary, $this->t('Part 2'));
+    $this->assertEqual((string) $details[0]->div->details[2]->summary, $this->t('Part 3'));
     // Eliminate repeated whitespace to simplify matching.
     $this->setRawContent(preg_replace('/\s+/', ' ', $this->getRawContent()));
     // MimeHeader fields.
-    $this->assertText(t('From') . ' Postmaster@acacia.example.org');
-    $this->assertText(t('To') . ' bounces+user=example.org@example.com');
-    $this->assertText(t('Subject') . ' DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory');
-    $this->assertText(t('Content-Type') . ' multipart/report');
-    $this->assertText(t('Content-Type') . ' text/plain');
-    $this->assertText(t('Content-Type') . ' message/delivery-status');
-    $this->assertText(t('Content-Type') . ' message/rfc822');
+    $this->assertText($this->t('From :from'), [':from' => 'Postmaster@acacia.example.org']);
+    $this->assertText($this->t('To :to'), [':to' => 'bounces+user=example.org@example.com']);
+    $this->assertText($this->t('Subject :subject'), [':subject' => ' DELIVERY FAILURE: User environment (user@example.org) not listed in Domino Directory']);
+    $this->assertText($this->t('Content-Type :content_type'), [':content_type' => 'multipart/report']);
+    $this->assertText($this->t('Content-Type :content_type'), [':content_type' => 'text/plain']);
+    $this->assertText($this->t('Content-Type :content_type'), [':content_type' => 'message/delivery-status']);
+    $this->assertText($this->t('Content-Type :content_type'), [':content_type' => 'message/rfc822']);
     // Body.
     $this->assertText('Your message Subject: We want a toxic-free future was not delivered to: environment@lvmh.fr');
   }

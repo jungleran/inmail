@@ -108,7 +108,7 @@ abstract class FetcherBase extends DelivererBase implements FetcherInterface {
   public function addTestConnectionButton() {
     $form['test_connection'] = [
       '#type' => 'submit',
-      '#value' => t('Test connection'),
+      '#value' => $this->t('Test connection'),
       '#submit' => [
         [$this, 'submitTestConnection'],
       ],

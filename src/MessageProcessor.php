@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\inmail\Entity\DelivererConfig;
+use Drupal\inmail\MIME\MimeMessageInterface;
 use Drupal\inmail\MIME\MimeParseException;
 use Drupal\inmail\MIME\MimeParserInterface;
 use Drupal\user\Entity\User;
@@ -91,11 +92,11 @@ class MessageProcessor implements MessageProcessorInterface {
     $result = new ProcessorResult();
     $result->setDeliverer($deliverer);
 
-    // Create a log event.
+    // phpcs:ignore -- Create a log event.
     if (\Drupal::moduleHandler()->moduleExists('past')) {
       $event = past_event_create('inmail', 'process', 'Incoming mail');
       $event->addArgument('deliverer', $deliverer);
-      // Log the raw email message.
+      // phpcs:ignore --  Log the raw email message.
       if (\Drupal::config('inmail.settings')->get('log_raw_emails')) {
         $event->addArgument('email', $raw);
       }
@@ -121,7 +122,6 @@ class MessageProcessor implements MessageProcessorInterface {
       }
 
       // Analyze message.
-
       /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
       $default_result = $result->getAnalyzerResult();
       // Enabled analyzers will be able to update the account.
@@ -204,13 +204,12 @@ class MessageProcessor implements MessageProcessorInterface {
    *
    * @param \Drupal\inmail\ProcessorResult $result
    *   The processor result object.
-   * @param $message
-   *   \Drupal\inmail\MIME\MimeMessageInterface $original
+   * @param \Drupal\inmail\MIME\MimeMessageInterface $message
    *   Received message.
    * @param \Drupal\inmail\Entity\DelivererConfig $deliverer
    *   The Deliverer configuration that delivered the messages.
    */
-  public function sendMessageReport($result, $message, $deliverer) {
+  public function sendMessageReport(ProcessorResult $result, MimeMessageInterface $message, DelivererConfig $deliverer) {
     // Make sure to never reply to a bounce to avoid loops.
     /** @var \Drupal\inmail\DefaultAnalyzerResult $default_result */
     $default_result = $result->getAnalyzerResult();
@@ -232,9 +231,10 @@ class MessageProcessor implements MessageProcessorInterface {
       // Send only if we have From recipient(s).
       if (!empty($from_addresses)) {
         $recipients = implode(', ', $from_addresses);
-        // @todo consider display name?
+        // phpcs:ignore -- @todo consider display name?
         $mail_manager = \Drupal::service('plugin.manager.mail');
         $mail_manager->mail('inmail', 'success', $recipients,
+          // phpcs:ignore
           \Drupal::languageManager()->getDefaultLanguage()->getId(), $params);
       }
     }

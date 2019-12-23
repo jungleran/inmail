@@ -90,7 +90,10 @@ function drush_inmail_process() {
       $processed = 0;
       foreach ($results as $key => $result) {
         if ($messages = inmail_get_log_message($result)) {
-          drush_log(dt('@key: @message', ['@key' => $key, '@message' => strip_tags(implode("\n", $messages))]));
+          drush_log(dt('@key: @message', [
+            '@key' => $key,
+            '@message' => strip_tags(implode("\n", $messages)),
+          ]));
           $processed++;
         }
       }

@@ -2,12 +2,16 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+
 /**
  * Provides common helper methods for Inmail web tests.
  *
  * @group inmail
  */
 class InmailAttachmentWebTest extends InmailWebTestBase {
+
+  use StringTranslationTrait;
 
   /**
    * Modules to enable.
@@ -59,7 +63,7 @@ class InmailAttachmentWebTest extends InmailWebTestBase {
     $this->assertLink('hello.txt');
     $this->assertText('hello.txt (61 bytes)');
     // @todo: Properly assert special characters in file names
-    //    https://www.drupal.org/node/2819645.
+    // https://www.drupal.org/node/2819645.
     $this->assertText('This is a sample image with');
     $this->assertText('.JPEG.png (94 bytes)');
     $this->assertText('Inline image.png (94 bytes)');
@@ -78,7 +82,7 @@ class InmailAttachmentWebTest extends InmailWebTestBase {
     $this->assertHeader('Content-Transfer-Encoding', 'base64');
 
     $this->drupalGet('admin/inmail-test/email/' . $event_id . '/full');
-    $this->clickLink(t('Download raw message'));
+    $this->clickLink($this->t('Download raw message'));
     $this->assertResponse(200);
     $this->assertHeader('Content-Type', 'message/rfc822');
     $this->assertHeader('Content-Disposition', 'attachment; filename=original_message.eml');

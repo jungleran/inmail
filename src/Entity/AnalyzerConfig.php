@@ -61,6 +61,8 @@ class AnalyzerConfig extends PluginConfigEntity implements AnalyzerConfigInterfa
   protected $weight;
 
   /**
+   * Returns the weight.
+   *
    * @inheritdoc
    */
   public function getWeight() {
@@ -68,6 +70,8 @@ class AnalyzerConfig extends PluginConfigEntity implements AnalyzerConfigInterfa
   }
 
   /**
+   * Sets the weight.
+   *
    * @inheritdoc
    */
   public function setWeight($weight) {

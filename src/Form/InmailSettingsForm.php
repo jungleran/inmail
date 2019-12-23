@@ -4,6 +4,7 @@ namespace Drupal\inmail\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element\Email;
 
 /**
  * Form for general Inmail configuration.
@@ -36,10 +37,15 @@ class InmailSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Return-Path address'),
       '#type' => 'email',
       '#description' => $this->t('Normally the site email address (%site_mail) is used for the <code>Return-Path</code> header in outgoing messages. You can use this field to set another, dedicated address, or leave it empty to use the site email address. Note: VERP is not applied on messages with multiple recipients.',
-          ['%site_mail' => \Drupal::config('system.site')->get('mail')]),
+          [
+            // phpcs:ignore
+            '%site_mail' => \Drupal::config('system.site')->get('mail'),
+          ]),
       // Setting #element_validate breaks merging with defaults, so specify the
       // standard email validation explicitly.
-      '#element_validate' => ['::validateReturnPath', ['\Drupal\Core\Render\Element\Email', 'validateEmail']],
+      '#element_validate' => ['::validateReturnPath',
+        [Email::class, 'validateEmail'],
+      ],
       '#default_value' => $config->get('return_path'),
     ];
 
@@ -50,7 +56,7 @@ class InmailSettingsForm extends ConfigFormBase {
       '#default_value' => strval($config->get('batch_size')),
     ];
 
-    // Display the logging in case Past module is enabled.
+    // phpcs:ignore -- Display the logging in case Past module is enabled.
     if (\Drupal::moduleHandler()->moduleExists('past')) {
       $form['log_raw_emails'] = [
         '#title' => $this->t('Log raw email messages'),
@@ -68,7 +74,6 @@ class InmailSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-    $val = $this->config('inmail.settings');
     $this->config('inmail.settings')
       ->set('return_path', $form_state->getValue('return_path'))
       ->set('log_raw_emails', $form_state->getValue('log_raw_emails', FALSE))

@@ -45,13 +45,13 @@ class IMAPQuotaSensorPlugin extends SensorPluginBase {
     $form['imap_fetcher'] = [
       '#type' => 'select',
       '#options' => $imap_fetchers,
-      '#title' => t('IMAP Fetchers'),
-      '#description' => t('Select a fetcher to track its IMAP quota.'),
+      '#title' => $this->t('IMAP Fetchers'),
+      '#description' => $this->t('Select a fetcher to track its IMAP quota.'),
       '#default_value' => $this->sensorConfig->getSetting('imap_fetcher'),
       '#access' => $has_fetchers,
     ];
     if (!$has_fetchers) {
-      drupal_set_message(t('There are no IMAP fetchers. Please <a href=":url">add</a> one.', [':url' => '/admin/config/system/inmail/deliverers/add']), 'warning');
+      drupal_set_message($this->t('There are no IMAP fetchers. Please <a href=":url">add</a> one.', [':url' => '/admin/config/system/inmail/deliverers/add']), 'warning');
     }
 
     return $form;

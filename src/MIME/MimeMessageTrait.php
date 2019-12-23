@@ -66,7 +66,7 @@ trait MimeMessageTrait {
   /**
    * Parses address field and decodes on request.
    *
-   * @param $name
+   * @param string $name
    *   The field name.
    *
    * @return \Drupal\inmail\MIME\Rfc2822Address[]
@@ -87,7 +87,7 @@ trait MimeMessageTrait {
     if (!$received_body = $this->getHeader()->getFieldBody('Received')) {
       return NULL;
     }
-    list($info, $date_string) = explode(';', $received_body, 2);
+    list(, $date_string) = explode(';', $received_body, 2);
     return $this->parseTimezone($date_string);
   }
 

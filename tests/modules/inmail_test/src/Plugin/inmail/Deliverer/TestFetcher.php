@@ -27,13 +27,6 @@ class TestFetcher extends FetcherBase {
   protected static $remaining = 100;
 
   /**
-   * Constructs a TestFetcher.
-   */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function success($key) {
@@ -60,8 +53,8 @@ class TestFetcher extends FetcherBase {
       return [$message];
     }
     else {
-      // MimeMessage must be fully valid, so it can pass all validations and trigger
-      // some functions (i.e. success()).
+      // MimeMessage must be fully valid, so it can pass all validations
+      // and trigger some functions (i.e. success()).
       return [
         "From: FooBar\nDate: Tue, 23 Aug 2016 17:48:6 +0600\nSubject: Dummy message\n\nMessage Body",
       ];

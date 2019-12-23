@@ -48,7 +48,7 @@ abstract class PluginConfigEntity extends ConfigEntityBase implements InmailPlug
   /**
    * Returns the plugin instance.
    *
-   * @return \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface|\Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface|\Drupal\inmail\Plugin\inmail\Handler\HandlerInterface The instantiated plugin.
+   * @return \Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerInterface|\Drupal\inmail\Plugin\inmail\Deliverer\DelivererInterface|\Drupal\inmail\Plugin\inmail\Handler\HandlerInterface
    *   The instantiated plugin.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException

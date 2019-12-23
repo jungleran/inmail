@@ -2,6 +2,7 @@
 
 namespace Drupal\inmail\Tests;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -11,7 +12,7 @@ use Drupal\simpletest\WebTestBase;
  */
 class InmailSensorPluginTest extends WebTestBase {
 
-  use DelivererTestTrait;
+  use DelivererTestTrait, StringTranslationTrait;
 
   /**
    * Modules to enable.
@@ -24,13 +25,6 @@ class InmailSensorPluginTest extends WebTestBase {
     'monitoring',
     'node',
   ];
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
-    parent::setUp();
-  }
 
   /**
    * Tests incoming mails sensor.
@@ -61,8 +55,8 @@ class InmailSensorPluginTest extends WebTestBase {
     // Run the sensor and test the result. Test fetcher has 100 unprocessed
     // messages by default.
     $this->drupalGet('/admin/reports/monitoring/sensors/inmail_incoming_mails');
-    $this->drupalPostForm(NULL, [], t('Run again'));
-    $this->assertText(t('@unprocessed unprocessed incoming mails', ['@unprocessed' => 100]));
+    $this->drupalPostForm(NULL, [], $this->t('Run again'));
+    $this->assertText($this->t('@unprocessed unprocessed incoming mails', ['@unprocessed' => 100]));
 
     // Process fetcher.
     $this->drupalGet('admin/config/system/inmail/deliverers');
@@ -79,7 +73,7 @@ class InmailSensorPluginTest extends WebTestBase {
       'settings[deliverers][test_fetcher]' => 'test_fetcher',
       'value_label' => 'processed incoming mails',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, $this->t('Save'));
 
     // Run sensor again and assert result for processed messages.
     $result = monitoring_sensor_run('inmail_incoming_mails', TRUE, TRUE);

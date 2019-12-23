@@ -4,6 +4,7 @@ namespace Drupal\Tests\inmail\Unit;
 
 use Drupal\inmail\DSNStatus;
 use Drupal\Tests\UnitTestCase;
+use InvalidArgumentException;
 
 /**
  * Unit tests the DSN status class.
@@ -19,11 +20,10 @@ class DSNStatusTest extends UnitTestCase {
    *
    * @covers ::__construct
    *
-   * @expectedException \InvalidArgumentException
-   *
    * @dataProvider provideInvalidCodes
    */
   public function testConstructInvalid($class, $subject, $detail) {
+    $this->expectException(InvalidArgumentException::class);
     new DSNStatus($class, $subject, $detail);
   }
 
@@ -44,11 +44,10 @@ class DSNStatusTest extends UnitTestCase {
    *
    * @covers ::parse
    *
-   * @expectedException \InvalidArgumentException
-   *
    * @dataProvider provideInvalidCodes
    */
   public function testParseInvalid($class, $subject, $detail) {
+    $this->expectException(InvalidArgumentException::class);
     DSNStatus::parse("$class.$subject.$detail");
   }
 

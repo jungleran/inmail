@@ -47,7 +47,7 @@ class MimeHeader {
    * @param string $raw
    *   (optional) raw value, default value is NULL.
    */
-  public function __construct($fields = [], $raw = NULL) {
+  public function __construct(array $fields = [], $raw = NULL) {
     foreach ($fields as $field) {
       if (!empty($field->getName()) && !empty($field->getBody())) {
         $this->addField($field, FALSE);
@@ -199,14 +199,14 @@ class MimeHeader {
    * This version respects the header field name when calculating the line
    * length limit.
    *
-   * @see \Drupal\Component\Utility\Unicode::mimeHeaderEncode()
-   *
-   * @todo Remove if this is fixed in core, https://www.drupal.org/node/2407117
-   *
    * @param string $string
    *   The field body to encode.
    * @param int $field_name_length
    *   (optional) Length of the name of the field whose body is to be encoded.
+   *
+   * @see \Drupal\Component\Utility\Unicode::mimeHeaderEncode()
+   *
+   * @todo Remove if this is fixed in core, https://www.drupal.org/node/2407117
    *
    * @return string
    *   The MIME-encoded field body.
@@ -259,6 +259,7 @@ class MimeHeader {
    * Returns the raw header value.
    *
    * @return string
+   *   The rad header value.
    */
   public function getRaw() {
     return $this->raw;

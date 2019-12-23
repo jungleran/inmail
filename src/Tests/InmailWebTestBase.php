@@ -130,10 +130,10 @@ abstract class InmailWebTestBase extends WebTestBase {
     }
 
     if ($exists) {
-      $this->assertTrue(strpos($xpath_pre, $raw_html_thread), $message);
+      return $this->assertTrue(strpos($xpath_pre, $raw_html_thread), $message);
     }
     else {
-      $this->assertFalse(strpos($xpath_pre, $raw_html_thread), $message);
+      return $this->assertFalse(strpos($xpath_pre, $raw_html_thread), $message);
     }
   }
 
@@ -225,19 +225,19 @@ abstract class InmailWebTestBase extends WebTestBase {
     if ($exists) {
       $this->assertFieldByXPath($label_xpath, $label, $message);
       if ($display_name) {
-        $this->assertAddressDisplayName($label, $email_address, $display_name, $index);
+        return $this->assertAddressDisplayName($label, $email_address, $display_name, $index);
       }
       else {
-        $this->assertEmailAddress($label, $email_address, $index);
+        return $this->assertEmailAddress($label, $email_address, $index);
       }
     }
     else {
       $this->assertNoFieldByXPath($label_xpath, $label, $message);
       if ($display_name) {
-        $this->assertNoAddressDisplayName($label, $email_address, $display_name, $index);
+        return $this->assertNoAddressDisplayName($label, $email_address, $display_name, $index);
       }
       else {
-        $this->assertNoEmailAddress($label, $email_address, $index);
+        return $this->assertNoEmailAddress($label, $email_address, $index);
       }
     }
   }
@@ -265,7 +265,7 @@ abstract class InmailWebTestBase extends WebTestBase {
    *   TRUE on pass, FALSE on fail.
    */
   protected function assertAddressDisplayName($label, $email_address = NULL, $display_name = NULL, $index = 0, $message = '') {
-    $this->assertAddressDisplayNameHelper($label, $email_address, $display_name, $index, $message, TRUE);
+    return $this->assertAddressDisplayNameHelper($label, $email_address, $display_name, $index, $message, TRUE);
   }
 
   /**
@@ -291,7 +291,7 @@ abstract class InmailWebTestBase extends WebTestBase {
    *   TRUE on pass, FALSE on fail.
    */
   protected function assertNoAddressDisplayName($label, $email_address = NULL, $display_name = NULL, $index = 0, $message = '') {
-    $this->assertAddressDisplayNameHelper($label, $email_address, $display_name, $index, $message, FALSE);
+    return $this->assertAddressDisplayNameHelper($label, $email_address, $display_name, $index, $message, FALSE);
   }
 
   /**
@@ -330,15 +330,15 @@ abstract class InmailWebTestBase extends WebTestBase {
 
     if ($exists) {
       $this->assertRaw($title_email_address_xpath);
-      $this->assertTrue(strpos($display_name_xpath, $display_name), $message);
+      return $this->assertTrue(strpos($display_name_xpath, $display_name), $message);
     }
     else {
       if ($display_name) {
         $this->assertNull($title_email_address_xpath);
-        $this->assertNull($display_name_xpath, $message);
+        return $this->assertNull($display_name_xpath, $message);
       }
       else {
-        $this->assertEmailAddress($label, $email_address, $index);
+        return $this->assertEmailAddress($label, $email_address, $index);
       }
     }
   }
@@ -363,7 +363,7 @@ abstract class InmailWebTestBase extends WebTestBase {
    *   TRUE on pass, FALSE on fail.
    */
   protected function assertEmailAddress($label, $email_address = NULL, $index = 0, $message = '') {
-    $this->assertEmailAddressHelper($label, $email_address, $index, $message, TRUE);
+    return $this->assertEmailAddressHelper($label, $email_address, $index, $message, TRUE);
   }
 
   /**
@@ -386,7 +386,7 @@ abstract class InmailWebTestBase extends WebTestBase {
    *   TRUE on pass, FALSE on fail.
    */
   protected function assertNoEmailAddress($label, $email_address = NULL, $index = 0, $message = '') {
-    $this->assertEmailAddressHelper($label, $email_address, $index, $message, FALSE);
+    return $this->assertEmailAddressHelper($label, $email_address, $index, $message, FALSE);
   }
 
   /**
@@ -420,10 +420,10 @@ abstract class InmailWebTestBase extends WebTestBase {
     }
 
     if ($exists) {
-      $this->assertTrue(strpos($email_address_xpath, $email_address), $message);
+      return $this->assertTrue(strpos($email_address_xpath, $email_address), $message);
     }
     else {
-      $this->assertNull($email_address_xpath, $message);
+      return $this->assertNull($email_address_xpath, $message);
     }
   }
 
@@ -444,7 +444,7 @@ abstract class InmailWebTestBase extends WebTestBase {
    *   TRUE on pass, FALSE on fail.
    */
   protected function assertElementHeaderField($label, $value = NULL, $message = '') {
-    $this->assertElementHeaderFieldHelper($label, $value, $message, TRUE);
+    return $this->assertElementHeaderFieldHelper($label, $value, $message, TRUE);
   }
 
   /**
@@ -464,7 +464,7 @@ abstract class InmailWebTestBase extends WebTestBase {
    *   TRUE on pass, FALSE on fail.
    */
   protected function assertNoElementHeaderField($label, $value = NULL, $message = '') {
-    $this->assertElementHeaderFieldHelper($label, $value, $message, FALSE);
+    return $this->assertElementHeaderFieldHelper($label, $value, $message, FALSE);
   }
 
   /**
@@ -496,19 +496,21 @@ abstract class InmailWebTestBase extends WebTestBase {
 
     if ($exists) {
       $this->assertFieldByXPath($label_xpath, $label, $label_message);
-      $this->assertTrue(strpos($value_xpath, $value), $value_message);
+      return $this->assertTrue(strpos($value_xpath, $value), $value_message);
     }
     else {
       $this->assertNoFieldByXPath($label_xpath, $label, $label_message);
-      $this->assertNull($value_xpath, $value_message);
+      return $this->assertNull($value_xpath, $value_message);
     }
   }
 
   /**
    * Gets the 'Unsubscribe' Xpath.
    *
-   * @todo implement assertUnsubscribeHeaderField()/assertNoUnsubscribeHeaderField(),
-   *       improve assertUnsubscribeHeaderFieldHelper() and getHeaderFieldUnsubscribeXpath() ?
+   * @todo implement assertUnsubscribeHeaderField()/
+   *       assertNoUnsubscribeHeaderField(),
+   *       improve assertUnsubscribeHeaderFieldHelper()
+   *       and getHeaderFieldUnsubscribeXpath() ?
    *
    * @param string $xpath
    *   The specific header field element Xpath where the 'Unsubscribe' is.
@@ -517,11 +519,8 @@ abstract class InmailWebTestBase extends WebTestBase {
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
-   *
-   * @return string
-   *   The display name Xpath of the specific header field element.
    */
-  private function assertHeaderFieldEmailUnsubscribe($xpath, $message = '') {
+  protected function assertHeaderFieldEmailUnsubscribe($xpath, $message = '') {
     $xpath = $this->getHeaderFieldUnsubscribeXpath($xpath);
     $xpath_href = $this->xpath($xpath)[0]->attributes();
     // RFC2369 defines header List-Unsubscribe.

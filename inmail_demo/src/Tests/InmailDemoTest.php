@@ -2,6 +2,7 @@
 
 namespace Drupal\inmail_demo\Tests;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\simpletest\WebTestBase;
@@ -12,6 +13,8 @@ use Drupal\simpletest\WebTestBase;
  * @group inmail
  */
 class InmailDemoTest extends WebTestBase {
+
+  use StringTranslationTrait;
 
   /**
    * Modules to enable.
@@ -50,14 +53,14 @@ class InmailDemoTest extends WebTestBase {
 
     // Test empty submission.
     $this->drupalGet('admin/config/system/inmail/paste');
-    $this->drupalPostForm(NULL, [], t('Process email'));
+    $this->drupalPostForm(NULL, [], $this->t('Process email'));
     $this->assertText('Error while processing message.');
     $this->assertText('Unable to process message, parser failed with error: Failed to split header from body');
 
     // Process default example.
     $this->assertFieldByName('deliverer', 'paste');
-    $this->drupalPostAjaxForm(NULL, [], ['op' => t('Load example')]);
-    $this->drupalPostForm(NULL, [], t('Process email'));
+    $this->drupalPostAjaxForm(NULL, [], ['op' => $this->t('Load example')]);
+    $this->drupalPostForm(NULL, [], $this->t('Process email'));
     $this->assertText('The message has been processed.');
     // Check processed result.
     $this->assertEqual('Re: Hello', ResultKeeperHandler::getMessage()->getSubject());

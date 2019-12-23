@@ -20,6 +20,7 @@ trait DelivererTestTrait {
    */
   protected function createTestDeliverer($plugin = 'test_deliverer') {
     $id = $this->randomMachineName();
+    /** @var \Drupal\inmail\Entity\DelivererConfig $deliverer */
     $deliverer = DelivererConfig::create([
       'id' => $id,
       'plugin' => $plugin,
@@ -34,11 +35,12 @@ trait DelivererTestTrait {
    *
    * @param \Drupal\inmail\Entity\DelivererConfig $deliverer
    *   The deliverer.
-   *
    * @param string $key
    *   The success key.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  protected function assertSuccess($deliverer, $key) {
+  protected function assertSuccess(DelivererConfig $deliverer, $key) {
     $plugin = $deliverer->getPluginInstance();
     $this->assertEqual($plugin->getSuccess(), $key);
   }

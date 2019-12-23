@@ -42,7 +42,6 @@ use Drupal\inmail\HandlerConfigInterface;
  */
 class HandlerConfig extends PluginConfigEntity implements HandlerConfigInterface {
   // @todo Implement HandlerConfig::calculateDependencies() https://www.drupal.org/node/2379929
-
   /**
    * The Inmail plugin type.
    *

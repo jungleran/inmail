@@ -25,7 +25,7 @@ class EmailDisplayController extends ControllerBase {
   public function formatDisplay(PastEventInterface $past_event, $view_mode) {
     $message = $this->getMessage($past_event);
 
-    $build['#title'] = t('Email display');
+    $build['#title'] = $this->t('Email display');
     $build['email'] = [
       '#type' => 'inmail_message',
       '#message' => $message,
@@ -57,6 +57,7 @@ class EmailDisplayController extends ControllerBase {
 
     // @todo: Inject the service.
     /** @var \Drupal\inmail\MIME\MimeMessageDecomposition $message_decomposition */
+    // phpcs:ignore
     $message_decomposition = \Drupal::service('inmail.message_decomposition');
 
     // Offer download of the raw email message.
@@ -106,6 +107,7 @@ class EmailDisplayController extends ControllerBase {
 
     // @todo: Inject the parser service.
     /** @var \Drupal\inmail\MIME\MimeParser $parser */
+    // phpcs:ignore
     $parser = \Drupal::service('inmail.mime_parser');
 
     return $parser->parseMessage($raw_email_argument->getData());

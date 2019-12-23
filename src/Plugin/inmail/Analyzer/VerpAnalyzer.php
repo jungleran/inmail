@@ -27,7 +27,8 @@ use Drupal\inmail\ProcessorResultInterface;
  * http://www.postfix.org/generic.5.html
  *
  * // @todo Warn about disabling VERP https://www.drupal.org/node/2382587
- * // @todo Support bounce-exclusive Return-Path https://www.drupal.org/node/2382563
+ * // @todo Support bounce-exclusive Return-Path
+ * https://www.drupal.org/node/2382563
  * // @todo issue Make subaddress extension separator configurable
  *
  * // http://www.postfix.org/generic.5.html

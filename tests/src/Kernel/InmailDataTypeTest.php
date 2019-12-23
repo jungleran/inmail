@@ -71,6 +71,7 @@ class InmailDataTypeTest extends KernelTestBase {
    * Provides data to test inmail_message_get_attachment_file_size() with.
    *
    * @return array
+   *   The data.
    */
   public function providedData() {
     return [
@@ -94,8 +95,9 @@ class InmailDataTypeTest extends KernelTestBase {
         ]), $this->randomString(20480)),
         '20 KB',
       ],
-      // base64_encode() produces valid base64 alphabet but longer because of
-      // encoding. It needs to be created valid base64 string with desired length.
+      // base64_encode() produces valid base64 alphabet
+      // but longer because of encoding.
+      // It needs to be created valid base64 string with desired length.
       [
         new MimeEntity(new MimeHeader([
           new MimeHeaderField('Content-Transfer-Encoding', 'base64'),

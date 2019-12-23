@@ -3,7 +3,9 @@
 namespace Drupal\inmail;
 
 /**
- * Provides methods to check requirements of Inmail's plugins (deliverers, analyzers, handlers).
+ * Provides methods to check requirements of Inmail's plugins.
+ *
+ * (deliverers, analyzers, handlers).
  */
 interface PluginRequirementsInterface {
 

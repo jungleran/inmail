@@ -134,7 +134,7 @@ class InmailConversationWebTest extends InmailWebTestBase {
     $this->assertAddressHeaderField('To', 'alice@example.com', 'Alice');
     $this->assertElementHeaderField('Subject', 'Re: Re: Re: Original conversation message');
 
-    // Alice forwards her reply message (third-reply) to Bob.
+    // Alice forwards reply message (third-reply) to Bob.
     $raw_sixth_reply = $this->getMessageFileContents('conversations/tree-06--2-1-2-forward.eml');
     $this->processRawMessage($raw_sixth_reply);
     $event_sixth = $this->getLastEventByMachinename('process');

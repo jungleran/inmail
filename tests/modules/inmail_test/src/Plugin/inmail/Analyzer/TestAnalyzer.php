@@ -4,6 +4,7 @@ namespace Drupal\inmail_test\Plugin\inmail\Analyzer;
 
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
+use Drupal\inmail\DefaultAnalyzerResult;
 use Drupal\inmail\MIME\MimeMessageInterface;
 use Drupal\inmail\Plugin\inmail\Analyzer\AnalyzerBase;
 use Drupal\inmail\ProcessorResultInterface;
@@ -48,8 +49,9 @@ class TestAnalyzer extends AnalyzerBase {
    * Adds a sample context.
    *
    * @param \Drupal\inmail\DefaultAnalyzerResult $default_result
+   *   The default result.
    */
-  protected function addContext($default_result) {
+  protected function addContext(DefaultAnalyzerResult $default_result) {
     $context_definition = new ContextDefinition('string', $this->t('Test Context'));
     $context = new Context($context_definition, 'Sample context value');
     $default_result->setContext('test', $context);

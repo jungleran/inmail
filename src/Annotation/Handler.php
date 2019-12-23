@@ -32,9 +32,9 @@ class Handler extends Plugin {
    *
    * A more detailed description should be given by implementing help().
    *
-   * @see \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface::help().
-   *
    * @var \Drupal\Core\StringTranslation\TranslationWrapper
+   *
+   * @see \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface::help().
    */
   protected $description;
 

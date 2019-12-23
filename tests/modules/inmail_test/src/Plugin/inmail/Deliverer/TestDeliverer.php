@@ -19,13 +19,6 @@ class TestDeliverer extends DelivererBase implements ContainerFactoryPluginInter
   use TestDelivererTrait;
 
   /**
-   * Constructs a TestDeliverer.
-   */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-  }
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {

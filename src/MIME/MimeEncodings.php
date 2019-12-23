@@ -3,7 +3,9 @@
 namespace Drupal\inmail\MIME;
 
 /**
- * Utility class for decoding and encoding in the context of MIME.
+ * Utility class.
+ *
+ * For decoding and encoding in the context of MIME.
  *
  * @ingroup mime
  */

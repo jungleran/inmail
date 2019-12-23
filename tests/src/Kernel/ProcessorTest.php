@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\inmail\Kernel;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail\Tests\DelivererTestTrait;
@@ -16,12 +17,17 @@ use Drupal\KernelTests\KernelTestBase;
  */
 class ProcessorTest extends KernelTestBase {
 
-  use DelivererTestTrait, InmailTestHelperTrait;
+  use DelivererTestTrait, InmailTestHelperTrait, StringTranslationTrait;
 
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
   public static $modules = ['inmail', 'inmail_test', 'dblog', 'user', 'system'];
 
   /**
-   *
+   * {@inheritdoc}
    */
   protected function setUp() {
     parent::setUp();
@@ -99,12 +105,12 @@ EOF;
     // Assert the requirements messages.
     $plugin = $unavailable_analyzer->getPluginInstance();
     $this->assertEquals([
-      'title' => t('Unavailable Analyzer'),
-      'description' => t('Unavailable Analyzer cannot be used.'),
+      'title' => $this->t('Unavailable Analyzer'),
+      'description' => $this->t('Unavailable Analyzer cannot be used.'),
       'severity' => REQUIREMENT_ERROR,
     ], $plugin::checkPluginRequirements());
     $this->assertEquals([
-      'description' => t('Wrong instance configuration.'),
+      'description' => $this->t('Wrong instance configuration.'),
       'severity' => REQUIREMENT_ERROR,
     ], $plugin->checkInstanceRequirements());
     $this->assertEquals(FALSE, $unavailable_analyzer->isAvailable());
