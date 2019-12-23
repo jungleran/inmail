@@ -56,7 +56,7 @@ class VerpAnalyzer extends AnalyzerBase {
     $return_path = \Drupal::config('inmail.settings')->get('return_path') ?: \Drupal::config('system.site')->get('mail');
     $return_path_split = explode('@', $return_path);
 
-    if (count($return_path_split) != 2) {
+    if (count($return_path_split) !== 2) {
       $processor_result->log('VerpAnalyzer', 'VERP Analyzer found invalid Return-Path address "%return_path"', ['%return_path' => $return_path]);
       return;
     }

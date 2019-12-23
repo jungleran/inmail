@@ -54,10 +54,10 @@ class MimeMultipartMessage extends MimeMultipartEntity implements MimeMessageInt
 
       // The first plaintext or HTML part wins.
       // @todo Consider further parts and concatenate bodies?
-      if ($content_type == 'text/plain') {
+      if ($content_type === 'text/plain') {
         return $body;
       }
-      elseif ($content_type == 'text/html') {
+      elseif ($content_type === 'text/html') {
         return strip_tags($body);
       }
     }
@@ -71,7 +71,7 @@ class MimeMultipartMessage extends MimeMultipartEntity implements MimeMessageInt
     foreach ($this->getParts() as $part) {
       $content_type = $part->getContentType()['type'] . '/' . $part->getContentType()['subtype'];
       // The first identified HTML part wins.
-      if ($content_type == 'text/html') {
+      if ($content_type === 'text/html') {
         // @todo: Consider further parts.
         return $part->getDecodedBody();
       }

@@ -88,7 +88,7 @@ class IncomingMailsSensorPlugin extends SensorPluginBase {
     $default_count_type = $this->sensorConfig->getSetting('count_type');
     // If the filter deliverers ajax has been triggered, store the new count
     // type to display in the UI.
-    if ($form_state->hasValue('settings') && !($form_state->getValue('settings')['count_type'] == $default_count_type)) {
+    if ($form_state->hasValue('settings') && $form_state->getValue('settings')['count_type'] !== $default_count_type) {
       $default_count_type = $form_state->getValue('settings')['count_type'];
       $this->sensorConfig->settings['count_type'] = $default_count_type;
     }

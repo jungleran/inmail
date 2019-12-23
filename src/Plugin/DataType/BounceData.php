@@ -41,7 +41,7 @@ class BounceData extends Map {
 
     // If subject and detail are 0 (like X.0.0), allow overriding those.
     $current_code = $this->getStatusCode();
-    if ($current_code->getSubject() == 0 && $current_code->getDetail() == 0) {
+    if ($current_code->getSubject() === 0 && $current_code->getDetail() === 0) {
       $new_code = new DSNStatus($current_code->getClass(), $code->getSubject(), $code->getDetail());
       $this->set('status_code', $new_code->getCode());
     }
@@ -111,11 +111,7 @@ class BounceData extends Map {
     // If there is a status code, it almost certainly indicates a failure
     // (there's no reason to generate a DSN when delivery is successful), but
     // let's check isSuccess() for the sake of correctness.
-    if (empty($status_code) || $status_code->isSuccess()) {
-      return FALSE;
-    }
-
-    return TRUE;
+    return !(empty($status_code) || $status_code->isSuccess());
   }
 
 }

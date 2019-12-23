@@ -49,14 +49,14 @@ class StandardDSNAnalyzer extends AnalyzerBase {
     while ($fields = $message->getPerRecipientFields($index++)) {
       // Parse the 'Status:' field, having the format X.XXX.XXX.
       $subcodes = explode('.', $fields->getFieldBody('Status'));
-      if (count($subcodes) == 3) {
+      if (count($subcodes) === 3) {
         $bounce_data->setStatusCode(new DSNStatus($subcodes[0], $subcodes[1], $subcodes[2]));
       }
 
       // Extract address from the 'Final-Recipient:' field, which has the format
       // "type; address".
       $field_parts = preg_split('/;\s*/', $fields->getFieldBody('Final-Recipient'));
-      if (count($field_parts) == 2) {
+      if (count($field_parts) === 2) {
         $bounce_data->setRecipient($field_parts[1]);
       }
     }

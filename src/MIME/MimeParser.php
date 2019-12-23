@@ -166,7 +166,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
   protected function parseBasicEntity($raw) {
     // MimeHeader is separated from body by a blank line.
     $header_body = preg_split("/(^|\n)\n/", $raw, 2);
-    if (count($header_body) != 2) {
+    if (count($header_body) !== 2) {
       throw new MimeParseException('Failed to split header from body');
     }
     list($header_raw, $body) = $header_body;
@@ -254,7 +254,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
    */
   protected function isMultipart(MimeEntityInterface $entity) {
     $content_type = $entity->getContentType();
-    return strtolower($content_type['type']) == 'multipart' && isset($content_type['parameters']['boundary']);
+    return strtolower($content_type['type']) === 'multipart' && isset($content_type['parameters']['boundary']);
   }
 
   /**
@@ -280,11 +280,11 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
    */
   protected function isDsn(MimeMultipartEntity $entity) {
     $content_type = $entity->getContentType();
-    if (strtolower($content_type['subtype']) == 'report') {
+    if (strtolower($content_type['subtype']) === 'report') {
       if (!isset($content_type['parameters']['report-type'])) {
         throw new MimeParseException('Parameter "report-type" missing in multipart entity content-type field');
       }
-      return strtolower($content_type['parameters']['report-type']) == 'delivery-status';
+      return strtolower($content_type['parameters']['report-type']) === 'delivery-status';
     }
     return FALSE;
   }
@@ -319,7 +319,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
 
     // The last part is terminated by "--$boundary--".
     $parts = strstr($entity->getBody(), "\n--$boundary--", TRUE);
-    if ($parts === FALSE) {
+    if (!$parts) {
       throw new MimeParseException('Terminating boundary missing in multipart body');
     }
     // Prepend with newline to facilitate explosion.
@@ -372,7 +372,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
     $fields = preg_split('/\n(?!\s)/', $raw_header);
     foreach ($fields as $field) {
       $name_body = explode(':', $field, 2);
-      if (count($name_body) != 2) {
+      if (count($name_body) !== 2) {
         throw new MimeParseException("Missing ':' in header field: $field");
       }
       list($name, $body) = $name_body;

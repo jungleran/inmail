@@ -33,11 +33,15 @@ class CollectHandler extends HandlerBase {
 
   /**
    * The URI defining the Inmail message schema.
+   *
+   * @var string
    */
   const SCHEMA_URI = 'https://www.drupal.org/project/inmail/schema/message';
 
   /**
    * URI base for the origin URI.
+   *
+   * @var string
    */
   const ORIGIN_URI_BASE = 'base:inmail/message';
 

@@ -47,10 +47,10 @@ class MimeMessage extends MimeEntity implements MimeMessageInterface {
   public function getPlainText() {
     $content_fields = $this->getContentType();
     $content_type = $content_fields['type'] . '/' . $content_fields['subtype'];
-    if ($content_type == 'text/plain') {
+    if ($content_type === 'text/plain') {
       return $this->getDecodedBody();
     }
-    elseif ($content_type == 'text/html') {
+    elseif ($content_type === 'text/html') {
       return strip_tags($this->getDecodedBody());
     }
     return '';
@@ -61,7 +61,7 @@ class MimeMessage extends MimeEntity implements MimeMessageInterface {
    */
   public function getHtml() {
     $content_type = $this->getContentType()['type'] . '/' . $this->getContentType()['subtype'];
-    return $content_type == 'text/html' ? $this->getDecodedBody() : '';
+    return $content_type === 'text/html' ? $this->getDecodedBody() : '';
   }
 
 }

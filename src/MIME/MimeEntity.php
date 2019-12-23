@@ -114,7 +114,7 @@ class MimeEntity implements MimeEntityInterface {
 
     // Decode base64/quoted-printable.
     $body = MimeEncodings::decode($body, $this->getContentTransferEncoding());
-    if ($body === NULL || $body === FALSE) {
+    if ($body === NULL || !$body) {
       // Unrecognized encoding.
       return NULL;
     }
@@ -129,7 +129,7 @@ class MimeEntity implements MimeEntityInterface {
     }
     // convertToUtf8 may return FALSE.
     $body = Unicode::convertToUtf8($body, $charset);
-    if ($body === FALSE) {
+    if (!$body) {
       return NULL;
     }
     // Return decoded, converted, valid UTF-8 body.

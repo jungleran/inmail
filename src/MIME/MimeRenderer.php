@@ -100,21 +100,20 @@ class MimeRenderer {
    */
   public function renderBody(MimeEntityInterface $entity) {
     $content_type = $entity->getContentType();
-    switch ($content_type['type']) {
-      case 'text':
-        if ($content_type['subtype'] == 'html') {
-          // Content-Type: text/html.
-          return ['#markup' => Xss::filter($entity->getDecodedBody(), $this->getAllowedHtmlTags())];
-        }
-        // Content-Type: text/*.
-        return [
-          '#prefix' => '<pre>',
-          '#markup' => htmlentities($entity->getDecodedBody()),
-          '#suffix' => '</pre>',
-        ];
-
-      default:
-        return $this->renderHeaderFields($entity, ['Content-Id']);
+    if ($content_type['type'] == 'text') {
+      if ($content_type['subtype'] == 'html') {
+        // Content-Type: text/html.
+        return ['#markup' => Xss::filter($entity->getDecodedBody(), $this->getAllowedHtmlTags())];
+      }
+      // Content-Type: text/*.
+      return [
+        '#prefix' => '<pre>',
+        '#markup' => htmlentities($entity->getDecodedBody()),
+        '#suffix' => '</pre>',
+      ];
+    }
+    else {
+      return $this->renderHeaderFields($entity, ['Content-Id']);
     }
   }
 

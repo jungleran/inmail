@@ -148,7 +148,7 @@ class MimeHeader {
     // Iterate through headers and find the first match.
     foreach ($this->fields as $key => $field) {
       // Field name is case-insensitive.
-      if (strcasecmp($field->getName(), $name) == 0) {
+      if (strcasecmp($field->getName(), $name) === 0) {
         return $key;
       }
     }
@@ -180,7 +180,7 @@ class MimeHeader {
     foreach ($this->fields as $field) {
       // Encode non-7bit body. If body is 7bit, mimeHeaderEncode() does nothing.
       $body = static::mimeHeaderEncode($field->getBody(), strlen($field->getName()));
-      $encoded = $body != $field->getBody();
+      $encoded = $body !== $field->getBody();
 
       $field_string = "{$field->getName()}: $body";
       // Fold to match 78 char length limit, and append. The encoding includes
@@ -248,7 +248,7 @@ class MimeHeader {
     // Iterate through headers and find the matches.
     $body = [];
     foreach ($this->fields as $key => $field) {
-      if (strcasecmp($field->getName(), $name) == 0) {
+      if (strcasecmp($field->getName(), $name) === 0) {
         $body[] = trim($this->fields[$key]->getBody());
       }
     }

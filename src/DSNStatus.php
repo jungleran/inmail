@@ -89,8 +89,8 @@ class DSNStatus {
       '4' => 'Destination mailbox address ambiguous',
       '5' => 'Destination address valid',
       '6' => 'Destination mailbox has moved, No forwarding address',
-      '7' => 'Bad sender\'s mailbox address syntax',
-      '8' => 'Bad sender\'s system address',
+      '7' => "Bad sender's mailbox address syntax",
+      '8' => "Bad sender's system address",
     ],
     '2' => [
       '0' => 'Other or undefined mailbox status',
@@ -187,7 +187,7 @@ class DSNStatus {
    */
   public static function parse($code) {
     $parts = explode('.', $code);
-    if (count($parts) == 3) {
+    if (count($parts) === 3) {
       return new static($parts[0], $parts[1], $parts[2]);
     }
     else {
@@ -284,7 +284,7 @@ class DSNStatus {
    *   TRUE if the sub-code is 2, otherwise FALSE.
    */
   public function isSuccess() {
-    return $this->class == 2;
+    return $this->class === 2;
   }
 
   /**
@@ -296,7 +296,7 @@ class DSNStatus {
    *   TRUE if the sub-code is 4, otherwise FALSE.
    */
   public function isTransientFailure() {
-    return $this->class == 4;
+    return $this->class === 4;
   }
 
   /**
@@ -308,7 +308,7 @@ class DSNStatus {
    *   TRUE if the sub-code is 5, otherwise FALSE.
    */
   public function isPermanentFailure() {
-    return $this->class == 5;
+    return $this->class === 5;
   }
 
   /**

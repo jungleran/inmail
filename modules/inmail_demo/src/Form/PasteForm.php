@@ -2,6 +2,7 @@
 
 namespace Drupal\inmail_demo\Form;
 
+use Drupal\Core\Url;
 use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormBase;
@@ -47,7 +48,7 @@ class PasteForm extends FormBase {
     $this->delivererStorage = $deliverer_storage;
     $this->moduleHandler = $module_handler;
     $this->setStringTranslation($translation);
-    $this->setUrlGenerator($url_generator);
+    $this->urlGenerator = $url_generator;
   }
 
   /**
@@ -93,11 +94,11 @@ class PasteForm extends FormBase {
       '#type' => 'select',
       '#title' => $this->t('Deliverer'),
       '#description' => $this->t('Choose one of the <a href="@deliverers_url">configured Paste deliverers</a>.', [
-        '@deliverers_url' => $this->url('entity.inmail_deliverer.collection'),
+        '@deliverers_url' => Url::fromRoute('entity.inmail_deliverer.collection'),
       ]),
       '#options' => $deliverer_options,
       '#required' => TRUE,
-      '#default_value' => count($deliverer_options) == 1 ? reset($deliverer_options) : $form_state->getValue('deliverer'),
+      '#default_value' => count($deliverer_options) === 1 ? reset($deliverer_options) : $form_state->getValue('deliverer'),
     ];
 
     $form['example'] = [
@@ -147,7 +148,7 @@ class PasteForm extends FormBase {
       $form['deliverer']['#disabled'] = TRUE;
       $form['raw']['#disabled'] = TRUE;
       drupal_set_message($this->t('Please <a href="@deliverers_url">create a Paste deliverer</a> to enable manual processing.', [
-        '@deliverers_url' => $this->url('entity.inmail_deliverer.add_form'),
+        '@deliverers_url' => Url::fromRoute('entity.inmail_deliverer.add_form'),
       ]));
     }
 
@@ -178,9 +179,8 @@ class PasteForm extends FormBase {
 
     // Adding rest of email samples.
     $examples = $this->getExamples($directory, FALSE);
-    $collection += ['Others' => $examples];
 
-    return $collection;
+    return $collection + ['Others' => $examples];
   }
 
   /**
@@ -261,7 +261,7 @@ class PasteForm extends FormBase {
       drupal_set_message(strip_tags(implode("\n", $messages)), 'error');
     }
     if ($this->moduleHandler->moduleExists('past_db')) {
-      drupal_set_message($this->t('See the <a href="@log_url">Past log</a> for results.', ['@log_url' => $this->url('view.past_event_log.page_1')]));
+      drupal_set_message($this->t('See the <a href="@log_url">Past log</a> for results.', ['@log_url' => Url::fromRoute('view.past_event_log.page_1')]));
     }
   }
 

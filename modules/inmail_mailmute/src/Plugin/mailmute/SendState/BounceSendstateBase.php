@@ -22,7 +22,7 @@ abstract class BounceSendstateBase extends SendStateBase {
    * @return $this
    */
   public function setReason($reason) {
-    $this->configuration['reason'] = (string) $reason;
+    $this->configuration['reason'] = $reason;
     return $this;
   }
 

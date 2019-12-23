@@ -23,6 +23,7 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface {
    * Use this as the $topic argument for ProcessorResultInterface methods.
    *
    * @see \Drupal\inmail\ProcessorResultInterface
+   * @var string
    */
   const TOPIC = 'default';
 
@@ -287,7 +288,7 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface {
     $filtered_contexts = [];
 
     foreach ($this->contexts as $context_name => $context) {
-      if ($context->getContextDefinition()->getDataType() == $type) {
+      if ($context->getContextDefinition()->getDataType() === $type) {
         $filtered_contexts[$context_name] = $context;
       }
     }
@@ -312,7 +313,7 @@ class DefaultAnalyzerResult implements AnalyzerResultInterface {
   public function ensureContext($name, $data_type) {
     if ($this->hasContext($name)) {
       $context_data_type = $this->getContext($name)->getContextData()->getDataDefinition()->getDataType();
-      if ($data_type != $context_data_type) {
+      if ($data_type !== $context_data_type) {
         throw new \InvalidArgumentException('Invalid data type ' . $data_type . ' has been given.');
       }
       $data = $this->getContext($name)->getContextData();

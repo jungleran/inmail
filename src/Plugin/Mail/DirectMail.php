@@ -49,7 +49,7 @@ class DirectMail implements MailInterface {
       $headers = $message['raw_headers']->toString();
     }
 
-    return (bool) mail(
+    return mail(
       $message['to'],
       $message['subject'],
       $message['body'],
