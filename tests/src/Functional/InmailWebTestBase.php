@@ -18,6 +18,15 @@ abstract class InmailWebTestBase extends BrowserTestBase {
   use DelivererTestTrait, InmailTestHelperTrait;
 
   /**
+   * The theme to install as the default for testing.
+   *
+   * Defaults to the install profile's default theme, if it specifies any.
+   *
+   * @var string
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * The Inmail processor service.
    *
    * @var \Drupal\inmail\MessageProcessor
@@ -73,12 +82,9 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertIdentificationField($label, $value = NULL, $message = '') {
-    return $this->assertIdentificationFieldHelper($label, $value, $message, TRUE);
+    $this->assertIdentificationFieldHelper($label, $value, $message, TRUE);
   }
 
   /**
@@ -94,12 +100,9 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertNoIdentificationField($label, $value = NULL, $message = '') {
-    return $this->assertIdentificationFieldHelper($label, $value, $message, FALSE);
+    $this->assertIdentificationFieldHelper($label, $value, $message, FALSE);
   }
 
   /**
@@ -118,12 +121,10 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    * @param bool $exists
    *   (optional) TRUE if this identification field should exist, else FALSE.
    *   Defaults to TRUE.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertIdentificationFieldHelper($label, $value = NULL, $message = '', $exists = TRUE) {
     $xpath_pre = $this->getIdentificationFieldPreXpath();
+
     $raw_html_thread = $label . ': ' . htmlentities($value);
 
     if (!$message) {
@@ -131,10 +132,10 @@ abstract class InmailWebTestBase extends BrowserTestBase {
     }
 
     if ($exists) {
-      return $this->assertTrue(strpos($xpath_pre, $raw_html_thread), $message);
+      $this->assertStringContainsString($raw_html_thread, $xpath_pre, $message);
     }
     else {
-      return $this->assertFalse(strpos($xpath_pre, $raw_html_thread), $message);
+      $this->assertFalse(strpos($xpath_pre, $raw_html_thread), $message);
     }
   }
 
@@ -157,11 +158,10 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
    *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
+   * @throws \Behat\Mink\Exception\ExpectationException
    */
   protected function assertAddressHeaderField($label, $email_address = NULL, $display_name = NULL, $index = 0, $message = '') {
-    return $this->assertAddressHeaderFieldHelper($label, $email_address, $display_name, $index, $message, TRUE);
+    $this->assertAddressHeaderFieldHelper($label, $email_address, $display_name, $index, $message, TRUE);
   }
 
   /**
@@ -183,11 +183,10 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
    *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
+   * @throws \Behat\Mink\Exception\ExpectationException
    */
   protected function assertNoAddressHeaderField($label, $email_address = NULL, $display_name = NULL, $index = 0, $message = '') {
-    return $this->assertAddressHeaderFieldHelper($label, $email_address, $display_name, $index, $message, FALSE);
+    $this->assertAddressHeaderFieldHelper($label, $email_address, $display_name, $index, $message, FALSE);
   }
 
   /**
@@ -212,8 +211,7 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   (optional) TRUE if this header field should exist, FALSE otherwise.
    *   Defaults to TRUE.
    *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
+   * @throws \Behat\Mink\Exception\ExpectationException
    */
   protected function assertAddressHeaderFieldHelper($label, $email_address = NULL, $display_name = NULL, $index = 0, $message = '', $exists = TRUE) {
     $xpath_div = $this->getHeaderFieldDivXpath($label);
@@ -226,19 +224,19 @@ abstract class InmailWebTestBase extends BrowserTestBase {
     if ($exists) {
       $this->assertFieldByXPath($label_xpath, $label, $message);
       if ($display_name) {
-        return $this->assertAddressDisplayName($label, $email_address, $display_name, $index);
+        $this->assertAddressDisplayName($label, $email_address, $display_name, $index);
       }
       else {
-        return $this->assertEmailAddress($label, $email_address, $index);
+        $this->assertEmailAddress($label, $email_address, $index);
       }
     }
     else {
       $this->assertNoFieldByXPath($label_xpath, $label, $message);
       if ($display_name) {
-        return $this->assertNoAddressDisplayName($label, $email_address, $display_name, $index);
+        $this->assertNoAddressDisplayName($label, $email_address, $display_name, $index);
       }
       else {
-        return $this->assertNoEmailAddress($label, $email_address, $index);
+        $this->assertNoEmailAddress($label, $email_address, $index);
       }
     }
   }
@@ -261,12 +259,9 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertAddressDisplayName($label, $email_address = NULL, $display_name = NULL, $index = 0, $message = '') {
-    return $this->assertAddressDisplayNameHelper($label, $email_address, $display_name, $index, $message, TRUE);
+    $this->assertAddressDisplayNameHelper($label, $email_address, $display_name, $index, $message, TRUE);
   }
 
   /**
@@ -287,12 +282,9 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertNoAddressDisplayName($label, $email_address = NULL, $display_name = NULL, $index = 0, $message = '') {
-    return $this->assertAddressDisplayNameHelper($label, $email_address, $display_name, $index, $message, FALSE);
+    $this->assertAddressDisplayNameHelper($label, $email_address, $display_name, $index, $message, FALSE);
   }
 
   /**
@@ -316,9 +308,6 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    * @param bool $exists
    *   (optional) TRUE if this header field should exist, FALSE otherwise.
    *   Defaults to TRUE.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertAddressDisplayNameHelper($label, $email_address = NULL, $display_name = NULL, $index = 0, $message = '', $exists = TRUE) {
     $xpath_div = $this->getHeaderFieldDivXpath($label);
@@ -331,15 +320,15 @@ abstract class InmailWebTestBase extends BrowserTestBase {
 
     if ($exists) {
       $this->assertRaw($title_email_address_xpath);
-      return $this->assertTrue(strpos($display_name_xpath, $display_name), $message);
+      $this->assertTrue(strpos($display_name_xpath, $display_name), $message);
     }
     else {
       if ($display_name) {
         $this->assertNull($title_email_address_xpath);
-        return $this->assertNull($display_name_xpath, $message);
+        $this->assertNull($display_name_xpath, $message);
       }
       else {
-        return $this->assertEmailAddress($label, $email_address, $index);
+        $this->assertEmailAddress($label, $email_address, $index);
       }
     }
   }
@@ -359,12 +348,9 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertEmailAddress($label, $email_address = NULL, $index = 0, $message = '') {
-    return $this->assertEmailAddressHelper($label, $email_address, $index, $message, TRUE);
+    $this->assertEmailAddressHelper($label, $email_address, $index, $message, TRUE);
   }
 
   /**
@@ -382,12 +368,9 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertNoEmailAddress($label, $email_address = NULL, $index = 0, $message = '') {
-    return $this->assertEmailAddressHelper($label, $email_address, $index, $message, FALSE);
+    $this->assertEmailAddressHelper($label, $email_address, $index, $message, FALSE);
   }
 
   /**
@@ -408,9 +391,6 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    * @param bool $exists
    *   (optional) TRUE if this header field should exist, FALSE otherwise.
    *   Defaults to TRUE.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertEmailAddressHelper($label, $email_address = NULL, $index = 0, $message = '', $exists = TRUE) {
     $xpath_div = $this->getHeaderFieldDivXpath($label);
@@ -421,10 +401,10 @@ abstract class InmailWebTestBase extends BrowserTestBase {
     }
 
     if ($exists) {
-      return $this->assertTrue(strpos($email_address_xpath, $email_address), $message);
+      $this->assertTrue(strpos($email_address_xpath, $email_address), $message);
     }
     else {
-      return $this->assertNull($email_address_xpath, $message);
+      $this->assertNull($email_address_xpath, $message);
     }
   }
 
@@ -440,12 +420,9 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertElementHeaderField($label, $value = NULL, $message = '') {
-    return $this->assertElementHeaderFieldHelper($label, $value, $message, TRUE);
+    $this->assertElementHeaderFieldHelper($label, $value, $message, TRUE);
   }
 
   /**
@@ -460,12 +437,9 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertNoElementHeaderField($label, $value = NULL, $message = '') {
-    return $this->assertElementHeaderFieldHelper($label, $value, $message, FALSE);
+    $this->assertElementHeaderFieldHelper($label, $value, $message, FALSE);
   }
 
   /**
@@ -483,9 +457,6 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    * @param bool $exists
    *   (optional) TRUE if this header field should exist, FALSE otherwise.
    *   Defaults to TRUE.
-   *
-   * @return bool
-   *   TRUE on pass, FALSE on fail.
    */
   protected function assertElementHeaderFieldHelper($label, $value = NULL, $message = '', $exists = TRUE) {
     $xpath_div = $this->getHeaderFieldDivXpath($label);
@@ -497,11 +468,11 @@ abstract class InmailWebTestBase extends BrowserTestBase {
 
     if ($exists) {
       $this->assertFieldByXPath($label_xpath, $label, $label_message);
-      return $this->assertTrue(strpos($value_xpath, $value), $value_message);
+      $this->assertTrue(strpos($value_xpath, $value), $value_message);
     }
     else {
       $this->assertNoFieldByXPath($label_xpath, $label, $label_message);
-      return $this->assertNull($value_xpath, $value_message);
+      $this->assertNull($value_xpath, $value_message);
     }
   }
 
@@ -544,12 +515,9 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
-   *
-   * @return bool
-   *   TRUE in case there is the raw email body present. Otherwise, FALSE.
    */
   protected function assertRawBody($machine_name, $value, $message = '') {
-    return $this->assertRawBodyHelper($machine_name, $value, $message, TRUE);
+    $this->assertRawBodyHelper($machine_name, $value, $message, TRUE);
   }
 
   /**
@@ -564,12 +532,9 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   messages: use \Drupal\Component\Utility\SafeMarkup::format() to embed
    *   variables in the message text, not t(). If left blank, a default message
    *   will be displayed.
-   *
-   * @return bool
-   *   TRUE in case there is not the raw email body present. Otherwise, FALSE.
    */
   protected function assertNoRawBody($machine_name, $value = '', $message = '') {
-    return $this->assertRawBodyHelper($machine_name, $value, $message, FALSE);
+    $this->assertRawBodyHelper($machine_name, $value, $message, FALSE);
   }
 
   /**
@@ -587,9 +552,6 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    * @param bool $exists
    *   (optional) TRUE if this header field should exist, FALSE otherwise.
    *   Defaults to TRUE.
-   *
-   * @return bool
-   *   TRUE in case there is a raw email body present. Otherwise, FALSE.
    */
   protected function assertRawBodyHelper($machine_name, $value = '', $message = '', $exists = TRUE) {
     $div_xpath = $this->getBodyDivXpath($machine_name);
@@ -597,11 +559,11 @@ abstract class InmailWebTestBase extends BrowserTestBase {
 
     if ($exists) {
       $value_message = $message ?: new FormattableMarkup('@machine_name body message "@value" found.', $message_values);
-      return $this->assertTrue(strpos($div_xpath[0]->asXML(), $value) !== FALSE, $value_message);
+      $this->assertTrue(strpos($div_xpath[0]->asXML(), $value) !== FALSE, $value_message);
     }
     else {
       $value_message = $message ?: new FormattableMarkup('@machine_name body message "@value" not found.', $message_values);
-      return $this->assertTrue(empty($div_xpath), $value_message);
+      $this->assertTrue(empty($div_xpath), $value_message);
     }
   }
 
@@ -613,7 +575,7 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    */
   private function getIdentificationFieldPreXpath() {
     $xpath = '//div[@class="inmail-message__element inmail-message__header__all"]/pre';
-    return $this->xpath($xpath) ? $this->xpath($xpath)[0]->asXML() : NULL;
+    return $this->xpath($xpath) ? $this->xpath($xpath)[0]->getHtml() : NULL;
   }
 
   /**
@@ -627,10 +589,10 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    */
   private function getHeaderFieldDivXpath($label) {
     $field = $label;
-    if ($label == 'reply to') {
+    if ($label === 'reply to') {
       $field = 'reply-to';
     }
-    elseif ($label == 'Received') {
+    elseif ($label === 'Received') {
       $field = 'received-date';
     }
     $xpath_div = '//div[@class="inmail-message__element inmail-message__header__' . strtolower($field) . '"]';
@@ -681,7 +643,7 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    */
   private function getHeaderFieldTitleEmailAddressXpath($xpath, $email_address = '') {
     $xpath .= '/span[contains(@title, "' . $email_address . '")]';
-    return $this->xpath($xpath) ? $this->xpath($xpath)[0]->asXML() : NULL;
+    return $this->xpath($xpath) ? $this->xpath($xpath)[0]->getHtml() : NULL;
   }
 
   /**
@@ -698,7 +660,7 @@ abstract class InmailWebTestBase extends BrowserTestBase {
   private function getHeaderFieldDisplayNameXpath($xpath, $index = 0) {
     $xpath .= '/span[contains(@class, "inmail-message__address__display-name")]';
     $xpath .= ($index > 0) ? '[' . $index . ']' : '';
-    return $this->xpath($xpath) ? $this->xpath($xpath)[0]->asXML() : NULL;
+    return $this->xpath($xpath) ? $this->xpath($xpath)[0]->getHtml() : NULL;
   }
 
   /**
@@ -724,7 +686,7 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    *   The content value Xpath of the specific header field element, else NULL.
    */
   private function getHeaderFieldElementValueXpath($xpath) {
-    return $this->xpath($xpath) ? $this->xpath($xpath)[0]->__toString() : NULL;
+    return $this->xpath($xpath) ? $this->xpath($xpath)[0]->getHtml() : NULL;
   }
 
   /**
@@ -733,15 +695,15 @@ abstract class InmailWebTestBase extends BrowserTestBase {
    * @param string $machine_name
    *   The machine name to identify the value.
    *
-   * @return \SimpleXMLElement[]|bool
+   * @return \Behat\Mink\Element\NodeElement[]
    *   The XPath of the mail body message element or FALSE on failure.
    */
   private function getBodyDivXpath($machine_name) {
     $field = $machine_name;
-    if ($machine_name == 'HTML') {
+    if ($machine_name === 'HTML') {
       $field = 'html';
     }
-    elseif ($machine_name == 'Plain') {
+    elseif ($machine_name === 'Plain') {
       $field = 'content';
     }
     $xpath_div = '//div[contains(@class, "inmail-message__element inmail-message__body__' . strtolower($field) . '")]';

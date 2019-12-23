@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\inmail\Functional;
 
+use Drupal\user\UserInterface;
+
 /**
  * Tests the 'Email display' of the Conversation case.
  *
@@ -31,7 +33,7 @@ class InmailConversationWebTest extends InmailWebTestBase {
 
     // Make sure new users are blocked until approved by admin.
     \Drupal::configFactory()->getEditable('user.settings')
-      ->set('register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL)
+      ->set('register', UserInterface::REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL)
       ->save();
     // Enable logging of raw mail messages.
     \Drupal::configFactory()->getEditable('inmail.settings')
