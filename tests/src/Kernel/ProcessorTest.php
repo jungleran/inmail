@@ -5,9 +5,10 @@ namespace Drupal\Tests\inmail\Kernel;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\inmail\Tests\DelivererTestTrait;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\inmail\Traits\DelivererTestTrait;
+use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
 
 /**
  * Tests the behaviour of the MessageProcessor class.

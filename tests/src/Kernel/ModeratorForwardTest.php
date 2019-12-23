@@ -4,8 +4,9 @@ namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\inmail\Tests\DelivererTestTrait;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\inmail\Traits\DelivererTestTrait;
+use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
 
 /**
  * Tests the Moderator Forward handler plugin.

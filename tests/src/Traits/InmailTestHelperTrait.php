@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\inmail\Kernel;
+namespace Drupal\Tests\inmail\Traits;
 
 /**
  * Provides common helper methods for Inmail testing.

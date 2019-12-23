@@ -3,8 +3,8 @@
 namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\inmail\Entity\DelivererConfig;
-use Drupal\inmail\Tests\DelivererTestTrait;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\inmail\Traits\DelivererTestTrait;
 
 /**
  * Tests mail deliverers.

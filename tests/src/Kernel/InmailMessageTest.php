@@ -5,6 +5,7 @@ namespace Drupal\Tests\inmail\Kernel;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\Xss;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
 
 /**
  * Tests the behaviour of Inmail Message element.

@@ -6,7 +6,7 @@ use Drupal\collect\Entity\Container;
 use Drupal\collect\Entity\Model;
 use Drupal\inmail\Plugin\DataType\Mailbox;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
+use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
 
 /**
  * Tests the Inmail model plugin.

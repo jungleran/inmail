@@ -6,9 +6,10 @@ use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\inmail\Tests\DelivererTestTrait;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\inmail\Traits\DelivererTestTrait;
+use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
 
 /**
  * Tests analyzers.

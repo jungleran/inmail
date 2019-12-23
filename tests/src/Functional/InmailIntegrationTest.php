@@ -3,8 +3,8 @@
 namespace Drupal\Tests\inmail\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
 use Drupal\Tests\inmail\Traits\DelivererTestTrait;
+use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
 
 /**
  * Tests the general Inmail mechanism in a typical Drupal email workflow case.

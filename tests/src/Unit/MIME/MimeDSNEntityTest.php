@@ -8,7 +8,7 @@ use Drupal\inmail\MIME\MimeHeader;
 use Drupal\inmail\MIME\MimeParser;
 use Drupal\inmail\MIME\MimeDSNEntity;
 use Drupal\inmail\MIME\MimeMultipartEntity;
-use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
+use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
 use Drupal\Tests\UnitTestCase;
 use Drupal\inmail\MIME\MimeHeaderField;
 

@@ -4,10 +4,11 @@ namespace Drupal\Tests\inmail\Kernel;
 
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\inmail\Tests\DelivererTestTrait;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\inmail\Traits\DelivererTestTrait;
+use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
 
 /**
  * Tests the VERP mechanism.

@@ -10,8 +10,8 @@ use Drupal\inmail\MIME\MimeHeaderField;
 use Drupal\inmail\MIME\MimeMessage;
 use Drupal\inmail\ProcessorResult;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
 use Drupal\Tests\inmail\Traits\DelivererTestTrait;
+use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
 use Drupal\user\Entity\User;
 
 /**

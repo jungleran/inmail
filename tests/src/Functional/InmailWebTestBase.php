@@ -4,8 +4,8 @@ namespace Drupal\Tests\inmail\Functional;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
 use Drupal\Tests\inmail\Traits\DelivererTestTrait;
+use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
 
 /**
  * Provides common helper methods for Inmail web tests.
