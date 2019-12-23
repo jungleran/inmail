@@ -9,9 +9,9 @@ use Drupal\inmail\MIME\MimeHeader;
 use Drupal\inmail\MIME\MimeHeaderField;
 use Drupal\inmail\MIME\MimeMessage;
 use Drupal\inmail\ProcessorResult;
-use Drupal\inmail\Tests\DelivererTestTrait;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
+use Drupal\Tests\inmail\Traits\DelivererTestTrait;
 use Drupal\user\Entity\User;
 
 /**

@@ -1,9 +1,10 @@
 <?php
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Functional;
 
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
+use Drupal\Tests\inmail\Traits\DelivererTestTrait;
 
 /**
  * Tests the general Inmail mechanism in a typical Drupal email workflow case.
@@ -11,7 +12,7 @@ use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
  * @group inmail
  * @requires module past_db
  */
-class InmailIntegrationTest extends WebTestBase {
+class InmailIntegrationTest extends BrowserTestBase {
 
   use DelivererTestTrait, InmailTestHelperTrait;
 

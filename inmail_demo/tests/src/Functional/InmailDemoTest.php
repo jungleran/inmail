@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\inmail_demo\Tests;
+namespace Drupal\Tests\inmail_demo\Functional;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\inmail\Entity\HandlerConfig;
 use Drupal\inmail_test\Plugin\inmail\Handler\ResultKeeperHandler;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Tests the demo module for Inmail.
  *
  * @group inmail
  */
-class InmailDemoTest extends WebTestBase {
+class InmailDemoTest extends BrowserTestBase {
 
   use StringTranslationTrait;
 

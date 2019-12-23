@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\inmail_collect\Tests;
+namespace Drupal\Tests\inmail_collect\Functional;
 
 use Drupal\collect\Entity\Container;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\inmail\MIME\MimeHeader;
 use Drupal\inmail\MIME\MimeMessage;
 use Drupal\inmail\ProcessorResult;
-use Drupal\inmail\Tests\InmailWebTestBase;
 use Drupal\inmail\MIME\MimeHeaderField;
+use Drupal\Tests\inmail\Functional\InmailWebTestBase;
 
 /**
  * Tests the presentation of collected messages.

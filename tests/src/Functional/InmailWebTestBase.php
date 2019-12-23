@@ -1,10 +1,11 @@
 <?php
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Functional;
 
 use Drupal\Component\Render\FormattableMarkup;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
+use Drupal\Tests\inmail\Traits\DelivererTestTrait;
 
 /**
  * Provides common helper methods for Inmail web tests.
@@ -12,7 +13,7 @@ use Drupal\Tests\inmail\Kernel\InmailTestHelperTrait;
  * @group inmail
  * @requires module past_db
  */
-abstract class InmailWebTestBase extends WebTestBase {
+abstract class InmailWebTestBase extends BrowserTestBase {
 
   use DelivererTestTrait, InmailTestHelperTrait;
 

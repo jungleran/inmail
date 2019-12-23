@@ -1,17 +1,17 @@
 <?php
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Functional;
 
 use Drupal\inmail\Entity\AnalyzerConfig;
 use Drupal\inmail\Entity\HandlerConfig;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Tests the UI of Inmail.
  *
  * @group inmail
  */
-class InmailWebTest extends WebTestBase {
+class InmailWebTest extends BrowserTestBase {
 
   /**
    * Modules to enable.

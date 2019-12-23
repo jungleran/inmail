@@ -1,16 +1,17 @@
 <?php
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Functional;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\inmail\Traits\DelivererTestTrait;
 
 /**
  * Tests Inmail sensor plugins.
  *
  * @group inmail
  */
-class InmailSensorPluginTest extends WebTestBase {
+class InmailSensorPluginTest extends BrowserTestBase {
 
   use DelivererTestTrait, StringTranslationTrait;
 

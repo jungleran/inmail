@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Functional;
 
 /**
  * Tests all 'Email display' cases.

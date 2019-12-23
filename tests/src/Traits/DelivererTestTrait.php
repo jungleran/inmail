@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\inmail\Tests;
+namespace Drupal\Tests\inmail\Traits;
 
 use Drupal\inmail\Entity\DelivererConfig;
 
