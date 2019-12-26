@@ -68,9 +68,27 @@ class MimeMessageDecomposition implements MimeMessageDecompositionInterface {
    * {@inheritdoc}
    */
   public function buildAttachment($path, MimeEntityInterface $attachment, $download_url = NULL) {
-    $type = $attachment->getContentType()['type'];
-    $content_type = $type . '/' . $attachment->getContentType()['subtype'];
-    $filename = !empty($attachment->getContentType()['parameters']['name']) ? $attachment->getContentType()['parameters']['name'] : $content_type;
+    $message_content_type = $attachment->getContentType();
+    $type = $message_content_type['type'];
+    $content_type = $type . '/' . $message_content_type['subtype'];
+    $filename = $content_type;
+    if (!empty($message_content_type['parameters']['name'])) {
+      $filename = $message_content_type['parameters']['name'];
+    }
+    elseif (!empty($message_content_type['parameters']['filename'])) {
+      $filename = $message_content_type['parameters']['filename'];
+    }
+    elseif ($attachment->getHeader()->hasField('Content-Disposition')) {
+      $disposition_field = $attachment->getHeader()->getFieldBody('Content-Disposition');
+      $field_parts = preg_split('/\s*;\s*/', $disposition_field, 2);
+
+      if (isset($field_parts[0])
+      && strtolower($field_parts[0]) === 'attachment'
+      && isset($field_parts[1])
+      && preg_match('/filename="([^\s]*)"/', $field_parts[1], $matches)) {
+        $filename = $matches[1] ?? $filename;
+      }
+    }
     $encoding = $attachment->getContentTransferEncoding();
     $content = $attachment->getBody();
     $filesize = inmail_message_get_attachment_file_size($content, $encoding);
