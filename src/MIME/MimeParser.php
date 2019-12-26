@@ -378,7 +378,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
       list($name, $body) = $name_body;
 
       // Decode and unfold lines.
-      $decoded_body = str_replace("\n", '', $this->mimeHeaderDecode(trim($body)));
+      $decoded_body = str_replace("\n", '', static::mimeHeaderDecode(trim($body)));
       $header->addField(new MimeHeaderField(trim($name), $decoded_body), FALSE);
     }
     return $header;
@@ -393,7 +393,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
    * @return string
    *   The mime-decoded header.
    */
-  private function mimeHeaderDecode($header) {
+  public static function mimeHeaderDecode($header) {
     $callback = function ($matches) {
       $data = ($matches[2] == 'B') ? base64_decode($matches[3]) : str_replace('_', ' ', quoted_printable_decode($matches[3]));
       if (strtolower($matches[1]) != 'utf-8') {
