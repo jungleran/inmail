@@ -78,6 +78,17 @@ class MimeMessageDecomposition implements MimeMessageDecompositionInterface {
     elseif (!empty($message_content_type['parameters']['filename'])) {
       $filename = $message_content_type['parameters']['filename'];
     }
+    elseif ($attachment->getHeader()->hasField('Content-Disposition')) {
+      $disposition_field = $attachment->getHeader()->getFieldBody('Content-Disposition');
+      $field_parts = preg_split('/\s*;\s*/', $disposition_field, 2);
+
+      if (isset($field_parts[0])
+      && strtolower($field_parts[0]) === 'attachment'
+      && isset($field_parts[1])
+      && preg_match('/filename="([^\s]*)"/', $field_parts[1], $matches)) {
+        $filename = $matches[1] ?? $filename;
+      }
+    }
     $encoding = $attachment->getContentTransferEncoding();
     $content = $attachment->getBody();
     $filesize = inmail_message_get_attachment_file_size($content, $encoding);
