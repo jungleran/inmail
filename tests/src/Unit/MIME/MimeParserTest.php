@@ -150,4 +150,32 @@ class MimeParserTest extends InmailUnitTestBase {
     ];
   }
 
+
+  /**
+   * Test MIME header decoding.
+   *
+   * @dataProvider mimeHeaderProvider
+   */
+  public function testMimeHeaderDecode($input, $output) {
+    $this->assertEquals($output, MimeParser::mimeHeaderDecode($input));
+  }
+
+  /**
+   * Provide mime headers to test with.
+   *
+   * @TODO: More data needed.
+   */
+  public function mimeHeaderProvider() {
+    return [
+      [
+        '=?GB2312?B?YWJj==?=',
+        'abc',
+      ],
+      [
+        '=?utf-8?B?eHl6MTIz==?=',
+        'xyz123',
+      ],
+    ];
+  }
+
 }
