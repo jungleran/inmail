@@ -2,9 +2,11 @@
 
 namespace Drupal\Tests\inmail\Functional;
 
+use Drupal\Core\Test\AssertMailTrait;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\inmail\Traits\DelivererTestTrait;
 use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
+use Drupal\user\UserInterface;
 
 /**
  * Tests the general Inmail mechanism in a typical Drupal email workflow case.
@@ -14,7 +16,7 @@ use Drupal\Tests\inmail\Traits\InmailTestHelperTrait;
  */
 class InmailIntegrationTest extends BrowserTestBase {
 
-  use DelivererTestTrait, InmailTestHelperTrait;
+  use DelivererTestTrait, InmailTestHelperTrait, AssertMailTrait;
 
   /**
    * The Inmail processor service.
@@ -54,7 +56,7 @@ class InmailIntegrationTest extends BrowserTestBase {
     $this->parser = \Drupal::service('inmail.mime_parser');
 
     // Make sure new users are blocked until approved by admin.
-    $this->config('user.settings')->set('register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL)->save();
+    $this->config('user.settings')->set('register', UserInterface::REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL)->save();
     // Enable logging of raw mail messages.
     $this->config('inmail.settings')->set('log_raw_emails', TRUE)->save();
   }
@@ -86,7 +88,7 @@ class InmailIntegrationTest extends BrowserTestBase {
     $this->assertMail('subject', 'Account details for user at Drupal (approved)');
 
     // Fake a bounce.
-    $sent_mails = $this->drupalGetMails();
+    $sent_mails = $this->getMails();
     $raw = static::generateBounceMessage(array_pop($sent_mails));
     // In reality the message would be passed to the processor through a drush
     // script or a mail deliverer.
