@@ -2,9 +2,9 @@
 
 namespace Drupal\inmail\MIME;
 
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Masterminds\HTML5\Parser\UTF8Utils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -378,10 +378,34 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
       list($name, $body) = $name_body;
 
       // Decode and unfold lines.
-      $decoded_body = str_replace("\n", '', Unicode::mimeHeaderDecode(trim($body)));
+      $decoded_body = str_replace("\n", '', $this->mimeHeaderDecode(trim($body)));
       $header->addField(new MimeHeaderField(trim($name), $decoded_body), FALSE);
     }
     return $header;
+  }
+
+  /**
+   * Decodes MIME/HTTP encoded header values.
+   *
+   * @param string $header
+   *   The header to decode.
+   *
+   * @return string
+   *   The mime-decoded header.
+   */
+  private function mimeHeaderDecode($header) {
+    $callback = function ($matches) {
+      $data = ($matches[2] == 'B') ? base64_decode($matches[3]) : str_replace('_', ' ', quoted_printable_decode($matches[3]));
+      if (strtolower($matches[1]) != 'utf-8') {
+        $data = UTF8Utils::convertToUTF8($data, $matches[1]);
+      }
+      return $data;
+    };
+    // First step: encoded chunks followed by other encoded chunks
+    // (need to collapse whitespace).
+    $header = preg_replace_callback('/=\?([^?]+)\?(Q|B)\?([^?]+|\?(?!=))\?=\s+(?==\?)/', $callback, $header);
+    // Second step: remaining chunks (do not collapse whitespace)
+    return preg_replace_callback('/=\?([^?]+)\?(Q|B)\?([^?]+|\?(?!=))\?=/', $callback, $header);
   }
 
 }
