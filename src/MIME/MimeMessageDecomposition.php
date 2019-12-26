@@ -68,9 +68,16 @@ class MimeMessageDecomposition implements MimeMessageDecompositionInterface {
    * {@inheritdoc}
    */
   public function buildAttachment($path, MimeEntityInterface $attachment, $download_url = NULL) {
-    $type = $attachment->getContentType()['type'];
-    $content_type = $type . '/' . $attachment->getContentType()['subtype'];
-    $filename = !empty($attachment->getContentType()['parameters']['name']) ? $attachment->getContentType()['parameters']['name'] : $content_type;
+    $message_content_type = $attachment->getContentType();
+    $type = $message_content_type['type'];
+    $content_type = $type . '/' . $message_content_type['subtype'];
+    $filename = $content_type;
+    if (!empty($message_content_type['parameters']['name'])) {
+      $filename = $message_content_type['parameters']['name'];
+    }
+    elseif (!empty($message_content_type['parameters']['filename'])) {
+      $filename = $message_content_type['parameters']['filename'];
+    }
     $encoding = $attachment->getContentTransferEncoding();
     $content = $attachment->getBody();
     $filesize = inmail_message_get_attachment_file_size($content, $encoding);
