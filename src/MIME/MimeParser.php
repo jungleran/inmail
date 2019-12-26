@@ -2,9 +2,9 @@
 
 namespace Drupal\inmail\MIME;
 
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Masterminds\HTML5\Parser\UTF8Utils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -166,7 +166,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
   protected function parseBasicEntity($raw) {
     // MimeHeader is separated from body by a blank line.
     $header_body = preg_split("/(^|\n)\n/", $raw, 2);
-    if (count($header_body) !== 2) {
+    if (count($header_body) != 2) {
       throw new MimeParseException('Failed to split header from body');
     }
     list($header_raw, $body) = $header_body;
@@ -254,7 +254,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
    */
   protected function isMultipart(MimeEntityInterface $entity) {
     $content_type = $entity->getContentType();
-    return strtolower($content_type['type']) === 'multipart' && isset($content_type['parameters']['boundary']);
+    return strtolower($content_type['type']) == 'multipart' && isset($content_type['parameters']['boundary']);
   }
 
   /**
@@ -280,11 +280,11 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
    */
   protected function isDsn(MimeMultipartEntity $entity) {
     $content_type = $entity->getContentType();
-    if (strtolower($content_type['subtype']) === 'report') {
+    if (strtolower($content_type['subtype']) == 'report') {
       if (!isset($content_type['parameters']['report-type'])) {
         throw new MimeParseException('Parameter "report-type" missing in multipart entity content-type field');
       }
-      return strtolower($content_type['parameters']['report-type']) === 'delivery-status';
+      return strtolower($content_type['parameters']['report-type']) == 'delivery-status';
     }
     return FALSE;
   }
@@ -319,7 +319,7 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
 
     // The last part is terminated by "--$boundary--".
     $parts = strstr($entity->getBody(), "\n--$boundary--", TRUE);
-    if (!$parts) {
+    if ($parts === FALSE) {
       throw new MimeParseException('Terminating boundary missing in multipart body');
     }
     // Prepend with newline to facilitate explosion.
@@ -372,16 +372,40 @@ class MimeParser implements MimeParserInterface, ContainerInjectionInterface {
     $fields = preg_split('/\n(?!\s)/', $raw_header);
     foreach ($fields as $field) {
       $name_body = explode(':', $field, 2);
-      if (count($name_body) !== 2) {
+      if (count($name_body) != 2) {
         throw new MimeParseException("Missing ':' in header field: $field");
       }
       list($name, $body) = $name_body;
 
       // Decode and unfold lines.
-      $decoded_body = str_replace("\n", '', Unicode::mimeHeaderDecode(trim($body)));
+      $decoded_body = str_replace("\n", '', static::mimeHeaderDecode(trim($body)));
       $header->addField(new MimeHeaderField(trim($name), $decoded_body), FALSE);
     }
     return $header;
+  }
+
+  /**
+   * Decodes MIME/HTTP encoded header values.
+   *
+   * @param string $header
+   *   The header to decode.
+   *
+   * @return string
+   *   The mime-decoded header.
+   */
+  public static function mimeHeaderDecode($header) {
+    $callback = function ($matches) {
+      $data = ($matches[2] == 'B') ? base64_decode($matches[3]) : str_replace('_', ' ', quoted_printable_decode($matches[3]));
+      if (strtolower($matches[1]) != 'utf-8') {
+        $data = UTF8Utils::convertToUTF8($data, $matches[1]);
+      }
+      return $data;
+    };
+    // First step: encoded chunks followed by other encoded chunks
+    // (need to collapse whitespace).
+    $header = preg_replace_callback('/=\?([^?]+)\?(Q|B)\?([^?]+|\?(?!=))\?=\s+(?==\?)/', $callback, $header);
+    // Second step: remaining chunks (do not collapse whitespace)
+    return preg_replace_callback('/=\?([^?]+)\?(Q|B)\?([^?]+|\?(?!=))\?=/', $callback, $header);
   }
 
 }
