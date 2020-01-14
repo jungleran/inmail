@@ -150,7 +150,6 @@ class MimeParserTest extends InmailUnitTestBase {
     ];
   }
 
-
   /**
    * Test MIME header decoding.
    *
