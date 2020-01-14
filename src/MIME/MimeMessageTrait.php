@@ -111,7 +111,7 @@ trait MimeMessageTrait {
   protected function parseTimezone($date_string) {
     // By RFC2822 time-zone abbreviation is invalid and needs to be removed.
     // Match only capital letters within the brackets at the end of string.
-    $date_string = preg_replace('/\(([A-Z]+)\)$/', '', $date_string);
+    $date_string = preg_replace('/\s*\(([A-Z]+).+\)$/', '', $date_string);
     return new DateTimePlus($date_string);
   }
 
