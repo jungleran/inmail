@@ -38,7 +38,7 @@ class InmailMessageTest extends KernelTestBase {
   /**
    * The message decomposition service.
    *
-   * @var \Drupal\Inmail\MIME\MimeMessageDecomposition
+   * @var \Drupal\inmail\MIME\MimeMessageDecomposition
    */
   protected $messageDecomposition;
 

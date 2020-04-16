@@ -492,7 +492,7 @@ function inmail_preprocess_inmail_message(&$variables) {
   $download_url = isset($variables['download_url']) ? $variables['download_url'] : NULL;
   $variables['download_message'] = $download_url ? $download_url->setRouteParameter('path', '~')->toString() : NULL;
 
-  /** @var \Drupal\Inmail\MIME\MimeMessageDecomposition $message_decomposition */
+  /** @var \Drupal\inmail\MIME\MimeMessageDecomposition $message_decomposition */
   $message_decomposition = \Drupal::service('inmail.message_decomposition');
 
   // Get the flattened list of entities for the processed message.
