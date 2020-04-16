@@ -4,7 +4,7 @@ description: Incoming mail message handler. Fetches and processes incoming mail 
 package: Mail
 configure: inmail.settings
 version: 8.x-1.x
-core: 8.x
+core_version_requirement: ^8 || ^9
 
 dependencies:
   - jquery_ui_tabs:jquery_ui_tabs
