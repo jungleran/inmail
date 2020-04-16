@@ -428,10 +428,10 @@ class ImapFetcher extends FetcherBase implements ContainerFactoryPluginInterface
    */
   public function submitTestConnection(array $form, FormStateInterface $form_state) {
     if ($this->hasValidCredentials($form_state)) {
-      drupal_set_message($this->t('Valid credentials!'));
+      $this->messenger()->addStatus($this->t('Valid credentials!'));
     }
     else {
-      drupal_set_message($this->t('Invalid credentials!'), 'error');
+      $this->messenger()->addError($this->t('Invalid credentials!'));
     }
   }
 

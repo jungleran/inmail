@@ -147,7 +147,7 @@ class PasteForm extends FormBase {
     if (empty($deliverer_options)) {
       $form['deliverer']['#disabled'] = TRUE;
       $form['raw']['#disabled'] = TRUE;
-      drupal_set_message($this->t('Please <a href="@deliverers_url">create a Paste deliverer</a> to enable manual processing.', [
+      $this->messenger()->addStatus($this->t('Please <a href="@deliverers_url">create a Paste deliverer</a> to enable manual processing.', [
         '@deliverers_url' => Url::fromRoute('entity.inmail_deliverer.add_form'),
       ]));
     }
@@ -252,16 +252,16 @@ class PasteForm extends FormBase {
     /** @var \Drupal\inmail\ProcessorResultInterface $result */
     $result = $this->messageProcessor->process('unique_key', $form_state->getValue('text'), $deliverer_config);
     if ($result->isSuccess()) {
-      drupal_set_message($this->t('The message has been processed.'));
+      $this->messenger()->addStatus($this->t('The message has been processed.'));
     }
     else {
-      drupal_set_message($this->t('Error while processing message.'), 'error');
+      $this->messenger()->addError($this->t('Error while processing message.'));
       // Display errors from processing.
       $messages = inmail_get_log_message($result, RfcLogLevel::ERROR);
-      drupal_set_message(strip_tags(implode("\n", $messages)), 'error');
+      $this->messenger()->addError(strip_tags(implode("\n", $messages)));
     }
     if ($this->moduleHandler->moduleExists('past_db')) {
-      drupal_set_message($this->t('See the <a href="@log_url">Past log</a> for results.', ['@log_url' => Url::fromRoute('view.past_event_log.page_1')]));
+      $this->messenger()->addStatus($this->t('See the <a href="@log_url">Past log</a> for results.', ['@log_url' => Url::fromRoute('view.past_event_log.page_1')]));
     }
   }
 

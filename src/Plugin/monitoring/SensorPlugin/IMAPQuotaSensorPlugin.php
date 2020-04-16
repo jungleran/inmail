@@ -51,7 +51,7 @@ class IMAPQuotaSensorPlugin extends SensorPluginBase {
       '#access' => $has_fetchers,
     ];
     if (!$has_fetchers) {
-      drupal_set_message($this->t('There are no IMAP fetchers. Please <a href=":url">add</a> one.', [':url' => '/admin/config/system/inmail/deliverers/add']), 'warning');
+      $this->messenger()->addWarning($this->t('There are no IMAP fetchers. Please <a href=":url">add</a> one.', [':url' => '/admin/config/system/inmail/deliverers/add']));
     }
 
     return $form;

@@ -211,7 +211,7 @@ function inmail_help($route_name, RouteMatchInterface $route_match) {
       $output .= '<dt>' . t('Mailmute') . '</dt>';
       $output .= '<dd>' . t('Delivery to some recipients may fail if a mail address of a registered Drupal user is discontinued. For every unreachable address, a bounce message is generated and sent back to the website. Inmail classifies incoming bounce messages. <a href=":mailmute_help">Mailmute</a> allows muting further outgoing mails for recipients with such a status (i.e. after receiving multiple bounces).', [':mailmute_help' => 'https://drupal.org/project/mailmute']) . '</dd>';
       $output .= '<dt>' . t('Collect') . '</dt>';
-      $output .= '<dd>' . t('The <a href=":collect_help">Collect</a> module provides storage for data of any kind, to allow subsequent arbitrary processing. To store all incoming email as Collect Containers, simply enable the Inmail Collect submodule.', [':collect_help' => (\Drupal::moduleHandler()->moduleExists('collect')) ? \Drupal::url('help.page', ['name' => 'collect']) : 'https://drupal.org/project/collect']) . '</dd>';
+      $output .= '<dd>' . t('The <a href=":collect_help">Collect</a> module provides storage for data of any kind, to allow subsequent arbitrary processing. To store all incoming email as Collect Containers, simply enable the Inmail Collect submodule.', [':collect_help' => (\Drupal::moduleHandler()->moduleExists('collect')) ? \Drupal::service('url_generator')->generateFromRoute('help.page', ['name' => 'collect']) : 'https://drupal.org/project/collect']) . '</dd>';
       $output .= '<dt>' . t('Mailhandler') . '</dt>';
       $output .= '<dd>' . t('<a href=":mailhandler_help">Mailhandler</a> allows creating contents from the incoming email. It takes email content and imports it as desired content type.', [':mailhandler_help' => 'https://drupal.org/project/mailhandler']) . '</dd>';
       $output .= '<h3>' . t('Inmail Collect Demo') . '</h3>';
@@ -374,7 +374,7 @@ function inmail_cron() {
   // @todo Call only active deliverers, https://www.drupal.org/node/2379909
   $deliverer_ids = \Drupal::entityQuery('inmail_deliverer')->condition('status', TRUE)->execute();
   /** @var \Drupal\inmail\Entity\DelivererConfig[] $deliverers */
-  $deliverers = \Drupal::entityManager()->getStorage('inmail_deliverer')->loadMultiple($deliverer_ids);
+  $deliverers = \Drupal::service('entity_type.manager')->getStorage('inmail_deliverer')->loadMultiple($deliverer_ids);
   /** @var \Drupal\Component\Plugin\PluginManagerInterface $deliverer_manager */
   $deliverer_manager = \Drupal::service('plugin.manager.inmail.deliverer');
   /** @var \Drupal\inmail\MessageProcessorInterface $processor */

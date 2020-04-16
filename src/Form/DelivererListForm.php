@@ -95,10 +95,10 @@ class DelivererListForm extends FormBase {
 
     // Set a message and redirect to overview.
     if ($fetchers_count > 0) {
-      drupal_set_message($this->t('Fetcher state info has been updated.'));
+      $this->messenger()->addStatus($this->t('Fetcher state info has been updated.'));
     }
     else {
-      drupal_set_message($this->t('There are no configured fetchers, nothing to update.'));
+      $this->messenger()->addStatus($this->t('There are no configured fetchers, nothing to update.'));
     }
   }
 
@@ -127,10 +127,10 @@ class DelivererListForm extends FormBase {
         foreach ($results as $key => $result) {
           if (!$result->isSuccess()) {
             $messages = inmail_get_log_message($result, RfcLogLevel::ERROR);
-            drupal_set_message($this->t('Message @key: @error', [
+            $this->messenger()->addError($this->t('Message @key: @error', [
               '@key' => $key,
               '@error' => strip_tags(implode("\n", $messages)),
-            ]), 'error');
+            ]));
           }
           else {
             $processed_count++;
@@ -140,7 +140,7 @@ class DelivererListForm extends FormBase {
         // No more messages to process for specific deliverer?
         if ($deliverer->getPluginInstance()->getUnprocessedCount() != 0) {
           // @todo This message could be repeating.
-          drupal_set_message($this->t('There are more messages to process.'));
+          $this->messenger()->addStatus($this->t('There are more messages to process.'));
         }
         // @todo Add Batch API. https://www.drupal.org/node/2804337.
       }
@@ -148,18 +148,18 @@ class DelivererListForm extends FormBase {
 
     // Processing finished, show final message.
     if (empty($fetchers)) {
-      drupal_set_message($this->t('There are no active fetchers. Please enable or <a href=":url">add</a> one.', [
+      $this->messenger()->addWarning($this->t('There are no active fetchers. Please enable or <a href=":url">add</a> one.', [
         ':url' => '/admin/config/system/inmail/deliverers/add',
-      ]), 'warning');
+      ]));
     }
     elseif ($processed_count) {
-      drupal_set_message($this->t('Successfully processed @count messages by @fetchers.', [
+      $this->messenger()->addStatus($this->t('Successfully processed @count messages by @fetchers.', [
         '@count' => $processed_count,
         '@fetchers' => implode(', ', $fetchers),
       ]));
     }
     else {
-      drupal_set_message($this->t('No messages to process.'));
+      $this->messenger()->addStatus($this->t('No messages to process.'));
     }
   }
 

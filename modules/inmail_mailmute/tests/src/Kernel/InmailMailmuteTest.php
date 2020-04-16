@@ -149,7 +149,7 @@ class InmailMailmuteTest extends KernelTestBase {
 
       $bounce_data->setStatusCode($status);
       /** @var \Drupal\inmail\Entity\HandlerConfig $handler_config */
-      $handler_config = \Drupal::entityManager()->getStorage('inmail_handler')->load('mailmute');
+      $handler_config = \Drupal::service('entity_type.manager')->getStorage('inmail_handler')->load('mailmute');
       /** @var \Drupal\inmail\Plugin\inmail\Handler\HandlerInterface $handler */
       $handler = \Drupal::service('plugin.manager.inmail.handler')->createInstance($handler_config->getPluginId(), $handler_config->getConfiguration());
       $handler->invoke(new MimeMessage(new MimeHeader(), ''), $processor_result, 'test');
