@@ -1,7 +1,7 @@
 name: Inmail test
 type: module
 description: Resources for Inmail tests
-core: 8.x
+core_version_requirement: ^8 || ^9
 hidden: true
 package: Mail
 

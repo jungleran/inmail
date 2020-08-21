@@ -3,8 +3,7 @@ type: module
 description: Store all incoming messages to allow for custom post-processing.
 package: Mail
 version: 8.x-1.x
-core: 8.x
-
+core_version_requirement: ^8 || ^9
 # @todo Remove node dependency after https://www.drupal.org/node/2308745
 dependencies:
   - inmail
