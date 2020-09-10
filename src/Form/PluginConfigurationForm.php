@@ -2,7 +2,7 @@
 
 namespace Drupal\inmail\Form;
 
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Component\Plugin\ConfigurableInterface;
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
 use Drupal\Core\Entity\EntityForm;
@@ -187,7 +187,7 @@ class PluginConfigurationForm extends EntityForm {
     // Copy plugin configuration to the entity for persistence. The reason for
     // not doing this by overriding copyFormValuesToEntity is that the plugin
     // submit handler has to happen first.
-    if ($plugin instanceof ConfigurablePluginInterface) {
+    if ($plugin instanceof ConfigurableInterface) {
       /** @var \Drupal\inmail\Entity\PluginConfigEntity $entity */
       $entity = $this->getEntity();
       $entity->setConfiguration($plugin->getConfiguration());

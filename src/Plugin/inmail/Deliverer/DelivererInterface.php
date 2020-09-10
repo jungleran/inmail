@@ -2,7 +2,8 @@
 
 namespace Drupal\inmail\Plugin\inmail\Deliverer;
 
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Component\Plugin\ConfigurableInterface;
+use Drupal\Component\Plugin\DependentPluginInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
@@ -13,7 +14,7 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
  *
  * @ingroup deliverer
  */
-interface DelivererInterface extends ConfigurablePluginInterface, PluginFormInterface, PluginInspectionInterface {
+interface DelivererInterface extends ConfigurableInterface, DependentPluginInterface, PluginFormInterface, PluginInspectionInterface {
 
   /**
    * Returns the deliverer label.

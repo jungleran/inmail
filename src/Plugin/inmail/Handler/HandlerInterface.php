@@ -2,7 +2,8 @@
 
 namespace Drupal\inmail\Plugin\inmail\Handler;
 
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Component\Plugin\ConfigurableInterface;
+use Drupal\Component\Plugin\DependentPluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\inmail\MIME\MimeMessageInterface;
@@ -13,7 +14,7 @@ use Drupal\inmail\ProcessorResultInterface;
  *
  * @ingroup handler
  */
-interface HandlerInterface extends ConfigurablePluginInterface, PluginFormInterface, PluginInspectionInterface {
+interface HandlerInterface extends ConfigurableInterface, DependentPluginInterface, PluginFormInterface, PluginInspectionInterface {
 
   /**
    * Returns helpful explanation for using and configuring the handler.

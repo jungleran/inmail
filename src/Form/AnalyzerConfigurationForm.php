@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Configuration form for analyzers.
  *
  * Analyzer plugins that inherit
- * \Drupal\Component\Plugin\ConfigurablePluginInterface may specify
+ * \Drupal\Component\Plugin\ConfigurableInterface may specify
  * plugin-specific configuration.
  *
  * @ingroup analyzer
