@@ -57,7 +57,7 @@ class PasteForm extends FormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('inmail.processor'),
-      $container->get('entity.manager')->getStorage('inmail_deliverer'),
+      $container->get('entity_type.manager')->getStorage('inmail_deliverer'),
       $container->get('module_handler'),
       $container->get('string_translation'),
       $container->get('url_generator')
