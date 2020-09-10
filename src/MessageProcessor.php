@@ -3,7 +3,7 @@
 namespace Drupal\inmail;
 
 use Drupal\Component\Utility\SafeMarkup;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\inmail\Entity\DelivererConfig;
@@ -74,7 +74,7 @@ class MessageProcessor implements MessageProcessorInterface {
   /**
    * Constructs a new message processor.
    */
-  public function __construct(EntityManagerInterface $entity_manager, AnalyzerManagerInterface $analyzer_manager, HandlerManagerInterface $handler_manager, LoggerChannelInterface $logger_channel, MimeParserInterface $parser, AccountSwitcherInterface $account_switcher) {
+  public function __construct(EntityTypeManagerInterface $entity_manager, AnalyzerManagerInterface $analyzer_manager, HandlerManagerInterface $handler_manager, LoggerChannelInterface $logger_channel, MimeParserInterface $parser, AccountSwitcherInterface $account_switcher) {
     $this->analyzerStorage = $entity_manager->getStorage('inmail_analyzer');
     $this->analyzerManager = $analyzer_manager;
     $this->handlerStorage = $entity_manager->getStorage('inmail_handler');
