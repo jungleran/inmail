@@ -2,6 +2,7 @@
 
 namespace Drupal\inmail;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
@@ -184,7 +185,7 @@ class MessageProcessor implements MessageProcessorInterface {
             $this->loggerChannel->log($item['severity'], $item['message'], $item['placeholders']);
           }
           // Apply placeholders.
-          $messages[] = SafeMarkup::format($item['message'], $item['placeholders']);
+          $messages[] = new FormattableMarkup($item['message'], $item['placeholders']);
         }
         if ($event) {
           $event->addArgument($source, $messages);
