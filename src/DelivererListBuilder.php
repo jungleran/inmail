@@ -80,7 +80,7 @@ class DelivererListBuilder extends ConfigEntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     // Set default values for each column.
-    $row['label'] = $this->getLabel($entity);
+    $row['label'] = $entity->label();
     // @todo Replace with calculateDependencies(), https://www.drupal.org/node/2379929
     $row['plugin'] = $this->t('Plugin missing');
     $row['processed_count'] = NULL;
